@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+
+namespace IrisConsole.Model;
+
+public partial class Orcamento
+{
+    [Key]
+    public int Id { get; set; }
+
+    public int IdTipoServico { get; set; }
+
+    [Column(TypeName = "decimal(18, 0)")]
+    public decimal ValorEstimado { get; set; }
+
+    [Column(TypeName = "decimal(18, 0)")]
+    public decimal ValorContratado { get; set; }
+
+    [Column(TypeName = "decimal(18, 0)")]
+    public decimal? Saldo { get; set; }
+
+    [ForeignKey("IdTipoServico")]
+    [InverseProperty("Orcamento")]
+    public virtual TipoServico IdTipoServicoNavigation { get; set; } = null!;
+
+    [InverseProperty("IdOrcamentoNavigation")]
+    public virtual ICollection<Obra> Obra { get; } = new List<Obra>();
+}
