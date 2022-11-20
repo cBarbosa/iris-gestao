@@ -1,8 +1,8 @@
 ﻿using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace IrisGestao.Infraestructure.Repository.Impl;
 
@@ -18,11 +18,11 @@ public class Repository<TEntity>
     protected ILogger<TEntity> Logger;
 
     #endregion
-    public Repository(ILogger<TEntity> Logger)
+    public Repository(IConfiguration configuration, ILogger<TEntity> logger)
     {
-        // Db = new ORM.IrisContext();
+        Db = new ORM.IrisContext(configuration);
         DbSet = Db.Set<TEntity>();
-        this.Logger = Logger;
+        Logger = logger;
     }
     
     public virtual void Dispose()

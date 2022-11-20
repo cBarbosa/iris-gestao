@@ -15,6 +15,7 @@ public class ContatoController : Controller
     }
     
     // GET
+    [HttpGet]
     public async Task<IActionResult> Get() =>
-        Ok(contatoService.GetAll());
+        Ok(await contatoService.GetAll());
 }

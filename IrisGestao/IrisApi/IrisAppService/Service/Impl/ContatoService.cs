@@ -15,9 +15,9 @@ public class ContatoService: IContatoService
     
     public async Task<CommandResult> GetAll()
     {
-        var contatos = contatoRepository.GetAll();
+        var contatos = await Task.FromResult(contatoRepository.GetAll());
 
-        return contatos == null
+        return !contatos.Any()
             ? new CommandResult(false,"Não foi possível carregar as informações", null!)
             : new CommandResult(true,"Dados carregados com sucesso", contatos);
     }

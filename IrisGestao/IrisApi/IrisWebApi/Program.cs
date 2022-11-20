@@ -11,13 +11,14 @@ builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
         .Build();
 });
 
-// Add services to the container.
 IoCRegisterServices.Register(builder.Services);
-builder.Services.AddControllers();
 
+builder.Services.AddControllers();
 builder.Services.AddControllers()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
     .AddJsonOptions(x => x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
+
+// Add services to the container.
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

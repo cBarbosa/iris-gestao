@@ -14,5 +14,6 @@ public class IoCRegisterServices
 
         //Repositories
         services.AddTransient(typeof(IRepository<>), typeof(Repository.Impl.Repository<>));
+        services.AddScoped<IContatoRepository, Repository.Impl.ContatoRepository>();
     }
 }
