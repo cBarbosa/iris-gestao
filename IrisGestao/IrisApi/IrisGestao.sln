@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IrisWebApi", "IrisWebApi\Ir
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IrisConsole", "IrisConsole\IrisConsole.csproj", "{31B1C1BF-30E0-4C45-90A9-A039E697FB5B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IrisInfra", "IrisInfra\IrisInfra.csproj", "{E21407C4-B75E-49B4-9FF4-AC23DD43A0CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IrisAppService", "IrisAppService\IrisAppService.csproj", "{1F085EC0-6969-420C-BDB7-5BEDEBF0B44D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,13 @@ Global
 		{31B1C1BF-30E0-4C45-90A9-A039E697FB5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31B1C1BF-30E0-4C45-90A9-A039E697FB5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31B1C1BF-30E0-4C45-90A9-A039E697FB5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E21407C4-B75E-49B4-9FF4-AC23DD43A0CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E21407C4-B75E-49B4-9FF4-AC23DD43A0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E21407C4-B75E-49B4-9FF4-AC23DD43A0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E21407C4-B75E-49B4-9FF4-AC23DD43A0CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F085EC0-6969-420C-BDB7-5BEDEBF0B44D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F085EC0-6969-420C-BDB7-5BEDEBF0B44D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F085EC0-6969-420C-BDB7-5BEDEBF0B44D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F085EC0-6969-420C-BDB7-5BEDEBF0B44D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
