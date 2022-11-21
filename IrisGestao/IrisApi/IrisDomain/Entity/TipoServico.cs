@@ -8,9 +8,6 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class TipoServico: BaseEntity<TipoServico>
 {
-    [Key]
-    public int Id { get; set; }
-
     [StringLength(100)]
     [Unicode(false)]
     public string Nome { get; set; } = null!;

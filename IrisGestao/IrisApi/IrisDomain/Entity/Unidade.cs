@@ -8,9 +8,6 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class Unidade: BaseEntity<Unidade>
 {
-    [Key]
-    public int Id { get; set; }
-
     public int IdImovel { get; set; }
 
     public int IdTipoUnidade { get; set; }

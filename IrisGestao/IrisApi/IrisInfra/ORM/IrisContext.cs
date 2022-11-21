@@ -6,7 +6,7 @@ namespace IrisGestao.Infraestructure.ORM;
 
 public partial class IrisContext : DbContext
 {
-    protected readonly IConfiguration Configuration;
+    protected readonly IConfiguration Configuration = null!;
     
     public IrisContext(IConfiguration Configuration)
     {
@@ -19,61 +19,61 @@ public partial class IrisContext : DbContext
         
     }
 
-    public virtual DbSet<Anexo> Anexo { get; set; }
+    public virtual DbSet<Anexo> Anexo { get; set; } = null!;
 
-    public virtual DbSet<CategoriaImovel> CategoriaImovel { get; set; }
+    public virtual DbSet<CategoriaImovel> CategoriaImovel { get; set; } = null!;
 
-    public virtual DbSet<Cliente> Cliente { get; set; }
+    public virtual DbSet<Cliente> Cliente { get; set; } = null!;
 
-    public virtual DbSet<Contato> Contato { get; set; }
+    public virtual DbSet<Contato> Contato { get; set; } = null!;
 
-    public virtual DbSet<ContratoAluguel> ContratoAluguel { get; set; }
+    public virtual DbSet<ContratoAluguel> ContratoAluguel { get; set; } = null!;
 
-    public virtual DbSet<ContratoFornecedor> ContratoFornecedor { get; set; }
+    public virtual DbSet<ContratoFornecedor> ContratoFornecedor { get; set; } = null!;
 
-    public virtual DbSet<DadoBancario> DadoBancario { get; set; }
+    public virtual DbSet<DadoBancario> DadoBancario { get; set; } = null!;
 
-    public virtual DbSet<DespesaLocatario> DespesaLocatario { get; set; }
+    public virtual DbSet<DespesaLocatario> DespesaLocatario { get; set; } = null!;
 
-    public virtual DbSet<DespesaProprietario> DespesaProprietario { get; set; }
+    public virtual DbSet<DespesaProprietario> DespesaProprietario { get; set; } = null!;
 
-    public virtual DbSet<Evento> Evento { get; set; }
+    public virtual DbSet<Evento> Evento { get; set; } = null!;
 
-    public virtual DbSet<FaturaTitulo> FaturaTitulo { get; set; }
+    public virtual DbSet<FaturaTitulo> FaturaTitulo { get; set; } = null!;
 
-    public virtual DbSet<FormaPagamento> FormaPagamento { get; set; }
+    public virtual DbSet<FormaPagamento> FormaPagamento { get; set; } = null!;
 
-    public virtual DbSet<Fornecedor> Fornecedor { get; set; }
+    public virtual DbSet<Fornecedor> Fornecedor { get; set; } = null!;
 
-    public virtual DbSet<Imovel> Imovel { get; set; }
+    public virtual DbSet<Imovel> Imovel { get; set; } = null!;
 
-    public virtual DbSet<ImovelEndereco> ImovelEndereco { get; set; }
+    public virtual DbSet<ImovelEndereco> ImovelEndereco { get; set; } = null!;
 
-    public virtual DbSet<IndiceReajuste> IndiceReajuste { get; set; }
+    public virtual DbSet<IndiceReajuste> IndiceReajuste { get; set; } = null!;
 
-    public virtual DbSet<NotaFiscal> NotaFiscal { get; set; }
+    public virtual DbSet<NotaFiscal> NotaFiscal { get; set; } = null!;
 
-    public virtual DbSet<Obra> Obra { get; set; }
+    public virtual DbSet<Obra> Obra { get; set; } = null!;
 
-    public virtual DbSet<Orcamento> Orcamento { get; set; }
+    public virtual DbSet<Orcamento> Orcamento { get; set; } = null!;
 
-    public virtual DbSet<TipoContrato> TipoContrato { get; set; }
+    public virtual DbSet<TipoContrato> TipoContrato { get; set; } = null!;
 
-    public virtual DbSet<TipoCreditoAluguel> TipoCreditoAluguel { get; set; }
+    public virtual DbSet<TipoCreditoAluguel> TipoCreditoAluguel { get; set; } = null!;
 
-    public virtual DbSet<TipoDespesa> TipoDespesa { get; set; }
+    public virtual DbSet<TipoDespesa> TipoDespesa { get; set; } = null!;
 
-    public virtual DbSet<TipoEvento> TipoEvento { get; set; }
+    public virtual DbSet<TipoEvento> TipoEvento { get; set; } = null!;
 
-    public virtual DbSet<TipoServico> TipoServico { get; set; }
+    public virtual DbSet<TipoServico> TipoServico { get; set; } = null!;
 
-    public virtual DbSet<TipoTitulo> TipoTitulo { get; set; }
+    public virtual DbSet<TipoTitulo> TipoTitulo { get; set; } = null!;
 
-    public virtual DbSet<TipoUnidade> TipoUnidade { get; set; }
+    public virtual DbSet<TipoUnidade> TipoUnidade { get; set; } = null!;
 
-    public virtual DbSet<Titulo> Titulo { get; set; }
+    public virtual DbSet<Titulo> Titulo { get; set; } = null!;
 
-    public virtual DbSet<Unidade> Unidade { get; set; }
+    public virtual DbSet<Unidade> Unidade { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer(Configuration.GetConnectionString("SQLConnection"));

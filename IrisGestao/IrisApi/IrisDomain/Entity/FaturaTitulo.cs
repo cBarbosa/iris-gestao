@@ -8,9 +8,6 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class FaturaTitulo: BaseEntity<FaturaTitulo>
 {
-    [Key]
-    public int Id { get; set; }
-
     public int IdTitulo { get; set; }
 
     [StringLength(50)]

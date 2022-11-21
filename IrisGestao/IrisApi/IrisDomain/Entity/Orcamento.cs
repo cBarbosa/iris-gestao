@@ -8,9 +8,6 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class Orcamento: BaseEntity<Orcamento>
 {
-    [Key]
-    public int Id { get; set; }
-
     public int IdTipoServico { get; set; }
 
     [Column(TypeName = "decimal(18, 0)")]

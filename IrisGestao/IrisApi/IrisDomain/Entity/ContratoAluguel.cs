@@ -8,9 +8,6 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
 {
-    [Key]
-    public int Id { get; set; }
-
     public int IdCliente { get; set; }
 
     public int IdImovel { get; set; }

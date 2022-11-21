@@ -38,7 +38,7 @@ public class Repository<TEntity>
 
     public virtual void Delete(long id)
     {
-        TEntity entity = DbSet.FirstOrDefault(t => t.Id == id);
+        TEntity entity = DbSet.FirstOrDefault(t => t.Id == id)!;
 
         if (entity != null)
         {
@@ -55,7 +55,7 @@ public class Repository<TEntity>
         Db.SaveChanges();
     }
 
-    public virtual TEntity GetById(long id)
+    public virtual TEntity? GetById(long id)
     {
         return DbSet.FirstOrDefault(p => p.Id == id);
     }

@@ -8,9 +8,6 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class Imovel: BaseEntity<Imovel>
 {
-    [Key]
-    public int Id { get; set; }
-
     public int IdCategoriaImovel { get; set; }
 
     public int IdClienteProprietario { get; set; }

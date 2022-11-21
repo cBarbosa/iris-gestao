@@ -8,9 +8,6 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class NotaFiscal: BaseEntity<NotaFiscal>
 {
-    [Key]
-    public int Id { get; set; }
-
     public int IdTipoServico { get; set; }
 
     public int IdObra { get; set; }

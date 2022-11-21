@@ -8,9 +8,6 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class ImovelEndereco: BaseEntity<ImovelEndereco>
 {
-    [Key]
-    public int Id { get; set; }
-
     public int IdImovel { get; set; }
 
     [StringLength(100)]

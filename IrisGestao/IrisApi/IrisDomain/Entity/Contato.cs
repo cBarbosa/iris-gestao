@@ -8,9 +8,6 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class Contato: BaseEntity<Contato>
 {
-    [Key]
-    public int Id { get; set; }
-
     public int? IdFornecedor { get; set; }
 
     public int? IdCliente { get; set; }

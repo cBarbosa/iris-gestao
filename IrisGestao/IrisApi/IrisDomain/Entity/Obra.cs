@@ -8,9 +8,6 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class Obra: BaseEntity<Obra>
 {
-    [Key]
-    public int Id { get; set; }
-
     public int IdImovel { get; set; }
 
     public int IdOrcamento { get; set; }

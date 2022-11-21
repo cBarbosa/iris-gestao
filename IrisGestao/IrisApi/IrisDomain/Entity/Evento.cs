@@ -8,9 +8,6 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class Evento: BaseEntity<Evento>
 {
-    [Key]
-    public int Id { get; set; }
-
     public int IdImovel { get; set; }
 
     public int IdTipoEvento { get; set; }

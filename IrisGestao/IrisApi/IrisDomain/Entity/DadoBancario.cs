@@ -8,9 +8,6 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class DadoBancario: BaseEntity<DadoBancario>
 {
-    [Key]
-    public int Id { get; set; }
-
     public int Agencia { get; set; }
 
     public int? Operacao { get; set; }

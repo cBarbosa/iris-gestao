@@ -8,9 +8,6 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class Fornecedor: BaseEntity<Fornecedor>
 {
-    [Key]
-    public int Id { get; set; }
-
     public int IdDadoBancario { get; set; }
 
     [StringLength(100)]

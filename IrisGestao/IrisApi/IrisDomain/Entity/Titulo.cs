@@ -8,9 +8,6 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class Titulo: BaseEntity<Titulo>
 {
-    [Key]
-    public int Id { get; set; }
-
     [StringLength(100)]
     [Unicode(false)]
     public string NumeroTitulo { get; set; } = null!;
