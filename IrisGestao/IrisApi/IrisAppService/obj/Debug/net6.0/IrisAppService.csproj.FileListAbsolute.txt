@@ -1,0 +1,15 @@
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\bin\Debug\net6.0\IrisAppService.deps.json
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\bin\Debug\net6.0\IrisAppService.dll
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\bin\Debug\net6.0\ref\IrisAppService.dll
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\bin\Debug\net6.0\IrisAppService.pdb
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\bin\Debug\net6.0\IrisDomain.dll
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\bin\Debug\net6.0\IrisDomain.pdb
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\obj\Debug\net6.0\IrisAppService.csproj.AssemblyReference.cache
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\obj\Debug\net6.0\IrisAppService.GeneratedMSBuildEditorConfig.editorconfig
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\obj\Debug\net6.0\IrisAppService.AssemblyInfoInputs.cache
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\obj\Debug\net6.0\IrisAppService.AssemblyInfo.cs
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\obj\Debug\net6.0\IrisAppService.csproj.CoreCompileInputs.cache
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\obj\Debug\net6.0\IrisAppService.csproj.CopyComplete
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\obj\Debug\net6.0\IrisAppService.dll
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\obj\Debug\net6.0\ref\IrisAppService.dll
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisAppService\obj\Debug\net6.0\IrisAppService.pdb
