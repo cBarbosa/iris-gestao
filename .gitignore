@@ -1,1 +1,17 @@
+/IrisGestao/IrisApi/.idea/
+/IrisGestao/IrisApi/.vs/
+
+/IrisGestao/IrisApi/IrisAppService/bin/
+/IrisGestao/IrisApi/IrisAppService/obj/
+
+/IrisGestao/IrisApi/IrisConsole/bin/
 /IrisGestao/IrisApi/IrisConsole/obj/
+
+/IrisGestao/IrisApi/IrisDomain/bin/
+/IrisGestao/IrisApi/IrisDomain/obj/
+
+/IrisGestao/IrisApi/IrisInfra/bin/
+/IrisGestao/IrisApi/IrisInfra/obj/
+
+/IrisGestao/IrisApi/IrisWebApi/bin/
+/IrisGestao/IrisApi/IrisWebApi/obj/
