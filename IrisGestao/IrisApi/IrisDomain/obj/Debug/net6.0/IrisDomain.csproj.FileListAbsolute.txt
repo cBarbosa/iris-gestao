@@ -1,0 +1,12 @@
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisDomain\bin\Debug\net6.0\IrisDomain.deps.json
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisDomain\bin\Debug\net6.0\IrisDomain.dll
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisDomain\bin\Debug\net6.0\ref\IrisDomain.dll
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisDomain\bin\Debug\net6.0\IrisDomain.pdb
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisDomain\obj\Debug\net6.0\IrisDomain.csproj.AssemblyReference.cache
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisDomain\obj\Debug\net6.0\IrisDomain.GeneratedMSBuildEditorConfig.editorconfig
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisDomain\obj\Debug\net6.0\IrisDomain.AssemblyInfoInputs.cache
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisDomain\obj\Debug\net6.0\IrisDomain.AssemblyInfo.cs
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisDomain\obj\Debug\net6.0\IrisDomain.csproj.CoreCompileInputs.cache
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisDomain\obj\Debug\net6.0\IrisDomain.dll
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisDomain\obj\Debug\net6.0\ref\IrisDomain.dll
+R:\Frelance\Iris\Desenvolvimento\IrisGestao\IrisApi\IrisDomain\obj\Debug\net6.0\IrisDomain.pdb
