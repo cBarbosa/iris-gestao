@@ -6,40 +6,40 @@ namespace IrisWebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AnexoController : Controller
+public class ImovelEnderecoController : Controller
 {
-    private readonly IAnexoService anexoService;
+    private readonly IImovelEnderecoService imovelEnderecoService;
 
-    public AnexoController(IAnexoService anexoService)
+    public ImovelEnderecoController(IImovelEnderecoService ImovelEnderecoService)
     {
-        this.anexoService = anexoService;
+        this.imovelEnderecoService = ImovelEnderecoService;
     }
-
+ 
     // GET
     [HttpGet("/api/[controller]")]
     [Produces("application/json")]
-    public async Task<IActionResult> GetAll() =>
-        Ok(await anexoService.GetAll());
+   public async Task<IActionResult> GetAll() =>
+        Ok(await imovelEnderecoService.GetAll());
 
     // GET
     [HttpGet("/api/[controller]/{codigo}/id/")]
     [Produces("application/json")]
-    public async Task<IActionResult> BuscarAnexo([FromRoute] int codigo) =>
-        Ok(await anexoService.GetById(codigo));
+    public async Task<IActionResult> BuscarImovelEndereco([FromRoute] int codigo) =>
+        Ok(await imovelEnderecoService.GetById(codigo));
 
 
     // GET
-    [HttpGet("/api/[controller]/{idRefencia}/idRefencia")]
+    [HttpGet("/api/[controller]/{codigo}/idImovel/")]
     [Produces("application/json")]
-    public async Task<IActionResult> GetByIdReferencia([FromRoute] string idRefencia) =>
-        Ok(await anexoService.GetByIdReferencia(idRefencia));
+    public async Task<IActionResult> BuscarEnderecoPorImovel([FromRoute] int codigo) =>
+        Ok(await imovelEnderecoService.BuscarEnderecoPorImovel(codigo));
 
 
     [HttpPost("/api/[controller]/criar")]
     [Produces("application/json")]
-    public async Task<IActionResult> Post([FromBody] CriarAnexoCommand cmd)
+    public async Task<IActionResult> Cadatrar([FromBody] CriarImovelEnderecoCommand cmd)
     {
-        var result = await anexoService.Insert(cmd);
+        var result = await imovelEnderecoService.Insert(cmd);
 
         if (result == null)
             return BadRequest("Operação não realizada");
@@ -47,12 +47,11 @@ public class AnexoController : Controller
         return Ok(result);
     }
 
-
     [HttpPut("/api/[controller]/{codigo}/atualizar/")]
     [Produces("application/json")]
-    public async Task<IActionResult> Atualizar(int? codigo, [FromBody] CriarAnexoCommand cmd)
+    public async Task<IActionResult> Atualizar(int? codigo, [FromBody] CriarImovelEnderecoCommand cmd)
     {
-        var result = await anexoService.Update(codigo, cmd);
+        var result = await imovelEnderecoService.Update(codigo, cmd);
 
         if (result == null)
             return BadRequest("Operação não realizada");
@@ -64,7 +63,7 @@ public class AnexoController : Controller
     [Produces("application/json")]
     public async Task<IActionResult> Deletar(int? codigo)
     {
-        var result = await anexoService.Delete(codigo);
+        var result = await imovelEnderecoService.Delete(codigo);
 
         if (result == null)
             return BadRequest("Operação não realizada");
@@ -72,3 +71,4 @@ public class AnexoController : Controller
         return Ok(result);
     }
 }
+

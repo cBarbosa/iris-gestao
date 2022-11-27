@@ -8,6 +8,7 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class Unidade: BaseEntity<Unidade>
 {
+    public int Id { get; set; }
     public int IdImovel { get; set; }
 
     public int IdTipoUnidade { get; set; }
@@ -48,11 +49,18 @@ public partial class Unidade: BaseEntity<Unidade>
     [Column(TypeName = "decimal(18, 0)")]
     public decimal? ValorPotencial { get; set; }
 
-    public byte UnidadeLocada { get; set; }
+    public bool UnidadeLocada { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]
     public string GuidReferencia { get; set; } = null!;
+
+    [Unicode(false)]
+    [NotMapped]
+    public DateTime DataCriacao { get; set; }
+
+    [Unicode(false)]
+    public DateTime? DataUltimaModificacao { get; set; }
 
     [InverseProperty("IdUnidadeNavigation")]
     public virtual ICollection<DespesaLocatario> DespesaLocatario { get; } = new List<DespesaLocatario>();
