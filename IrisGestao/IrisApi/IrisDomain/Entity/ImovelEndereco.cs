@@ -33,6 +33,13 @@ public partial class ImovelEndereco: BaseEntity<ImovelEndereco>
 
     public int Cep { get; set; }
 
+    [Unicode(false)]
+    [NotMapped]
+    public DateTime DataCriacao { get; set; }
+
+    [Unicode(false)]
+    public DateTime? DataUltimaModificacao { get; set; }
+
     [ForeignKey("IdImovel")]
     [InverseProperty("ImovelEndereco")]
     public virtual Imovel IdImovelNavigation { get; set; } = null!;

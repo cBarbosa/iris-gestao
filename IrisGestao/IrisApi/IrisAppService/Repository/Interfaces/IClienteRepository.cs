@@ -3,7 +3,6 @@ using IrisGestao.Domain.Entity;
 
 namespace IrisGestao.ApplicationService.Repository.Interfaces;
 
-public interface IAnexoRepository : IRepository<Anexo>, IDisposable
+public interface IClienteRepository : IRepository<Cliente>, IDisposable
 {
-    IEnumerable<Anexo> BuscarAnexoPorIdReferencia(string codigo);
 }

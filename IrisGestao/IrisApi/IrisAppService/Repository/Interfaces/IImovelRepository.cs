@@ -3,7 +3,7 @@ using IrisGestao.Domain.Entity;
 
 namespace IrisGestao.ApplicationService.Repository.Interfaces;
 
-public interface IAnexoRepository : IRepository<Anexo>, IDisposable
+public interface IImovelRepository : IRepository<Imovel>, IDisposable
 {
-    IEnumerable<Anexo> BuscarAnexoPorIdReferencia(string codigo);
+    IEnumerable<Imovel> GetById(int codigo);
 }

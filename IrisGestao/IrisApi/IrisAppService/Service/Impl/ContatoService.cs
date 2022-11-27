@@ -1,6 +1,7 @@
 ﻿using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.ApplicationService.Services.Interface;
 using IrisGestao.Domain.Command.Result;
+using IrisGestao.Domain.Emuns;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -18,7 +19,7 @@ public class ContatoService: IContatoService
         var contatos = await Task.FromResult(contatoRepository.GetAll());
 
         return !contatos.Any()
-            ? new CommandResult(false,"Não foi possível carregar as informações", null!)
-            : new CommandResult(true,"Dados carregados com sucesso", contatos);
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, contatos);
     }
 }
