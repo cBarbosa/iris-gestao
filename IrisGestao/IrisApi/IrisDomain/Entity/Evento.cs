@@ -23,6 +23,13 @@ public partial class Evento: BaseEntity<Evento>
     [Unicode(false)]
     public string GuidReferencia { get; set; } = null!;
 
+    [Unicode(false)]
+    [NotMapped]
+    public DateTime DataCriacao { get; set; }
+
+    [Unicode(false)]
+    public DateTime DataUltimaModificacao { get; set; }
+
     public int IdCliente { get; set; }
 
     [ForeignKey("IdCliente")]

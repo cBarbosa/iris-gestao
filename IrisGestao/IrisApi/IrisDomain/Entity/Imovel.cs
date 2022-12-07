@@ -8,17 +8,20 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class Imovel: BaseEntity<Imovel>
 {
+    public int Id { get; set; }
+    
+    [StringLength(100)]
+    [Unicode(false)]
+    public string Nome { get; set; } = null!;
+
     public int IdCategoriaImovel { get; set; }
 
     public int IdClienteProprietario { get; set; }
 
     public int NumCentroCusto { get; set; }
 
-    public byte MonoUsuario { get; set; }
-
-    [StringLength(10)]
     [Unicode(false)]
-    public string? MineType { get; set; }
+    public bool MonoUsuario { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]
@@ -26,7 +29,14 @@ public partial class Imovel: BaseEntity<Imovel>
 
     [StringLength(50)]
     [Unicode(false)]
-    public string GuidReferencia { get; set; } = null!;
+    public string? GuidReferencia { get; set; } = null!;
+
+    [Unicode(false)]
+    [NotMapped]
+    public DateTime DataCriacao { get; set; }
+
+    [Unicode(false)]
+    public DateTime? DataUltimaModificacao { get; set; }
 
     [InverseProperty("IdImovelNavigation")]
     public virtual ICollection<ContratoAluguel> ContratoAluguel { get; } = new List<ContratoAluguel>();

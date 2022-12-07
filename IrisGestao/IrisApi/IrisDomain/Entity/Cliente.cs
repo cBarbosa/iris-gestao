@@ -32,12 +32,19 @@ public partial class Cliente: BaseEntity<Cliente>
     [Unicode(false)]
     public string Estado { get; set; } = null!;
 
-    public int Cep { get; set; }
+    public int? Cep { get; set; }
 
     [Column(TypeName = "date")]
     public DateTime? DataNascimento { get; set; }
 
     public int Nps { get; set; }
+
+    [Unicode(false)]
+    [NotMapped]
+    public DateTime DataCriacao { get; set; }
+
+    [Unicode(false)]
+    public DateTime DataUltimaModificacao { get; set; }
 
     [InverseProperty("IdClienteNavigation")]
     public virtual ICollection<Contato> Contato { get; } = new List<Contato>();
