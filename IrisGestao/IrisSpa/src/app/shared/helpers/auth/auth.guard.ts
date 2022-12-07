@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
     let url = state.url;
 
     if(usuarioLogado) {
-      if(route.data?.['role'] && route.data?.['role'].indexOf(usuarioLogado.perfil) === -1) {
+      if(route.data?.['role'] && route.data?.['role'].indexOf(usuarioLogado.jobTitle) === -1) {
         // verifica o perfil do usuário está no perfil da rota
         this.router.navigate(['/login'], {queryParams: {error: `Proibido o acesso à URL ${url}`}});
         return false;

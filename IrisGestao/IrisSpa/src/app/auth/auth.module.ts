@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { IframeComponent } from './iframe/iframe.component';
 import { AuthenticateComponent } from './authenticate/authenticate.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { AuthenticateComponent } from './authenticate/authenticate.component';
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule
+    RouterModule,
+    HttpClientModule
   ]
 })
 export class AuthModule { }

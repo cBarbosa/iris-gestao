@@ -1,6 +1,9 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, map } from 'rxjs';
 import { Login, Usuario } from 'src/app/shared/models';
+import { ApiResponse } from '../models/api-response.model';
+import { environment as env  } from '../../../environments/environment';
 
 const CHAVE_USER: string = "usuarioLogado";
 const CHAVE_TOKEN: string = "accessToken";
@@ -10,7 +13,9 @@ const CHAVE_TOKEN: string = "accessToken";
 })
 export class LoginService {
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) { }
 
   public get usuarioLogado(): Usuario {
     let user = localStorage[CHAVE_USER];
@@ -36,9 +41,45 @@ export class LoginService {
   }
 
   login(login: Login) : Observable<Usuario | null>  {
-console.debug('login', login);
     let user = new Usuario('xbrown@gmail.com', 'Charles', 'Tester', 'Senha');
 
     return of(user);
   }
+
+  postValidate(): Observable<ApiResponse> {
+    const authObject = {
+      token: this.token
+    };
+
+    return this.http
+			.post<ApiResponse>(`${env.config.apiUrl}auth/validate`, authObject)
+			.pipe(
+				map((response): ApiResponse => {
+					console.debug('postValidate response', response);
+					if (!response.success)
+						console.error(`postValidate: ${response.message}`);
+					return response;
+				}));
+
+  }
+
+  getAuthUser(): Observable<ApiResponse> {
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${this.token}`,
+      }),
+    };
+
+    return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}auth`, httpOptions)
+			.pipe(
+				map((response): ApiResponse => {
+					console.debug('getAuthUser response', response);
+					if (!response.success)
+						console.error(`getAuthUser: ${response.message}`);
+					return response;
+				}));
+  }
+
 }

@@ -1,8 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Login } from 'src/app/shared/models';
 import { LoginService } from 'src/app/shared/services';
+import { environment as env  } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +19,7 @@ export class LoginComponent implements OnInit {
   message!: string;
 
   constructor(
+    @Inject(DOCUMENT) private document: any,
     private loginService: LoginService,
     private router: Router,
     private route: ActivatedRoute
@@ -52,6 +55,10 @@ export class LoginComponent implements OnInit {
       });
 
     }
+  }
+
+  autenticar(): void {
+    this.document.location.href = env.config.b2cAuthUrl;
   }
 
 }
