@@ -1,0 +1,76 @@
+<h1>Login</h1>
+texto = {{message}}
+
+<div *ngIf="message" class="bg-red-500">
+    {{message}}
+
+    <a href="#"> &times;</a>
+
+    <!-- <buton
+        type="button"
+        (click)="$event.preventDefault()"
+        data-dismiss="alert"
+        aria-label="close"
+    >
+        <span aria-hidden="true">&times;</span>
+    </buton> -->
+</div>
+
+<div>
+    <form #formLogin="ngForm">
+
+        <div>
+            <label for="usuario"> Usuario:</label>
+            <input
+                type="text"
+                id="usuario"
+                name="usuario"
+                [(ngModel)] = "login.login"
+                #usuario="ngModel"
+                required="true"
+                aria-label="usuario"
+            />
+            <div *ngIf="usuario.errors && (usuario.dirty || usuario.touched)">
+                <div [hidden]="!usuario?.errors?.['required']">
+                    Digite o usuário
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <label for="senha"> Senha:</label>
+            <input
+                type="password"
+                id="senha"
+                name="senha"
+                [(ngModel)] = "login.senha"
+                #senha="ngModel"
+                required="true"
+                aria-label="senha"
+            />
+            <div *ngIf="senha.errors && (senha.dirty || senha.touched)">
+                <div [hidden]="!senha?.errors?.['required']">
+                    Digite a senha
+                </div>
+            </div>
+        </div>
+
+        <button
+            type="button"
+            (click)="logar()"
+            [disabled]="!formLogin.form.valid"
+            aria-label="logar"
+        >
+            <i class="fa fa-save" aria-hidden="true"></i> Logar
+        </button>
+
+        <button
+            type="button"
+            [routerLink]="['/auto-cadastro']"
+            aria-label="registrar"
+        >
+            <i class="fa fa-arrow-left" aria-hidden="true"></i> Registrar
+        </button>
+
+    </form>
+</div>
