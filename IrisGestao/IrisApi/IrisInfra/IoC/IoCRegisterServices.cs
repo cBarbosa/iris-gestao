@@ -19,6 +19,7 @@ public class IoCRegisterServices
         services.AddScoped<ITipoTituloService, TipoTituloService>();
         services.AddScoped<ITipoDespesaService, TipoDespesaService>();
         services.AddScoped<IAnexoService, AnexoService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         //Repositories
         services.AddTransient(typeof(IRepository<>), typeof(Repository.Impl.Repository<>));
