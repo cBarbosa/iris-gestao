@@ -26,7 +26,7 @@ export class LoginService {
     return (token ? JSON.parse(localStorage[CHAVE_TOKEN]) : null);
   }
 
-  public set token(accessToken: Usuario)  {
+  public set token(accessToken: string)  {
     localStorage[CHAVE_TOKEN] = JSON.stringify(accessToken);
   }
 
