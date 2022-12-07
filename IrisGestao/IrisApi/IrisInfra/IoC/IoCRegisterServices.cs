@@ -20,6 +20,7 @@ public class IoCRegisterServices
         services.AddScoped<ITipoDespesaService, TipoDespesaService>();
         services.AddScoped<ITipoEventoService, TipoEventoService>();
         services.AddScoped<IAnexoService, AnexoService>();
+        services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IClienteService, ClienteService>();
         services.AddScoped<IImovelService, ImovelService>();
         services.AddScoped<IUnidadeService, UnidadeService>();
