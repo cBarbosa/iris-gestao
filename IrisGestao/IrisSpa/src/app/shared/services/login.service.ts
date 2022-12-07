@@ -36,6 +36,7 @@ export class LoginService {
   }
 
   login(login: Login) : Observable<Usuario | null>  {
+console.debug('login', login);
     let user = new Usuario('xbrown@gmail.com', 'Charles', 'Tester', 'Senha');
 
     return of(user);

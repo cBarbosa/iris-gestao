@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Login } from 'src/app/shared/models';
-import { LoginService } from '../services/login.service';
+import { LoginService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +13,7 @@ export class LoginComponent implements OnInit {
 
   @ViewChild('formLogin') formLogin! : NgForm
   login: Login = new Login();
-  loading: boolean =false;
+  loading: boolean = false;
   message!: string;
 
   constructor(
@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute
   ) {
-    console.debug('passo 0');
+
     if(this.loginService.usuarioLogado) {
       this.router.navigate(['/home']);
     }
