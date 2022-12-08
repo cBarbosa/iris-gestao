@@ -39,10 +39,10 @@ public class AuthController : Controller
     public async Task<IActionResult> Post([FromBody] string token)
     {
         if (string.IsNullOrEmpty(token))
+        {
             return await Task.FromResult(Unauthorized("parâmetros inválidos"));
-        
-        
-        
+        }
+
         return await Task.FromResult(Ok(new
         {
             Email = User.Claims.FirstOrDefault(x => x.Type.Equals("emails"))!.Value,
