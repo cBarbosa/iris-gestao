@@ -5,7 +5,7 @@ on:
     branches:
       - develop
     paths:
-      - iris-gestao/IrisGestao/IrisApi/**
+      - IrisGestao/IrisApi/**
   workflow_dispatch:
 
 jobs:
@@ -22,10 +22,10 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build iris-gestao/IrisGestao/IrisApi/IrisWebApi --configuration Release --no-restore
+        run: dotnet build IrisGestao/IrisApi/IrisWebApi --configuration Release --no-restore
 
       - name: dotnet publish
-        run: dotnet publish iris-gestao/IrisGestao/IrisApi/IrisWebApi -c Release --no-build -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish IrisGestao/IrisApi/IrisWebApi -c Release --no-build -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
