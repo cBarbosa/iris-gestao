@@ -18,9 +18,11 @@ public class AuthService: IAuthService
         return await Task.FromResult(new CommandResult(true, "Dados validados com sucesso",
             new
             {
+                Id = new Random().Next(1,999),
+                Uuid = Guid.NewGuid(),
                 Email = email,
                 Name = name,
-                JobTitle = "ADMIN",
+                Perfil = jobTitle,
                 RequestUTCDateTime = DateTime.Now.ToLocalTime(),
                 Expiration = expirationTS,
                 ExpirationUTCDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0)
