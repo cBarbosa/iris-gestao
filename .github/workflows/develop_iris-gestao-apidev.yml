@@ -22,7 +22,7 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build IrisGestao/IrisApi/IrisWebApi --configuration Release --no-restore
+        run: dotnet build IrisGestao/IrisApi/IrisWebApi --configuration Release
 
       - name: dotnet publish
         run: dotnet publish IrisGestao/IrisApi/IrisWebApi -c Release --no-build -o ${{env.DOTNET_ROOT}}/myapp
