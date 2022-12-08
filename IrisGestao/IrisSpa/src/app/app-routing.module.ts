@@ -15,7 +15,7 @@ const routes: Routes = [
     component: HomeComponent,
     canActivate: [AuthGuard],
     data: {
-      role: 'ADMIN,GERENTE,FUNC,DEV'
+      role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA'
     }
   },
   ...LoginRoutes
