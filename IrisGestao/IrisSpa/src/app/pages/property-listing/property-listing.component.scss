@@ -1,0 +1,41 @@
+:host {
+	@apply block min-h-screen px-10;
+	background: #f8f9fa;
+}
+
+.content-wrapper {
+	max-width: 1440px;
+	margin: 0 auto;
+}
+
+:host ::ng-deep {
+	.p-element {
+		&.p-inputtext {
+			--tw-ring-color: rgb(226 232 240);
+			@apply py-1 pr-2 border border-slate-200 text-gray-800 text-sm h-9 focus:outline-0 focus:ring-1;
+			border-radius: 4px;
+
+			&::placeholder {
+				/* Chrome, Firefox, Opera, Safari 10.1+ */
+				@apply text-gray-800;
+				opacity: 1; /* Firefox */
+			}
+
+			&:-ms-input-placeholder {
+				/* Internet Explorer 10-11 */
+				@apply text-gray-800;
+			}
+
+			&::-ms-input-placeholder {
+				/* Microsoft Edge */
+				@apply text-gray-800;
+			}
+		}
+
+		.p-input-icon-left {
+			.pi {
+				color: #a8a8a8;
+			}
+		}
+	}
+}

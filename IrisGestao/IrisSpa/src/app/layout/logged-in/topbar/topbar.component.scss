@@ -1,0 +1,94 @@
+.topbar {
+	height: 71px;
+	width: 100%;
+	background: #f8f9fa;
+	border-bottom: 1px solid #eaeaea;
+}
+
+:host ::ng-deep {
+	.p-element {
+		.p-avatar.p-avatar-lg {
+			width: 2.5rem;
+			height: 2.5rem;
+		}
+
+		.p-menubar {
+			@apply px-6 py-0;
+			height: 100%;
+			width: 100%;
+			margin: 0 auto;
+			justify-content: start;
+			max-width: 1440px;
+			border: none;
+
+			.p-element {
+				height: 100%;
+
+				ul {
+					height: 100%;
+
+					.p-menuitem {
+						@apply text-sm;
+						height: 100%;
+						color: #262626;
+
+						.p-menuitem-link {
+							--tw-ring-color: rgba(0, 0, 0, 0.05);
+							--tw-ring-inset: inset;
+							@apply px-5 focus:ring-0;
+							height: 100%;
+							background-color: transparent;
+							border-radius: 0;
+							border-bottom: 2px solid transparent;
+
+							.p-menuitem-text {
+								@apply font-medium;
+							}
+
+							.p-submenu-icon {
+								font-size: 0.6rem;
+								margin-top: 0.2rem;
+							}
+
+							&#current {
+								.p-menuitem-text {
+									@apply font-bold;
+								}
+							}
+
+							&:hover,
+							&#current {
+								background-color: transparent;
+								border-bottom: 2px solid var(--dark-red);
+							}
+						}
+
+						&.p-menuitem-active {
+							.p-menuitem-link {
+								border-bottom: 2px solid var(--dark-red);
+
+								.p-menuitem-text {
+									color: #262626;
+								}
+							}
+						}
+
+						.p-submenu-list {
+							@apply rounded;
+							height: auto;
+
+							.p-menuitem-link {
+								border-bottom: none;
+
+								&:hover {
+									background-color: rgba(0, 0, 0, 0.05);
+									border-bottom: none;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,20 @@
+<div class="topbar">
+	<p-menubar [model]="items">
+		<ng-template pTemplate="start">
+			<img
+				src="../../../../assets/images/topbar-logo.png"
+				alt="Iris-logo"
+				class="mr-5"
+			/>
+		</ng-template>
+		<ng-template pTemplate="end">
+			<p-avatar
+				image="../../../../assets/images/avatar.png"
+				styleClass="mr-2"
+				size="large"
+				shape="circle"
+				styleClass="mt-1"
+			></p-avatar>
+		</ng-template>
+	</p-menubar>
+</div>
