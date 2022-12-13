@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PropertyListingComponent } from './property-listing.component';
+import { PropertyViewComponent } from './property-view.component';
 
 const routes: Routes = [
 	{
 		path: '',
-		component: PropertyListingComponent,
+		component: PropertyViewComponent,
 		// loadComponent: () =>
 		// 	import('./users.component').then((m) => UsersComponent),
 	},
@@ -15,4 +15,4 @@ const routes: Routes = [
 	imports: [RouterModule.forChild(routes)],
 	exports: [RouterModule],
 })
-export class PropertyListingRoutingModule {}
+export class PropertyViewRoutingModule {}

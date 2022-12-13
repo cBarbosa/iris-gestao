@@ -1,0 +1,82 @@
+<div class="property-view">
+	<div class="cover"></div>
+
+	<div class="content">
+		<div class="main-card">
+			<div class="left-side">
+				<p-tag
+					value="Imóvel da carteira"
+					[rounded]="true"
+					styleClass="wallet"
+				></p-tag>
+				<h4>
+					Nome do edifício lorem ipsum <span class="property-id">#3124322</span>
+				</h4>
+				<p>Avenida São Paulo, 2803 - Centro, Mangaguá - SP</p>
+				<div class="location">
+					<app-icon name="pin-building" styleClass="mr-1"></app-icon>
+					Edifício Corporativo
+				</div>
+			</div>
+			<div class="right-side">
+				<div class="property-features">
+					<div class="feature">
+						<div class="label">
+							<app-icon name="door" styleClass="mr-1"></app-icon>
+							Unidades
+						</div>
+						<div class="value">356</div>
+					</div>
+					<span class="feature">
+						<div class="label">
+							<app-icon name="area" styleClass="mr-1"></app-icon>
+							Metragem total
+						</div>
+						<div class="value">1.321 m²</div>
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="units">
+			<div class="w-full flex justify-between">
+				<h3>Unidades</h3>
+				<button
+					pButton
+					type="button"
+					icon="pi pi-plus"
+					class="p-button-outlined h-9"
+				>
+					Adicionar imóvel
+				</button>
+			</div>
+
+			<p-table
+				[value]="units"
+				styleClass="mt-5 p-datatable-striped"
+				[tableStyle]="{ 'min-width': '50rem' }"
+			>
+				<ng-template pTemplate="header">
+					<tr>
+						<th>Nome</th>
+						<th>Área Útil</th>
+						<th>Área Total</th>
+						<th>Área Habite-se</th>
+						<th>Locação</th>
+						<th>...</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-unit>
+					<tr>
+						<td>{{ unit.name }}</td>
+						<td>{{ unit.area_useful }}</td>
+						<td>{{ unit.area_total }}</td>
+						<td>{{ unit.area_occupancy }}</td>
+						<td>{{ unit.lease_status }}</td>
+						<td>{{ unit.action }}</td>
+					</tr>
+				</ng-template>
+			</p-table>
+		</div>
+	</div>
+</div>

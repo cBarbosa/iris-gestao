@@ -25,6 +25,18 @@ const routes: Routes = [
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
 			},
+			{
+				path: 'property-details',
+				// component: PropertyListingComponent,
+				loadChildren: () =>
+					import('./pages/property-view/property-view.module').then(
+						(m) => m.PropertyViewModule
+					),
+				// canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
 		],
 	},
 	{
