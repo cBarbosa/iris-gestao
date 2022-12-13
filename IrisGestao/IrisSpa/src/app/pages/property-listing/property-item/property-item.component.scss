@@ -1,0 +1,76 @@
+:host {
+	display: block;
+}
+
+.property-item {
+	@apply rounded overflow-hidden bg-white border border-slate-200 flex h-56 text-gray-800;
+
+	.property-image {
+		@apply basis-0 grow-[2] relative;
+
+		.image {
+			@apply overflow-hidden h-full flex object-cover;
+
+			img {
+				@apply w-full object-cover;
+			}
+		}
+
+		.property-category {
+			@apply absolute top-3 left-3;
+		}
+	}
+
+	.property-info {
+		@apply basis-0 grow-[3] p-7 flex flex-col py-12 justify-between;
+
+		h4 {
+			@apply font-bold text-lg;
+
+			.property-id {
+				@apply text-gray-400 ml-3 text-xs;
+			}
+		}
+
+		p {
+			@apply text-sm;
+		}
+
+		.location {
+			@apply text-sm;
+		}
+
+		.property-features {
+			@apply text-sm;
+
+			.feature {
+				@apply px-3 first:pl-0 border-r-2 border-slate-200 last:border-0;
+			}
+		}
+	}
+
+	.proprietary-info {
+		@apply basis-0 grow py-7 text-sm min-w-[13rem];
+
+		.content {
+			@apply h-full border-l-2 px-6 flex flex-col justify-between;
+
+			h6 {
+				@apply text-xs text-slate-500;
+			}
+
+			ul {
+				@apply mb-auto;
+
+				li {
+					@apply my-2;
+				}
+			}
+
+			button {
+				// @apply bg-red-900 text-white rounded w-full py-2 font-bold;
+				@apply py-2;
+			}
+		}
+	}
+}

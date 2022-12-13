@@ -26,4 +26,8 @@ public partial class Anexo : BaseEntity<Anexo>
     [StringLength(50)]
     [Unicode(false)]
     public string? Classificacao { get; set; }
+
+    [Unicode(false)]
+    [NotMapped]
+    public DateTime DataCriacao { get; set; }
 }

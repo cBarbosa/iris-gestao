@@ -1,0 +1,13 @@
+.footer {
+	background-color: #300516;
+	height: 119px;
+
+	.footer-content {
+		@apply h-full text-white flex items-center justify-between px-6 mx-auto;
+		max-width: 1440px;
+
+		span {
+			@apply text-sm;
+		}
+	}
+}
