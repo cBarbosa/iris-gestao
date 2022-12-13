@@ -173,3 +173,113 @@
 </div>
 
 <p-menu #actionMenu [popup]="true" [model]="tableMenu"></p-menu>
+
+<p-sidebar [(visible)]="detailsVisible" position="right">
+	<ng-template pTemplate="header">
+		<h4>
+			Unidade nome
+			<p-tag value="Unidade locada" [rounded]="true" severity="danger"></p-tag>
+		</h4>
+	</ng-template>
+	<ng-template pTemplate="content">
+		<img
+			src="../../../assets/images/property/edit.png"
+			alt="Foto unidade"
+			class="mb-3"
+		/>
+		<p-tabView>
+			<p-tabPanel header="Detalhes">
+				<div class="details-data">
+					<div class="share-line">
+						<div class="data">
+							<span class="label">Área Útil</span>
+							<span class="value">21 m²</span>
+						</div>
+						<div class="data">
+							<span class="label">Área Total</span>
+							<span class="value">32 m²</span>
+						</div>
+					</div>
+					<div class="share-line">
+						<div class="data">
+							<span class="label">Área Habite-se</span>
+							<span class="value">32 m²</span>
+						</div>
+						<div class="data">
+							<span class="label">Valor Potencial</span>
+							<span class="value">300.000,00</span>
+						</div>
+					</div>
+					<div class="data">
+						<span class="label">Taxa de administração</span>
+						<span class="value">300,00</span>
+					</div>
+
+					<div class="data small">
+						<span class="label">Número de matrícula:</span>
+						<span class="value">12212121222</span>
+					</div>
+					<div class="data small">
+						<span class="label">Mat. IPTU:</span>
+						<span class="value">12212121222</span>
+					</div>
+					<div class="data small">
+						<span class="label">Ins. IPTU:</span>
+						<span class="value">12212121222</span>
+					</div>
+					<div class="data small">
+						<span class="label">N° Neoenergia:</span>
+						<span class="value">12212121222</span>
+					</div>
+					<div class="data small">
+						<span class="label">N° CAESB:</span>
+						<span class="value">12212121222</span>
+					</div>
+				</div>
+			</p-tabPanel>
+			<p-tabPanel header="Histórico">
+				<div class="history-data">
+					<div class="data">
+						<div class="label">21/09/2019:</div>
+						<div class="value">Unidade locada</div>
+					</div>
+					<div class="data">
+						<div class="label">18/08/2020:</div>
+						<div class="value">Recisão de contrato</div>
+					</div>
+					<div class="data">
+						<div class="label">18/08/2020:</div>
+						<div class="value">Unidade disponível</div>
+					</div>
+					<div class="data">
+						<div class="label">21/09/2020:</div>
+						<div class="value">Vista no inquilino</div>
+					</div>
+					<div class="data">
+						<div class="label">03/05/2021:</div>
+						<div class="value">Unidade locada</div>
+					</div>
+				</div>
+			</p-tabPanel>
+		</p-tabView>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<div class="flex justify-between gap-4">
+			<button
+				pButton
+				pRipple
+				type="button"
+				label="Editar"
+				class="p-button-outlined h-9 w-full"
+			></button>
+
+			<button
+				pButton
+				pRipple
+				type="button"
+				label="Duplicar"
+				class="p-button-outlined h-9 w-full"
+			></button>
+		</div>
+	</ng-template>
+</p-sidebar>

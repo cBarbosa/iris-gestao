@@ -69,7 +69,13 @@
 
 			button {
 				// @apply bg-red-900 text-white rounded w-full py-2 font-bold;
-				@apply py-2;
+				@apply py-2 text-sm w-full;
+
+				::ng-deep {
+					.p-button-label {
+						@apply font-medium;
+					}
+				}
 			}
 		}
 	}

@@ -7,6 +7,8 @@ import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { MenuModule } from 'primeng/menu';
+import { SidebarModule } from 'primeng/sidebar';
+import { TabViewModule } from 'primeng/tabview';
 
 @NgModule({
 	declarations: [PropertyViewComponent],
@@ -18,6 +20,8 @@ import { MenuModule } from 'primeng/menu';
 		ButtonModule,
 		TableModule,
 		MenuModule,
+		SidebarModule,
+		TabViewModule,
 	],
 })
 export class PropertyViewModule {}

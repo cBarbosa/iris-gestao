@@ -11,6 +11,7 @@ export class PropertyViewComponent {
 	tableMenu: MenuItem[];
 
 	isFavorite = true;
+	detailsVisible = false;
 
 	units = [
 		{
@@ -51,7 +52,7 @@ export class PropertyViewComponent {
 
 	ngOnInit() {
 		this.tableMenu = [
-			{ label: 'Detalhes' },
+			{ label: 'Detalhes', command: () => this.showDetails() },
 			{ label: 'Editar', command: () => this.navigateTo('property-edit') },
 			{ label: 'Duplicar' },
 		];
@@ -59,6 +60,10 @@ export class PropertyViewComponent {
 
 	toggleFavorite() {
 		this.isFavorite = !this.isFavorite;
+	}
+
+	showDetails() {
+		this.detailsVisible = !this.detailsVisible;
 	}
 
 	navigateTo(route: string) {
