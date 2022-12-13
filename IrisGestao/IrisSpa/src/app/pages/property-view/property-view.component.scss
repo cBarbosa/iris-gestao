@@ -16,7 +16,7 @@
 
 	.content {
 		position: relative;
-		z-index: 100;
+		z-index: 1;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -80,12 +80,123 @@
 			}
 		}
 
-		.units {
+		section {
 			max-width: 1155px;
 			width: 100%;
 
 			h3 {
-				@apply text-2xl;
+				@apply text-2xl font-bold mb-7;
+			}
+
+			&.units {
+				::ng-deep {
+					.p-datatable {
+						.p-datatable-wrapper {
+							.p-datatable-table {
+								.p-datatable-tbody {
+									tr {
+										td.action {
+											.p-button {
+												height: 2rem;
+												width: 2rem;
+												color: #641b1e;
+												background-color: transparent;
+												border: none;
+
+												&:hover {
+													background-color: #f7ded3;
+												}
+
+												&:focus {
+													box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			&.attachments {
+				.attachments-card {
+					background-color: #ffffff;
+					display: flex;
+					justify-content: flex-start;
+					max-width: 1155px;
+					width: 100%;
+					height: 105px;
+					padding: 1.5rem;
+					border-radius: 4px;
+					gap: 0.5rem;
+
+					button.attachment {
+						height: 100%;
+						flex-basis: 14rem;
+						padding: 0.5rem;
+						text-align: start;
+						@apply rounded;
+
+						.icon {
+							display: inline-flex;
+							justify-content: center;
+							align-items: center;
+							width: 40px;
+							height: 40px;
+							background-color: #f7ded3;
+							border-radius: 4px;
+
+							::ng-deep .cstm-icon {
+								margin-bottom: -3px;
+							}
+						}
+						.label {
+							@apply text-lg ml-3;
+							color: #641b1e;
+						}
+
+						&:hover {
+							background-color: #fff9f6;
+						}
+					}
+				}
+			}
+
+			&.photos {
+				ul {
+					display: grid;
+					grid-template-columns: repeat(5, 1fr);
+					grid-template-rows: 1fr 1fr;
+					grid-column-gap: 0px;
+					grid-row-gap: 0px;
+
+					li {
+						display: block;
+						overflow: hidden;
+						cursor: pointer;
+
+						img {
+							min-width: 100%;
+							min-height: 100%;
+							transition: transform 0.3s;
+						}
+
+						&:first-child {
+							grid-column-start: 1;
+							grid-column-end: 3;
+							grid-row-start: 1;
+							grid-row-end: 3;
+						}
+
+						&:hover {
+							img {
+								transform: scale(1.1);
+							}
+						}
+					}
+				}
 			}
 		}
 	}

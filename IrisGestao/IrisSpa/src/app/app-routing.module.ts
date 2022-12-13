@@ -37,6 +37,18 @@ const routes: Routes = [
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
 			},
+			{
+				path: 'property-edit',
+				// component: PropertyListingComponent,
+				loadChildren: () =>
+					import('./pages/property-edit/property-edit.module').then(
+						(m) => m.PropertyEditModule
+					),
+				// canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
 		],
 	},
 	{

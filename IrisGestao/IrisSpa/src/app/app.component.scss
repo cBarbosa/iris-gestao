@@ -20,28 +20,77 @@
 					color: #47591b;
 				}
 			}
+			&.p-tag-success {
+				color: #319016;
+				background-color: #f1ffdb;
+			}
+			&.p-tag-danger {
+				color: #b7263c;
+				background-color: #fff0e8;
+			}
 		}
 
 		&.p-button {
-			border: 1px solid #641b1e;
-			color: #641b1e;
-			border-radius: 4px;
-			@apply text-sm;
+			background-color: #641b1e;
+			border: 0;
 
-			.p-button-icon {
-				&::before {
-					margin-right: 0.75rem;
-				}
+			.p-button-label {
+				// @apply font-medium;
 			}
 
 			&:not([disabled]):hover {
-				border: 1px solid #641b1e;
-				color: #641b1e;
-				background-color: rgba(100, 27, 30, 0.04);
+				background-color: #721f22;
 			}
 
-			&:focus {
+			&:not([disabled]):focus {
 				box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+			}
+
+			&.icon-left .p-button-icon {
+				&::before {
+					margin-right: 0.5rem;
+				}
+			}
+			&.icon-right .p-button-icon {
+				&::after {
+					margin-left: 0.5rem;
+				}
+			}
+
+			&.p-button-outlined {
+				border: 1px solid #641b1e;
+				background-color: transparent;
+				color: #641b1e;
+				@apply text-sm;
+
+				.p-button-label {
+					// @apply font-bold;
+				}
+
+				&:not([disabled]):hover {
+					border: 1px solid #641b1e;
+					color: #641b1e;
+					background-color: rgba(100, 27, 30, 0.04);
+				}
+
+				&:not([disabled]):focus {
+					// box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+					color: #641b1e;
+					background-color: rgba(100, 27, 30, 0.04);
+				}
+			}
+
+			&.p-button-text {
+				color: #641b1e;
+				background-color: transparent;
+
+				&:not([disabled]):hover {
+					background-color: rgba(100, 27, 30, 0.04);
+				}
+
+				&:not([disabled]):focus {
+					background-color: rgba(100, 27, 30, 0.04);
+				}
 			}
 		}
 
@@ -78,5 +127,35 @@
 				}
 			}
 		}
+
+		&.p-inputtext {
+			background-color: #ffffff;
+
+			&.ng-pristine,
+			&.ng-valid {
+				border: 1px solid #a8a8a8;
+
+				&:focus {
+					border-color: #641b1e;
+				}
+			}
+
+			&.ng-touched:not(.ng-invalid):hover,
+			&.ng-pristine:hover {
+				border-color: #641b1e;
+			}
+
+			&.ng-touched.ng-invalid {
+				border-color: #e24c4c;
+			}
+
+			&:focus {
+				box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+			}
+		}
+	}
+
+	.p-button {
+		border-radius: 4px;
 	}
 }

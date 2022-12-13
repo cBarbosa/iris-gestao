@@ -6,6 +6,7 @@ import { IconModule } from 'src/app/shared/components/custom-ui/icon/icon.module
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
+import { MenuModule } from 'primeng/menu';
 
 @NgModule({
 	declarations: [PropertyViewComponent],
@@ -16,6 +17,7 @@ import { TableModule } from 'primeng/table';
 		TagModule,
 		ButtonModule,
 		TableModule,
+		MenuModule,
 	],
 })
 export class PropertyViewModule {}

@@ -16,3 +16,11 @@ a {
 	@apply font-bold cursor-pointer;
 	color: var(--dark-red);
 }
+
+button {
+	&:focus,
+	&:focus-visible {
+		box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+		outline: none;
+	}
+}
