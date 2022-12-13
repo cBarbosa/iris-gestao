@@ -3,6 +3,7 @@
 	width: 100%;
 	background: #f8f9fa;
 	z-index: 1000;
+	border-bottom: 1px solid #eaeaea;
 }
 
 :host ::ng-deep {
@@ -30,6 +31,7 @@
 					.p-menuitem {
 						@apply text-sm;
 						height: 100%;
+						margin-bottom: -1px;
 						color: #262626;
 
 						.p-menuitem-link {

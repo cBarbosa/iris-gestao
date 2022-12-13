@@ -9,6 +9,8 @@ import { MenuItem } from 'primeng/api';
 export class PropertyViewComponent {
 	tableMenu: MenuItem[];
 
+	isFavorite = true;
+
 	units = [
 		{
 			name: 'Unidade nome',
@@ -43,6 +45,10 @@ export class PropertyViewComponent {
 			action: '...',
 		},
 	];
+
+	toggleFavorite() {
+		this.isFavorite = !this.isFavorite;
+	}
 
 	ngOnInit() {
 		this.tableMenu = [

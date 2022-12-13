@@ -4,13 +4,21 @@
 	<div class="content">
 		<div class="main-card">
 			<div class="left-side">
-				<p-tag
-					value="Imóvel da carteira"
-					[rounded]="true"
-					styleClass="wallet"
-				></p-tag>
+				<p-tag [rounded]="true" styleClass="wallet"></p-tag>
 				<h4>
-					Nome do edifício lorem ipsum <span class="property-id">#3124322</span>
+					Nome do edifício lorem ipsum
+					<span class="property-id">#3124322</span>
+					<button
+						pButton
+						pRipple
+						type="button"
+						[icon]="isFavorite ? 'pi pi-heart-fill' : 'pi pi-heart'"
+						[ngClass]="{
+							'p-button-rounded p-button-text': true,
+							favorite: isFavorite
+						}"
+						(click)="toggleFavorite()"
+					></button>
 				</h4>
 				<p>Avenida São Paulo, 2803 - Centro, Mangaguá - SP</p>
 				<div class="location">

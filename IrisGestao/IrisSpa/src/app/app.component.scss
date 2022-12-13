@@ -9,6 +9,10 @@
 				background-color: #f7ded3;
 				.p-tag-value {
 					color: #480d1a;
+
+					&::before {
+						content: "Imóvel de carteira";
+					}
 				}
 			}
 			&.market {
@@ -18,6 +22,10 @@
 
 				.p-tag-value {
 					color: #47591b;
+
+					&::before {
+						content: "Imóvel de mercado";
+					}
 				}
 			}
 			&.p-tag-success {
