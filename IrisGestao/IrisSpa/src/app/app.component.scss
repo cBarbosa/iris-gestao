@@ -51,7 +51,16 @@
 			}
 
 			&:not([disabled]):focus {
+				box-shadow: none;
+			}
+
+			&:not([disabled]):focus-visible,
+			&:not([disabled]):active {
 				box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+			}
+
+			&:not([disabled]):active {
+				transition: none;
 			}
 
 			&.icon-left .p-button-icon {
@@ -81,7 +90,8 @@
 					background-color: rgba(100, 27, 30, 0.04);
 				}
 
-				&:not([disabled]):focus {
+				&:not([disabled]):focus-visible,
+				&:not([disabled]):active {
 					// box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
 					color: #641b1e;
 					background-color: rgba(100, 27, 30, 0.04);
@@ -96,7 +106,8 @@
 					background-color: rgba(100, 27, 30, 0.04);
 				}
 
-				&:not([disabled]):focus {
+				&:not([disabled]):focus-visible,
+				&:not([disabled]):active {
 					background-color: rgba(100, 27, 30, 0.04);
 				}
 			}
@@ -136,6 +147,53 @@
 			}
 		}
 
+		&.p-tabview {
+			.p-tabview-nav-container {
+				.p-tabview-nav-content {
+					ul.p-tabview-nav {
+						border-color: #a8a8a8;
+						border-bottom-width: 1px;
+
+						li {
+							a.p-tabview-nav-link {
+								border-color: #a8a8a8;
+								border-bottom-width: 0px;
+
+								.p-tabview-title {
+									@apply text-sm;
+								}
+
+								&:focus {
+									box-shadow: none;
+								}
+
+								&:focus-visible {
+									box-shadow: inset 0 0 0 3px rgba(100, 27, 30, 0.2);
+								}
+							}
+
+							&.p-highlight {
+								a.p-tabview-nav-link {
+									border-bottom-width: 3px;
+									border-color: #641b1e;
+
+									.p-tabview-title {
+										color: #641b1e;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			.p-tabview-panels {
+				.p-tabview-panel {
+					@apply mt-3;
+				}
+			}
+		}
+
 		&.p-inputtext {
 			background-color: #ffffff;
 
@@ -159,6 +217,36 @@
 
 			&:focus {
 				box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+			}
+		}
+	}
+
+	.p-element {
+		.p-sidebar {
+			.p-sidebar-header {
+				align-items: flex-start;
+				h4 {
+					@apply text-2xl font-bold;
+				}
+
+				.p-sidebar-close {
+					&:hover {
+						background-color: #f7ded3;
+					}
+					&:focus {
+						box-shadow: none;
+					}
+					&:focus-visible,
+					&:active {
+						box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+					}
+				}
+			}
+
+			.p-sidebar-content {
+			}
+
+			.p-sidebar-footer {
 			}
 		}
 	}

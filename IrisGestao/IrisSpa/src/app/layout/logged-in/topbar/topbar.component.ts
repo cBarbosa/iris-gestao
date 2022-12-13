@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 
 @Component({
@@ -9,6 +10,8 @@ import { MenuItem } from 'primeng/api';
 export class TopbarComponent {
 	items: MenuItem[] = [];
 
+	constructor(private router: Router) {}
+
 	ngOnInit() {
 		this.items = [
 			{
@@ -17,6 +20,7 @@ export class TopbarComponent {
 			{
 				label: 'Imóveis',
 				id: 'current',
+				command: () => this.navigateTo('property-listing'),
 			},
 			{
 				label: 'Clientes',
@@ -53,5 +57,9 @@ export class TopbarComponent {
 				],
 			},
 		];
+	}
+
+	navigateTo(route: string) {
+		this.router.navigate([route]);
 	}
 }

@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
 	AbstractControl,
@@ -16,7 +17,7 @@ import { Utils } from 'src/app/shared/utils';
 export class PropertyEditComponent implements OnInit {
 	editForm: FormGroup;
 
-	constructor(private fb: FormBuilder) {}
+	constructor(private fb: FormBuilder, private location: Location) {}
 
 	ngOnInit(): void {
 		this.editForm = this.fb.group({
@@ -55,5 +56,9 @@ export class PropertyEditComponent implements OnInit {
 			return;
 		}
 		console.log('form submitted');
+	}
+
+	goBack() {
+		this.location.back();
 	}
 }
