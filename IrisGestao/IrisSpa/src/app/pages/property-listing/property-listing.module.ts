@@ -7,6 +7,7 @@ import { CstmDropdownModule } from 'src/app/shared/components/custom-ui/dropdown
 import { CstmInputTextModule } from 'src/app/shared/components/custom-ui/directives/input-text/input-text.module';
 import { CstmButtonModule } from 'src/app/shared/components/custom-ui/directives/button/button.module';
 import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
 	declarations: [PropertyListingComponent],
@@ -18,6 +19,7 @@ import { InputTextModule } from 'primeng/inputtext';
 		CstmInputTextModule,
 		CstmDropdownModule,
 		CstmButtonModule,
+		ButtonModule,
 	],
 })
 export class PropertyListingModule {}

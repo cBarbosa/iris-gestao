@@ -20,7 +20,7 @@ export class PropertyViewComponent {
 			area_total: '32 m²',
 			area_occupancy: '32 m²',
 			lease_status: 'Unidade locada',
-			action: '...',
+			action: '',
 		},
 		{
 			name: 'Unidade nome',
@@ -28,7 +28,7 @@ export class PropertyViewComponent {
 			area_total: '32 m²',
 			area_occupancy: '32 m²',
 			lease_status: 'Unidade locada',
-			action: '...',
+			action: '',
 		},
 		{
 			name: 'Unidade nome',
@@ -36,7 +36,7 @@ export class PropertyViewComponent {
 			area_total: '32 m²',
 			area_occupancy: '32 m²',
 			lease_status: 'locada',
-			action: '...',
+			action: '',
 		},
 		{
 			name: 'Unidade nome',
@@ -44,7 +44,7 @@ export class PropertyViewComponent {
 			area_total: '32 m²',
 			area_occupancy: '32 m²',
 			lease_status: 'Unidade locada',
-			action: '...',
+			action: '',
 		},
 	];
 
