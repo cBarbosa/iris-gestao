@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 
 @Component({
@@ -46,15 +47,21 @@ export class PropertyViewComponent {
 		},
 	];
 
-	toggleFavorite() {
-		this.isFavorite = !this.isFavorite;
-	}
+	constructor(private router: Router) {}
 
 	ngOnInit() {
 		this.tableMenu = [
 			{ label: 'Detalhes' },
-			{ label: 'Editar' },
+			{ label: 'Editar', command: () => this.navigateTo('property-edit') },
 			{ label: 'Duplicar' },
 		];
+	}
+
+	toggleFavorite() {
+		this.isFavorite = !this.isFavorite;
+	}
+
+	navigateTo(route: string) {
+		this.router.navigate([route]);
 	}
 }
