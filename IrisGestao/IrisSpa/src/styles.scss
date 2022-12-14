@@ -1,3 +1,28 @@
+@import "./app/shared/components/custom-ui/styles/custom-components";
+
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+:root {
+	--dark-red: #641b1e;
+}
+
+body {
+	font-family: "Mulish", sans-serif;
+}
+
+a {
+	@apply font-bold cursor-pointer;
+	color: var(--dark-red);
+}
+
+button {
+	&:focus,
+	&:focus-visible {
+		outline: none;
+	}
+	&:focus-visible {
+		box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+	}
+}

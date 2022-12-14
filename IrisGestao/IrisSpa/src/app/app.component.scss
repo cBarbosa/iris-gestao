@@ -1,0 +1,257 @@
+:host ::ng-deep {
+	.p-component {
+		font-family: inherit;
+
+		&.p-tag {
+			&.wallet {
+				padding-right: 1rem;
+				padding-left: 1rem;
+				background-color: #f7ded3;
+				.p-tag-value {
+					color: #480d1a;
+
+					&::before {
+						content: "Imóvel de carteira";
+					}
+				}
+			}
+			&.market {
+				padding-right: 0.8rem;
+				padding-left: 0.8rem;
+				background-color: #f4f8dc;
+
+				.p-tag-value {
+					color: #47591b;
+
+					&::before {
+						content: "Imóvel de mercado";
+					}
+				}
+			}
+			&.p-tag-success {
+				color: #319016;
+				background-color: #f1ffdb;
+			}
+			&.p-tag-danger {
+				color: #b7263c;
+				background-color: #fff0e8;
+			}
+		}
+
+		&.p-button {
+			background-color: #641b1e;
+			border: 0;
+
+			.p-button-label {
+				// @apply font-medium;
+			}
+
+			&:not([disabled]):hover {
+				background-color: #721f22;
+			}
+
+			&:not([disabled]):focus {
+				box-shadow: none;
+			}
+
+			&:not([disabled]):focus-visible,
+			&:not([disabled]):active {
+				box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+			}
+
+			&:not([disabled]):active {
+				transition: none;
+			}
+
+			&.icon-left .p-button-icon {
+				&::before {
+					margin-right: 0.5rem;
+				}
+			}
+			&.icon-right .p-button-icon {
+				&::after {
+					margin-left: 0.5rem;
+				}
+			}
+
+			&.p-button-outlined {
+				border: 1px solid #641b1e;
+				background-color: transparent;
+				color: #641b1e;
+				@apply text-sm;
+
+				.p-button-label {
+					// @apply font-bold;
+				}
+
+				&:not([disabled]):hover {
+					border: 1px solid #641b1e;
+					color: #641b1e;
+					background-color: rgba(100, 27, 30, 0.04);
+				}
+
+				&:not([disabled]):focus-visible,
+				&:not([disabled]):active {
+					// box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+					color: #641b1e;
+					background-color: rgba(100, 27, 30, 0.04);
+				}
+			}
+
+			&.p-button-text {
+				color: #641b1e;
+				background-color: transparent;
+
+				&:not([disabled]):hover {
+					background-color: rgba(100, 27, 30, 0.04);
+				}
+
+				&:not([disabled]):focus-visible,
+				&:not([disabled]):active {
+					background-color: rgba(100, 27, 30, 0.04);
+				}
+			}
+		}
+
+		&.p-datatable {
+			.p-datatable-wrapper {
+				table.p-datatable-table {
+					.p-datatable-thead {
+						th {
+							@apply text-xs font-medium;
+							color: #646464;
+							background: none;
+							border: none;
+						}
+					}
+
+					.p-datatable-tbody {
+						td {
+							border: 0;
+							color: #262626;
+						}
+					}
+				}
+			}
+
+			&.p-datatable-striped {
+				.p-datatable-tbody {
+					& > tr {
+						background-color: #ffffff;
+					}
+
+					& > tr:nth-child(even) td {
+						background-color: #fbfbfb;
+					}
+				}
+			}
+		}
+
+		&.p-tabview {
+			.p-tabview-nav-container {
+				.p-tabview-nav-content {
+					ul.p-tabview-nav {
+						border-color: #a8a8a8;
+						border-bottom-width: 1px;
+
+						li {
+							a.p-tabview-nav-link {
+								border-color: #a8a8a8;
+								border-bottom-width: 0px;
+
+								.p-tabview-title {
+									@apply text-sm;
+								}
+
+								&:focus {
+									box-shadow: none;
+								}
+
+								&:focus-visible {
+									box-shadow: inset 0 0 0 3px rgba(100, 27, 30, 0.2);
+								}
+							}
+
+							&.p-highlight {
+								a.p-tabview-nav-link {
+									border-bottom-width: 3px;
+									border-color: #641b1e;
+
+									.p-tabview-title {
+										color: #641b1e;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			.p-tabview-panels {
+				.p-tabview-panel {
+					@apply mt-3;
+				}
+			}
+		}
+
+		&.p-inputtext {
+			background-color: #ffffff;
+
+			&.ng-pristine,
+			&.ng-valid {
+				border: 1px solid #a8a8a8;
+
+				&:focus {
+					border-color: #641b1e;
+				}
+			}
+
+			&.ng-touched:not(.ng-invalid):hover,
+			&.ng-pristine:hover {
+				border-color: #641b1e;
+			}
+
+			&.ng-touched.ng-invalid {
+				border-color: #e24c4c;
+			}
+
+			&:focus {
+				box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+			}
+		}
+	}
+
+	.p-element {
+		.p-sidebar {
+			.p-sidebar-header {
+				align-items: flex-start;
+				h4 {
+					@apply text-2xl font-bold;
+				}
+
+				.p-sidebar-close {
+					&:hover {
+						background-color: #f7ded3;
+					}
+					&:focus {
+						box-shadow: none;
+					}
+					&:focus-visible,
+					&:active {
+						box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+					}
+				}
+			}
+
+			.p-sidebar-content {
+			}
+
+			.p-sidebar-footer {
+			}
+		}
+	}
+
+	.p-button {
+		border-radius: 4px;
+	}
+}
