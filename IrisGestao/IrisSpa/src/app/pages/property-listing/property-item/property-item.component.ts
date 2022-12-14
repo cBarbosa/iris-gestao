@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 	styleUrls: ['./property-item.component.scss'],
 })
 export class PropertyItemComponent {
+	propertyType = this.randomize();
+
 	constructor(private router: Router) {}
 
 	navigateTo(route: string) {
