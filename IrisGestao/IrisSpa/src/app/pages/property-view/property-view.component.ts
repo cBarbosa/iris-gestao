@@ -52,9 +52,17 @@ export class PropertyViewComponent {
 
 	ngOnInit() {
 		this.tableMenu = [
-			{ label: 'Detalhes', command: () => this.showDetails() },
-			{ label: 'Editar', command: () => this.navigateTo('property-edit') },
-			{ label: 'Duplicar' },
+			{
+				label: 'Detalhes',
+				icon: 'ph-eye',
+				command: () => this.showDetails(),
+			},
+			{
+				label: 'Editar',
+				icon: 'ph-note-pencil',
+				command: () => this.navigateTo('property-edit'),
+			},
+			{ label: 'Duplicar', icon: 'ph-copy-simple' },
 		];
 	}
 
