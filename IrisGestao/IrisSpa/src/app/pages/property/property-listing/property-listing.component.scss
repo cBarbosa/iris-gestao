@@ -11,8 +11,9 @@
 
 :host ::ng-deep {
 	.p-element {
-		&.p-inputtext {
-			--tw-ring-color: rgb(226 232 240);
+		&.p-inputtext,
+		.p-inputtext {
+			--tw-ring-color: rgb(211, 218, 228);
 			@apply py-1 pr-2 border border-slate-200 text-gray-800 text-sm h-9 focus:outline-0 focus:ring-1;
 			border-radius: 4px;
 
@@ -36,6 +37,27 @@
 		.p-input-icon-left {
 			.pi {
 				color: #a8a8a8;
+			}
+		}
+
+		.p-dropdown {
+			position: relative;
+			bottom: -1px;
+			--tw-ring-color: rgb(211, 218, 228);
+			@apply py-1 border border-slate-200 text-gray-800 text-sm h-9 focus:outline-0 focus:ring-1;
+			border-radius: 4px;
+
+			.p-dropdown-label {
+			}
+
+			.p-dropdown-trigger {
+				.p-dropdown-trigger-icon {
+					@apply text-xs;
+				}
+			}
+
+			&:not(.p-disabled).p-focus {
+				@apply ring-1;
 			}
 		}
 	}

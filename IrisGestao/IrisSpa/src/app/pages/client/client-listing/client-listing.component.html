@@ -1,0 +1,90 @@
+<div class="content-wrapper">
+	<div class="flex justify-between py-9">
+		<h3 class="text-2xl font-bold">
+			Clientes <span class="ml-2 text-sm text-slate-600">3.432</span>
+		</h3>
+
+		<div class="options">
+			<span class="p-input-icon-left mx-2">
+				<i class="pi pi-search"></i>
+				<input pInputText type="text" placeholder="Buscar cliente" />
+			</span>
+			<p-dropdown
+				class="mx-2"
+				styleClass="w-44"
+				placeholder="Tipo de cliente"
+			></p-dropdown>
+			<p-dropdown
+				class="mx-2"
+				styleClass="w-32"
+				placeholder="Status"
+				[options]="statusOptions"
+				optionValue="status"
+			></p-dropdown>
+			<p-dropdown
+				class="ml-2 mr-4"
+				styleClass="w-32"
+				placeholder="Bairro"
+			></p-dropdown>
+			<button pButton type="button" class="p-button-outlined h-9">
+				<i class="pi pi-plus mr-3"></i>
+				Adicionar imóvel
+			</button>
+		</div>
+	</div>
+
+	<p-table
+		[value]="clients"
+		styleClass="p-datatable-striped"
+		[tableStyle]="{ 'min-width': '50rem' }"
+		[paginator]="true"
+		[rows]="10"
+	>
+		<ng-template pTemplate="header">
+			<tr>
+				<th>Nome/Razão social</th>
+				<th>CPF/CNPJ</th>
+				<th>Aniversário</th>
+				<th>Tipo de cliente</th>
+				<th>Status</th>
+				<th></th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-client>
+			<tr>
+				<td class="font-bold">{{ client.name }}</td>
+				<td>{{ client.cpf_cnpj }}</td>
+				<td>{{ client.birthday }}</td>
+				<td>{{ client.client_type }}</td>
+				<td class="w-24">
+					<ng-container *ngIf="client.status === 'inativo'; else ativo">
+						<p-tag
+							value="Inativo"
+							[rounded]="true"
+							severity="danger"
+							styleClass="w-20"
+						></p-tag>
+					</ng-container>
+					<ng-template #ativo>
+						<p-tag
+							value="Ativo"
+							[rounded]="true"
+							severity="success"
+							styleClass="w-20"
+						></p-tag>
+					</ng-template>
+				</td>
+				<td class="action w-40">
+					<button
+						pButton
+						type="button"
+						class="p-button-text h-7"
+						(click)="navigateTo('client-details')"
+					>
+						Ver detalhes
+					</button>
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+</div>
