@@ -233,11 +233,11 @@ public partial class IrisContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Imovel__3214EC07850C004D");
 
-            entity.HasOne(d => d.IdCategoriaImovelNavigation).WithMany(p => p.Imovel)
+            entity.HasOne(d => d.CategoriaImovel).WithMany(p => p.Imovel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_CategoriaImovel_Imovel");
 
-            entity.HasOne(d => d.IdClienteProprietarioNavigation).WithMany(p => p.Imovel)
+            entity.HasOne(d => d.ClienteProprietario).WithMany(p => p.Imovel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Cliente_ClienteProprietario");
         });

@@ -12,6 +12,6 @@ public partial class CategoriaImovel: BaseEntity<CategoriaImovel>
     [Unicode(false)]
     public string Nome { get; set; } = null!;
 
-    [InverseProperty("IdCategoriaImovelNavigation")]
+    [InverseProperty("CategoriaImovel")]
     public virtual ICollection<Imovel> Imovel { get; } = new List<Imovel>();
 }

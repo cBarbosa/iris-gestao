@@ -49,11 +49,11 @@ public partial class Imovel: BaseEntity<Imovel>
 
     [ForeignKey("IdCategoriaImovel")]
     [InverseProperty("Imovel")]
-    public virtual CategoriaImovel IdCategoriaImovelNavigation { get; set; } = null!;
+    public virtual CategoriaImovel CategoriaImovel { get; set; } = null!;
 
     [ForeignKey("IdClienteProprietario")]
     [InverseProperty("Imovel")]
-    public virtual Cliente IdClienteProprietarioNavigation { get; set; } = null!;
+    public virtual Cliente ClienteProprietario { get; set; } = null!;
 
     [InverseProperty("IdImovelNavigation")]
     public virtual ICollection<ImovelEndereco> ImovelEndereco { get; } = new List<ImovelEndereco>();

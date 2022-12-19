@@ -20,8 +20,8 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
     public IEnumerable<Imovel> GetById(int codigo)
     {
         var lstImovel = DbSet.Include(x => x.Unidade)
-                                .Include(x => x.IdClienteProprietarioNavigation)
-                                .Include(x => x.IdCategoriaImovelNavigation)
+                                .Include(x => x.ClienteProprietario)
+                                .Include(x => x.CategoriaImovel)
                                 .Where(x => x.Id == codigo).ToList();
 
         return lstImovel.AsEnumerable();
@@ -31,8 +31,8 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
     public IEnumerable<Imovel> GetAll()
     {
         var lstImovel = DbSet.Include(x => x.Unidade)
-                                .Include(x => x.IdClienteProprietarioNavigation)
-                                .Include(x => x.IdCategoriaImovelNavigation).ToList();
+                                .Include(x => x.ClienteProprietario)
+                                .Include(x => x.CategoriaImovel).ToList();
 
         return lstImovel.AsEnumerable();
     }
