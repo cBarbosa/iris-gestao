@@ -7,6 +7,7 @@ import { CstmDropdownModule } from 'src/app/shared/components/custom-ui/dropdown
 import { IconModule } from 'src/app/shared/components/custom-ui/icon/icon.module';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
+import { AreaPipeModule } from '../../pipes';
 
 @NgModule({
 	declarations: [PropertyItemComponent],
@@ -16,6 +17,7 @@ import { ButtonModule } from 'primeng/button';
 		IconModule,
 		TagModule,
 		ButtonModule,
+		AreaPipeModule,
 	],
 	exports: [PropertyItemComponent],
 })

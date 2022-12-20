@@ -20,7 +20,7 @@ export class ClientListingComponent {
 		{
 			nome: 'Courtney Henry',
 			cpf_cnpj: '72.165.630/0001-27',
-			dataNascimento: '14/09/1989',
+			dataNascimento: new Date(),
 			client_type: 'Locatário',
 			status: 'ativo',
 			action: '',
@@ -28,7 +28,7 @@ export class ClientListingComponent {
 		{
 			name: 'Courtney Henry',
 			cpf_cnpj: '72.165.630/0001-27',
-			birthday: '14/09/1989',
+			birthday: new Date(),
 			client_type: 'Locatário',
 			status: 'inativo',
 			action: '',
@@ -48,10 +48,10 @@ export class ClientListingComponent {
 					console.log(client);
 					this.clients.push({
 						name: client.nome,
-						cpf_cnpj: '72.165.630/0001-27',
+						cpf_cnpj: '72165630000127',
 						birthday: client.dataNascimento
-							? new Date(client.dataNascimento).toLocaleDateString('pt-BR')
-							: new Date().toLocaleDateString('pt-BR'),
+							? new Date(client.dataNascimento)
+							: new Date(),
 						client_type: 'Locatário',
 						status: 'ativo',
 						action: '',
