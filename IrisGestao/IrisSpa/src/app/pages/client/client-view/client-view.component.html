@@ -52,9 +52,9 @@
 			<h2>Imóveis cadastrados no cliente</h2>
 
 			<div class="flex flex-col gap-6">
-				<app-property-item></app-property-item>
-				<app-property-item></app-property-item>
-				<app-property-item></app-property-item>
+				<ng-container *ngFor="let item of propertyItens">
+					<app-property-item [data]="item" class="mb-6"></app-property-item>
+				</ng-container>
 			</div>
 		</section>
 	</div>
