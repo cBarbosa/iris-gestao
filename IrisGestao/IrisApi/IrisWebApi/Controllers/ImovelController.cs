@@ -18,8 +18,12 @@ public class ImovelController : Controller
     // GET
     [HttpGet("/api/[controller]")]
     [Produces("application/json")]
-   public async Task<IActionResult> GetAll() =>
-        Ok(await imovelService.GetAll());
+   public async Task<IActionResult> GetAll(
+              [FromQuery] int? idCategoriaImovel
+            , [FromQuery] string? nome
+            , [FromQuery] int? page = 1
+            , [FromQuery] int? limit = 50) =>
+        Ok(await imovelService.GetAll(idCategoriaImovel, nome));
 
     // GET
     [HttpGet("/api/[controller]/{codigo}/id/")]

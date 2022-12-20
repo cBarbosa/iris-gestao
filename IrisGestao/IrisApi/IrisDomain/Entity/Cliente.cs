@@ -8,6 +8,14 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class Cliente: BaseEntity<Cliente>
 {
+    [StringLength(20)]
+    [Unicode(false)]
+    public string CpfCnpj { get; set; } = null!;
+
+    [StringLength(100)]
+    [Unicode(false)]
+    public int? IdTipoCliente { get; set; } = null!;
+
     [StringLength(100)]
     [Unicode(false)]
     public string Nome { get; set; } = null!;
@@ -40,6 +48,9 @@ public partial class Cliente: BaseEntity<Cliente>
     public int Nps { get; set; }
 
     [Unicode(false)]
+    public bool Status { get; set; }
+
+    [Unicode(false)]
     [NotMapped]
     public DateTime DataCriacao { get; set; }
 
@@ -63,4 +74,8 @@ public partial class Cliente: BaseEntity<Cliente>
 
     [InverseProperty("IdClienteProprietarioNavigation")]
     public virtual ICollection<Imovel> Imovel { get; } = new List<Imovel>();
+
+    [ForeignKey("IdTipoCliente")]
+    [InverseProperty("Cliente")]
+    public virtual TipoCliente IdTipoClienteNavigation { get; set; } = null!;
 }

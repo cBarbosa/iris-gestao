@@ -28,12 +28,46 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
     }
 
 
-    public IEnumerable<Imovel> GetAll()
+    public IEnumerable<Imovel> GetAll(int? idCategoriaImovel, string nome)
     {
-        var lstImovel = DbSet.Include(x => x.Unidade)
-                                .Include(x => x.IdClienteProprietarioNavigation)
-                                .Include(x => x.IdCategoriaImovelNavigation).ToList();
+        if (idCategoriaImovel.HasValue && !String.IsNullOrEmpty(nome))
+        {
+            var lstImovel = DbSet.Include(x => x.Unidade)
+                                    .Include(x => x.IdClienteProprietarioNavigation)
+                                    .Include(x => x.IdCategoriaImovelNavigation).IgnoreAutoIncludes()
+                                    .Where(x => x.IdCategoriaImovel == idCategoriaImovel && x.Nome.Contains(nome))
+                                    .ToList();
 
-        return lstImovel.AsEnumerable();
+            return lstImovel.AsEnumerable();
+        }
+        else if (idCategoriaImovel.HasValue)
+        {
+            var lstImovel = DbSet.Include(x => x.Unidade)
+                                    .Include(x => x.IdClienteProprietarioNavigation)
+                                    .Include(x => x.IdCategoriaImovelNavigation).IgnoreAutoIncludes()
+                                    .Where(x => x.IdCategoriaImovel == idCategoriaImovel)
+                                    .ToList();
+
+            return lstImovel.AsEnumerable();
+        }
+        else if (!String.IsNullOrEmpty(nome))
+        {
+            var lstImovel = DbSet.Include(x => x.Unidade)
+                                    .Include(x => x.IdClienteProprietarioNavigation)
+                                    .Include(x => x.IdCategoriaImovelNavigation).IgnoreAutoIncludes()
+                                    .Where(x => x.Nome.Contains(nome))
+                                    .ToList();
+
+            return lstImovel.AsEnumerable();
+        }
+        else 
+        {
+            var lstImovel = DbSet.Include(x => x.Unidade)
+                                    .Include(x => x.IdClienteProprietarioNavigation)
+                                    .Include(x => x.IdCategoriaImovelNavigation).IgnoreAutoIncludes()
+                                    .ToList();
+
+            return lstImovel.AsEnumerable();
+        }
     }
 }
