@@ -40,7 +40,7 @@
 							<app-icon name="area" styleClass="mr-1"></app-icon>
 							Metragem total
 						</div>
-						<div class="value">1.321 m²</div>
+						<div class="value">{{ "1321" | area }}</div>
 					</span>
 				</div>
 			</div>
@@ -78,9 +78,9 @@
 				<ng-template pTemplate="body" let-unit>
 					<tr>
 						<td>{{ unit.name }}</td>
-						<td>{{ unit.area_usable }}</td>
-						<td>{{ unit.area_total }}</td>
-						<td>{{ unit.area_occupancy }}</td>
+						<td>{{ unit.area_usable | area }}</td>
+						<td>{{ unit.area_total | area }}</td>
+						<td>{{ unit.area_occupancy | area }}</td>
 						<td class="w-52">
 							<ng-container
 								*ngIf="unit.lease_status === 'locada'; else disponivel"
@@ -193,26 +193,26 @@
 					<div class="share-line">
 						<div class="data">
 							<span class="label">Área Útil</span>
-							<span class="value">21 m²</span>
+							<span class="value">{{ "21" | area }}</span>
 						</div>
 						<div class="data">
 							<span class="label">Área Total</span>
-							<span class="value">32 m²</span>
+							<span class="value">{{ "32" | area }}</span>
 						</div>
 					</div>
 					<div class="share-line">
 						<div class="data">
 							<span class="label">Área Habite-se</span>
-							<span class="value">32 m²</span>
+							<span class="value">{{ "32" | area }}</span>
 						</div>
 						<div class="data">
 							<span class="label">Valor Potencial</span>
-							<span class="value">300.000,00</span>
+							<span class="value">{{ "300000.00" | currency }}</span>
 						</div>
 					</div>
 					<div class="data">
 						<span class="label">Taxa de administração</span>
-						<span class="value">300,00</span>
+						<span class="value">{{ "300" | currency }}</span>
 					</div>
 
 					<div class="data small">

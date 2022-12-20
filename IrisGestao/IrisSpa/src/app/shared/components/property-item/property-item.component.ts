@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { PropertyItemData } from '../../models';
 
 @Component({
 	selector: 'app-property-item',
@@ -7,15 +8,16 @@ import { Router } from '@angular/router';
 	styleUrls: ['./property-item.component.scss'],
 })
 export class PropertyItemComponent {
-	propertyType = this.randomize();
+	@Input('data')
+	propertyData: any;
 
 	constructor(private router: Router) {}
 
-	navigateTo(route: string) {
-		this.router.navigate([route]);
+	ngOnInit() {
+		console.log(this.propertyData);
 	}
 
-	randomize() {
-		return Math.random() > 0.5 ? 'wallet' : 'market';
+	navigateTo(route: string) {
+		this.router.navigate([route]);
 	}
 }

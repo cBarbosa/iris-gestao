@@ -18,11 +18,7 @@
 			</button>
 		</div>
 	</div>
-	<app-property-item class="mb-6"></app-property-item>
-	<app-property-item class="my-6"></app-property-item>
-	<app-property-item class="my-6"></app-property-item>
-	<app-property-item class="my-6"></app-property-item>
-	<app-property-item class="my-6"></app-property-item>
-	<app-property-item class="my-6"></app-property-item>
-	<app-property-item class="my-6"></app-property-item>
+	<ng-container *ngFor="let item of propertyItens">
+		<app-property-item [data]="item" class="mb-6"></app-property-item>
+	</ng-container>
 </div>

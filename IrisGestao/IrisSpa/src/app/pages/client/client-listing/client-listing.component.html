@@ -53,8 +53,10 @@
 		<ng-template pTemplate="body" let-client>
 			<tr>
 				<td class="font-bold">{{ client.name }}</td>
-				<td>{{ client.cpf_cnpj }}</td>
-				<td>{{ client.birthday }}</td>
+				<td>{{ client.cpf_cnpj | cpfcnpj }}</td>
+				<td>
+					{{ client.birthday | date : "shortDate" }}
+				</td>
 				<td>{{ client.client_type }}</td>
 				<td class="w-24">
 					<ng-container *ngIf="client.status === 'inativo'; else ativo">
