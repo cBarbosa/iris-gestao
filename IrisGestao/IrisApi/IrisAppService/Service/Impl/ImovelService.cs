@@ -16,9 +16,9 @@ public class ImovelService: IImovelService
         this.imovelRepository = ImovelRepository;
     }
 
-    public async Task<CommandResult> GetAll()
+    public async Task<CommandResult> GetAll(int? idCategoriaImovel, string nome)
     {
-        var Imoveis = await Task.FromResult(imovelRepository.GetAll().ToList());
+        var Imoveis = await Task.FromResult(imovelRepository.GetAll(idCategoriaImovel, nome).ToList());
 
         return !Imoveis.Any()
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)

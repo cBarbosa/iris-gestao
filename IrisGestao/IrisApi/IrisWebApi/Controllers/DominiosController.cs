@@ -15,6 +15,7 @@ public class DominiosController : Controller
     private readonly ITipoTituloService tipoTituloService;
     private readonly ITipoDespesaService tipoDespesaService;
     private readonly ITipoEventoService tipoEventoService;
+    private readonly ITipoClienteService tipoClienteService;
 
     public DominiosController(ICategoriaImovelService categoriaImovelService,
                               IIndiceReajusteService indiceReajusteService,
@@ -23,7 +24,8 @@ public class DominiosController : Controller
                               ITipoContratoService tipoContratoService,
                               ITipoTituloService tipoTituloService,
                               ITipoDespesaService tipoDespesaService,
-                              ITipoEventoService tipoEventoService)
+                              ITipoEventoService tipoEventoService,
+                              ITipoClienteService tipoClienteService)
     {
         this.categoriaImovelService = categoriaImovelService;
         this.indiceReajusteService = indiceReajusteService;
@@ -33,6 +35,7 @@ public class DominiosController : Controller
         this.tipoTituloService = tipoTituloService;
         this.tipoDespesaService = tipoDespesaService;
         this.tipoEventoService = tipoEventoService;
+        this.tipoClienteService = tipoClienteService;
     }
 
     // GET
@@ -81,5 +84,11 @@ public class DominiosController : Controller
     [HttpGet("/api/[controller]/tipo-evento")]
     [Produces("application/json")]
     public async Task<IActionResult> GetTipoEvento() =>
+        Ok(await tipoEventoService.GetAll());
+
+    // GET
+    [HttpGet("/api/[controller]/tipo-cliente")]
+    [Produces("application/json")]
+    public async Task<IActionResult> GetTipoCliente() =>
         Ok(await tipoEventoService.GetAll());
 }

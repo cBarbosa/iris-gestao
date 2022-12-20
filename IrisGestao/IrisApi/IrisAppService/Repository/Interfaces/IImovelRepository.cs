@@ -6,4 +6,5 @@ namespace IrisGestao.ApplicationService.Repository.Interfaces;
 public interface IImovelRepository : IRepository<Imovel>, IDisposable
 {
     IEnumerable<Imovel> GetById(int codigo);
+    IEnumerable<Imovel> GetAll(int? idCategoriaImovel, string nome);
 }
