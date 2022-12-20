@@ -32,12 +32,10 @@ export class PropertyListingComponent implements OnInit {
 						metros: 1321,
 						proprietario: {
 							nome: property?.idClienteProprietarioNavigation?.nome,
-							cpfCnpj: 01221344222,
-							telefone: 
+							cpfCnpj: `01221344222`,
+							telefone: 61245345345
 						}
-						birthday: client?.dataNascimento
-							? new Date(client?.dataNascimento).toLocaleDateString('pt-BR')
-							: new Date().toLocaleDateString('pt-BR'),
+						,
 						client_type: 'Locatário',
 						status: 'ativo',
 						action: '',
