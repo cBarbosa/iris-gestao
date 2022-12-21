@@ -27,6 +27,9 @@ public partial class DespesaProprietario: BaseEntity<DespesaProprietario>
     [Column(TypeName = "text")]
     public string? Observacao { get; set; }
 
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
     [ForeignKey("IdContratoFornecedor")]
     [InverseProperty("DespesaProprietario")]
     public virtual ContratoFornecedor? IdContratoFornecedorNavigation { get; set; }

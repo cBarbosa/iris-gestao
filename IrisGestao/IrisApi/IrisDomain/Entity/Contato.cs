@@ -24,6 +24,12 @@ public partial class Contato: BaseEntity<Contato>
     [Unicode(false)]
     public string Telefone { get; set; } = null!;
 
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataUltimaModificacao { get; set; }
+
     [ForeignKey("IdCliente")]
     [InverseProperty("Contato")]
     public virtual Cliente? IdClienteNavigation { get; set; }

@@ -26,18 +26,16 @@ public partial class ImovelEndereco: BaseEntity<ImovelEndereco>
     [Unicode(false)]
     public string? Cidade { get; set; }
 
-    [Column("UF")]
     [StringLength(2)]
     [Unicode(false)]
-    public string Uf { get; set; } = null!;
+    public string UF { get; set; } = null!;
 
     public int Cep { get; set; }
 
-    [Unicode(false)]
-    [NotMapped]
-    public DateTime DataCriacao { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
 
-    [Unicode(false)]
+    [Column(TypeName = "datetime")]
     public DateTime? DataUltimaModificacao { get; set; }
 
     [ForeignKey("IdImovel")]

@@ -51,7 +51,7 @@ public class ImovelEnderecoService: IImovelEnderecoService
             Complemento                 = cmd.Complemento,
             Bairro                      = cmd.Bairro,
             Cidade                      = cmd.Cidade,
-            Uf                          = cmd.UF,
+            UF                          = cmd.UF,
             Cep                         = cmd.Cep,
             DataUltimaModificacao       = DateTime.Now
         };
@@ -84,7 +84,7 @@ public class ImovelEnderecoService: IImovelEnderecoService
             Complemento                 = cmd.Complemento,
             Bairro                      = cmd.Bairro,
             Cidade                      = cmd.Cidade,
-            Uf                          = cmd.UF,
+            UF                          = cmd.UF,
             Cep                         = cmd.Cep,
             DataUltimaModificacao       = DateTime.Now
         };

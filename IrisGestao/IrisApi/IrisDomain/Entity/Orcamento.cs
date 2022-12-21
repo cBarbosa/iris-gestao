@@ -19,6 +19,9 @@ public partial class Orcamento: BaseEntity<Orcamento>
     [Column(TypeName = "decimal(18, 0)")]
     public decimal? Saldo { get; set; }
 
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
     [ForeignKey("IdTipoServico")]
     [InverseProperty("Orcamento")]
     public virtual TipoServico IdTipoServicoNavigation { get; set; } = null!;

@@ -15,7 +15,7 @@ namespace IrisGestao.Domain.Command.Request
         public int NumCentroCusto { get; set; }
         public bool MonoUsuario { get; set; }
         public string? Classificacao { get; set; }
-        public string? GuidReferencia { get; set; }
+        public Guid? GuidReferencia { get; set; }
         public DateTime? DataUltimaModificacao { get; set; }
     }
 }
