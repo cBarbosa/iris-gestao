@@ -34,11 +34,17 @@
 	</div>
 
 	<p-table
-		[value]="clients"
+		[value]="clientEntries"
 		styleClass="p-datatable-striped"
 		[tableStyle]="{ 'min-width': '50rem' }"
 		[paginator]="true"
-		[rows]="10"
+		[rows]="rows"
+		[(first)]="first"
+		responsiveLayout="scroll"
+		[totalRecords]="totalClientCount"
+		[lazy]="true"
+		(onLazyLoad)="loadClientsPage($event)"
+		[loading]="isLoadingClients"
 	>
 		<ng-template pTemplate="header">
 			<tr>
