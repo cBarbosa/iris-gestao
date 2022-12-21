@@ -34,11 +34,17 @@
 	</div>
 
 	<p-table
-		[value]="clients"
+		[value]="clientEntries"
 		styleClass="p-datatable-striped"
 		[tableStyle]="{ 'min-width': '50rem' }"
 		[paginator]="true"
-		[rows]="10"
+		[rows]="rows"
+		[(first)]="first"
+		responsiveLayout="scroll"
+		[totalRecords]="totalClientCount"
+		[lazy]="true"
+		(onLazyLoad)="loadClientsPage($event)"
+		[loading]="isLoadingClients"
 	>
 		<ng-template pTemplate="header">
 			<tr>
@@ -52,12 +58,14 @@
 		</ng-template>
 		<ng-template pTemplate="body" let-client>
 			<tr>
-				<td class="font-bold">{{ client?.name }}</td>
-				<td>{{ client?.cpf_cnpj }}</td>
-				<td>{{ client?.birthday }}</td>
-				<td>{{ client?.client_type }}</td>
+				<td class="font-bold">{{ client.name }}</td>
+				<td>{{ client.cpf_cnpj | cpfcnpj }}</td>
+				<td>
+					{{ client.birthday | date : "shortDate" }}
+				</td>
+				<td>{{ client.client_type }}</td>
 				<td class="w-24">
-					<ng-container *ngIf="client?.status === 'inativo'; else ativo">
+					<ng-container *ngIf="client.status === 'inativo'; else ativo">
 						<p-tag
 							value="Inativo"
 							[rounded]="true"

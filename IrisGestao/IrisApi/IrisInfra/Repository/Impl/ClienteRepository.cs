@@ -1,5 +1,7 @@
 ﻿using IrisGestao.ApplicationService.Repository.Interfaces;
+using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Entity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -11,5 +13,32 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
         : base(configuration, logger)
     {
         
+    }
+
+    public async Task<CommandPagingResult?> GetAllPaging(int limit, int page)
+    {
+        var skip = (page - 1) * limit;
+
+        try
+        {
+            var clientes = await DbSet
+                .Include(x => x.IdTipoClienteNavigation)
+                .Include(x => x.Imovel)
+                    .ThenInclude(y => y.ImovelEndereco)
+                .ToListAsync();
+
+            var totalCount = clientes.Count();
+
+            var clientesPaging = clientes.Skip(skip).Take(limit);
+
+            if (clientesPaging.Any())
+                return new CommandPagingResult(clientesPaging, totalCount, page, limit);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex.Message);
+        }
+
+        return null!;
     }
 }

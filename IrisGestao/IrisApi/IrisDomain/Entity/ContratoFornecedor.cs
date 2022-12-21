@@ -46,6 +46,12 @@ public partial class ContratoFornecedor: BaseEntity<ContratoFornecedor>
     [Unicode(false)]
     public string GuidReferencia { get; set; } = null!;
 
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataUltimaModificacao { get; set; }
+
     [InverseProperty("IdContratoFornecedorNavigation")]
     public virtual ICollection<DespesaProprietario> DespesaProprietario { get; } = new List<DespesaProprietario>();
 

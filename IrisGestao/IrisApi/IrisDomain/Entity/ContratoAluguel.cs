@@ -56,6 +56,14 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
     [Unicode(false)]
     public string GuidReferencia { get; set; } = null!;
 
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataUltimaModificacao { get; set; }
+
+    public int IdUnidade { get; set; }
+
     [ForeignKey("IdCliente")]
     [InverseProperty("ContratoAluguel")]
     public virtual Cliente IdClienteNavigation { get; set; } = null!;
@@ -75,4 +83,8 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
     [ForeignKey("IdTipoCreditoAluguel")]
     [InverseProperty("ContratoAluguel")]
     public virtual TipoCreditoAluguel IdTipoCreditoAluguelNavigation { get; set; } = null!;
+
+    [ForeignKey("IdUnidade")]
+    [InverseProperty("ContratoAluguel")]
+    public virtual Unidade IdUnidadeNavigation { get; set; } = null!;
 }

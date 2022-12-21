@@ -8,34 +8,28 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class Imovel: BaseEntity<Imovel>
 {
-    public int Id { get; set; }
-    
-    [StringLength(100)]
-    [Unicode(false)]
-    public string Nome { get; set; } = null!;
-
     public int IdCategoriaImovel { get; set; }
 
     public int IdClienteProprietario { get; set; }
 
+    public Guid? GuidReferencia { get; set; }
+
+    [StringLength(100)]
+    [Unicode(false)]
+    public string Nome { get; set; } = null!;
+
     public int NumCentroCusto { get; set; }
 
-    [Unicode(false)]
-    public bool MonoUsuario { get; set; }
+    public bool? MonoUsuario { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]
     public string? Classificacao { get; set; }
 
-    [StringLength(50)]
-    [Unicode(false)]
-    public string? GuidReferencia { get; set; } = null!;
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
 
-    [Unicode(false)]
-    [NotMapped]
-    public DateTime DataCriacao { get; set; }
-
-    [Unicode(false)]
+    [Column(TypeName = "datetime")]
     public DateTime? DataUltimaModificacao { get; set; }
 
     [InverseProperty("IdImovelNavigation")]
@@ -49,11 +43,11 @@ public partial class Imovel: BaseEntity<Imovel>
 
     [ForeignKey("IdCategoriaImovel")]
     [InverseProperty("Imovel")]
-    public virtual CategoriaImovel CategoriaImovel { get; set; } = null!;
+    public virtual CategoriaImovel IdCategoriaImovelNavigation { get; set; } = null!;
 
     [ForeignKey("IdClienteProprietario")]
     [InverseProperty("Imovel")]
-    public virtual Cliente ClienteProprietario { get; set; } = null!;
+    public virtual Cliente IdClienteProprietarioNavigation { get; set; } = null!;
 
     [InverseProperty("IdImovelNavigation")]
     public virtual ICollection<ImovelEndereco> ImovelEndereco { get; } = new List<ImovelEndereco>();

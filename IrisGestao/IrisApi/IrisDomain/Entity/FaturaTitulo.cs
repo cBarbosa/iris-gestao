@@ -44,6 +44,12 @@ public partial class FaturaTitulo: BaseEntity<FaturaTitulo>
     [Column(TypeName = "decimal(10, 2)")]
     public decimal? ValorLiquidoTaxaAdministracao { get; set; }
 
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataUltimaModificacao { get; set; }
+
     [ForeignKey("IdTitulo")]
     [InverseProperty("FaturaTitulo")]
     public virtual Titulo IdTituloNavigation { get; set; } = null!;
