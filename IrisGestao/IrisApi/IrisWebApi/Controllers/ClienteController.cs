@@ -10,24 +10,26 @@ public class ClienteController : Controller
 {
     private readonly IClienteService clienteService;
 
-    public ClienteController(IClienteService ClienteService)
+    public ClienteController(IClienteService clienteService)
     {
-        this.clienteService = ClienteService;
+        this.clienteService = clienteService;
     }
  
     // GET
-    [HttpGet("/api/[controller]")]
+    [HttpGet]
     [Produces("application/json")]
-   public async Task<IActionResult> GetAll() =>
-        Ok(await clienteService.GetAll());
+   public async Task<IActionResult> GetAllPaging(
+       [FromQuery] int? limit = 10
+       , [FromQuery] int? page = 1) =>
+        Ok(await clienteService.GetAllPaging(limit ?? 10, page ?? 1));
 
     // GET
-    [HttpGet("/api/[controller]/{codigo}/id/")]
+    [HttpGet("{codigo}/id")]
     [Produces("application/json")]
     public async Task<IActionResult> BuscarCliente([FromRoute] int codigo) =>
         Ok(await clienteService.GetById(codigo));
 
-    [HttpPost("/api/[controller]/criar")]
+    [HttpPost("criar")]
     [Produces("application/json")]
     public async Task<IActionResult> Cadatrar([FromBody] CriarClienteCommand cmd)
     {
@@ -39,7 +41,7 @@ public class ClienteController : Controller
         return Ok(result);
     }
 
-    [HttpPut("/api/[controller]/{codigo}/atualizar/")]
+    [HttpPut("{codigo}/atualizar")]
     [Produces("application/json")]
     public async Task<IActionResult> Atualizar(int? codigo, [FromBody] CriarClienteCommand cmd)
     {
@@ -51,7 +53,7 @@ public class ClienteController : Controller
         return Ok(result);
     }
 
-    [HttpDelete("/api/[controller]/{codigo}/deletar/")]
+    [HttpDelete("{codigo}/deletar")]
     [Produces("application/json")]
     public async Task<IActionResult> Deletar(int? codigo)
     {

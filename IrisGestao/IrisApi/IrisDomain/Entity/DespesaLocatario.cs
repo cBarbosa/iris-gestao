@@ -35,6 +35,9 @@ public partial class DespesaLocatario: BaseEntity<DespesaLocatario>
     [Column(TypeName = "text")]
     public string? Observacao { get; set; }
 
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
     [ForeignKey("IdCliente")]
     [InverseProperty("DespesaLocatario")]
     public virtual Cliente? IdClienteNavigation { get; set; }

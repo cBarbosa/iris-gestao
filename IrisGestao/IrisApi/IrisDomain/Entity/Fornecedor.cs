@@ -36,6 +36,12 @@ public partial class Fornecedor: BaseEntity<Fornecedor>
 
     public int Cep { get; set; }
 
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataUltimaModificacao { get; set; }
+
     [InverseProperty("IdFornecedorNavigation")]
     public virtual ICollection<Contato> Contato { get; } = new List<Contato>();
 

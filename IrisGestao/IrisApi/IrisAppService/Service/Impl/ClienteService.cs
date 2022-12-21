@@ -11,16 +11,16 @@ public class ClienteService: IClienteService
 {
     private readonly IClienteRepository clienteRepository;
     
-    public ClienteService(IClienteRepository ClienteRepository)
+    public ClienteService(IClienteRepository clienteRepository)
     {
-        this.clienteRepository = ClienteRepository;
+        this.clienteRepository = clienteRepository;
     }
 
-    public async Task<CommandResult> GetAll()
+    public async Task<CommandResult> GetAllPaging(int limit, int page)
     {
-        var Clientes = await Task.FromResult(clienteRepository.GetAll());
+        var Clientes = await clienteRepository.GetAllPaging(limit, page);
 
-        return !Clientes.Any()
+        return Clientes == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
             : new CommandResult(true, SuccessResponseEnums.Success_1005, Clientes);
     }
@@ -44,7 +44,7 @@ public class ClienteService: IClienteService
             Bairro                  = cmd.Bairro,
             Cidade                  = cmd.Cidade,
             Estado                  = cmd.Estado,
-            Cep                     = cmd.Cep,
+            Cep                     = cmd.Cep.Value,
             DataNascimento          = cmd.DataNascimento,
             Nps                     = cmd.Nps,
             DataUltimaModificacao   = DateTime.Now
@@ -79,7 +79,7 @@ public class ClienteService: IClienteService
             Bairro                  = cmd.Bairro,
             Cidade                  = cmd.Cidade,
             Estado                  = cmd.Estado,
-            Cep                     = cmd.Cep,
+            Cep                     = cmd.Cep.Value,
             DataNascimento          = cmd.DataNascimento.HasValue ? cmd.DataNascimento : null,
             Nps                     = cmd.Nps,
             DataUltimaModificacao   = DateTime.Now
