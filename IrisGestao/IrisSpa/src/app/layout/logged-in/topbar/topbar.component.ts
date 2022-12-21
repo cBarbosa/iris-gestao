@@ -24,6 +24,7 @@ export class TopbarComponent {
 			},
 			{
 				label: 'Clientes',
+				command: () => this.navigateTo('client-listing'),
 			},
 			{
 				label: 'Prestador de serviços',

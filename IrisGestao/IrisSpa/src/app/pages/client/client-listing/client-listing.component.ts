@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api';
 import { first } from 'rxjs';
-import { ClientService } from 'src/app/shared/services/client.service';
+import { ClientService } from 'src/app/shared/services';
 
 @Component({
 	selector: 'app-client-listing',
@@ -22,42 +22,24 @@ export class ClientListingComponent {
 
 	constructor(private router: Router, private clientService: ClientService) {}
 
-	clientEntries = [
-		{
-			nome: 'Courtney Henry',
-			cpf_cnpj: '72.165.630/0001-27',
-			dataNascimento: new Date(),
-			client_type: 'Locatário',
-			status: 'ativo',
-			action: '',
-		},
-		{
-			name: 'Courtney Henry',
-			cpf_cnpj: '72.165.630/0001-27',
-			birthday: new Date(),
-			client_type: 'Locatário',
-			status: 'inativo',
-			action: '',
-		},
-	];
+	clients:any = [];
 
 	ngOnInit() {
 		const clients = this.clientService
 			.getClients()
 			?.pipe(first())
 			.subscribe((event: any) => {
-				console.log('>>>>>>>>>>>>>>>>>>>>', event);
 
-				this.clientEntries = [];
+				this.clients = [];
 
 				event.forEach((client: any) => {
 					console.log(client);
-					this.clientEntries.push({
-						name: client.nome,
+					this.clients.push({
+						name: client?.nome,
 						cpf_cnpj: '72165630000127',
-						birthday: client.dataNascimento
-							? new Date(client.dataNascimento)
-							: new Date(),
+						birthday: client?.dataNascimento
+							? new Date(client?.dataNascimento).toLocaleDateString('pt-BR')
+							: new Date().toLocaleDateString('pt-BR'),
 						client_type: 'Locatário',
 						status: 'ativo',
 						action: '',

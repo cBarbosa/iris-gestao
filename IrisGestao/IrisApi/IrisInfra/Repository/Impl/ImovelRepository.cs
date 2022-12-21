@@ -1,11 +1,10 @@
-﻿using IrisGestao.ApplicationService.Repository.Interfaces;
+using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace IrisGestao.Infraestructure.Repository.Impl;
 
@@ -17,57 +16,47 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
         
     }
 
-    public IEnumerable<Imovel> GetById(int codigo)
+    public async Task<IEnumerable<Imovel>> GetById(int codigo)
     {
-        var lstImovel = DbSet.Include(x => x.Unidade)
-                                .Include(x => x.IdClienteProprietarioNavigation)
-                                .Include(x => x.IdCategoriaImovelNavigation)
-                                .Where(x => x.Id == codigo).ToList();
-
-        return lstImovel.AsEnumerable();
+        return await  DbSet
+                .Include(x => x.Unidade)
+                .Include(x => x.IdClienteProprietarioNavigation)
+                .Include(x => x.IdCategoriaImovelNavigation)
+            .Where(x => x.Id == codigo)
+            .ToListAsync();
     }
 
-
-    public IEnumerable<Imovel> GetAll(int? idCategoriaImovel, string nome)
+    public async Task<CommandPagingResult?> GetAllPaging(int? idCategoria, string? nome, int limit, int page)
     {
-        if (idCategoriaImovel.HasValue && !String.IsNullOrEmpty(nome))
-        {
-            var lstImovel = DbSet.Include(x => x.Unidade)
-                                    .Include(x => x.IdClienteProprietarioNavigation)
-                                    .Include(x => x.IdCategoriaImovelNavigation).IgnoreAutoIncludes()
-                                    .Where(x => x.IdCategoriaImovel == idCategoriaImovel && x.Nome.Contains(nome))
-                                    .ToList();
+        var skip = (page - 1) * limit;
 
-            return lstImovel.AsEnumerable();
-        }
-        else if (idCategoriaImovel.HasValue)
+        try
         {
-            var lstImovel = DbSet.Include(x => x.Unidade)
-                                    .Include(x => x.IdClienteProprietarioNavigation)
-                                    .Include(x => x.IdCategoriaImovelNavigation).IgnoreAutoIncludes()
-                                    .Where(x => x.IdCategoriaImovel == idCategoriaImovel)
-                                    .ToList();
+            var imoveis = await DbSet
+                        .Include(x => x.IdClienteProprietarioNavigation)
+                        .Include(x => x.IdCategoriaImovelNavigation)
+                        .Include(x => x.ImovelEndereco)
+                        .Include(x => x.Unidade)
+                    .Where(x => x.IdCategoriaImovel.Equals(TipoImovelEnum.IMOVEL_CARTEIRA))
+                    // .Where(x => 
+                    //         (idCategoria.HasValue && idCategoria.Equals(x.IdCategoriaImovel)
+                    //             ||
+                    //         (string.IsNullOrEmpty(nome) && x.Nome.Contains(nome))
+                    //         ))
+                    .ToListAsync();
 
-            return lstImovel.AsEnumerable();
+            var totalCount = imoveis.Count();
+
+            var imoveisPaging = imoveis.Skip(skip).Take(limit);
+
+            if (imoveisPaging.Any())
+                return new CommandPagingResult(imoveisPaging, totalCount, page, limit);
         }
-        else if (!String.IsNullOrEmpty(nome))
+        catch (Exception ex)
         {
-            var lstImovel = DbSet.Include(x => x.Unidade)
-                                    .Include(x => x.IdClienteProprietarioNavigation)
-                                    .Include(x => x.IdCategoriaImovelNavigation).IgnoreAutoIncludes()
-                                    .Where(x => x.Nome.Contains(nome))
-                                    .ToList();
-
-            return lstImovel.AsEnumerable();
+            Logger.LogError(ex.Message);
         }
-        else 
-        {
-            var lstImovel = DbSet.Include(x => x.Unidade)
-                                    .Include(x => x.IdClienteProprietarioNavigation)
-                                    .Include(x => x.IdCategoriaImovelNavigation).IgnoreAutoIncludes()
-                                    .ToList();
 
-            return lstImovel.AsEnumerable();
-        }
+        return null!;
     }
 }

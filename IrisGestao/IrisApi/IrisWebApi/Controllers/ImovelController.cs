@@ -1,4 +1,4 @@
-﻿using IrisGestao.ApplicationService.Services.Interface;
+using IrisGestao.ApplicationService.Services.Interface;
 using IrisGestao.Domain.Command.Request;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,22 +16,22 @@ public class ImovelController : Controller
     }
  
     // GET
-    [HttpGet("/api/[controller]")]
+    [HttpGet]
     [Produces("application/json")]
    public async Task<IActionResult> GetAll(
-              [FromQuery] int? idCategoriaImovel
-            , [FromQuery] string? nome
-            , [FromQuery] int? page = 1
-            , [FromQuery] int? limit = 50) =>
-        Ok(await imovelService.GetAll(idCategoriaImovel, nome));
+       [FromQuery] int? idCategoria
+       , [FromQuery] string? nome
+       , [FromQuery] int? limit = 10
+       , [FromQuery] int? page = 1) =>
+        Ok(await imovelService.GetAllPaging(idCategoria, nome, limit ?? 10, page ?? 1));
 
     // GET
-    [HttpGet("/api/[controller]/{codigo}/id/")]
+    [HttpGet("{codigo}/id/")]
     [Produces("application/json")]
     public async Task<IActionResult> BuscarImovel([FromRoute] int codigo) =>
         Ok(await imovelService.GetById(codigo));
 
-    [HttpPost("/api/[controller]/criar")]
+    [HttpPost("criar")]
     [Produces("application/json")]
     public async Task<IActionResult> Cadatrar([FromBody] CriarImovelCommand cmd)
     {
@@ -43,7 +43,7 @@ public class ImovelController : Controller
         return Ok(result);
     }
 
-    [HttpPut("/api/[controller]/{codigo}/atualizar/")]
+    [HttpPut("{codigo}/atualizar")]
     [Produces("application/json")]
     public async Task<IActionResult> Atualizar(int? codigo, [FromBody] CriarImovelCommand cmd)
     {
@@ -55,7 +55,7 @@ public class ImovelController : Controller
         return Ok(result);
     }
 
-    [HttpDelete("/api/[controller]/{codigo}/deletar/")]
+    [HttpDelete("{codigo}/deletar")]
     [Produces("application/json")]
     public async Task<IActionResult> Deletar(int? codigo)
     {
@@ -67,4 +67,3 @@ public class ImovelController : Controller
         return Ok(result);
     }
 }
-

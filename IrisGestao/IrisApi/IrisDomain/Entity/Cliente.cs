@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,13 +6,11 @@ namespace IrisGestao.Domain.Entity;
 
 public partial class Cliente: BaseEntity<Cliente>
 {
-    [StringLength(20)]
+    [StringLength(14)]
     [Unicode(false)]
-    public string CpfCnpj { get; set; } = null!;
+    public string? CpfCnpj { get; set; }
 
-    [StringLength(100)]
-    [Unicode(false)]
-    public int? IdTipoCliente { get; set; } = null!;
+    public Guid? GuidReferencia { get; set; }
 
     [StringLength(100)]
     [Unicode(false)]
@@ -23,6 +19,8 @@ public partial class Cliente: BaseEntity<Cliente>
     [StringLength(100)]
     [Unicode(false)]
     public string RazaoSocial { get; set; } = null!;
+
+    public int Cep { get; set; }
 
     [StringLength(100)]
     [Unicode(false)]
@@ -40,22 +38,20 @@ public partial class Cliente: BaseEntity<Cliente>
     [Unicode(false)]
     public string Estado { get; set; } = null!;
 
-    public int? Cep { get; set; }
-
     [Column(TypeName = "date")]
     public DateTime? DataNascimento { get; set; }
 
     public int Nps { get; set; }
 
-    [Unicode(false)]
-    public bool Status { get; set; }
+    public bool? Status { get; set; }
 
-    [Unicode(false)]
-    [NotMapped]
-    public DateTime DataCriacao { get; set; }
+    public int? IdTipoCliente { get; set; }
 
-    [Unicode(false)]
-    public DateTime DataUltimaModificacao { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataUltimaModificacao { get; set; }
 
     [InverseProperty("IdClienteNavigation")]
     public virtual ICollection<Contato> Contato { get; } = new List<Contato>();
@@ -72,10 +68,10 @@ public partial class Cliente: BaseEntity<Cliente>
     [InverseProperty("IdClienteNavigation")]
     public virtual ICollection<Evento> Evento { get; } = new List<Evento>();
 
-    [InverseProperty("IdClienteProprietarioNavigation")]
-    public virtual ICollection<Imovel> Imovel { get; } = new List<Imovel>();
-
     [ForeignKey("IdTipoCliente")]
     [InverseProperty("Cliente")]
-    public virtual TipoCliente IdTipoClienteNavigation { get; set; } = null!;
+    public virtual TipoCliente? IdTipoClienteNavigation { get; set; }
+
+    [InverseProperty("IdClienteProprietarioNavigation")]
+    public virtual ICollection<Imovel> Imovel { get; } = new List<Imovel>();
 }

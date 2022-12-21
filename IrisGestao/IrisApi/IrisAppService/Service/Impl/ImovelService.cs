@@ -16,13 +16,13 @@ public class ImovelService: IImovelService
         this.imovelRepository = ImovelRepository;
     }
 
-    public async Task<CommandResult> GetAll(int? idCategoriaImovel, string nome)
+    public async Task<CommandResult> GetAllPaging(int? idCategoria, string? nome, int limit, int page)
     {
-        var Imoveis = await Task.FromResult(imovelRepository.GetAll(idCategoriaImovel, nome).ToList());
+        var result = await imovelRepository.GetAllPaging(idCategoria, nome, limit, page);
 
-        return !Imoveis.Any()
+        return result == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
-            : new CommandResult(true, SuccessResponseEnums.Success_1005, Imoveis);
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, result);
     }
 
     public async Task<CommandResult> GetById(int codigo)
@@ -44,7 +44,7 @@ public class ImovelService: IImovelService
             NumCentroCusto          = cmd.NumCentroCusto,
             MonoUsuario             = cmd.MonoUsuario,
             Classificacao           = cmd.Classificacao,
-            GuidReferencia          = Guid.NewGuid().ToString().ToUpper(),    
+            GuidReferencia          = Guid.NewGuid(),    
             DataUltimaModificacao   = DateTime.Now
         };
 
@@ -77,7 +77,7 @@ public class ImovelService: IImovelService
             NumCentroCusto          = cmd.NumCentroCusto,
             MonoUsuario             = cmd.MonoUsuario,
             Classificacao           = cmd.Classificacao,
-            GuidReferencia          = cmd.GuidReferencia.ToUpper(),
+            GuidReferencia          = cmd.GuidReferencia,
             DataUltimaModificacao   = DateTime.Now
         };
 
