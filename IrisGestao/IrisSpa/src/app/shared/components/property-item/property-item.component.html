@@ -3,11 +3,11 @@
 		<div class="image">
 			<img src="{{ propertyData.imgCapa }}" alt="" />
 		</div>
-		<!-- <div class="property-category">{{propertyData.idCategoriaImovelNavigation.nome}}</div> -->
+		<!-- <div class="property-category">{{propertyData.idCategoriaImovelNavigation?.nome}}</div> -->
 		<p-tag
 			[rounded]="true"
 			class="property-category"
-			[styleClass]="propertyData.idCategoriaImovelNavigation?.nome ?? ''"
+			[styleClass]="propertyData.idCategoriaImovelNavigation?.nome == 'Imóvel de carteira' ? 'wallet' : 'market'"
 		></p-tag>
 	</div>
 	<div class="property-info">
@@ -46,7 +46,7 @@
 			</div>
 			<button
 				pButton
-				(click)="navigateTo('property-details/{{propertyData.guidReferencia}}')"
+				(click)="navigateTo('property-details/'+ propertyData.guidReferencia)"
 				label="Ver detalhes"
 				title="detalhes do imóvel"
 			></button>
