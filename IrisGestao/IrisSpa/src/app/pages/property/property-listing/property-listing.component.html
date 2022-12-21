@@ -1,7 +1,7 @@
 <div class="content-wrapper">
 	<div class="flex justify-between py-9">
 		<h3 class="text-2xl font-bold">
-			Lista de Imóveis <span class="ml-2 text-sm text-slate-600">3.432</span>
+			Lista de Imóveis <span class="ml-2 text-sm text-slate-600">{{ totalListCount }}</span>
 		</h3>
 
 		<div class="options">
@@ -18,18 +18,8 @@
 			</button>
 		</div>
 	</div>
-	
-	<!--
-  <app-property-item class="mb-6" [imovel]="property" *ngFor="let property of properties"></app-property-item>
-	<app-property-item class="my-6"></app-property-item>
-	<app-property-item class="my-6"></app-property-item>
-	<app-property-item class="my-6"></app-property-item>
-	<app-property-item class="my-6"></app-property-item>
-	<app-property-item class="my-6"></app-property-item>
-	<app-property-item class="my-6"></app-property-item>
-  -->
 
-	<ng-container *ngFor="let item of propertyItens">
+	<ng-container *ngFor="let item of properties">
 		<app-property-item [data]="item" class="mb-6"></app-property-item>
 	</ng-container>
 </div>
