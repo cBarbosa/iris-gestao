@@ -34,10 +34,41 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
         {
             var imoveis = await DbSet
                         .Include(x => x.IdClienteProprietarioNavigation)
+                        .ThenInclude(y => y.IdTipoClienteNavigation)
                         .Include(x => x.IdCategoriaImovelNavigation)
                         .Include(x => x.ImovelEndereco)
                         .Include(x => x.Unidade)
                         .Where(x => x.IdCategoriaImovel.Equals(TipoImovelEnum.IMOVEL_CARTEIRA))
+                        .Select(x => new Imovel
+                        {
+                            GuidReferencia = x.GuidReferencia,
+                            Nome = x.Nome,
+                            IdCategoriaImovelNavigation = new CategoriaImovel
+                            {
+                                Id = x.IdCategoriaImovelNavigation.Id,
+                                Nome = x.IdCategoriaImovelNavigation.Nome
+                            },
+                            IdClienteProprietarioNavigation = new Cliente
+                            {
+                                GuidReferencia = x.IdClienteProprietarioNavigation.GuidReferencia,
+                                CpfCnpj = x.IdClienteProprietarioNavigation.CpfCnpj,
+                                Nome = x.IdClienteProprietarioNavigation.Nome,
+                                Cep = x.IdClienteProprietarioNavigation.Cep,
+                                Endereco = x.IdClienteProprietarioNavigation.Endereco,
+                                Bairro = x.IdClienteProprietarioNavigation.Bairro,
+                                Cidade = x.IdClienteProprietarioNavigation.Cidade,
+                                Estado = x.IdClienteProprietarioNavigation.Estado,
+                                IdTipoClienteNavigation = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation == null
+                                    ? null
+                                    : new TipoCliente
+                                    {
+                                        Id = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Id,
+                                        Nome = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Nome,
+                                    }
+                            },
+                            ImovelEndereco = {},
+                            Unidade = { }
+                        })
                     .ToListAsync();
 
             var totalCount = imoveis.Count();
