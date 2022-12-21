@@ -9,7 +9,7 @@ import { PropertyItemData } from '../../models';
 	styleUrls: ['./property-item.component.scss'],
 })
 export class PropertyItemComponent {
-	propertyType = this.randomize();
+	//propertyType = this.randomize();
   @Input()
 	imovel: any;
 	@Input('data')

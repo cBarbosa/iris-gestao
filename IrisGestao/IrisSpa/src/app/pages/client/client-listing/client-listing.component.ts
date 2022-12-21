@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api';
 import { first } from 'rxjs';
-import { ClientService } from 'src/app/shared/services';
+import { ClientService } from 'src/app/shared/services/client.service';
 
 @Component({
 	selector: 'app-client-listing',
@@ -19,33 +19,11 @@ export class ClientListingComponent {
 	isLoadingClients = false;
 	first = 0;
 	rows = 10;
-
+	public clientEntries: any[];
 	constructor(private router: Router, private clientService: ClientService) {}
 
-	clients:any = [];
-
 	ngOnInit() {
-		const clients = this.clientService
-			.getClients()
-			?.pipe(first())
-			.subscribe((event: any) => {
-
-				this.clients = [];
-
-				event.forEach((client: any) => {
-					console.log(client);
-					this.clients.push({
-						name: client?.nome,
-						cpf_cnpj: '72165630000127',
-						birthday: client?.dataNascimento
-							? new Date(client?.dataNascimento).toLocaleDateString('pt-BR')
-							: new Date().toLocaleDateString('pt-BR'),
-						client_type: 'Locatário',
-						status: 'ativo',
-						action: '',
-					});
-				});
-			});
+		
 	}
 
 	loadClientsPage(event: LazyLoadEvent) {
@@ -57,29 +35,27 @@ export class ClientListingComponent {
 	}
 
 	getClientsPage(page = 1): void {
-		this.clientService
-			.getClients(this.rows, page)
+		const clients = this.clientService
+			.getClients()
 			?.pipe(first())
 			.subscribe((event: any) => {
-				if (event) {
-					this.totalClientCount = event.totalCount;
-					this.setClientEntries(event);
-				}
+				this.clientEntries = [];
+				this.isLoadingClients = true;
+				event.items.forEach((cliente: any) => {
+					//console.log('Cliente >> ' + JSON.stringify(cliente));
+					this.clientEntries.push({
+						name: cliente.nome,
+						cpf_cnpj: cliente.cpfCnpj,
+						birthday: cliente.dataNascimento
+							? new Date(cliente.dataNascimento)
+							: new Date(),
+						client_type: cliente.idTipoClienteNavigation.nome,
+						status: 'ativo',
+						action: '',
+					});
+				});
 				this.isLoadingClients = false;
 			});
-	}
-
-	setClientEntries({ items }: any) {
-		this.clientEntries = items.map((item: any) => {
-			return {
-				name: 'Courtney Henry',
-				cpf_cnpj: '72.165.630/0001-27',
-				birthday: new Date(),
-				client_type: 'Locatário',
-				status: 'inativo',
-				action: '',
-			};
-		});
 	}
 
 	navigateTo(route: string) {

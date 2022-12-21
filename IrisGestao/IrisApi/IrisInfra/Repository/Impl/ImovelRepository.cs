@@ -37,12 +37,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                         .Include(x => x.IdCategoriaImovelNavigation)
                         .Include(x => x.ImovelEndereco)
                         .Include(x => x.Unidade)
-                    .Where(x => x.IdCategoriaImovel.Equals(TipoImovelEnum.IMOVEL_CARTEIRA))
-                    // .Where(x => 
-                    //         (idCategoria.HasValue && idCategoria.Equals(x.IdCategoriaImovel)
-                    //             ||
-                    //         (string.IsNullOrEmpty(nome) && x.Nome.Contains(nome))
-                    //         ))
+                        .Where(x => x.IdCategoriaImovel.Equals(TipoImovelEnum.IMOVEL_CARTEIRA))
                     .ToListAsync();
 
             var totalCount = imoveis.Count();
