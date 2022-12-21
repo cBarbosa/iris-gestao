@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api';
 import { first } from 'rxjs';
-import { ClientService } from 'src/app/shared/services/client.service';
+import { ClienteService } from '../../../shared/services/cliente.service';
 
 @Component({
 	selector: 'app-client-listing',
@@ -20,7 +20,8 @@ export class ClientListingComponent {
 	first = 0;
 	rows = 10;
 	public clientEntries: any[];
-	constructor(private router: Router, private clientService: ClientService) {}
+
+	constructor(private router: Router, private clienteService: ClienteService) { }
 
 	ngOnInit():void {
 		
@@ -35,7 +36,7 @@ export class ClientListingComponent {
 	}
 
 	getClientsPage(page = 1): void {
-		const clients = this.clientService
+		const clients = this.clienteService
 			.getClients()
 			?.pipe(first())
 			.subscribe((event: any) => {

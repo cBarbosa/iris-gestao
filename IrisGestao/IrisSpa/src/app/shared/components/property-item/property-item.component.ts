@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { Imovel } from '../../models';
 
 @Component({
 	selector: 'app-property-item',
@@ -8,13 +9,9 @@ import { Router } from '@angular/router';
 })
 export class PropertyItemComponent {
 	@Input('data')
-	propertyData: any;
+	propertyData: Imovel;
 
 	constructor(private router: Router) { }
-
-	ngOnInit() {
-		console.log(this.propertyData);
-	}
 
 	navigateTo(route: string) {
 		this.router.navigate([route]);

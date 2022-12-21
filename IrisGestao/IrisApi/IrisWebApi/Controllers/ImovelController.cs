@@ -10,9 +10,9 @@ public class ImovelController : Controller
 {
     private readonly IImovelService imovelService;
 
-    public ImovelController(IImovelService ImovelService)
+    public ImovelController(IImovelService imovelService)
     {
-        this.imovelService = ImovelService;
+        this.imovelService = imovelService;
     }
  
     // GET
