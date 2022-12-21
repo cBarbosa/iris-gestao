@@ -14,7 +14,7 @@ const routes: Routes = [
 		component: LoggedInLayoutComponent,
 		children: [
 			{
-				path: 'property-listing',
+				path: 'property/listing',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import(
@@ -26,7 +26,7 @@ const routes: Routes = [
 				},
 			},
 			{
-				path: 'property-details/:uid',
+				path: 'property/details/:uid',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import('./pages/property/property-view/property-view.module').then(
@@ -38,7 +38,7 @@ const routes: Routes = [
 				},
 			},
 			{
-				path: 'property-edit',
+				path: 'property/edit',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import('./pages/property/property-edit/property-edit.module').then(
@@ -50,7 +50,7 @@ const routes: Routes = [
 				},
 			},
 			{
-				path: 'client-listing',
+				path: 'client/listing',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import('./pages/client/client-listing/client-listing.module').then(
@@ -62,7 +62,7 @@ const routes: Routes = [
 				},
 			},
 			{
-				path: 'client-details',
+				path: 'client/details',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import('./pages/client/client-view/client-view.module').then(
@@ -74,7 +74,7 @@ const routes: Routes = [
 				},
 			},
 			{
-				path: 'client-register',
+				path: 'client/register',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import('./pages/client/client-register/client-register.module').then(

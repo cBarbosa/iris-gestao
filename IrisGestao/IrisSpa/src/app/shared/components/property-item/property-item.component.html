@@ -15,8 +15,7 @@
 			{{ propertyData.nome }}
 			<span class="property-id">#{{ propertyData.guidReferencia }}</span>
 		</h4>
-		<!-- <p>{{ propertyData.imovelEndereco[0].rua }}</p> -->
-		<p>Endereço do imóvel [0]</p>
+		<p>{{ propertyData.imovelEndereco?.[0]?.rua ?? '' }}</p>
 		<div class="location">
 			<app-icon name="pin-building" styleClass="mr-1"></app-icon>
 			{{ propertyData.idCategoriaImovelNavigation?.nome }}
@@ -40,13 +39,13 @@
 					<li>
 						<a>{{ propertyData.idClienteProprietarioNavigation?.nome }}</a>
 					</li>
-					<li>{{ propertyData.idClienteProprietarioNavigation?.cpfCnpj }}</li>
+					<li>{{ propertyData.idClienteProprietarioNavigation?.cpfCnpj ?? '' | cpfcnpj }}</li>
 					<li>xx x xxxxxx</li>
 				</ul>
 			</div>
 			<button
 				pButton
-				(click)="navigateTo('property-details/'+ propertyData.guidReferencia)"
+				(click)="navigateTo('property/details/'+ propertyData.guidReferencia)"
 				label="Ver detalhes"
 				title="detalhes do imóvel"
 			></button>
