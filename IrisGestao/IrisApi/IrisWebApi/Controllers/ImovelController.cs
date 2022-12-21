@@ -1,4 +1,4 @@
-﻿using IrisGestao.ApplicationService.Services.Interface;
+using IrisGestao.ApplicationService.Services.Interface;
 using IrisGestao.Domain.Command.Request;
 using Microsoft.AspNetCore.Mvc;
 
@@ -67,4 +67,3 @@ public class ImovelController : Controller
         return Ok(result);
     }
 }
-

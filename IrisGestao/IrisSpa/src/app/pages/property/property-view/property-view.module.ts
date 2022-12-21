@@ -9,6 +9,7 @@ import { TableModule } from 'primeng/table';
 import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
 import { TabViewModule } from 'primeng/tabview';
+import { AreaPipeModule } from 'src/app/shared/pipes';
 
 @NgModule({
 	declarations: [PropertyViewComponent],
@@ -22,6 +23,7 @@ import { TabViewModule } from 'primeng/tabview';
 		MenuModule,
 		SidebarModule,
 		TabViewModule,
+		AreaPipeModule,
 	],
 })
 export class PropertyViewModule {}

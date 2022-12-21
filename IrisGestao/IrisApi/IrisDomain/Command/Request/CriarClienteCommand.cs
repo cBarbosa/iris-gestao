@@ -9,8 +9,11 @@ namespace IrisGestao.Domain.Command.Request
     public class CriarClienteCommand
     {
         public int? Id { get; set; }
+        public int? TipoCliente { get; set; }
+        public string CpfCnp { get; set; }
         public string Nome { get; set; }
         public string RazaoSocial { get; set; }
+        public Boolean Status { get; set; }
         public string Endereco { get; set; }
         public string Bairro { get; set; }
         public string Cidade { get; set; }

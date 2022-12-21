@@ -1,32 +1,33 @@
 <div class="property-item">
 	<div class="property-image">
 		<div class="image">
-			<img src="../../../../assets/images/imovel.png" alt="" />
+			<img src="{{ propertyData.image_address }}" alt="" />
 		</div>
 		<!-- <div class="property-category">Imóvel da carteira</div> -->
 		<p-tag
 			[rounded]="true"
 			class="property-category"
-			[styleClass]="propertyType"
+			[styleClass]="propertyData.property_type"
 		></p-tag>
 	</div>
 	<div class="property-info">
 		<h4>
-		{{imovel.nome}} <span class="property-id">#3124322</span>
+			{{ propertyData.name }}
+			<span class="property-id">#{{ propertyData.code }}</span>
 		</h4>
-		<p>Avenida São Paulo, 2803 - Centro, Mangaguá - SP</p>
+		<p>{{ propertyData.address }}</p>
 		<div class="location">
 			<app-icon name="pin-building" styleClass="mr-1"></app-icon>
-			Edifício Corporativo
+			{{ propertyData.type }}
 		</div>
 		<div class="property-features">
 			<span class="feature">
 				<app-icon name="door" styleClass="mr-1"></app-icon>
-				356 unidades
+				{{ propertyData.unit_amount }} unidades
 			</span>
 			<span class="feature">
 				<app-icon name="area" styleClass="mr-1"></app-icon>
-				1.321 m²
+				{{ propertyData.area | area }}
 			</span>
 		</div>
 	</div>
@@ -35,9 +36,11 @@
 			<div>
 				<h6>Proprietário</h6>
 				<ul>
-					<li><a>Matheus Gomes</a></li>
-					<li>012.213.442-22</li>
-					<li>(61) 99433-1022</li>
+					<li>
+						<a>{{ propertyData.proprietary.name }}</a>
+					</li>
+					<li>{{ propertyData.proprietary.cpf_cnpj }}</li>
+					<li>{{ propertyData.proprietary.telephone }}</li>
 				</ul>
 			</div>
 			<button

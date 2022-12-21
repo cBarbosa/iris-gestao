@@ -1,0 +1,21 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "69c9c857-b88d-44a6-ba24-af2af36a53b8": {
+      "ProjectGuid": "69c9c857-b88d-44a6-ba24-af2af36a53b8",
+      "DisplayName": "IrisDomain",
+      "ColorIndex": 0
+    },
+    "e21407c4-b75e-49b4-9ff4-ac23dd43a0ce": {
+      "ProjectGuid": "e21407c4-b75e-49b4-9ff4-ac23dd43a0ce",
+      "DisplayName": "IrisInfra",
+      "ColorIndex": 1
+    },
+    "1f085ec0-6969-420c-bdb7-5bedebf0b44d": {
+      "ProjectGuid": "1f085ec0-6969-420c-bdb7-5bedebf0b44d",
+      "DisplayName": "IrisAppService",
+      "ColorIndex": 2
+    }
+  },
+  "NextColorIndex": 3
+}

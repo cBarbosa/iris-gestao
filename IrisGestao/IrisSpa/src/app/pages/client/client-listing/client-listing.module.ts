@@ -7,6 +7,7 @@ import { TagModule } from 'primeng/tag';
 import { ClientListingRoutingModule } from './client-listing-routing.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
+import { CpfCnpjPipeModule } from 'src/app/shared/pipes';
 
 @NgModule({
 	declarations: [ClientListingComponent],
@@ -18,6 +19,7 @@ import { ButtonModule } from 'primeng/button';
 		InputTextModule,
 		ButtonModule,
 		ClientListingRoutingModule,
+		CpfCnpjPipeModule,
 	],
 })
 export class ClientListingModule {}
