@@ -26,7 +26,6 @@ export class TopbarComponent {
 	}
 
 	updateTopMenu(route: string) {
-		console.log('---->', route);
 		this.items = [
 			{
 				label: 'Home',
