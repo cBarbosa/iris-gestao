@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 import { first } from 'rxjs';
 import { ClientService } from 'src/app/shared/services';
 
@@ -17,6 +18,9 @@ export class ClientListingComponent {
 	constructor(private router: Router, private clientService: ClientService) {}
 
 	clients:any = [];
+	totalClientCount = 0;
+	isLoadingClients = false;
+	rows: any;
 
 	ngOnInit() {
 		const clients = this.clientService
@@ -39,6 +43,40 @@ export class ClientListingComponent {
 					});
 				});
 			});
+	}
+
+	loadClientsPage(event: LazyLoadEvent) {
+		if (event.first != null) {
+			this.isLoadingClients = true;
+			const page = Math.floor(event.first / this.rows) + 1;
+			this.getClientsPage(page);
+		}
+	}
+
+	getClientsPage(page = 1): void {
+		this.clientService
+			.getClients(this.rows, page)
+			?.pipe(first())
+			.subscribe((event: any) => {
+				if (event) {
+					this.totalClientCount = event.totalCount;
+					this.setClientEntries(event);
+				}
+				this.isLoadingClients = false;
+			});
+	}
+
+	setClientEntries({ items }: any) {
+		this.clients = items.map((item: any) => {
+			return {
+				name: 'Courtney Henry',
+				cpf_cnpj: '72.165.630/0001-27',
+				birthday: new Date(),
+				client_type: 'Locatário',
+				status: 'inativo',
+				action: '',
+			};
+		});
 	}
 
 	navigateTo(route: string) {

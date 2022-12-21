@@ -8,14 +8,11 @@ import { Imovel } from '../../models';
 	styleUrls: ['./property-item.component.scss'],
 })
 export class PropertyItemComponent {
-	@Input()
-	imovel: any;
-
 	propertyType = this.randomize();
+	@Input('data')
+	propertyData: any;
 
-	constructor(private router: Router) {
-		console.debug('imovel', this.imovel);
-	}
+	constructor(private router: Router) { }
 
 	navigateTo(route: string) {
 		this.router.navigate([route]);
