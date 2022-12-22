@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { PropertyItemData } from 'src/app/shared/models';
 
 @Component({
 	selector: 'app-client-view',
@@ -7,7 +6,7 @@ import { PropertyItemData } from 'src/app/shared/models';
 	styleUrls: ['./client-view.component.scss'],
 })
 export class ClientViewComponent {
-	propertyItens: PropertyItemData[] = [
+	propertyItens: any[] = [
 		{
 			image_address: '../../../../assets/images/imovel.png',
 			name: 'Nome do edifício lorem ipsum',

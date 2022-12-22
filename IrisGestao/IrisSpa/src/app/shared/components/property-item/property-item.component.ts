@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Imovel } from '../../models';
-import { PropertyItemData } from '../../models';
 
 @Component({
 	selector: 'app-property-item',
@@ -9,19 +8,10 @@ import { PropertyItemData } from '../../models';
 	styleUrls: ['./property-item.component.scss'],
 })
 export class PropertyItemComponent {
-	//propertyType = this.randomize();
-  @Input()
-	imovel: any;
 	@Input('data')
-	propertyData: any;
+	propertyData: Imovel;
 
-	constructor(private router: Router) {
-		console.debug('imovel', this.imovel);
-	}
-
-	ngOnInit() {
-		console.log(this.propertyData);
-	}
+	constructor(private router: Router) { }
 
 	navigateTo(route: string) {
 		this.router.navigate([route]);
