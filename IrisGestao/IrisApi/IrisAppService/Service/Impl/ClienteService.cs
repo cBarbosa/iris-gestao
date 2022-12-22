@@ -28,7 +28,7 @@ public class ClienteService: IClienteService
     public async Task<CommandResult> GetById(int codigo)
     {
         var Cliente = await Task.FromResult(clienteRepository.GetById(codigo));
-
+        
         return Cliente == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
             : new CommandResult(true, SuccessResponseEnums.Success_1005, Cliente);

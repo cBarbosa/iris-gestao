@@ -36,22 +36,14 @@ public class ImovelService: IImovelService
 
     public async Task<CommandResult> Insert(CriarImovelCommand cmd)
     {
-        var Imovel = new Imovel
-        {
-            Nome                    = cmd.Nome,
-            IdCategoriaImovel       = cmd.IdCategoriaImovel,
-            IdClienteProprietario   = cmd.IdClienteProprietario,
-            NumCentroCusto          = cmd.NumCentroCusto,
-            MonoUsuario             = cmd.MonoUsuario,
-            Classificacao           = cmd.Classificacao,
-            GuidReferencia          = Guid.NewGuid(),    
-            DataUltimaModificacao   = DateTime.Now
-        };
-
+        var imovel = new Imovel();
+        cmd.GuidReferencia = null;
+        BindImoveisData(cmd, imovel);
+        
         try
         {
-            imovelRepository.Insert(Imovel);
-            return new CommandResult(true, SuccessResponseEnums.Success_1000, Imovel);
+            imovelRepository.Insert(imovel);
+            return new CommandResult(true, SuccessResponseEnums.Success_1000, imovel);
         }
         catch (Exception)
         {
@@ -60,31 +52,27 @@ public class ImovelService: IImovelService
         }
     }
 
-    public async Task<CommandResult> Update(int? codigo, CriarImovelCommand cmd)
+    public async Task<CommandResult> Update(Guid uuid, CriarImovelCommand cmd)
     {
-        Imovel _Imovel = new Imovel();
-        if (cmd == null || !codigo.HasValue || cmd.GuidReferencia == null)
+        if (cmd == null)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
-        var Imovel = new Imovel
+        var imovel = await imovelRepository.GetByReferenceGuid(uuid);
+
+        if (imovel == null)
         {
-            Id                      = codigo.Value,
-            Nome                    = cmd.Nome,
-            IdCategoriaImovel       = cmd.IdCategoriaImovel,
-            IdClienteProprietario   = cmd.IdClienteProprietario,
-            NumCentroCusto          = cmd.NumCentroCusto,
-            MonoUsuario             = cmd.MonoUsuario,
-            Classificacao           = cmd.Classificacao,
-            GuidReferencia          = cmd.GuidReferencia,
-            DataUltimaModificacao   = DateTime.Now
-        };
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+
+        cmd.GuidReferencia = uuid;
+        BindImoveisData(cmd, imovel);
 
         try
         {
-            imovelRepository.Update(Imovel);
-            return new CommandResult(true, SuccessResponseEnums.Success_1001, Imovel);
+            imovelRepository.Update(imovel);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, imovel);
         }
         catch (Exception)
         {
@@ -119,5 +107,35 @@ public class ImovelService: IImovelService
                 throw;
             }
         }
+    }
+    
+    public async Task<CommandResult> GetByGuid(Guid guid)
+    {
+        var imovel = await imovelRepository.GetByGuid(guid);
+
+        return imovel == null
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, imovel);
+    }
+    
+    private static void BindImoveisData(CriarImovelCommand cmd, Imovel imovel)
+    {
+        switch (imovel.GuidReferencia)
+        {
+            case null:
+                imovel.GuidReferencia = Guid.NewGuid();
+                imovel.DataCriacao = DateTime.Now;
+                break;
+            default:
+                imovel.DataUltimaModificacao = DateTime.Now;
+                break;
+        }
+
+        imovel.Nome = cmd.Nome;
+        imovel.IdCategoriaImovel = cmd.IdCategoriaImovel;
+        imovel.IdClienteProprietario = cmd.IdClienteProprietario;
+        imovel.NumCentroCusto = cmd.NumCentroCusto;
+        imovel.MonoUsuario = cmd.MonoUsuario;
+        imovel.Classificacao = cmd.Classificacao;
     }
 }

@@ -10,48 +10,47 @@ public class UnidadeController : Controller
 {
     private readonly IUnidadeService unidadeService;
 
-    public UnidadeController(IUnidadeService UnidadeService)
+    public UnidadeController(IUnidadeService unidadeService)
     {
-        this.unidadeService = UnidadeService;
+        this.unidadeService = unidadeService;
     }
  
     // GET
-    [HttpGet("/api/[controller]")]
+    [HttpGet]
     [Produces("application/json")]
    public async Task<IActionResult> GetAll() =>
         Ok(await unidadeService.GetAll());
 
     // GET
-    [HttpGet("/api/[controller]/{codigo}/id/")]
+    [HttpGet("{codigo}/id")]
     [Produces("application/json")]
     public async Task<IActionResult> BuscarUnidade([FromRoute] int codigo) =>
         Ok(await unidadeService.GetById(codigo));
 
-
     // GET
-    [HttpGet("/api/[controller]/{codigo}/idImovel/")]
+    [HttpGet("{codigo}/idImovel")]
     [Produces("application/json")]
     public async Task<IActionResult> BuscarBuscarUnidadePorImovel([FromRoute] int codigo) =>
         Ok(await unidadeService.BuscarBuscarUnidadePorImovel(codigo));
 
 
-    [HttpPost("/api/[controller]/criar")]
+    [HttpPost("criar")]
     [Produces("application/json")]
-    public async Task<IActionResult> Cadatrar([FromBody] CriarUnidadeCommand cmd)
+    public async Task<IActionResult> Insert(
+        [FromBody] CriarUnidadeCommand cmd)
     {
         var result = await unidadeService.Insert(cmd);
 
-        if (result == null)
-            return BadRequest("Operação não realizada");
-
         return Ok(result);
     }
 
-    [HttpPut("/api/[controller]/{codigo}/atualizar/")]
+    [HttpPut("{guid}/atualizar")]
     [Produces("application/json")]
-    public async Task<IActionResult> Atualizar(int? codigo, [FromBody] CriarUnidadeCommand cmd)
+    public async Task<IActionResult> Atualizar(
+        Guid guid,
+        [FromBody] CriarUnidadeCommand cmd)
     {
-        var result = await unidadeService.Update(codigo, cmd);
+        var result = await unidadeService.Update(guid, cmd);
 
         if (result == null)
             return BadRequest("Operação não realizada");
@@ -59,7 +58,7 @@ public class UnidadeController : Controller
         return Ok(result);
     }
 
-    [HttpDelete("/api/[controller]/{codigo}/deletar/")]
+    [HttpDelete("{codigo}/deletar/")]
     [Produces("application/json")]
     public async Task<IActionResult> Deletar(int? codigo)
     {
@@ -71,4 +70,3 @@ public class UnidadeController : Controller
         return Ok(result);
     }
 }
-

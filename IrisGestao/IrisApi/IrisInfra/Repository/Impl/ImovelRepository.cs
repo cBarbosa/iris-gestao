@@ -38,14 +38,34 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                         .Include(x => x.IdCategoriaImovelNavigation)
                         .Include(x => x.ImovelEndereco)
                         .Include(x => x.Unidade)
-                            //.ThenInclude(y => y.IdTipoUnidadeNavigation)
+                            .ThenInclude(y => y.IdTipoUnidadeNavigation)
                         .Where(x => x.IdCategoriaImovel.Equals(TipoImovelEnum.IMOVEL_CARTEIRA))
                         .Select(x => new
                         {
                             GuidReferencia = x.GuidReferencia,
                             Nome = x.Nome,
                             ImovelEndereco = x.ImovelEndereco,
-                            Unidade = x.Unidade,
+                            Unidade = x.Unidade.Select(y => new
+                                {
+                                    GuidReferencia = y.GuidReferencia,
+                                    IdImovel = y.IdImovel,
+                                    AreaUtil = y.AreaUtil,
+                                    AreaTotal = y.AreaTotal,
+                                    AreaHabitese = y.AreaHabitese,
+                                    InscricaoIPTU = y.InscricaoIPTU,
+                                    MatriculaEnergia = y.MatriculaEnergia,
+                                    MatriculaAgua = y.MatriculaAgua,
+                                    TaxaAdministracao = y.TaxaAdministracao,
+                                    ValorPotencial = y.ValorPotencial,
+                                    DataCriacao = y.DataCriacao,
+                                    DataUltimaModificacao = y.DataUltimaModificacao,
+                                    IdTipoUnidadeNavigation = new
+                                    {
+                                        Id = y.IdTipoUnidadeNavigation.Id,
+                                        Nome = y.IdTipoUnidadeNavigation.Nome
+                                    }
+                                }
+                                ),
                             AreaTotal = x.Unidade.Sum(x => x.AreaTotal),
                             AreaUtil = x.Unidade.Sum(x => x.AreaUtil),
                             AreaHabitese = x.Unidade.Sum(x => x.AreaHabitese),
@@ -93,7 +113,83 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
 
         return null!;
     }
+
+    public async Task<object?> GetByGuid(Guid guid)
+    {
+        return await DbSet
+                        .Include(x => x.IdClienteProprietarioNavigation)
+                            .ThenInclude(y => y.IdTipoClienteNavigation)
+                        .Include(x => x.IdCategoriaImovelNavigation)
+                        .Include(x => x.ImovelEndereco)
+                        .Include(x => x.Unidade)
+                            .ThenInclude(y => y.IdTipoUnidadeNavigation)
+                        .Where(x => x.GuidReferencia.Equals(guid))
+                        .Select(x => new
+                        {
+                            GuidReferencia = x.GuidReferencia,
+                            Nome = x.Nome,
+                            ImovelEndereco = x.ImovelEndereco,
+                            Unidade = x.Unidade.Select(y => new
+                                {
+                                    GuidReferencia = y.GuidReferencia,
+                                    IdImovel = y.IdImovel,
+                                    AreaUtil = y.AreaUtil,
+                                    AreaTotal = y.AreaTotal,
+                                    AreaHabitese = y.AreaHabitese,
+                                    InscricaoIPTU = y.InscricaoIPTU,
+                                    MatriculaEnergia = y.MatriculaEnergia,
+                                    MatriculaAgua = y.MatriculaAgua,
+                                    TaxaAdministracao = y.TaxaAdministracao,
+                                    ValorPotencial = y.ValorPotencial,
+                                    DataCriacao = y.DataCriacao,
+                                    DataUltimaModificacao = y.DataUltimaModificacao,
+                                    IdTipoUnidadeNavigation = new
+                                    {
+                                        Id = y.IdTipoUnidadeNavigation.Id,
+                                        Nome = y.IdTipoUnidadeNavigation.Nome
+                                    }
+                                }
+                                ),
+                            AreaTotal = x.Unidade.Sum(x => x.AreaTotal),
+                            AreaUtil = x.Unidade.Sum(x => x.AreaUtil),
+                            AreaHabitese = x.Unidade.Sum(x => x.AreaHabitese),
+                            NroUnidades = x.Unidade.Count,
+                            ImgCapa = "../../../../assets/images/imovel.png",
+                            Imagens = ImagemListFake,
+                            Anexos = AnexoListFake,
+                            IdCategoriaImovelNavigation = x.IdCategoriaImovelNavigation == null ? null : new 
+                            {
+                                Id = x.IdCategoriaImovelNavigation.Id,
+                                Nome = x.IdCategoriaImovelNavigation.Nome
+                            },
+                            IdClienteProprietarioNavigation = x.IdClienteProprietarioNavigation == null ? null : new 
+                            {
+                                GuidReferencia = x.IdClienteProprietarioNavigation.GuidReferencia,
+                                CpfCnpj = x.IdClienteProprietarioNavigation.CpfCnpj,
+                                Nome = x.IdClienteProprietarioNavigation.Nome,
+                                Cep = x.IdClienteProprietarioNavigation.Cep,
+                                Endereco = x.IdClienteProprietarioNavigation.Endereco,
+                                Bairro = x.IdClienteProprietarioNavigation.Bairro,
+                                Cidade = x.IdClienteProprietarioNavigation.Cidade,
+                                Estado = x.IdClienteProprietarioNavigation.Estado,
+                                IdTipoClienteNavigation = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation == null
+                                    ? null
+                                    : new 
+                                    {
+                                        Id = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Id,
+                                        Nome = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Nome,
+                                    }
+                            }
+                        })
+                    .FirstOrDefaultAsync();
+    }
     
+    public async Task<Imovel?> GetByReferenceGuid(Guid guid)
+    {
+        return await DbSet
+            .FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
+    }
+
     private static List<string> ImagemListFake => new List<string>
     {
         ".../../../assets/images/property/1.jpg",
