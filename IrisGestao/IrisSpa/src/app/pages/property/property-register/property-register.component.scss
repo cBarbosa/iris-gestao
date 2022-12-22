@@ -1,0 +1,105 @@
+:host {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+}
+.edit-form {
+	@apply pt-12;
+	width: 100%;
+	max-width: 1155px;
+	margin: 0 2rem;
+
+	.input-wrapper {
+		display: flex;
+
+		section {
+			@apply p-6;
+			flex-grow: 1;
+
+			h4 {
+				@apply text-2xl font-bold mb-8;
+				color: #262626;
+			}
+
+			p {
+				@apply mb-8 font-bold;
+				color: #646464;
+
+				.form-step-value {
+					@apply rounded-full p-2 mr-2 text-sm font-medium;
+					color: #ffffff;
+					background-color: #641b1e;
+				}
+			}
+
+			&.form-details {
+				max-width: 445px;
+				width: 100%;
+				height: fit-content;
+				// background-color: #f8f9fa;
+			}
+		}
+	}
+
+	.form-actions {
+		display: flex;
+		gap: 1rem;
+		width: 100%;
+		border-top: 1px solid #eaeaea;
+		@apply py-8 px-6;
+
+		button {
+			&:first-child {
+				margin-right: auto;
+			}
+		}
+	}
+}
+
+.field {
+	margin-bottom: 1.7rem;
+
+	label {
+		@apply text-sm mb-2;
+		color: #262626;
+	}
+
+	input {
+		width: 100%;
+	}
+
+	.p-error {
+		position: absolute;
+	}
+
+	&:last-child {
+		margin-bottom: 0.7rem;
+	}
+}
+
+:host ::ng-deep {
+	.p-inputwrapper {
+		width: 100%;
+
+		.p-component {
+			&.p-dropdown {
+				width: 100%;
+			}
+		}
+	}
+
+	.p-calendar {
+		width: 100%;
+
+		.p-inputtext {
+			width: 100%;
+		}
+	}
+
+	.p-button {
+		&.text-sm {
+			height: 1rem;
+			font-size: 0.875rem;
+		}
+	}
+}

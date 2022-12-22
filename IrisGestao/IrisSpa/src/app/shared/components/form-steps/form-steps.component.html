@@ -1,0 +1,29 @@
+<ul>
+	<ng-container *ngFor="let step of list; let i = index">
+		<li
+			[ngClass]="{
+				'form-step': true,
+				current: step.isCurrent,
+				valid: step.isValid,
+				invalid: step.isValid !== undefined ? !step.isValid : false
+			}"
+		>
+			<button type="button" (click)="callback ? callback(i + 1) : null">
+				<span *ngIf="step.isValid === undefined" class="form-step-value">
+					{{ (i + 1).toString().padStart(2, "0") }}
+				</span>
+				<span *ngIf="step.isValid" class="form-step-value">
+					<i class="ph-check"></i>
+				</span>
+				<span
+					*ngIf="step.isValid !== undefined && !step.isValid"
+					class="form-step-value"
+				>
+					<i class="ph-x"></i>
+				</span>
+
+				{{ step.label }}
+			</button>
+		</li>
+	</ng-container>
+</ul>
