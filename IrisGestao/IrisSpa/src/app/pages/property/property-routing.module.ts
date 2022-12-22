@@ -38,6 +38,17 @@ const routes: Routes = [
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
 			},
+			{
+				path: 'register',
+				// component: PropertyListingComponent,
+				loadChildren: () =>
+					import('./property-register/property-register.module').then(
+						(m) => m.PropertyRegisterModule
+					),
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
 		],
 	},
 ];

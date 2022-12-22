@@ -14,7 +14,7 @@ import { Utils } from 'src/app/shared/utils';
 	styleUrls: ['./client-register.component.scss'],
 })
 export class ClientRegisterComponent {
-	editForm: FormGroup;
+	registerForm: FormGroup;
 
 	onInputDate: Function;
 	onBlurDate: Function;
@@ -38,7 +38,7 @@ export class ClientRegisterComponent {
 	constructor(private fb: FormBuilder, private location: Location) {}
 
 	ngOnInit() {
-		this.editForm = this.fb.group({
+		this.registerForm = this.fb.group({
 			name: ['', Validators.required],
 			birthday: [null, [Validators.required]],
 			clientType: [null, [Validators.required]],
@@ -54,7 +54,7 @@ export class ClientRegisterComponent {
 	}
 
 	get f(): { [key: string]: AbstractControl<any, any> } {
-		return this.editForm.controls;
+		return this.registerForm.controls;
 	}
 
 	checkHasError(c: AbstractControl) {
@@ -64,8 +64,8 @@ export class ClientRegisterComponent {
 	onSubmit(e: any = null) {
 		console.log('submitting form');
 
-		if (this.editForm.invalid) {
-			this.editForm.markAllAsTouched();
+		if (this.registerForm.invalid) {
+			this.registerForm.markAllAsTouched();
 			return;
 		}
 		console.log('form submitted');

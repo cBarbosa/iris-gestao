@@ -1,7 +1,8 @@
 <div class="content-wrapper">
 	<div class="flex justify-between py-9">
 		<h3 class="text-2xl font-bold">
-			Lista de Imóveis <span class="ml-2 text-sm text-slate-600">{{ totalListCount }}</span>
+			Lista de Imóveis
+			<span class="ml-2 text-sm text-slate-600">{{ totalListCount }}</span>
 		</h3>
 
 		<div class="options">
@@ -12,7 +13,12 @@
 			<p-dropdown class="mx-2" placeholder="Tipo de imóvel"></p-dropdown>
 			<p-dropdown class="mx-2" placeholder="Proprietário"></p-dropdown>
 			<p-dropdown class="mx-2 mr-4" placeholder="Bairro"></p-dropdown>
-			<button pButton type="button" class="p-button-outlined h-9">
+			<button
+				pButton
+				type="button"
+				class="p-button-outlined h-9"
+				(click)="navigateTo('property/register')"
+			>
 				<i class="pi pi-plus mr-3"></i>
 				Adicionar imóvel
 			</button>

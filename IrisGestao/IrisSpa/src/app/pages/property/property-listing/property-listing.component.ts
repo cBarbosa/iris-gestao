@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 import { first } from 'rxjs';
 import { Imovel } from 'src/app/shared/models';
@@ -10,7 +11,6 @@ import { ImovelService } from 'src/app/shared/services';
 	styleUrls: ['./property-listing.component.scss'],
 })
 export class PropertyListingComponent implements OnInit {
-
 	properties: Imovel[] = [];
 
 	totalListCount: number;
@@ -19,7 +19,7 @@ export class PropertyListingComponent implements OnInit {
 	first = 0;
 	rows = 10;
 
-	constructor(private imovelService: ImovelService) { }
+	constructor(private imovelService: ImovelService, private router: Router) {}
 
 	ngOnInit(): void {
 		this.getPagingData();
@@ -33,8 +33,7 @@ export class PropertyListingComponent implements OnInit {
 		}
 	}
 
-	getPagingData(page:number = 1): void	{
-
+	getPagingData(page: number = 1): void {
 		const list = this.imovelService
 			.getPerperties()
 			?.pipe(first())
@@ -49,6 +48,9 @@ export class PropertyListingComponent implements OnInit {
 				});
 				this.isLoadingList = false;
 			});
+	}
 
-	};
+	navigateTo(route: string) {
+		this.router.navigate([route]);
+	}
 }
