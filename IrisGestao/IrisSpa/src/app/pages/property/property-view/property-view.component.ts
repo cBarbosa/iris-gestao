@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { MenuItem } from 'primeng/api';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LazyLoadEvent, MenuItem } from 'primeng/api';
+import { first } from 'rxjs/internal/operators/first';
+import { Imovel, ImovelUnidade, ImageData as ImagemData } from 'src/app/shared/models';
+import { ImovelService } from 'src/app/shared/services';
 
 @Component({
 	selector: 'app-property-view',
@@ -9,46 +12,20 @@ import { MenuItem } from 'primeng/api';
 })
 export class PropertyViewComponent {
 	tableMenu: MenuItem[];
+	property: Imovel;
+	unit: ImovelUnidade | undefined;
+	units: ImovelUnidade[] = [];
+	imageList: ImagemData[] = [];
 
 	isFavorite = true;
 	detailsVisible = false;
+	isLoadingView = false;
 
-	units = [
-		{
-			name: 'Unidade nome',
-			area_usable: '21',
-			area_total: '32',
-			area_occupancy: '32',
-			lease_status: 'Unidade locada',
-			action: '',
-		},
-		{
-			name: 'Unidade nome',
-			area_usable: '21',
-			area_total: '32',
-			area_occupancy: '32',
-			lease_status: 'Unidade locada',
-			action: '',
-		},
-		{
-			name: 'Unidade nome',
-			area_usable: '21',
-			area_total: '32',
-			area_occupancy: '32',
-			lease_status: 'locada',
-			action: '',
-		},
-		{
-			name: 'Unidade nome',
-			area_usable: '21',
-			area_total: '32',
-			area_occupancy: '32',
-			lease_status: 'Unidade locada',
-			action: '',
-		},
-	];
 
-	constructor(private router: Router) {}
+	constructor(
+		private router: Router
+		, private route: ActivatedRoute
+		, private imovelService: ImovelService) {}
 
 	ngOnInit() {
 		this.tableMenu = [
@@ -60,10 +37,17 @@ export class PropertyViewComponent {
 			{
 				label: 'Editar',
 				icon: 'ph-note-pencil',
-				command: () => this.navigateTo('property-edit'),
+				command: () => this.navigateTo('property/edit/'+ this.unit?.guidReferencia),
 			},
-			{ label: 'Duplicar', icon: 'ph-copy-simple' },
+			{
+				label: 'Duplicar',
+				icon: 'ph-copy-simple'
+			}
 		];
+
+		this.route.params.subscribe(params => {
+			this.getData(params['uid']);
+		});
 	}
 
 	toggleFavorite() {
@@ -77,4 +61,23 @@ export class PropertyViewComponent {
 	navigateTo(route: string) {
 		this.router.navigate([route]);
 	}
+
+	getData(uid: string) : void {
+		this.isLoadingView = true;
+
+		const view = this.imovelService
+			.getProperty(uid)
+			?.pipe(first())
+			.subscribe((imovel: Imovel) => {
+				this.property = imovel;
+				this.units = imovel.unidade!;
+				this.imageList = imovel.imagens ?? [];
+				this.isLoadingView = false;
+			});
+	}
+
+	setCurrentUnit(item: ImovelUnidade) :void {
+		this.unit = item;
+	}
+
 }

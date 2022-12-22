@@ -23,4 +23,18 @@ export class ImovelService {
 				})
 			);
 	}
+
+	getProperty(uid: string) {
+		return this.http
+			.get<ApiResponse>(
+				`${env.config.apiUrl}Imovel/${uid}/guid`
+			)
+			.pipe(
+				map((response) => {
+					console.log('response', response);
+					if (response.success) return response.data;
+					else return console.error(`getPerperties: ${response.message}`);
+				})
+			);
+	}
 }

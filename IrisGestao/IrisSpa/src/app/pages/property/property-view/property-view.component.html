@@ -4,10 +4,10 @@
 	<div class="content">
 		<div class="main-card">
 			<div class="left-side">
-				<p-tag [rounded]="true" styleClass="wallet"></p-tag>
+				<p-tag [rounded]="true" [styleClass]="property.idCategoriaImovelNavigation?.nome == 'Imóvel de carteira' ? 'wallet' : 'market'"></p-tag>
 				<h4>
-					Nome do edifício lorem ipsum
-					<span class="property-id">#3124322</span>
+					{{property.nome}}
+					<span class="property-id">#{{property.guidReferencia}}</span>
 					<button
 						pButton
 						pRipple
@@ -20,10 +20,10 @@
 						(click)="toggleFavorite()"
 					></button>
 				</h4>
-				<p>Avenida São Paulo, 2803 - Centro, Mangaguá - SP</p>
+				<p>{{ property.imovelEndereco?.[0]?.rua ?? '' }} - {{ property.imovelEndereco?.[0]?.uf }}</p>
 				<div class="location">
 					<app-icon name="pin-building" styleClass="mr-1"></app-icon>
-					Edifício Corporativo
+					{{ property.idCategoriaImovelNavigation?.nome }}
 				</div>
 			</div>
 			<div class="right-side">
@@ -33,20 +33,20 @@
 							<app-icon name="door" styleClass="mr-1"></app-icon>
 							Unidades
 						</div>
-						<div class="value">356</div>
+						<div class="value">{{ property.nroUnidades ?? 0 }}</div>
 					</div>
 					<span class="feature">
 						<div class="label">
 							<app-icon name="area" styleClass="mr-1"></app-icon>
 							Metragem total
 						</div>
-						<div class="value">{{ "1321" | area }}</div>
+						<div class="value">{{ property.areaTotal ?? 0 | area }}</div>
 					</span>
 				</div>
 			</div>
 		</div>
 
-		<section class="units">
+		<section class="units" >
 			<div class="w-full flex justify-between">
 				<h3>Unidades</h3>
 				<button
@@ -60,30 +60,38 @@
 				</button>
 			</div>
 
+			<div *ngIf="property.unidade!.length === 0">
+				sem unidades cadastradas
+			</div>
+
 			<p-table
 				[value]="units"
 				styleClass="p-datatable-striped"
 				[tableStyle]="{ 'min-width': '50rem' }"
+				*ngIf="property.unidade!.length > 0"
 			>
 				<ng-template pTemplate="header">
 					<tr>
 						<th>Nome</th>
-						<th>Área Útil</th>
-						<th>Área Total</th>
 						<th>Área Habite-se</th>
+						<th>Área Útil</th>
+						<th>Locatário</th>
+						<th>Vencimento</th>
 						<th>Locação</th>
 						<th></th>
 					</tr>
 				</ng-template>
-				<ng-template pTemplate="body" let-unit>
+				<!-- <ng-container *ngFor="let unit of property.unidade"></ng-container> -->
+				<ng-template pTemplate="body" let-unit >
 					<tr>
-						<td>{{ unit.name }}</td>
-						<td>{{ unit.area_usable | area }}</td>
-						<td>{{ unit.area_total | area }}</td>
-						<td>{{ unit.area_occupancy | area }}</td>
+						<td>Unidade </td>
+						<td>{{ unit.areaHabitese ?? 0 | area }}</td>
+						<td>{{ unit.areaUtil | area }}</td>
+						<td> - </td>
+						<td> - </td>
 						<td class="w-52">
 							<ng-container
-								*ngIf="unit.lease_status === 'locada'; else disponivel"
+								*ngIf="unit.unidadeLocada; else disponivel"
 							>
 								<p-tag
 									value="Unidade locada"
@@ -107,7 +115,7 @@
 								pButton
 								icon="pi pi-ellipsis-v"
 								class="p-button-rounded"
-								(click)="actionMenu.toggle($event)"
+								(click)="actionMenu.toggle($event);setCurrentUnit(unit)"
 							></button>
 						</td>
 					</tr>
@@ -140,35 +148,13 @@
 			</div>
 		</section>
 
-		<section class="photos">
-			<h3>Fotos</h3>
+		<ng-container *ngIf="imageList.length > 0">
+			<section class="photos">
+				<h3>Fotos</h3>
 
-			<div class="photos-grid">
-				<ul>
-					<li>
-						<img src=".../../../assets/images/property/1.jpg" alt="photo-1" />
-					</li>
-					<li>
-						<img src=".../../../assets/images/property/2.png" alt="photo-1" />
-					</li>
-					<li>
-						<img src=".../../../assets/images/property/3.png" alt="photo-1" />
-					</li>
-					<li>
-						<img src=".../../../assets/images/property/2.png" alt="photo-1" />
-					</li>
-					<li>
-						<img src=".../../../assets/images/property/4.png" alt="photo-1" />
-					</li>
-					<li>
-						<img src=".../../../assets/images/property/5.png" alt="photo-1" />
-					</li>
-					<li>
-						<img src=".../../../assets/images/property/4.png" alt="photo-1" />
-					</li>
-				</ul>
-			</div>
-		</section>
+				<app-photo-gallery [imageList]="property.imagens!"></app-photo-gallery>
+			</section>
+		</ng-container>
 	</div>
 </div>
 
@@ -193,47 +179,47 @@
 					<div class="share-line">
 						<div class="data">
 							<span class="label">Área Útil</span>
-							<span class="value">{{ "21" | area }}</span>
+							<span class="value">{{ unit?.areaUtil ?? 0 | area }}</span>
 						</div>
 						<div class="data">
 							<span class="label">Área Total</span>
-							<span class="value">{{ "32" | area }}</span>
+							<span class="value">{{ unit?.areaTotal ?? 0 | area }}</span>
 						</div>
 					</div>
 					<div class="share-line">
 						<div class="data">
 							<span class="label">Área Habite-se</span>
-							<span class="value">{{ "32" | area }}</span>
+							<span class="value">{{ unit?.areaHabitese ?? 0 | area }}</span>
 						</div>
 						<div class="data">
 							<span class="label">Valor Potencial</span>
-							<span class="value">{{ "300000.00" | currency }}</span>
+							<span class="value">{{ unit?.valorPotencial | currency }}</span>
 						</div>
 					</div>
 					<div class="data">
 						<span class="label">Taxa de administração</span>
-						<span class="value">{{ "300" | currency }}</span>
+						<span class="value">{{ unit?.taxaAdministracao | currency }}</span>
 					</div>
 
 					<div class="data small">
 						<span class="label">Número de matrícula:</span>
-						<span class="value">12212121222</span>
+						<span class="value">unit?.matricula</span>
 					</div>
 					<div class="data small">
 						<span class="label">Mat. IPTU:</span>
-						<span class="value">12212121222</span>
+						<span class="value">unit?.matriculaIPTU</span>
 					</div>
 					<div class="data small">
 						<span class="label">Ins. IPTU:</span>
-						<span class="value">12212121222</span>
+						<span class="value">{{unit?.inscricaoIPTU}}</span>
 					</div>
 					<div class="data small">
 						<span class="label">N° Neoenergia:</span>
-						<span class="value">12212121222</span>
+						<span class="value">{{unit?.matriculaEnergia}}</span>
 					</div>
 					<div class="data small">
 						<span class="label">N° CAESB:</span>
-						<span class="value">12212121222</span>
+						<span class="value">{{unit?.matriculaAgua}}</span>
 					</div>
 				</div>
 			</p-tabPanel>
@@ -271,6 +257,7 @@
 				type="button"
 				label="Editar"
 				class="p-button-outlined h-9 w-full"
+				(click)="navigateTo('property/edit/'+ this.unit?.guidReferencia)"
 			></button>
 
 			<button

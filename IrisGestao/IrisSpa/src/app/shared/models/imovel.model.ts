@@ -16,6 +16,7 @@ export class Imovel {
         public idClienteProprietarioNavigation?: Cliente,
         public imovelEndereco?: ImovelEndereco[],
         public unidade?: ImovelUnidade[],
+        public imagens?: ImageData[]
     ) { }
 
     deserialize(input: any) {
@@ -23,3 +24,9 @@ export class Imovel {
         return this;
     }
 }
+
+export type ImageData = {
+	url: string;
+	thumbUrl: string;
+	alt?: string;
+};

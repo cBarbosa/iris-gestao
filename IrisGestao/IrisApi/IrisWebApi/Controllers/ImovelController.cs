@@ -26,14 +26,14 @@ public class ImovelController : Controller
         Ok(await imovelService.GetAllPaging(idCategoria, nome, limit ?? 10, page ?? 1));
 
     // GET
-    [HttpGet("{codigo}/id/")]
+    [HttpGet("{guid}/guid/")]
     [Produces("application/json")]
-    public async Task<IActionResult> BuscarImovel([FromRoute] int codigo) =>
-        Ok(await imovelService.GetById(codigo));
+    public async Task<IActionResult> GetByGuid([FromRoute] Guid guid) =>
+        Ok(await imovelService.GetByGuid(guid));
 
     [HttpPost("criar")]
     [Produces("application/json")]
-    public async Task<IActionResult> Cadatrar([FromBody] CriarImovelCommand cmd)
+    public async Task<IActionResult> Insert([FromBody] CriarImovelCommand cmd)
     {
         var result = await imovelService.Insert(cmd);
 
@@ -43,14 +43,13 @@ public class ImovelController : Controller
         return Ok(result);
     }
 
-    [HttpPut("{codigo}/atualizar")]
+    [HttpPut("{guid}/atualizar")]
     [Produces("application/json")]
-    public async Task<IActionResult> Atualizar(int? codigo, [FromBody] CriarImovelCommand cmd)
+    public async Task<IActionResult> Update(
+        Guid guid,
+        [FromBody] CriarImovelCommand cmd)
     {
-        var result = await imovelService.Update(codigo, cmd);
-
-        if (result == null)
-            return BadRequest("Operação não realizada");
+        var result = await imovelService.Update(guid, cmd);
 
         return Ok(result);
     }

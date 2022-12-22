@@ -14,86 +14,44 @@ const routes: Routes = [
 		component: LoggedInLayoutComponent,
 		children: [
 			{
-				path: 'property/listing',
+				path: 'property',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
-					import(
-						'./pages/property/property-listing/property-listing.module'
-					).then((m) => m.PropertyListingModule),
-				// canActivate: [AuthGuard],
-				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-				},
-			},
-			{
-				path: 'property/details/:uid',
-				// component: PropertyListingComponent,
-				loadChildren: () =>
-					import('./pages/property/property-view/property-view.module').then(
-						(m) => m.PropertyViewModule
+					import('./pages/property/property.module').then(
+						(m) => m.PropertyModule
 					),
-				// canActivate: [AuthGuard],
+				canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
 			},
 			{
-				path: 'property/edit',
+				path: 'client',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
-					import('./pages/property/property-edit/property-edit.module').then(
-						(m) => m.PropertyEditModule
-					),
-				// canActivate: [AuthGuard],
+					import('./pages/client/client.module').then((m) => m.ClientModule),
+				canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
 			},
 			{
-				path: 'client/listing',
-				// component: PropertyListingComponent,
-				loadChildren: () =>
-					import('./pages/client/client-listing/client-listing.module').then(
-						(m) => m.ClientListingModule
-					),
-				// canActivate: [AuthGuard],
-				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-				},
-			},
-			{
+
 				path: 'client/details/:uid',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
-					import('./pages/client/client-view/client-view.module').then(
-						(m) => m.ClientViewModule
-					),
-				// canActivate: [AuthGuard],
+					import('./pages/home/home.module').then((m) => m.HomeModule),
+				canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
 			},
 			{
-				path: 'client/register',
-				// component: PropertyListingComponent,
-				loadChildren: () =>
-					import('./pages/client/client-register/client-register.module').then(
-						(m) => m.ClientRegisterModule
-					),
-				// canActivate: [AuthGuard],
-				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-				},
+				path: '',
+				redirectTo: 'home',
+				pathMatch: 'full',
 			},
 		],
-	},
-	{
-		path: 'home',
-		component: HomeComponent,
-		// canActivate: [AuthGuard],
-		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-		},
 	},
 	{
 		path: '',

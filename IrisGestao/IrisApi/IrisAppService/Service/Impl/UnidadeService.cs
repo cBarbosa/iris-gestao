@@ -48,9 +48,8 @@ public class UnidadeService: IUnidadeService
     {
         var Unidade = new Unidade
         {
-            IdImovel                = cmd.IdImovel.Value,
-            IdTipoUnidade           = cmd.IdTipoUnidade.Value,
-            Tipo                    = cmd.Tipo,
+            // IdImovel                = cmd.IdImovel.Value,
+            IdTipoUnidade           = cmd.IdTipoUnidade,
             AreaUtil                = cmd.AreaUtil,
             AreaTotal               = cmd.AreaTotal,
             AreaHabitese            = cmd.AreaHabitese.HasValue ? cmd.AreaHabitese.Value : null,
@@ -76,19 +75,19 @@ public class UnidadeService: IUnidadeService
         }
     }
 
-    public async Task<CommandResult> Update(int? codigo, CriarUnidadeCommand cmd)
+    public async Task<CommandResult> Update(Guid guid, CriarUnidadeCommand cmd)
     {
-        if (cmd == null || !codigo.HasValue || cmd.GuidReferencia == null)
+        if (cmd == null || guid.Equals(Guid.Empty) || cmd.GuidReferencia == null)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
         var Unidade = new Unidade
         {
-            Id                      = codigo.Value,
-            IdImovel                = cmd.IdImovel.Value,
-            IdTipoUnidade           = cmd.IdTipoUnidade.Value,
-            Tipo                    = cmd.Tipo,
+            // Id                      = codigo.Value,
+            // IdImovel                = cmd.IdImovel,
+            GuidReferencia          = cmd.GuidReferencia.ToString(),
+            IdTipoUnidade           = cmd.IdTipoUnidade,
             AreaUtil                = cmd.AreaUtil,
             AreaTotal               = cmd.AreaTotal,
             AreaHabitese            = cmd.AreaHabitese.HasValue ? cmd.AreaHabitese.Value : null,
@@ -98,7 +97,6 @@ public class UnidadeService: IUnidadeService
             TaxaAdministracao       = cmd.TaxaAdministracao,
             ValorPotencial          = cmd.ValorPotencial,
             UnidadeLocada           = cmd.UnidadeLocada,
-            GuidReferencia          = cmd.GuidReferencia.ToUpper(),
             DataUltimaModificacao   = DateTime.Now
         };
 
@@ -110,7 +108,6 @@ public class UnidadeService: IUnidadeService
         catch (Exception)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
-            throw;
         }
     }
 

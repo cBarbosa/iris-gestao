@@ -10,6 +10,7 @@ import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
 import { TabViewModule } from 'primeng/tabview';
 import { AreaPipeModule } from 'src/app/shared/pipes';
+import { PhotoGalleryComponent } from 'src/app/shared/components/photo-gallery/photo-gallery.component';
 
 @NgModule({
 	declarations: [PropertyViewComponent],
@@ -24,6 +25,7 @@ import { AreaPipeModule } from 'src/app/shared/pipes';
 		SidebarModule,
 		TabViewModule,
 		AreaPipeModule,
+		PhotoGalleryComponent,
 	],
 })
 export class PropertyViewModule {}
