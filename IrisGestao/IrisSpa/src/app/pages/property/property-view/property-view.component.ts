@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { first } from 'rxjs/internal/operators/first';
@@ -10,8 +10,9 @@ import { ImovelService } from 'src/app/shared/services';
 	templateUrl: './property-view.component.html',
 	styleUrls: ['./property-view.component.scss'],
 })
-export class PropertyViewComponent {
+export class PropertyViewComponent implements OnInit {
 	tableMenu: MenuItem[];
+	uid: string;
 	property: Imovel;
 	unit: ImovelUnidade | undefined;
 	units: ImovelUnidade[] = [];
@@ -21,33 +22,36 @@ export class PropertyViewComponent {
 	detailsVisible = false;
 	isLoadingView = false;
 
-
 	constructor(
 		private router: Router
 		, private route: ActivatedRoute
-		, private imovelService: ImovelService) {}
+		, private imovelService: ImovelService) {
 
-	ngOnInit() {
-		this.tableMenu = [
-			{
-				label: 'Detalhes',
-				icon: 'ph-eye',
-				command: () => this.showDetails(),
-			},
-			{
-				label: 'Editar',
-				icon: 'ph-note-pencil',
-				command: () => this.navigateTo('property/edit/'+ this.unit?.guidReferencia),
-			},
-			{
-				label: 'Duplicar',
-				icon: 'ph-copy-simple'
-			}
-		];
+			this.route.paramMap.subscribe(paramMap => {
+				this.uid = paramMap.get('uid') ?? ''; 
+			});
 
-		this.route.params.subscribe(params => {
-			this.getData(params['uid']);
-		});
+			this.tableMenu = [
+				{
+					label: 'Detalhes',
+					icon: 'ph-eye',
+					command: () => this.showDetails(),
+				},
+				{
+					label: 'Editar',
+					icon: 'ph-note-pencil',
+					command: () => this.navigateTo('property/edit/'+ this.unit?.guidReferencia),
+				},
+				{
+					label: 'Duplicar',
+					icon: 'ph-copy-simple'
+				}
+			];
+
+		};
+
+	ngOnInit(): void {
+		this.getData();
 	}
 
 	toggleFavorite() {
@@ -62,22 +66,22 @@ export class PropertyViewComponent {
 		this.router.navigate([route]);
 	}
 
-	getData(uid: string) : void {
+	getData() : void {
 		this.isLoadingView = true;
 
 		const view = this.imovelService
-			.getProperty(uid)
+			.getProperty(this.uid)
 			?.pipe(first())
 			.subscribe((imovel: Imovel) => {
 				this.property = imovel;
 				this.units = imovel.unidade!;
-				this.imageList = imovel.imagens ?? [];
+				this.imageList = imovel.imagens!;
 				this.isLoadingView = false;
 			});
 	}
 
 	setCurrentUnit(item: ImovelUnidade) :void {
 		this.unit = item;
-	}
+	};
 
 }
