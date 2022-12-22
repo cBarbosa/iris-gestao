@@ -41,6 +41,14 @@ public partial class Cliente: BaseEntity<Cliente>
     [Column(TypeName = "date")]
     public DateTime? DataNascimento { get; set; }
 
+    [StringLength(100)]
+    [Unicode(false)]
+    public string Email { get; set; } = null!;
+
+    [StringLength(20)]
+    [Unicode(false)]
+    public string Telefone { get; set; } = null!;
+
     public int Nps { get; set; }
 
     public bool? Status { get; set; }

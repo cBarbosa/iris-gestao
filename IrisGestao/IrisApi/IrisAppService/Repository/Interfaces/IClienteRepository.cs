@@ -5,5 +5,6 @@ namespace IrisGestao.ApplicationService.Repository.Interfaces;
 
 public interface IClienteRepository : IRepository<Cliente>, IDisposable
 {
+    IEnumerable<Cliente> GetById(int codigo);
     Task <CommandPagingResult?> GetAllPaging(int limit, int page);
 }

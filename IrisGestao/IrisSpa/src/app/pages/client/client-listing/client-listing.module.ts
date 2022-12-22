@@ -8,6 +8,7 @@ import { ClientListingRoutingModule } from './client-listing-routing.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { CpfCnpjPipeModule } from 'src/app/shared/pipes';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @NgModule({
 	declarations: [ClientListingComponent],
