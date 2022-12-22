@@ -1,0 +1,26 @@
+<ng-container *ngIf="!isLoading; else loading">
+	<!-- <ng-container *ngFor="let item of properties.slice(startIndex, endIndex)"> -->
+	<ng-container *ngFor="let item of properties">
+		<app-property-item [data]="item" class="mb-6"></app-property-item>
+	</ng-container>
+	<p-paginator
+		[rows]="+pageSize"
+		[totalRecords]="totalRecords ?? properties.length"
+		[alwaysShow]="showPaginator"
+		[first]="startIndex"
+		(onPageChange)="paginate($event)"
+	></p-paginator>
+</ng-container>
+
+<ng-template #loading>
+	<div class="loading">
+		<div class="loading-placeholder">
+			<div class="lds-ellipsis">
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
+		</div>
+	</div>
+</ng-template>

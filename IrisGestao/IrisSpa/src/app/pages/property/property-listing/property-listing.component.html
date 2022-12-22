@@ -25,7 +25,11 @@
 		</div>
 	</div>
 
-	<ng-container *ngFor="let item of properties">
-		<app-property-item [data]="item" class="mb-6"></app-property-item>
-	</ng-container>
+	<app-property-list
+		[properties]="properties"
+		pageSize="3"
+		pageIndex="0"
+		pageCount="2"
+		[isLoading]="isLoadingList"
+	></app-property-list>
 </div>
