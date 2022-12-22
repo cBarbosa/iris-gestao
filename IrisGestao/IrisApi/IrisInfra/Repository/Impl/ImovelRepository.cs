@@ -51,39 +51,8 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                             AreaHabitese = x.Unidade.Sum(x => x.AreaHabitese),
                             NroUnidades = x.Unidade.Count,
                             ImgCapa = "../../../../assets/images/imovel.png",
-                            Imagens = new List<string>
-                            {
-                                ".../../../assets/images/property/1.jpg",
-                                ".../../../assets/images/property/2.jpg",
-                                ".../../../assets/images/property/3.jpg",
-                                ".../../../assets/images/property/4.jpg",
-                                ".../../../assets/images/property/5.jpg",
-                                ".../../../assets/images/property/edit.jpg",
-                            },
-                            Anexos = new List<object>
-                            {
-                                new
-                                {
-                                    Nome = "Projeto",
-                                    Tipo = 1,
-                                    FileName = "Projeto.pdf",
-                                    URI = "https://templates.legal/download/6446/?tmstv=1671603263&version=pdf"
-                                },
-                                new
-                                {
-                                    Nome = "Matricula",
-                                    Tipo = 2,
-                                    FileName = "Matricula.pdf",
-                                    URI = "https://templates.legal/download/6446/?tmstv=1671603263&version=pdf"
-                                },
-                                new
-                                {
-                                    Nome = "Habite-se",
-                                    FileName = "habite-se.pdf",
-                                    Tipo = 3,
-                                    URI = "https://templates.legal/download/6446/?tmstv=1671603263&version=pdf"
-                                }
-                            },
+                            Imagens = ImagemListFake,
+                            Anexos = AnexoListFake,
                             IdCategoriaImovelNavigation = x.IdCategoriaImovelNavigation == null ? null : new 
                             {
                                 Id = x.IdCategoriaImovelNavigation.Id,
@@ -124,4 +93,40 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
 
         return null!;
     }
+    
+    private static List<string> ImagemListFake => new List<string>
+    {
+        ".../../../assets/images/property/1.jpg",
+        ".../../../assets/images/property/2.jpg",
+        ".../../../assets/images/property/3.jpg",
+        ".../../../assets/images/property/4.jpg",
+        ".../../../assets/images/property/5.jpg",
+        ".../../../assets/images/property/4.jpg",
+        ".../../../assets/images/property/5.jpg"
+    };
+    
+    private static List<object> AnexoListFake => new List<object>
+    {
+        new
+        {
+            Nome = "Projeto",
+            Tipo = 1,
+            FileName = "Projeto.pdf",
+            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
+        },
+        new
+        {
+            Nome = "Matricula",
+            FileName = "Matricula.pdf",
+            Tipo = 2,
+            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
+        },
+        new
+        {
+            Nome = "Habite-se",
+            FileName = "habite-se.pdf",
+            Tipo = 3,
+            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
+        }
+    };
 }
