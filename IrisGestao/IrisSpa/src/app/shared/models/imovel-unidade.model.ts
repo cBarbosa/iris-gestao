@@ -5,6 +5,7 @@ export class ImovelUnidade {
         public tipo: string,
         public areaUtil?: number,
         public areaTotal?: number,
+        public areaHabitese?:number,
         public inscricaoIPTU?: string,
         public matriculaEnergia?: string,
         public matriculaAgua?: string,
