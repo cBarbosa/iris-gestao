@@ -15,6 +15,16 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
         
     }
 
+    public IEnumerable<Cliente> GetById(int codigo)
+    {
+        var lstUnidades = DbSet.Include(x => x.IdTipoClienteNavigation)
+                                .Include(x => x.Imovel)
+                                    .ThenInclude(y => y.ImovelEndereco)
+                                .Where(x => x.Id == codigo).ToList();
+
+        return lstUnidades.AsEnumerable();
+    }
+
     public async Task<CommandPagingResult?> GetAllPaging(int limit, int page)
     {
         var skip = (page - 1) * limit;

@@ -75,4 +75,5 @@ export class ClientListingComponent {
 	navigateTo(route: string) {
 		this.router.navigate([route]);
 	}
+
 }

@@ -62,7 +62,7 @@ const routes: Routes = [
 				},
 			},
 			{
-				path: 'client/details',
+				path: 'client/details/:uid',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import('./pages/client/client-view/client-view.module').then(

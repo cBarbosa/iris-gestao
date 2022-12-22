@@ -39,6 +39,8 @@ public class ClienteService: IClienteService
         var Cliente = new Cliente
         {
             Nome                    = cmd.Nome,
+            CpfCnpj                 = cmd.CpfCnpj,
+            IdTipoCliente           = cmd.IdTipoCliente,
             RazaoSocial             = cmd.RazaoSocial,
             Endereco                = cmd.Endereco,
             Bairro                  = cmd.Bairro,
@@ -47,6 +49,7 @@ public class ClienteService: IClienteService
             Cep                     = cmd.Cep.Value,
             DataNascimento          = cmd.DataNascimento,
             Nps                     = cmd.Nps,
+            GuidReferencia          = Guid.Parse(Guid.NewGuid().ToString().ToUpper()),
             DataUltimaModificacao   = DateTime.Now
         };
 
@@ -74,6 +77,8 @@ public class ClienteService: IClienteService
         {
             Id                      = codigo.Value,
             Nome                    = cmd.Nome,
+            CpfCnpj                 = cmd.CpfCnpj,
+            IdTipoCliente           = cmd.IdTipoCliente,
             RazaoSocial             = cmd.RazaoSocial,
             Endereco                = cmd.Endereco,
             Bairro                  = cmd.Bairro,
@@ -82,6 +87,7 @@ public class ClienteService: IClienteService
             Cep                     = cmd.Cep.Value,
             DataNascimento          = cmd.DataNascimento.HasValue ? cmd.DataNascimento : null,
             Nps                     = cmd.Nps,
+            GuidReferencia          = Guid.Parse(cmd.GuidReferencia.ToUpper()),
             DataUltimaModificacao   = DateTime.Now
         };
 

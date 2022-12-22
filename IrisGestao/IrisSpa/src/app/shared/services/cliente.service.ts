@@ -23,4 +23,18 @@ export class ClienteService {
 				})
 			);
 	}
+
+	getClienteById(id:number) {
+		return this.http
+			.get<ApiResponse>(
+				`${env.config.apiUrl}Cliente/${id}/id`
+			)
+			.pipe(
+				map((response) => {
+					console.log('client response', response);
+					if (response.success) return response.data;
+					else return console.error(`getClients: ${response.message}`);
+				})
+			);
+	}
 }

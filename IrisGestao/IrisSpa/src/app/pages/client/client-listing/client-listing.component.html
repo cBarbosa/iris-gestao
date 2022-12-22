@@ -9,6 +9,7 @@
 				<i class="pi pi-search"></i>
 				<input pInputText type="text" placeholder="Buscar cliente" />
 			</span>
+
 			<p-dropdown
 				class="mx-2"
 				styleClass="w-44"
@@ -52,7 +53,6 @@
 				<th>CPF/CNPJ</th>
 				<th>Aniversário</th>
 				<th>Tipo de cliente</th>
-				<th>Status</th>
 				<th></th>
 			</tr>
 		</ng-template>
@@ -64,7 +64,7 @@
 					{{ client.birthday | date : "shortDate" }}
 				</td>
 				<td>{{ client.client_type }}</td>
-				<td class="w-24">
+				<!--td class="w-24">
 					<ng-container *ngIf="client.status === 'inativo'; else ativo">
 						<p-tag
 							value="Inativo"
@@ -81,13 +81,13 @@
 							styleClass="w-20"
 						></p-tag>
 					</ng-template>
-				</td>
+				</td-->
 				<td class="action w-40">
 					<button
 						pButton
 						type="button"
 						class="p-button-text h-7"
-						(click)="navigateTo('client-details')"
+						(click)="navigateTo('client/details/{{client.client_type}}')"
 					>
 						Ver detalhes
 					</button>
