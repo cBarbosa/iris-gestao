@@ -140,35 +140,13 @@
 			</div>
 		</section>
 
-		<section class="photos">
-			<h3>Fotos</h3>
+		<ng-container *ngIf="imageList.length > 0">
+			<section class="photos">
+				<h3>Fotos</h3>
 
-			<div class="photos-grid">
-				<ul>
-					<li>
-						<img src=".../../../assets/images/property/1.jpg" alt="photo-1" />
-					</li>
-					<li>
-						<img src=".../../../assets/images/property/2.png" alt="photo-1" />
-					</li>
-					<li>
-						<img src=".../../../assets/images/property/3.png" alt="photo-1" />
-					</li>
-					<li>
-						<img src=".../../../assets/images/property/2.png" alt="photo-1" />
-					</li>
-					<li>
-						<img src=".../../../assets/images/property/4.png" alt="photo-1" />
-					</li>
-					<li>
-						<img src=".../../../assets/images/property/5.png" alt="photo-1" />
-					</li>
-					<li>
-						<img src=".../../../assets/images/property/4.png" alt="photo-1" />
-					</li>
-				</ul>
-			</div>
-		</section>
+				<app-photo-gallery [imageList]="imageList"></app-photo-gallery>
+			</section>
+		</ng-container>
 	</div>
 </div>
 

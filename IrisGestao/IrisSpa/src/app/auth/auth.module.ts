@@ -8,16 +8,7 @@ import { AuthenticateComponent } from './authenticate/authenticate.component';
 import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
-  declarations: [
-    LoginComponent,
-    IframeComponent,
-    AuthenticateComponent
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule,
-    HttpClientModule
-  ]
+	declarations: [LoginComponent, IframeComponent, AuthenticateComponent],
+	imports: [CommonModule, FormsModule, RouterModule, HttpClientModule],
 })
-export class AuthModule { }
+export class AuthModule {}

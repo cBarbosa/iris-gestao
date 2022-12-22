@@ -2,6 +2,12 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 
+type ImageData = {
+	url: string;
+	thumbUrl: string;
+	alt?: string;
+};
+
 @Component({
 	selector: 'app-property-view',
 	templateUrl: './property-view.component.html',
@@ -48,6 +54,37 @@ export class PropertyViewComponent {
 		},
 	];
 
+	imageList: ImageData[] = [
+		{
+			thumbUrl: '.../../../assets/images/property/1.jpg',
+			url: '.../../../assets/images/property/1.jpg',
+		},
+		{
+			thumbUrl: '.../../../assets/images/property/2.png',
+			url: '.../../../assets/images/property/2.png',
+		},
+		{
+			thumbUrl: '.../../../assets/images/property/3.png',
+			url: '.../../../assets/images/property/3.png',
+		},
+		{
+			thumbUrl: '.../../../assets/images/property/2.png',
+			url: '.../../../assets/images/property/2.png',
+		},
+		{
+			thumbUrl: '.../../../assets/images/property/4.png',
+			url: '.../../../assets/images/property/4.png',
+		},
+		{
+			thumbUrl: '.../../../assets/images/property/5.png',
+			url: '.../../../assets/images/property/5.png',
+		},
+		{
+			thumbUrl: '.../../../assets/images/property/4.png',
+			url: '.../../../assets/images/property/4.png',
+		},
+	];
+
 	constructor(private router: Router) {}
 
 	ngOnInit() {
@@ -60,7 +97,7 @@ export class PropertyViewComponent {
 			{
 				label: 'Editar',
 				icon: 'ph-note-pencil',
-				command: () => this.navigateTo('property-edit'),
+				command: () => this.navigateTo('property/edit'),
 			},
 			{ label: 'Duplicar', icon: 'ph-copy-simple' },
 		];
