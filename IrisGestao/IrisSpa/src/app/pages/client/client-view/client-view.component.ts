@@ -4,6 +4,7 @@ import { LazyLoadEvent } from 'primeng/api';
 import { DatePipe } from '@angular/common';
 import { first } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Imovel } from 'src/app/shared/models';
 import { ClienteService } from '../../../shared/services/cliente.service';
 
 @Component({
@@ -13,25 +14,22 @@ import { ClienteService } from '../../../shared/services/cliente.service';
 	providers: [ClienteService, DatePipe]
 })
 export class ClientViewComponent  implements OnInit {
-
-	id: number;
+	properties: Imovel[] = [];
+	uid: string;
 	cliente: any;
 	totalClientCount: number;
 	isLoadingClients = false;
 	
 
-	constructor(private clienteService: ClienteService,
-		private activeRouter: ActivatedRoute,
-		private datePipe: DatePipe,
-		private router: Router,) {
-	
-		  this.activeRouter.paramMap.subscribe(paramMap => {
-			//this.id = parseInt(paramMap.get('id'));
-			this.id = 4; 
-			
-		  });
-	
-		}
+	constructor(
+		private router: Router
+		, private route: ActivatedRoute
+		, private clienteService: ClienteService) {
+
+			this.route.paramMap.subscribe(paramMap => {
+				this.uid = paramMap.get('uid') ?? ''; 
+			});
+		};
 
 		ngOnInit(): void {
 
@@ -42,9 +40,13 @@ export class ClientViewComponent  implements OnInit {
 		{
 		  this
 		  .clienteService
-		  .getClienteById(this.id)
-		  .subscribe(_cliente => {
-		   this.cliente = _cliente[0];
+		  .getClienteById(this.uid)
+		  .subscribe(event => {
+		   this.cliente = event;
+		   event.imovel.forEach((imovel: Imovel) => {
+			// console.debug('Imovel Data >> ' + JSON.stringify(imovel));
+			this.properties.push(imovel);
+		});
 		   //this.proposal = protocol.data.protocolProposal;
 		   console.log('this.cliente >> ' + JSON.stringify(this.cliente));
 	  

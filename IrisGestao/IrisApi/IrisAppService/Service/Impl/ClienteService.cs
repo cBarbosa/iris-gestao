@@ -10,10 +10,13 @@ namespace IrisGestao.ApplicationService.Service.Impl;
 public class ClienteService: IClienteService
 {
     private readonly IClienteRepository clienteRepository;
-    
-    public ClienteService(IClienteRepository clienteRepository)
+    private readonly IImovelRepository imovelRepository;
+
+    public ClienteService(IClienteRepository clienteRepository
+                         ,IImovelRepository imovelRepository)
     {
         this.clienteRepository = clienteRepository;
+        this.imovelRepository = imovelRepository;
     }
 
     public async Task<CommandResult> GetAllPaging(int limit, int page)
@@ -25,13 +28,15 @@ public class ClienteService: IClienteService
             : new CommandResult(true, SuccessResponseEnums.Success_1005, Clientes);
     }
 
-    public async Task<CommandResult> GetById(int codigo)
+    public async Task<CommandResult> GetByGuid(Guid guid)
     {
-        var Cliente = await Task.FromResult(clienteRepository.GetById(codigo));
-        
-        return Cliente == null
+        var cliente = await clienteRepository.GetByGuid(guid);
+        //var imoveis = await imovelRepository.GetAllByCliente(guid);
+        //cliente.Imovel = imoveis;
+
+        return cliente == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
-            : new CommandResult(true, SuccessResponseEnums.Success_1005, Cliente);
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, cliente);
     }
 
     public async Task<CommandResult> Insert(CriarClienteCommand cmd)
