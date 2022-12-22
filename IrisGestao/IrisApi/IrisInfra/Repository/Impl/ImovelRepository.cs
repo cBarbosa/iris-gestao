@@ -143,6 +143,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                                     ValorPotencial = y.ValorPotencial,
                                     DataCriacao = y.DataCriacao,
                                     DataUltimaModificacao = y.DataUltimaModificacao,
+                                    UnidadeLocada = y.UnidadeLocada,
                                     IdTipoUnidadeNavigation = new
                                     {
                                         Id = y.IdTipoUnidadeNavigation.Id,
@@ -190,15 +191,43 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
             .FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
     }
 
-    private static List<string> ImagemListFake => new List<string>
+    private static List<object> ImagemListFake => new List<object>
     {
-        ".../../../assets/images/property/1.jpg",
-        ".../../../assets/images/property/2.jpg",
-        ".../../../assets/images/property/3.jpg",
-        ".../../../assets/images/property/4.jpg",
-        ".../../../assets/images/property/5.jpg",
-        ".../../../assets/images/property/4.jpg",
-        ".../../../assets/images/property/5.jpg"
+        new
+        {
+            ThumbUrl =".../../../assets/images/property/1.jpg",
+            Url = ".../../../assets/images/property/1.jpg"
+        },
+        new
+        {
+            ThumbUrl =".../../../assets/images/property/2.png",
+            Url = ".../../../assets/images/property/2.png"
+        },
+        new
+        {
+            ThumbUrl =".../../../assets/images/property/3.png",
+            Url = ".../../../assets/images/property/3.png"
+        },
+        new
+        {
+            ThumbUrl =".../../../assets/images/property/4.png",
+            Url = ".../../../assets/images/property/4.png"
+        },
+        new
+        {
+            ThumbUrl =".../../../assets/images/property/5.png",
+            Url = ".../../../assets/images/property/5.png"
+        },
+        new
+        {
+            ThumbUrl =".../../../assets/images/property/2.png",
+            Url = ".../../../assets/images/property/2.png"
+        },
+        new
+        {
+            ThumbUrl =".../../../assets/images/property/4.png",
+            Url = ".../../../assets/images/property/4.png"
+        }
     };
     
     private static List<object> AnexoListFake => new List<object>

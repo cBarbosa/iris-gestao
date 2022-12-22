@@ -17,7 +17,7 @@ const routes: Routes = [
 				},
 			},
 			{
-				path: 'details',
+				path: 'details/:uid',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import('./property-view/property-view.module').then(
@@ -28,7 +28,7 @@ const routes: Routes = [
 				},
 			},
 			{
-				path: 'edit',
+				path: 'edit/:uid',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import('./property-edit/property-edit.module').then(
