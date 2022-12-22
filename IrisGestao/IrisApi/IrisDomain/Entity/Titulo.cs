@@ -25,6 +25,12 @@ public partial class Titulo: BaseEntity<Titulo>
 
     public int Parcelas { get; set; }
 
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataUltimaModificacao { get; set; }
+
     [InverseProperty("IdTituloNavigation")]
     public virtual ICollection<FaturaTitulo> FaturaTitulo { get; } = new List<FaturaTitulo>();
 
