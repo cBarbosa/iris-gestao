@@ -7,4 +7,5 @@ public interface IImovelRepository : IRepository<Imovel>, IDisposable
 {
     Task <IEnumerable<Imovel>> GetById(int codigo);
     Task <CommandPagingResult?> GetAllPaging(int? idCategoria, string? nome, int limit, int page);
+    Task<object?> GetByGuid(Guid guid);
 }
