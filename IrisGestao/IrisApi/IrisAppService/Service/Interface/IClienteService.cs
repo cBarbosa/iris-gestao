@@ -6,7 +6,7 @@ namespace IrisGestao.ApplicationService.Services.Interface;
 public interface IClienteService
 {
     Task<CommandResult> GetAllPaging(int limit, int page);
-    Task<CommandResult> GetById(int codigo);
+    Task<CommandResult> GetByGuid(Guid guidReferencia);
     Task<CommandResult> Insert(CriarClienteCommand cmd);
     Task<CommandResult> Update(int? codigo, CriarClienteCommand cmd);
 

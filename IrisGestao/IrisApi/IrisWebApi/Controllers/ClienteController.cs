@@ -24,10 +24,10 @@ public class ClienteController : Controller
         Ok(await clienteService.GetAllPaging(limit ?? 10, page ?? 1));
 
     // GET
-    [HttpGet("{codigo}/id")]
+    [HttpGet("{guid}/guid/")]
     [Produces("application/json")]
-    public async Task<IActionResult> BuscarCliente([FromRoute] int codigo) =>
-        Ok(await clienteService.GetById(codigo));
+    public async Task<IActionResult> GetByGuid([FromRoute] Guid guid) =>
+        Ok(await clienteService.GetByGuid(guid));
 
     [HttpPost("criar")]
     [Produces("application/json")]

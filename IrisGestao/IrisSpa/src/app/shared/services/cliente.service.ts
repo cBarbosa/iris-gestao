@@ -24,10 +24,10 @@ export class ClienteService {
 			);
 	}
 
-	getClienteById(id:number) {
+	getClienteById(uid:string) {
 		return this.http
 			.get<ApiResponse>(
-				`${env.config.apiUrl}Cliente/${id}/id`
+				`${env.config.apiUrl}Cliente/${uid}/guid`
 			)
 			.pipe(
 				map((response) => {
