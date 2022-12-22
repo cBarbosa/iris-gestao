@@ -29,15 +29,17 @@ export class TopbarComponent {
 		this.items = [
 			{
 				label: 'Home',
+				id: route.startsWith('/home') ? 'current' : '',
+				command: () => this.navigateTo('home'),
 			},
 			{
 				label: 'Imóveis',
-				id: route.startsWith('/property/') ? 'current' : '',
+				id: route.startsWith('/property') ? 'current' : '',
 				command: () => this.navigateTo('property/listing'),
 			},
 			{
 				label: 'Clientes',
-				id: route.startsWith('/client/') ? 'current' : '',
+				id: route.startsWith('/client') ? 'current' : '',
 				command: () => this.navigateTo('client/listing'),
 			},
 			{
