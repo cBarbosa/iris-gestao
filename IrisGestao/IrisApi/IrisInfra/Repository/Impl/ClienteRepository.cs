@@ -26,7 +26,7 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                         .Where(x => x.GuidReferencia.Equals(guid))
                         .Select(x => new
                         {
-                            NroUnidades             = x.Imovel.Count,
+                            
                             CpfCnpj                 = x.CpfCnpj,
                             GuidReferencia          = x.GuidReferencia,
                             Nome                    = x.Nome,
@@ -50,6 +50,7 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                             {
                                 Nome                = y.Nome,
                                 guidReferencia      = y.GuidReferencia,
+                                NroUnidades         = y.Unidade.Count,
                                 AreaTotal           = y.Unidade.Sum(x => x.AreaTotal),
                                 AreaUtil            = y.Unidade.Sum(x => x.AreaUtil),
                                 AreaHabitese        = y.Unidade.Sum(x => x.AreaHabitese),
