@@ -140,4 +140,13 @@ public class ClienteService: IClienteService
             }
         }
     }
+
+    public async Task<CommandResult> GetAllOwners()
+    {
+        var proprietarios = await clienteRepository.GetAllOwners();
+
+        return proprietarios == null || !proprietarios.Any()
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, proprietarios);
+    }
 }
