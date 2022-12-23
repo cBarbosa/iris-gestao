@@ -49,6 +49,7 @@ public partial class Unidade: BaseEntity<Unidade>
 
     public bool? UnidadeLocada { get; set; }
 
+    // TODO alterar o tipo para GUID
     [StringLength(50)]
     [Unicode(false)]
     public string GuidReferencia { get; set; } = null!;

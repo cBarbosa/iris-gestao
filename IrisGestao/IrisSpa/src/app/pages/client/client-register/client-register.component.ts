@@ -1,5 +1,8 @@
 import { Location } from '@angular/common';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { ClienteService } from '../../../shared/services/cliente.service';
+import { DominiosService } from '../../../shared/services/dominios.service';
 import {
 	AbstractControl,
 	FormBuilder,
@@ -14,10 +17,17 @@ import { Utils } from 'src/app/shared/utils';
 	styleUrls: ['./client-register.component.scss'],
 })
 export class ClientRegisterComponent {
+	cliente: any;
 	registerForm: FormGroup;
-
+	dropdownTipoCliente: any;
 	onInputDate: Function;
 	onBlurDate: Function;
+	tiposCliente = [
+		{
+			label: 'Selecione',
+			value: null,
+		}
+	];
 
 	clientTypes = [
 		{
@@ -35,19 +45,29 @@ export class ClientRegisterComponent {
 		},
 	];
 
-	constructor(private fb: FormBuilder, private location: Location) {}
+	constructor(private fb: FormBuilder, 
+		private router: Router, 
+		private location: Location, 
+		private clienteService: ClienteService,
+		private dominiosService: DominiosService) { }
 
 	ngOnInit() {
 		this.registerForm = this.fb.group({
-			name: ['', Validators.required],
-			birthday: [null, [Validators.required]],
-			clientType: [null, [Validators.required]],
-			cpf: ['', [Validators.required]],
+			CpfCnpj: ['', [Validators.required]],
+			IdTipoCliente: [null, [Validators.required]],
+			nome: ['', Validators.required],
+			razaoSocial: [''],
+			endereco: [''],
+			bairro: [''],
+			cidade: [''],
+			estado: [''],
+			cep: ['', Validators.required],
+			dataNascimento: [null, [Validators.required]],
 			email: ['', [Validators.required]],
-			telephone: ['', [Validators.required]],
-			cep: ['', [Validators.required]],
+			telefone: ['', [Validators.required]],
 		});
 
+		this.getTiposCliente();
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
@@ -57,18 +77,45 @@ export class ClientRegisterComponent {
 		return this.registerForm.controls;
 	}
 
+	getTiposCliente(): void {
+		const tipoCliente = this.dominiosService
+			.getTipoCliente()
+			.subscribe(event => {
+				//console.log('getTiposCliente >> TipoCliente >> ' + JSON.stringify(event));
+				this.dropdownTipoCliente = event;
+				this.dropdownTipoCliente.data.forEach((tipo: any) => {
+					this.tiposCliente.push({
+						label: tipo.nome,
+						value: tipo.id
+					});
+				});
+			});
+	}
+
 	checkHasError(c: AbstractControl) {
 		return Utils.checkHasError(c);
 	}
 
 	onSubmit(e: any = null) {
 		console.log('submitting form');
+		console.log('onSubmit >> dados >> ' + JSON.stringify(this.registerForm.value));
 
 		if (this.registerForm.invalid) {
 			this.registerForm.markAllAsTouched();
-			return;
-		}
+
+			const criarCliente = this.clienteService
+			.criarCliente(this.registerForm.value)
+			.subscribe(event => {
+				console.log('onSubmit >> Retorno Criar >> ' + JSON.stringify(event));
+				this.cliente = event;
+				this.router.navigate(['client/details/' + this.cliente.guidReferencia]);	
+				});
+			};
+				
 		console.log('form submitted');
+		return;
+	
+
 	}
 
 	goBack() {

@@ -6,6 +6,8 @@ export class Cliente {
         public guidReferencia: string,
         public cpfCnpj?: string,
         public nome?: string,
+        public telefone?: string,
+        public email?: string,
         public cep?: string,
         public estado?: string,
         public cidade?: string,

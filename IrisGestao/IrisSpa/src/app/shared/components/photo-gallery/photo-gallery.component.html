@@ -1,7 +1,7 @@
 <div class="photos-grid">
 	<ul>
 		<li *ngFor="let img of imageList">
-			<img [src]="img.thumbUrl" [alt]="img.alt" (click)="showImageModal(img)" />
+			<img [src]="img.thumbUrl" [alt]="img.alt" (click)="showImageModal(img)" title="imagem" />
 		</li>
 	</ul>
 </div>
@@ -13,6 +13,8 @@
 	[draggable]="false"
 	[resizable]="false"
 	(click)="closeImageModal()"
+	*ngIf="selectedImage"
+	
 >
-	<img [src]="selectedImage.url" [alt]="selectedImage.alt" />
+	<img [src]="selectedImage.url" [alt]="selectedImage.alt" title="imagem" />
 </p-dialog>

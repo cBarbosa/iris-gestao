@@ -23,8 +23,8 @@ export class PhotoGalleryComponent {
 
 	selectedImage: ImageData;
 
-	ngOnInit() {
-		console.log(this.imageList);
+	ngOnInit():void {
+		
 	}
 
 	showImageModal(img: ImageData) {

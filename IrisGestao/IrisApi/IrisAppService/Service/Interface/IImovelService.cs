@@ -8,6 +8,7 @@ public interface IImovelService
     Task<CommandResult> GetAllPaging(int? idCategoria, string? nome, int limit, int page);
     Task<CommandResult> GetById(int codigo);
     Task<CommandResult> Insert(CriarImovelCommand cmd);
-    Task<CommandResult> Update(int? codigo, CriarImovelCommand cmd);
+    Task<CommandResult> Update(Guid guid, CriarImovelCommand cmd);
     Task<CommandResult> Delete(int? codigo);
+    Task<CommandResult> GetByGuid(Guid uuid);
 }

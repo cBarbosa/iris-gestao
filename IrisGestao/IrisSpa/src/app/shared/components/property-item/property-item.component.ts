@@ -11,7 +11,7 @@ export class PropertyItemComponent {
 	@Input('data')
 	propertyData: Imovel;
 
-	constructor(private router: Router) { }
+	constructor(private router: Router) { };
 
 	navigateTo(route: string) {
 		this.router.navigate([route]);

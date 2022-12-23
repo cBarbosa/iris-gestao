@@ -6,6 +6,10 @@ import {
 	FormGroup,
 	Validators,
 } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { first } from 'rxjs/internal/operators/first';
+import { ImovelUnidade } from 'src/app/shared/models';
+import { ImovelService } from 'src/app/shared/services';
 
 import { Utils } from 'src/app/shared/utils';
 
@@ -16,10 +20,20 @@ import { Utils } from 'src/app/shared/utils';
 })
 export class PropertyEditComponent implements OnInit {
 	editForm: FormGroup;
+	uid: string = '';
+	isLoadingView: boolean = false;
+	unit: ImovelUnidade;
 
-	constructor(private fb: FormBuilder, private location: Location) {}
+	constructor(
+		private fb: FormBuilder
+		, private route: ActivatedRoute
+		, private location: Location
+		, private imovelService: ImovelService) {
 
-	ngOnInit(): void {
+		this.route.paramMap.subscribe(paramMap => {
+			this.uid = paramMap.get('uid') ?? ''; 
+		});
+
 		this.editForm = this.fb.group({
 			name: ['', Validators.required],
 			category: ['', [Validators.required]],
@@ -35,6 +49,11 @@ export class PropertyEditComponent implements OnInit {
 			administration: [''],
 			potential: [''],
 		});
+
+	};
+
+	ngOnInit(): void {
+		this.getData();
 	}
 
 	get f(): { [key: string]: AbstractControl<any, any> } {
@@ -60,5 +79,17 @@ export class PropertyEditComponent implements OnInit {
 
 	goBack() {
 		this.location.back();
+	}
+
+	getData() : void {
+		this.isLoadingView = true;
+
+		const view = this.imovelService
+			.getUnit(this.uid)
+			?.pipe(first())
+			.subscribe((unidade: ImovelUnidade) => {
+				this.unit = unidade;
+				this.isLoadingView = false;
+			});
 	}
 }

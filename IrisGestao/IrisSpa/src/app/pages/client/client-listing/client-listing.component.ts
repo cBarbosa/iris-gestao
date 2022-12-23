@@ -53,6 +53,7 @@ export class ClientListingComponent {
 						client_type: cliente.idTipoClienteNavigation.nome,
 						status: 'ativo',
 						action: '',
+						guidReferencia: cliente.guidReferencia,
 					});
 				});
 				this.isLoadingClients = false;
@@ -75,4 +76,5 @@ export class ClientListingComponent {
 	navigateTo(route: string) {
 		this.router.navigate([route]);
 	}
+
 }

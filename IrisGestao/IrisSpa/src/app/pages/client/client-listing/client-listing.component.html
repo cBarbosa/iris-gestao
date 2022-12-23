@@ -9,6 +9,7 @@
 				<i class="pi pi-search"></i>
 				<input pInputText type="text" placeholder="Buscar cliente" />
 			</span>
+
 			<p-dropdown
 				class="mx-2"
 				styleClass="w-44"
@@ -26,7 +27,8 @@
 				styleClass="w-32"
 				placeholder="Bairro"
 			></p-dropdown>
-			<button pButton type="button" class="p-button-outlined h-9">
+			<button pButton type="button" class="p-button-outlined h-9"
+				(click)="navigateTo('client/register')">
 				<i class="pi pi-plus mr-3"></i>
 				Adicionar imóvel
 			</button>
@@ -52,7 +54,6 @@
 				<th>CPF/CNPJ</th>
 				<th>Aniversário</th>
 				<th>Tipo de cliente</th>
-				<th>Status</th>
 				<th></th>
 			</tr>
 		</ng-template>
@@ -64,7 +65,7 @@
 					{{ client.birthday | date : "shortDate" }}
 				</td>
 				<td>{{ client.client_type }}</td>
-				<td class="w-24">
+				<!--td class="w-24">
 					<ng-container *ngIf="client.status === 'inativo'; else ativo">
 						<p-tag
 							value="Inativo"
@@ -81,13 +82,13 @@
 							styleClass="w-20"
 						></p-tag>
 					</ng-template>
-				</td>
+				</td-->
 				<td class="action w-40">
 					<button
 						pButton
 						type="button"
 						class="p-button-text h-7"
-						(click)="navigateTo('client/details')"
+						(click)="navigateTo('client/details/'+ client.guidReferencia)"
 					>
 						Ver detalhes
 					</button>

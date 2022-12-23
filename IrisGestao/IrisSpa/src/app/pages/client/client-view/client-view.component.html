@@ -5,7 +5,7 @@
 
 			<div class="main-card">
 				<header>
-					<h3>Courtney Henry <span>Locatário</span></h3>
+					<h3>{{cliente?.nome}} <span>{{cliente?.idTipoClienteNavigation?.nome}}</span></h3>
 					<div class="actions">
 						<button pButton type="button" class="p-button-outlined h-7 text-xs">
 							Editar
@@ -18,31 +18,31 @@
 				<div class="client-info">
 					<div class="client-data">
 						<div class="data-label">CPF/CNPJ</div>
-						<div class="data-value">72.165.630/0001-27</div>
+						<div class="data-value">{{cliente?.cpfCnpj}}</div>
 					</div>
 					<div class="client-data">
 						<div class="data-label">Aniversário</div>
-						<div class="data-value">14/09/1989</div>
+						<div class="data-value">{{ cliente?.dataNascimento | date : "shortDate" }}</div>
 					</div>
 					<div class="client-data">
 						<div class="data-label">Email</div>
-						<div class="data-value"><a>cliente@mail.com</a></div>
+						<div class="data-value"><a>{{ cliente?.email }}</a></div>
 					</div>
 					<div class="client-data">
 						<div class="data-label">Telefone</div>
-						<div class="data-value">(61) 994444-10932</div>
+						<div class="data-value">{{ cliente?.telefone }}</div>
 					</div>
 					<div class="client-data">
 						<div class="data-label">Endereço</div>
-						<div class="data-value">SQS 415 Bl R Ap 109</div>
+						<div class="data-value">{{cliente?.endereco}}</div>
 					</div>
 					<div class="client-data">
 						<div class="data-label">Cidade</div>
-						<div class="data-value">Brasília. DF</div>
+						<div class="data-value">{{cliente?.cidade}} - {{cliente?.estado}}</div>
 					</div>
 					<div class="client-data">
 						<div class="data-label">CEP</div>
-						<div class="data-value">71.907-720</div>
+						<div class="data-value">{{cliente?.cep}}</div>
 					</div>
 				</div>
 			</div>
@@ -52,7 +52,7 @@
 			<h2>Imóveis cadastrados no cliente</h2>
 
 			<div class="flex flex-col gap-6">
-				<ng-container *ngFor="let item of propertyItens">
+				<ng-container *ngFor="let item of properties">
 					<app-property-item [data]="item" class="mb-6"></app-property-item>
 				</ng-container>
 			</div>

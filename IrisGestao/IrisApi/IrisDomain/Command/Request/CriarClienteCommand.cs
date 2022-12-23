@@ -9,8 +9,8 @@ namespace IrisGestao.Domain.Command.Request
     public class CriarClienteCommand
     {
         public int? Id { get; set; }
-        public int? TipoCliente { get; set; }
-        public string CpfCnp { get; set; }
+        public int? IdTipoCliente { get; set; }
+        public string CpfCnpj { get; set; }
         public string Nome { get; set; }
         public string RazaoSocial { get; set; }
         public Boolean Status { get; set; }
@@ -20,8 +20,11 @@ namespace IrisGestao.Domain.Command.Request
         public string Estado { get; set; }
         public int? Cep { get; set; }
         public DateTime? DataNascimento { get; set; }
+        public string Email { get; set; }
+        public string Telefone { get; set; }
         public int Nps { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataUltimaModificacao { get; set; }
+        public string? GuidReferencia { get; set; }
     }
 }

@@ -10,10 +10,13 @@ namespace IrisGestao.ApplicationService.Service.Impl;
 public class ClienteService: IClienteService
 {
     private readonly IClienteRepository clienteRepository;
-    
-    public ClienteService(IClienteRepository clienteRepository)
+    private readonly IImovelRepository imovelRepository;
+
+    public ClienteService(IClienteRepository clienteRepository
+                         ,IImovelRepository imovelRepository)
     {
         this.clienteRepository = clienteRepository;
+        this.imovelRepository = imovelRepository;
     }
 
     public async Task<CommandResult> GetAllPaging(int limit, int page)
@@ -25,13 +28,15 @@ public class ClienteService: IClienteService
             : new CommandResult(true, SuccessResponseEnums.Success_1005, Clientes);
     }
 
-    public async Task<CommandResult> GetById(int codigo)
+    public async Task<CommandResult> GetByGuid(Guid guid)
     {
-        var Cliente = await Task.FromResult(clienteRepository.GetById(codigo));
+        var cliente = await clienteRepository.GetByGuid(guid);
+        //var imoveis = await imovelRepository.GetAllByCliente(guid);
+        //cliente.Imovel = imoveis;
 
-        return Cliente == null
+        return cliente == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
-            : new CommandResult(true, SuccessResponseEnums.Success_1005, Cliente);
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, cliente);
     }
 
     public async Task<CommandResult> Insert(CriarClienteCommand cmd)
@@ -39,6 +44,8 @@ public class ClienteService: IClienteService
         var Cliente = new Cliente
         {
             Nome                    = cmd.Nome,
+            CpfCnpj                 = cmd.CpfCnpj,
+            IdTipoCliente           = cmd.IdTipoCliente,
             RazaoSocial             = cmd.RazaoSocial,
             Endereco                = cmd.Endereco,
             Bairro                  = cmd.Bairro,
@@ -47,6 +54,9 @@ public class ClienteService: IClienteService
             Cep                     = cmd.Cep.Value,
             DataNascimento          = cmd.DataNascimento,
             Nps                     = cmd.Nps,
+            Telefone                = cmd.Telefone,
+            Email                   = cmd.Email,
+            GuidReferencia          = Guid.Parse(Guid.NewGuid().ToString().ToUpper()),
             DataUltimaModificacao   = DateTime.Now
         };
 
@@ -74,6 +84,8 @@ public class ClienteService: IClienteService
         {
             Id                      = codigo.Value,
             Nome                    = cmd.Nome,
+            CpfCnpj                 = cmd.CpfCnpj,
+            IdTipoCliente           = cmd.IdTipoCliente,
             RazaoSocial             = cmd.RazaoSocial,
             Endereco                = cmd.Endereco,
             Bairro                  = cmd.Bairro,
@@ -82,6 +94,9 @@ public class ClienteService: IClienteService
             Cep                     = cmd.Cep.Value,
             DataNascimento          = cmd.DataNascimento.HasValue ? cmd.DataNascimento : null,
             Nps                     = cmd.Nps,
+            Telefone                = cmd.Telefone,
+            Email                   = cmd.Email,
+            GuidReferencia          = Guid.Parse(cmd.GuidReferencia.ToUpper()),
             DataUltimaModificacao   = DateTime.Now
         };
 
@@ -124,5 +139,14 @@ public class ClienteService: IClienteService
                 throw;
             }
         }
+    }
+
+    public async Task<CommandResult> GetAllOwners()
+    {
+        var proprietarios = await clienteRepository.GetAllOwners();
+
+        return proprietarios == null || !proprietarios.Any()
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, proprietarios);
     }
 }
