@@ -59,9 +59,11 @@ public class UnidadeRepository : Repository<Unidade>, IUnidadeRepository
                     AreaHabitese = y.AreaHabitese,
                     InscricaoIPTU = y.InscricaoIPTU,
                     MatriculaEnergia = y.MatriculaEnergia,
+                    Matricula = y.Matricula,
                     MatriculaAgua = y.MatriculaAgua,
                     TaxaAdministracao = y.TaxaAdministracao,
                     ValorPotencial = y.ValorPotencial,
+                    Tipo = y.Tipo,
                     DataCriacao = y.DataCriacao,
                     DataUltimaModificacao = y.DataUltimaModificacao,
                     IdTipoUnidadeNavigation = new
@@ -107,6 +109,12 @@ public class UnidadeRepository : Repository<Unidade>, IUnidadeRepository
                         }
                     }
                 })
+            .FirstOrDefaultAsync(x => x.GuidReferencia.ToUpper().Equals(uid.ToString().ToUpper()));
+    }
+    
+    public async Task<Unidade?> GetByReferenceGuid(Guid uid)
+    {
+        return await DbSet
             .FirstOrDefaultAsync(x => x.GuidReferencia.ToUpper().Equals(uid.ToString().ToUpper()));
     }
 }

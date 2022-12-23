@@ -48,13 +48,12 @@ public class ImovelService: IImovelService
         catch (Exception)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
-            throw;
         }
     }
 
     public async Task<CommandResult> Update(Guid uuid, CriarImovelCommand cmd)
     {
-        if (cmd == null)
+        if (cmd == null || uuid.Equals(Guid.Empty))
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
@@ -77,7 +76,6 @@ public class ImovelService: IImovelService
         catch (Exception)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
-            throw;
         }
     }
 
