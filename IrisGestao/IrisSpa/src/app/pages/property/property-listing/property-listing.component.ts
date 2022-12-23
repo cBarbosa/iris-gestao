@@ -36,7 +36,7 @@ export class PropertyListingComponent implements OnInit {
 	getPagingData(page: number = 1): void {
 		setTimeout(() => {
 			const list = this.imovelService
-				.getPerperties()
+				.getProperties()
 				?.pipe(first())
 				.subscribe((event: any) => {
 					this.properties = [];

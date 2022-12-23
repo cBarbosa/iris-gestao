@@ -8,6 +8,8 @@ import {
 } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { Utils } from 'src/app/shared/utils';
+import { ImovelService } from 'src/app/shared/services';
+import { first } from 'rxjs';
 
 type Step = {
 	label: string;
@@ -58,7 +60,11 @@ export class PropertyRegisterComponent {
 	stepList: Step[];
 	currentStep: number;
 
-	constructor(private fb: FormBuilder, private location: Location) {}
+	constructor(
+		private fb: FormBuilder,
+		private location: Location,
+		private imovelService: ImovelService
+	) {}
 
 	ngOnInit() {
 		this.registerForm = this.fb.group({
@@ -208,6 +214,61 @@ export class PropertyRegisterComponent {
 			return;
 		}
 		console.log('form submitted');
+
+		const propertyTypeFormData = this.propertyTypeForm.getRawValue();
+		const legalInfoFormData = this.legalInfoForm.getRawValue();
+
+		const propertyObj = {
+			Nome: propertyTypeFormData.name,
+			IdCategoriaImovel: 1,
+			IdClienteProprietario: propertyTypeFormData.proprietary,
+			NumCentroCusto: 2604,
+			MonoUsuario: false,
+			Classificacao: null,
+			GuidReferencia: null,
+		};
+
+		const unitObj = {
+			Tipo: 'Descritivo da unidade',
+			IdTipoUnidade: propertyTypeFormData.unitType,
+			AreaUtil: 88,
+			AreaTotal: propertyTypeFormData.area,
+			AreaHabitese: '70.23456',
+			Matricula: legalInfoFormData.administration,
+			InscricaoIptu: legalInfoFormData.iptu,
+			MatriculaEnergia: legalInfoFormData.neoenergia,
+			MatriculaAgua: legalInfoFormData.caesb,
+			TaxaAdministracao: legalInfoFormData.administration,
+			ValorPotencial: legalInfoFormData.potential,
+			UnidadeLocada: false,
+		};
+		// name: ['', Validators.required],
+		// proprietary: [null, [Validators.required]],
+		// unitType: [null, [Validators.required]],
+		// area: ['', [Validators.required]],
+
+		// registration: ['', [Validators.required]],
+		// iptu: ['', [Validators.required]],
+		// neoenergia: ['', [Validators.required]],
+		// caesb: ['', [Validators.required]],
+		// administration: ['', [Validators.required]],
+		// potential: ['', [Validators.required]],
+
+		this.imovelService
+			.registerProperty(propertyObj)
+			.pipe(first())
+			.subscribe({
+				next: (response: any) => {
+					console.log('response: ', response);
+
+					if (response.success) {
+					} else {
+					}
+				},
+				error: (error: any) => {
+					console.error(error);
+				},
+			});
 	}
 
 	goBack() {
