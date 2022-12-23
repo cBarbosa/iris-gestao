@@ -54,6 +54,8 @@ public class ClienteService: IClienteService
             Cep                     = cmd.Cep.Value,
             DataNascimento          = cmd.DataNascimento,
             Nps                     = cmd.Nps,
+            Telefone                = cmd.Telefone,
+            Email                   = cmd.Email,
             GuidReferencia          = Guid.Parse(Guid.NewGuid().ToString().ToUpper()),
             DataUltimaModificacao   = DateTime.Now
         };
@@ -92,6 +94,8 @@ public class ClienteService: IClienteService
             Cep                     = cmd.Cep.Value,
             DataNascimento          = cmd.DataNascimento.HasValue ? cmd.DataNascimento : null,
             Nps                     = cmd.Nps,
+            Telefone                = cmd.Telefone,
+            Email                   = cmd.Email,
             GuidReferencia          = Guid.Parse(cmd.GuidReferencia.ToUpper()),
             DataUltimaModificacao   = DateTime.Now
         };

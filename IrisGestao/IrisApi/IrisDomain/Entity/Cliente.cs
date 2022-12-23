@@ -43,11 +43,11 @@ public partial class Cliente: BaseEntity<Cliente>
 
     [StringLength(100)]
     [Unicode(false)]
-    public string Email { get; set; } = null!;
+    public string? Email { get; set; } = null!;
 
     [StringLength(20)]
     [Unicode(false)]
-    public string Telefone { get; set; } = null!;
+    public string? Telefone { get; set; } = null!;
 
     public int Nps { get; set; }
 
