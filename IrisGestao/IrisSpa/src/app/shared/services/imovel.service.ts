@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
 import { environment as env } from '../../../environments/environment';
+import { ImovelUnidadeType } from '../models';
 
 type Property = {
 	Nome: string;
@@ -95,6 +96,18 @@ export class ImovelService {
 			.get<ApiResponse>(
 				`${env.config.apiUrl}Unidade/${uid}/guid`
 			)
+			.pipe(
+				map((response) => {
+					console.log('response', response);
+					if (response.success) return response.data;
+					else return console.error(`getUnit: ${response.message}`);
+				})
+			);
+	};
+
+	saveUnit(uid:string, unit: ImovelUnidadeType) {
+		return this.http
+			.put<ApiResponse>(`${env.config.apiUrl}Unidade/${uid}/atualizar`, unit)
 			.pipe(
 				map((response) => {
 					console.log('response', response);
