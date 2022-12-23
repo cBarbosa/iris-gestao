@@ -134,48 +134,6 @@
 				}
 			}
 
-			.p-paginator {
-				.p-paginator-element {
-					@apply rounded h-9;
-
-					&.p-paginator-first {
-					}
-
-					&.p-paginator-prev {
-					}
-
-					&.p-paginator-next {
-					}
-
-					&.p-paginator-last {
-					}
-
-					&:hover {
-						background-color: rgba(100, 27, 30, 0.04);
-					}
-
-					&.p-link {
-						&:focus {
-							box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
-						}
-					}
-				}
-
-				.p-paginator-pages {
-					.p-paginator-element {
-						&.p-paginator-page {
-							&.p-highlight {
-								color: #641b1e;
-								background-color: rgba(148, 30, 34, 0.07);
-							}
-							&:not(.p-highlight):hover {
-								background-color: rgba(100, 27, 30, 0.04);
-							}
-						}
-					}
-				}
-			}
-
 			&.p-datatable-striped {
 				.p-datatable-tbody {
 					& > tr {
@@ -184,6 +142,48 @@
 
 					& > tr:nth-child(even) td {
 						background-color: #fbfbfb;
+					}
+				}
+			}
+		}
+
+		&.p-paginator {
+			.p-paginator-element {
+				@apply rounded h-9;
+
+				&.p-paginator-first {
+				}
+
+				&.p-paginator-prev {
+				}
+
+				&.p-paginator-next {
+				}
+
+				&.p-paginator-last {
+				}
+
+				&:hover {
+					background-color: rgba(100, 27, 30, 0.04);
+				}
+
+				&.p-link {
+					&:focus {
+						box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+					}
+				}
+			}
+
+			.p-paginator-pages {
+				.p-paginator-element {
+					&.p-paginator-page {
+						&.p-highlight {
+							color: #641b1e;
+							background-color: rgba(148, 30, 34, 0.07);
+						}
+						&:not(.p-highlight):hover {
+							background-color: rgba(100, 27, 30, 0.04);
+						}
 					}
 				}
 			}

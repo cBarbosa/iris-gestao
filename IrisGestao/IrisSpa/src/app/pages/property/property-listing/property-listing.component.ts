@@ -14,7 +14,7 @@ export class PropertyListingComponent implements OnInit {
 	properties: Imovel[] = [];
 
 	totalListCount: number;
-	isLoadingList = false;
+	isLoadingList = true;
 
 	first = 0;
 	rows = 10;
@@ -34,20 +34,21 @@ export class PropertyListingComponent implements OnInit {
 	}
 
 	getPagingData(page: number = 1): void {
-		const list = this.imovelService
-			.getPerperties()
-			?.pipe(first())
-			.subscribe((event: any) => {
-				this.properties = [];
-				this.isLoadingList = true;
-				this.totalListCount = event.totalCount;
+		setTimeout(() => {
+			const list = this.imovelService
+				.getPerperties()
+				?.pipe(first())
+				.subscribe((event: any) => {
+					this.properties = [];
+					this.totalListCount = event.totalCount;
 
-				event.items.forEach((imovel: Imovel) => {
-					// console.debug('Imovel Data >> ' + JSON.stringify(imovel));
-					this.properties.push(imovel);
+					event.items.forEach((imovel: Imovel) => {
+						// console.debug('Imovel Data >> ' + JSON.stringify(imovel));
+						this.properties.push(imovel);
+					});
+					this.isLoadingList = false;
 				});
-				this.isLoadingList = false;
-			});
+		}, 3000);
 	}
 
 	navigateTo(route: string) {
