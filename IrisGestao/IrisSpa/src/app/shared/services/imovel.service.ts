@@ -74,14 +74,10 @@ export class ImovelService {
 			httpOptions
 		);
 	}
-  
-	};
 
 	getProperty(uid: string) {
 		return this.http
-			.get<ApiResponse>(
-				`${env.config.apiUrl}Imovel/${uid}/guid`
-			)
+			.get<ApiResponse>(`${env.config.apiUrl}Imovel/${uid}/guid`)
 			.pipe(
 				map((response) => {
 					console.log('response', response);
@@ -89,13 +85,11 @@ export class ImovelService {
 					else return console.error(`getPerperties: ${response.message}`);
 				})
 			);
-	};
+	}
 
 	getUnit(uid: string) {
 		return this.http
-			.get<ApiResponse>(
-				`${env.config.apiUrl}Unidade/${uid}/guid`
-			)
+			.get<ApiResponse>(`${env.config.apiUrl}Unidade/${uid}/guid`)
 			.pipe(
 				map((response) => {
 					console.log('response', response);
@@ -103,5 +97,5 @@ export class ImovelService {
 					else return console.error(`getUnit: ${response.message}`);
 				})
 			);
-	};
+	}
 }

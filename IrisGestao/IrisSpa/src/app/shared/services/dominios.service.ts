@@ -12,13 +12,33 @@ export class DominiosService {
 
 	getTipoCliente() {
 		return this.http
-			.get<ApiResponse>(
-				`${env.config.apiUrl}Dominios/tipo-cliente`
-			)
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/tipo-cliente`)
 			.pipe(
 				map((response) => {
 					if (response.success) return response;
-					else return console.error(`getClients: ${response.message}`);
+					else return console.error(`getTipoCliente: ${response.message}`);
+				})
+			);
+	}
+
+	getTipoUnidade() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/tipo-unidade`)
+			.pipe(
+				map((response) => {
+					if (response.success) return response;
+					else return console.error(`getTipoUnidade: ${response.message}`);
+				})
+			);
+	}
+
+	getCategoriaImovel() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/categoria-imovel`)
+			.pipe(
+				map((response) => {
+					if (response.success) return response;
+					else return console.error(`getCategoriaImovel: ${response.message}`);
 				})
 			);
 	}
