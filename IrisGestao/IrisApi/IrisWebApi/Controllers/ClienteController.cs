@@ -15,7 +15,6 @@ public class ClienteController : Controller
         this.clienteService = clienteService;
     }
  
-    // GET
     [HttpGet]
     [Produces("application/json")]
    public async Task<IActionResult> GetAllPaging(
@@ -23,7 +22,6 @@ public class ClienteController : Controller
        , [FromQuery] int? page = 1) =>
         Ok(await clienteService.GetAllPaging(limit ?? 10, page ?? 1));
 
-    // GET
     [HttpGet("{guid}/guid/")]
     [Produces("application/json")]
     public async Task<IActionResult> GetByGuid([FromRoute] Guid guid) =>
@@ -64,5 +62,10 @@ public class ClienteController : Controller
 
         return Ok(result);
     }
+    
+    [HttpGet("lista-proprietarios")]
+    [Produces("application/json")]
+    public async Task<IActionResult> GetAllOwners() =>
+        Ok(await clienteService.GetAllOwners());
 }
 

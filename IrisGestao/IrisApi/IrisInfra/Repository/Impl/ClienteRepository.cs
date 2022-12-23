@@ -91,6 +91,21 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
         return null!;
     }
 
+    public async Task<IEnumerable<object>?> GetAllOwners()
+    {
+        return await DbSet
+            .Where(x => x.Imovel.Any())
+            .OrderBy(x => x.Nome)
+            .Select(x => new
+            {
+                Id = x.Id,
+                GuidReferencia = x.GuidReferencia,
+                Nome = x.Nome,
+                QtdeImoveis = x.Imovel.Count()
+            })
+            .ToListAsync();
+    }
+
 
     private static List<object> ImagemListFake => new List<object>
     {
