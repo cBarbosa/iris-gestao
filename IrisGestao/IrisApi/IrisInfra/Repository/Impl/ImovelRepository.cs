@@ -157,7 +157,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                             AreaUtil = x.Unidade.Sum(x => x.AreaUtil),
                             AreaHabitese = x.Unidade.Sum(x => x.AreaHabitese),
                             NroUnidades = x.Unidade.Count,
-                            ImgCapa = "../../../../assets/images/imovel.png",
+                            ImgCapa = ImagemCapaFake,
                             Imagens = ImagemListFake,
                             Anexos = AnexoListFake,
                             IdCategoriaImovelNavigation = x.IdCategoriaImovelNavigation == null ? null : new 
@@ -195,7 +195,9 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
             .FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
     }
 
-    private static List<object> ImagemListFake => new List<object>
+    public static string ImagemCapaFake => "../../../../assets/images/imovel.png";
+
+    public static List<object> ImagemListFake => new List<object>
     {
         new
         {
@@ -234,7 +236,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
         }
     };
     
-    private static List<object> AnexoListFake => new List<object>
+    public static List<object> AnexoListFake => new List<object>
     {
         new
         {

@@ -44,6 +44,15 @@ public class UnidadeService: IUnidadeService
             : new CommandResult(true, SuccessResponseEnums.Success_1005, Unidades);
     }
 
+    public async Task<CommandResult> GetByUid(Guid guid)
+    {
+        var unidade = await unidadeRepository.GetByUid(guid);
+
+        return unidade == null
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, unidade);
+    }
+
     public async Task<CommandResult> Insert(CriarUnidadeCommand cmd)
     {
         var Unidade = new Unidade

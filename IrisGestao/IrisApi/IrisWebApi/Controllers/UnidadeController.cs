@@ -22,10 +22,10 @@ public class UnidadeController : Controller
         Ok(await unidadeService.GetAll());
 
     // GET
-    [HttpGet("{codigo}/id")]
+    [HttpGet("{guid}/guid")]
     [Produces("application/json")]
-    public async Task<IActionResult> BuscarUnidade([FromRoute] int codigo) =>
-        Ok(await unidadeService.GetById(codigo));
+    public async Task<IActionResult> GetByUid([FromRoute] Guid guid) =>
+        Ok(await unidadeService.GetByUid(guid));
 
     // GET
     [HttpGet("{codigo}/idImovel")]
