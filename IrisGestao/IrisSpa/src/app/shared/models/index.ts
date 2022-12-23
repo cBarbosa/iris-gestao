@@ -14,6 +14,8 @@ export * from './imovel-endereco.model';
 
 export * from './imovel-unidade.model';
 
+export * from './imovel-unidade-tipo.model';
+
 export * from './cliente.model';
 
 export * from './cliente-tipo.model';

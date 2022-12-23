@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/internal/operators/first';
-import { ImovelUnidade } from 'src/app/shared/models';
+import { ImovelUnidade, ImovelUnidadeType } from 'src/app/shared/models';
 import { ImovelService } from 'src/app/shared/services';
 
 import { Utils } from 'src/app/shared/utils';
@@ -65,7 +65,6 @@ export class PropertyEditComponent implements OnInit {
 	}
 
 	onSubmit(e: any = null) {
-		console.log('submitting form');
 
 		if (this.editForm.invalid) {
 			this.editForm.markAllAsTouched();
@@ -74,7 +73,9 @@ export class PropertyEditComponent implements OnInit {
 			// })
 			return;
 		}
-		console.log('form submitted');
+
+		this.saveChanges();
+		
 	}
 
 	goBack() {
@@ -90,6 +91,49 @@ export class PropertyEditComponent implements OnInit {
 			.subscribe((unidade: ImovelUnidade) => {
 				this.unit = unidade;
 				this.isLoadingView = false;
+
+				this.editForm.patchValue({
+					name: unidade.tipo,
+					category: unidade.idImovelNavigation?.idCategoriaImovelNavigation?.nome,
+					type: unidade.idTipoUnidadeNavigation?.nome,
+					proprietary: unidade.idImovelNavigation?.idClienteProprietarioNavigation?.nome,
+					area_total: unidade.areaTotal,
+					area_usable: unidade.areaUtil,
+					area_occupancy: unidade.areaHabitese,
+					occupancy: unidade.matricula,
+					iptu: unidade.inscricaoIPTU,
+					neoenergia: unidade.matriculaEnergia,
+					caesb: unidade.matriculaAgua,
+					administration: unidade.taxaAdministracao,
+					potential: unidade.valorPotencial
+				});
 			});
 	}
+
+	saveChanges() :void {
+		
+		this.isLoadingView = true;
+
+		const save = this.imovelService
+			.saveUnit(this.uid, {
+				Tipo: this.editForm.get('name')?.value,
+				IdTipoUnidade: this.unit.idTipoUnidadeNavigation?.id,
+				AreaUtil: this.editForm.get('area_usable')?.value,
+				AreaTotal: this.editForm.get('area_total')?.value,
+				AreaHabitese: this.editForm.get('area_occupancy')?.value,
+				Matricula: this.editForm.get('occupancy')?.value,
+				InscricaoIptu: this.editForm.get('iptu')?.value,
+				MatriculaEnergia: this.editForm.get('neoenergia')?.value,
+				MatriculaAgua: this.editForm.get('caesb')?.value,
+				TaxaAdministracao: this.editForm.get('administration')?.value,
+				ValorPotencial: this.editForm.get('potential')?.value,
+				UnidadeLocada: this.unit.unidadeAlocada
+			} as ImovelUnidadeType)
+			?.pipe(first())
+			.subscribe((response: ImovelUnidade) => {
+				window.alert('Dados atualizados com sucesso')
+				this.isLoadingView = false;
+				this.goBack();
+			});
+	};
 }

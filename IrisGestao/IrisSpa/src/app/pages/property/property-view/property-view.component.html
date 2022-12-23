@@ -84,7 +84,7 @@
 				<!-- <ng-container *ngFor="let unit of property.unidade"></ng-container> -->
 				<ng-template pTemplate="body" let-unit >
 					<tr>
-						<td>Unidade </td>
+						<td>{{unit.tipo}}</td>
 						<td>{{ unit.areaHabitese ?? 0 | area }}</td>
 						<td>{{ unit.areaUtil | area }}</td>
 						<td> - </td>
@@ -204,7 +204,7 @@
 
 					<div class="data small">
 						<span class="label">Número de matrícula:</span>
-						<span class="value">unit.matricula</span>
+						<span class="value">{{unit.matricula}}</span>
 					</div>
 					<div class="data small">
 						<span class="label">Mat. IPTU:</span>
