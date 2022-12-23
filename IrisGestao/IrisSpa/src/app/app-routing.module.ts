@@ -47,6 +47,17 @@ const routes: Routes = [
 				},
 			},
 			{
+
+				path: 'client/register',
+				// component: PropertyListingComponent,
+				loadChildren: () =>
+				import('./pages/client/client.module').then((m) => m.ClientModule),
+				canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
 				path: '',
 				redirectTo: 'home',
 				pathMatch: 'full',

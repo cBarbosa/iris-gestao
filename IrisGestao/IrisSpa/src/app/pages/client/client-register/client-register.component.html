@@ -16,18 +16,18 @@
 			</p>
 
 			<div class="field">
-				<label for="name" class="block">Nome</label>
+				<label for="nome" class="block">Nome</label>
 				<input
-					id="name"
+					id="nome"
 					type="text"
-					formControlName="name"
+					formControlName="nome"
 					aria-describedby="name-help"
 					pInputText
 				/>
-				<ng-container *ngIf="checkHasError(f['name'])">
+				<ng-container *ngIf="checkHasError(f['nome'])">
 					<small
 						id="name-help"
-						*ngIf="f['name'].hasError('required'); else error2"
+						*ngIf="f['nome'].hasError('required'); else error2"
 						class="p-error block"
 					>
 						Informe o nome do cliente
@@ -39,20 +39,20 @@
 			</div>
 
 			<div class="field">
-				<label for="birthday" class="block">Nascimento</label>
+				<label for="dataNascimento" class="block">Nascimento</label>
 				<p-calendar
-					id="birthday"
-					formControlbirthday="birthday"
+					id="dataNascimento"
+					formControlbirthday="dataNascimento"
 					dateFormat="dd/mm/yy"
 					(onInput)="onInputDate($event)"
 					(onBlur)="onBlurDate()"
 					placeholder="dd/mm/aaaa"
 					aria-describedby="birthday-help"
 				></p-calendar>
-				<ng-container *ngIf="checkHasError(f['birthday'])">
+				<ng-container *ngIf="checkHasError(f['dataNascimento'])">
 					<small
 						id="birthday-help"
-						*ngIf="f['birthday'].hasError('required'); else error2"
+						*ngIf="f['dataNascimento'].hasError('required'); else error2"
 						class="p-error block"
 					>
 						Informe a data de nascimento
@@ -66,17 +66,17 @@
 			</div>
 
 			<div class="field">
-				<label for="clientType" class="block">Tipo de cliente</label>
+				<label for="IdTipoCliente" class="block">Tipo de cliente</label>
 				<p-dropdown
-					id="client-type"
-					[options]="clientTypes"
-					formControlName="clientType"
+					id="IdTipoCliente"
+					[options]="tiposCliente"
+					formControlName="IdTipoCliente"
 					aria-describedby="client-type-help"
 				></p-dropdown>
-				<ng-container *ngIf="checkHasError(f['clientType'])">
+				<ng-container *ngIf="checkHasError(f['IdTipoCliente'])">
 					<small
 						id="client-type-help"
-						*ngIf="f['clientType'].hasError('required'); else error2"
+						*ngIf="f['IdTipoCliente'].hasError('required'); else error2"
 						class="p-error block"
 					>
 						Informe o tipo de cliente
@@ -90,18 +90,18 @@
 			</div>
 
 			<div class="field">
-				<label for="cpf" class="block">CPF</label>
+				<label for="CpfCnpj" class="block">CPF</label>
 				<input
-					id="cpf"
+					id="CpfCnpj"
 					type="text"
-					formControlName="cpf"
+					formControlName="CpfCnpj"
 					aria-describedby="name-help"
 					pInputText
 				/>
-				<ng-container *ngIf="checkHasError(f['cpf'])">
+				<ng-container *ngIf="checkHasError(f['CpfCnpj'])">
 					<small
 						id="cpf-help"
-						*ngIf="f['cpf'].hasError('required'); else error2"
+						*ngIf="f['CpfCnpj'].hasError('required'); else error2"
 						class="p-error block"
 					>
 						Informe o CPF do cliente
@@ -138,18 +138,18 @@
 			</div>
 
 			<div class="field">
-				<label for="telephone" class="block">Telefone</label>
+				<label for="telefone" class="block">Telefone</label>
 				<input
-					id="telephone"
+					id="telefone"
 					type="text"
-					formControlName="telephone"
+					formControlName="telefone"
 					aria-describedby="telephone-help"
 					pInputText
 				/>
-				<ng-container *ngIf="checkHasError(f['telephone'])">
+				<ng-container *ngIf="checkHasError(f['telefone'])">
 					<small
 						id="telephone-help"
-						*ngIf="f['telephone'].hasError('required'); else error2"
+						*ngIf="f['telefone'].hasError('required'); else error2"
 						class="p-error block"
 					>
 						Informe o telefone do cliente

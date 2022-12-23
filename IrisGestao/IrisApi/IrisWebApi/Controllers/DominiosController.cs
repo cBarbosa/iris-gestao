@@ -90,5 +90,5 @@ public class DominiosController : Controller
     [HttpGet("/api/[controller]/tipo-cliente")]
     [Produces("application/json")]
     public async Task<IActionResult> GetTipoCliente() =>
-        Ok(await tipoEventoService.GetAll());
+        Ok(await tipoClienteService.GetAll());
 }

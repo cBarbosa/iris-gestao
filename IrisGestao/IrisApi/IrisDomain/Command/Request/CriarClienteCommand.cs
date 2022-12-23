@@ -25,6 +25,6 @@ namespace IrisGestao.Domain.Command.Request
         public int Nps { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataUltimaModificacao { get; set; }
-        public string GuidReferencia { get; set; }
+        public string? GuidReferencia { get; set; }
     }
 }
