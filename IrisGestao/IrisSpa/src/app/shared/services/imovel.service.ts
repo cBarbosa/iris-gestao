@@ -75,7 +75,6 @@ export class ImovelService {
 		);
 	}
   
-	};
 
 	getProperty(uid: string) {
 		return this.http
