@@ -5,7 +5,7 @@
 			<p>Informações necessárias para o cadastro do imóvel</p>
 
 			<div class="photo-input">
-				<img src="../../../assets/images/property/edit.png" alt="edit-photo" />
+				<img [src]="unit.idImovelNavigation?.imgCapa" alt="edit-photo" />
 
 				<!-- <button
 					pButton
@@ -63,6 +63,7 @@
 					formControlName="category"
 					aria-describedby="category-help"
 					pInputText
+					readonly="true"
 				/>
 				<ng-container *ngIf="checkHasError(f['category'])">
 					<small
@@ -88,6 +89,7 @@
 					formControlName="type"
 					aria-describedby="type-help"
 					pInputText
+					readonly="true"
 				/>
 				<ng-container *ngIf="checkHasError(f['type'])">
 					<small
@@ -113,6 +115,7 @@
 					formControlName="proprietary"
 					aria-describedby="proprietary-help"
 					pInputText
+					readonly="true"
 				/>
 				<ng-container *ngIf="checkHasError(f['proprietary'])">
 					<small
@@ -376,8 +379,15 @@
 			type="reset"
 			label="Cancelar"
 			class="p-button-outlined h-11"
+			[disabled]="editForm.pristine"
 		></button>
 
-		<button pButton type="submit" label="Continuar" class="h-11"></button>
+		<button
+			pButton
+			type="submit"
+			label="Continuar"
+			class="h-11"
+			[disabled]="editForm.pristine"
+		></button>
 	</div>
 </form>
