@@ -6,9 +6,9 @@ import { environment as env } from '../../../environments/environment';
 
 const httpOptions = {
 	headers: new HttpHeaders({
-	  'Content-Type': 'application/json'
-	})
-  };
+		'Content-Type': 'application/json',
+	}),
+};
 
 @Injectable({
 	providedIn: 'root',
@@ -30,10 +30,24 @@ export class ClienteService {
 			);
 	}
 
-	getClienteById(uid:string) {
+	getClienteById(uid: string) {
 		return this.http
-			.get<ApiResponse>(
-				`${env.config.apiUrl}Cliente/${uid}/guid`
+			.get<ApiResponse>(`${env.config.apiUrl}Cliente/${uid}/guid`)
+			.pipe(
+				map((response) => {
+					console.log('client response', response);
+					if (response.success) return response.data;
+					else return console.error(`getClients: ${response.message}`);
+				})
+			);
+	}
+
+	criarCliente(form: any) {
+		return this.http
+			.post<ApiResponse>(
+				`${env.config.apiUrl}Cliente/Criar`,
+				JSON.stringify(form),
+				httpOptions
 			)
 			.pipe(
 				map((response) => {
@@ -44,17 +58,14 @@ export class ClienteService {
 			);
 	}
 
-	criarCliente(form:any) {
+	getListaProprietarios() {
 		return this.http
-			.post<ApiResponse>(
-				`${env.config.apiUrl}Cliente/Criar`,
-				JSON.stringify(form), httpOptions
-			)
+			.get<ApiResponse>(`${env.config.apiUrl}Cliente/lista-proprietarios`)
 			.pipe(
 				map((response) => {
-					console.log('client response', response);
-					if (response.success) return response.data;
-					else return console.error(`getClients: ${response.message}`);
+					if (response.success) return response;
+					else
+						return console.error(`getListaProprietarios: ${response.message}`);
 				})
 			);
 	}

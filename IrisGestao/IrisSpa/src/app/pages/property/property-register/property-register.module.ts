@@ -9,6 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormStepsComponent } from 'src/app/shared/components/form-steps/form-steps.component';
 import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
+import { DialogModule } from 'primeng/dialog';
 
 @NgModule({
 	declarations: [PropertyRegisterComponent],
@@ -21,6 +22,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 		FormStepsComponent,
 		ButtonModule,
 		FileUploadModule,
+		DialogModule,
 	],
 })
 export class PropertyRegisterModule {}

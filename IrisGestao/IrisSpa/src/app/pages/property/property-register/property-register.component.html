@@ -53,7 +53,7 @@
 			<div class="field">
 				<label for="proprietary" class="block">Proprietário</label>
 				<p-dropdown
-					id="proprietary-type"
+					id="proprietary"
 					[options]="proprietaries"
 					formControlName="proprietary"
 					aria-describedby="proprietary-help"
@@ -83,23 +83,23 @@
 			</div>
 
 			<div class="field">
-				<label for="unitType" class="block">Tipo de unidade</label>
+				<label for="category" class="block">Categoria do imóvel</label>
 				<p-dropdown
-					id="unit-type"
-					[options]="unitTypes"
-					formControlName="unitType"
-					aria-describedby="proprietary-help"
+					id="category"
+					[options]="propertyCategories"
+					formControlName="category"
+					aria-describedby="category-help"
 				></p-dropdown>
-				<ng-container *ngIf="checkHasError(f['unitType'])">
+				<ng-container *ngIf="checkHasError(f['category'])">
 					<small
-						id="unit-type-help"
-						*ngIf="f['unitType'].hasError('required'); else error2"
+						id="category-help"
+						*ngIf="f['category'].hasError('required'); else error2"
 						class="p-error block"
 					>
 						Informe o tipo de unidade
 					</small>
 					<ng-template #error2>
-						<small id="unit-type-help" class="p-error block">
+						<small id="category-help" class="p-error block">
 							Tipo de unidade inválido
 						</small>
 					</ng-template>
@@ -107,25 +107,25 @@
 			</div>
 
 			<div class="field">
-				<label for="area" class="block">Área total</label>
+				<label for="cost-centre" class="block">N° do centro de custo</label>
 				<input
-					id="area"
+					id="cost-centre"
 					type="text"
-					formControlName="area"
-					aria-describedby="area-help"
+					formControlName="costCentre"
+					aria-describedby="cost-centre-help"
 					pInputText
 				/>
-				<ng-container *ngIf="checkHasError(f['area'])">
+				<ng-container *ngIf="checkHasError(f['costCentre'])">
 					<small
-						id="area-help"
-						*ngIf="f['area'].hasError('required'); else error2"
+						id="cost-centre-help"
+						*ngIf="f['costCentre'].hasError('required'); else error2"
 						class="p-error block"
 					>
-						Informe a área total
+						Informe o n° do centro de custo
 					</small>
 					<ng-template #error2>
-						<small id="area-help" class="p-error block">
-							Área total inválida
+						<small id="cost-centre-help" class="p-error block">
+							N° do centro de custo inválido
 						</small>
 					</ng-template>
 				</ng-container>
@@ -147,6 +147,130 @@
 				Agora adicione as informações necessárias para começar o cadastro do
 				imóvel.
 			</p>
+
+			<div class="field">
+				<label for="description" class="block">Descrição da unidade</label>
+				<input
+					id="description"
+					type="text"
+					formControlName="description"
+					aria-describedby="description-help"
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['description'])">
+					<small
+						id="description-help"
+						*ngIf="f['description'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a descrição da unidade
+					</small>
+					<ng-template #error2>
+						<small id="description-help" class="p-error block">
+							Descrição inválida
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="unitType" class="block">Tipo de unidade</label>
+				<p-dropdown
+					id="unit-type"
+					[options]="unitTypes"
+					formControlName="unitType"
+					aria-describedby="unit-type-help"
+				></p-dropdown>
+				<ng-container *ngIf="checkHasError(f['unitType'])">
+					<small
+						id="unit-type-help"
+						*ngIf="f['unitType'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o tipo de unidade
+					</small>
+					<ng-template #error2>
+						<small id="unit-type-help" class="p-error block">
+							Tipo de unidade inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="area-total" class="block">Área total</label>
+				<input
+					id="area-total"
+					type="text"
+					formControlName="areaTotal"
+					aria-describedby="area-total-help"
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['areaTotal'])">
+					<small
+						id="area-total-help"
+						*ngIf="f['areaTotal'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a área total
+					</small>
+					<ng-template #error2>
+						<small id="area-total-help" class="p-error block">
+							Área total inválida
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="area-usable" class="block">Área útil</label>
+				<input
+					id="area-usable"
+					type="text"
+					formControlName="areaUsable"
+					aria-describedby="area-usable-help"
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['areaUsable'])">
+					<small
+						id="area-usable-help"
+						*ngIf="f['areaUsable'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a área útil
+					</small>
+					<ng-template #error2>
+						<small id="area-usable-help" class="p-error block">
+							Área útil inválida
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="area-occupancy" class="block">Área Habite-se</label>
+				<input
+					id="area-occupancy"
+					type="text"
+					formControlName="areaOccupancy"
+					aria-describedby="area-occupancy-help"
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['areaOccupancy'])">
+					<small
+						id="area-occupancy-help"
+						*ngIf="f['areaOccupancy'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a área Habite-se
+					</small>
+					<ng-template #error2>
+						<small id="area-occupancy-help" class="p-error block">
+							Área Habite-se inválida
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
 
 			<div class="field">
 				<label for="registration" class="block">Número da matrícula</label>
@@ -224,7 +348,7 @@
 			</div>
 
 			<div class="field">
-				<label for="caesb" class="block">CAESB</label>
+				<label for="caesb" class="block">N° identificação CAESB</label>
 				<input
 					id="caesb"
 					type="text"
@@ -444,8 +568,9 @@
 		<button
 			pButton
 			pRipple
-			type="reset"
+			type="button"
 			label="Cancelar"
+			(click)="navigateTo('property/listing')"
 			class="p-button-outlined h-11"
 		></button>
 
@@ -458,3 +583,34 @@
 		></button>
 	</div>
 </form>
+
+<p-dialog
+	[(visible)]="displayModal"
+	[modal]="true"
+	[draggable]="false"
+	[resizable]="false"
+	styleClass="form-modal"
+>
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+		<button
+			pButton
+			label="Continuar"
+			(click)="closeModal(navigateTo, 'property/listing')"
+		></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</p-dialog>

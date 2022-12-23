@@ -260,6 +260,10 @@
 			&:focus {
 				box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
 			}
+
+			&:enabled:hover {
+				border-color: #641b1e;
+			}
 		}
 
 		&.p-menu {
@@ -409,6 +413,39 @@
 			}
 
 			.p-inputwrapper-focus {
+			}
+		}
+
+		.p-dialog-mask {
+			.p-dialog {
+				.p-dialog-header {
+					.p-dialog-title {
+					}
+
+					.p-dialog-header-icons {
+						button.p-dialog-header-icon {
+							color: #641b1e;
+
+							&:hover {
+								background-color: #f7ded3;
+							}
+
+							&:focus,
+							&:focus-visible {
+								box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+							}
+
+							&.p-dialog-header-close {
+								.p-dialog-header-close-icon {
+									@apply text-lg;
+								}
+							}
+						}
+					}
+				}
+
+				.p-dialog-content {
+				}
 			}
 		}
 	}

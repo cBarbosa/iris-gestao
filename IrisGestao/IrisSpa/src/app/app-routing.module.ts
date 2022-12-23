@@ -14,6 +14,15 @@ const routes: Routes = [
 		component: LoggedInLayoutComponent,
 		children: [
 			{
+				path: 'home',
+				loadChildren: () =>
+					import('./pages/home/home.module').then((m) => m.HomeModule),
+				canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
 				path: 'property',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
@@ -27,31 +36,8 @@ const routes: Routes = [
 			},
 			{
 				path: 'client',
-				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import('./pages/client/client.module').then((m) => m.ClientModule),
-				canActivate: [AuthGuard],
-				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-				},
-			},
-			{
-
-				path: 'client/details/:uid',
-				// component: PropertyListingComponent,
-				loadChildren: () =>
-					import('./pages/home/home.module').then((m) => m.HomeModule),
-				canActivate: [AuthGuard],
-				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-				},
-			},
-			{
-
-				path: 'client/register',
-				// component: PropertyListingComponent,
-				loadChildren: () =>
-				import('./pages/client/client.module').then((m) => m.ClientModule),
 				canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
