@@ -1,0 +1,11 @@
+<div [class]="styleClass ? styleClass + ' loading' : 'loading'">
+	<div class="loading-placeholder">
+		<div class="text" *ngIf="text">{{ text }}</div>
+		<div class="lds-ellipsis">
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+		</div>
+	</div>
+</div>

@@ -3,10 +3,16 @@ import { PropertyItemModule } from '../property-item/property-item.module';
 import { Imovel } from 'src/app/shared/models';
 import { CommonModule } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
+import { SpinnerComponent } from '../custom-ui/spinner/spinner.component';
 
 @Component({
 	standalone: true,
-	imports: [CommonModule, PropertyItemModule, PaginatorModule],
+	imports: [
+		CommonModule,
+		PropertyItemModule,
+		PaginatorModule,
+		SpinnerComponent,
+	],
 	selector: 'app-property-list',
 	templateUrl: './property-list.component.html',
 	styleUrls: ['./property-list.component.scss'],
