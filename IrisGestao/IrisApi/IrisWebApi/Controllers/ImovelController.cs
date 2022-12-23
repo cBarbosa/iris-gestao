@@ -37,9 +37,6 @@ public class ImovelController : Controller
     {
         var result = await imovelService.Insert(cmd);
 
-        if (result == null)
-            return BadRequest("Operação não realizada");
-
         return Ok(result);
     }
 

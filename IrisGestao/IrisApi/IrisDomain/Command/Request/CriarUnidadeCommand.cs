@@ -9,8 +9,8 @@ namespace IrisGestao.Domain.Command.Request
     public class CriarUnidadeCommand
     {
         public Guid GuidReferencia { get; set; }
-        public Guid GuidReferenciaImovel { get; set; }
         public int IdTipoUnidade { get; set; }
+        public string? Tipo { get; set; }
         public decimal AreaUtil { get; set; }
         public decimal AreaTotal { get; set; }
         public decimal? AreaHabitese { get; set; }

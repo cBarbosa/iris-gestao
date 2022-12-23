@@ -34,12 +34,13 @@ public class UnidadeController : Controller
         Ok(await unidadeService.BuscarBuscarUnidadePorImovel(codigo));
 
 
-    [HttpPost("criar")]
+    [HttpPost("{guid}/criar")]
     [Produces("application/json")]
     public async Task<IActionResult> Insert(
+        Guid guid,
         [FromBody] CriarUnidadeCommand cmd)
     {
-        var result = await unidadeService.Insert(cmd);
+        var result = await unidadeService.Insert(guid, cmd);
 
         return Ok(result);
     }
@@ -51,9 +52,6 @@ public class UnidadeController : Controller
         [FromBody] CriarUnidadeCommand cmd)
     {
         var result = await unidadeService.Update(guid, cmd);
-
-        if (result == null)
-            return BadRequest("Operação não realizada");
 
         return Ok(result);
     }

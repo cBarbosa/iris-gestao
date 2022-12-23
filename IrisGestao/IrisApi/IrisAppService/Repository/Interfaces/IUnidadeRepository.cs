@@ -9,4 +9,5 @@ public interface IUnidadeRepository : IRepository<Unidade>, IDisposable
     IEnumerable<Unidade> GetById(int codigo);
     IEnumerable<Unidade> GetAll();
     Task<object?> GetByUid(Guid guid);
+    Task<Unidade?> GetByReferenceGuid(Guid uid);
 }
