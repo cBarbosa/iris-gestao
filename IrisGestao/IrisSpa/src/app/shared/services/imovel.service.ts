@@ -50,8 +50,9 @@ export class ImovelService {
 			.pipe(
 				map((response) => {
 					console.log('response', response);
-					if (response.success) return response.data;
-					else return console.error(`getPerperties: ${response.message}`);
+					if (!response.success)
+						console.error(`getProperties: ${response.message}`);
+					return response;
 				})
 			);
 	}
@@ -83,7 +84,7 @@ export class ImovelService {
 				map((response) => {
 					console.log('response', response);
 					if (response.success) return response.data;
-					else return console.error(`getPerperties: ${response.message}`);
+					else return console.error(`getProperty: ${response.message}`);
 				})
 			);
 	}
@@ -100,7 +101,7 @@ export class ImovelService {
 			);
 	}
 
-	saveUnit(uid:string, unit: ImovelUnidadeType) {
+	saveUnit(uid: string, unit: ImovelUnidadeType) {
 		return this.http
 			.put<ApiResponse>(`${env.config.apiUrl}Unidade/${uid}/atualizar`, unit)
 			.pipe(
