@@ -42,37 +42,37 @@ export class TopbarComponent {
 				id: route.startsWith('/client') ? 'current' : '',
 				command: () => this.navigateTo('client/listing'),
 			},
-			{
-				label: 'Prestador de serviços',
-			},
-			{
-				label: 'Fornecedores',
-			},
-			{
-				label: 'Contas',
-				items: [
-					{
-						label: 'Opção 1',
-					},
-					{
-						separator: true,
-					},
-					{
-						label: 'Opção 2',
-					},
-				],
-			},
-			{
-				label: 'Gerenciamento de obras',
-				items: [
-					{
-						label: 'Opção 1',
-					},
-					{
-						label: 'Opção 2',
-					},
-				],
-			},
+			// {
+			// 	label: 'Prestador de serviços',
+			// },
+			// {
+			// 	label: 'Fornecedores',
+			// },
+			// {
+			// 	label: 'Contas',
+			// 	items: [
+			// 		{
+			// 			label: 'Opção 1',
+			// 		},
+			// 		{
+			// 			separator: true,
+			// 		},
+			// 		{
+			// 			label: 'Opção 2',
+			// 		},
+			// 	],
+			// },
+			// {
+			// 	label: 'Gerenciamento de obras',
+			// 	items: [
+			// 		{
+			// 			label: 'Opção 1',
+			// 		},
+			// 		{
+			// 			label: 'Opção 2',
+			// 		},
+			// 	],
+			// },
 		];
 	}
 

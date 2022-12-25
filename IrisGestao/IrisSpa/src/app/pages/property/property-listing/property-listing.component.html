@@ -27,9 +27,11 @@
 
 	<app-property-list
 		[properties]="properties"
-		pageSize="3"
-		pageIndex="0"
-		pageCount="2"
+		[totalRecords]="totalListCount"
+		[pageSize]="rows"
+		[pageIndex]="pageIndex"
 		[isLoading]="isLoadingList"
+		[showPaginator]="showPaginator"
+		[onPaginate]="paginate"
 	></app-property-list>
 </div>

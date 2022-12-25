@@ -310,6 +310,25 @@
 				}
 			}
 		}
+
+		&.p-checkbox {
+			.p-checkbox-box {
+				background-color: #ffffff;
+				border: 2px solid #641b1e;
+				border-radius: 3px;
+
+				&.p-focus {
+					box-shadow: none;
+				}
+			}
+
+			&.p-checkbox-checked {
+				.p-checkbox-box {
+					border: 2px solid #641b1e;
+					background-color: #641b1e;
+				}
+			}
+		}
 	}
 
 	.p-element {

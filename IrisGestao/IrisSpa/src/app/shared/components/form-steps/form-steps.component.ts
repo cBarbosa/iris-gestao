@@ -5,6 +5,7 @@ type Step = {
 	label: string;
 	isValid?: boolean;
 	isCurrent?: boolean;
+	isVisited?: boolean;
 };
 
 @Component({
