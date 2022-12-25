@@ -39,11 +39,13 @@ public class ClienteController : Controller
         return Ok(result);
     }
 
-    [HttpPut("{codigo}/atualizar")]
+    [HttpPut("{guid}/atualizar")]
     [Produces("application/json")]
-    public async Task<IActionResult> Atualizar(int? codigo, [FromBody] CriarClienteCommand cmd)
+    public async Task<IActionResult> Atualizar(
+        Guid guid,
+        [FromBody] CriarClienteCommand cmd)
     {
-        var result = await clienteService.Update(codigo, cmd);
+        var result = await clienteService.Update(guid, cmd);
 
         if (result == null)
             return BadRequest("Operação não realizada");
