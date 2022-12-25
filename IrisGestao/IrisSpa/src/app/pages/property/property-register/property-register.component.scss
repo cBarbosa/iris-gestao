@@ -136,3 +136,24 @@
 		}
 	}
 }
+
+::ng-deep {
+	.p-sidebar.p-sidebar-right {
+		width: 25rem;
+
+		.p-sidebar-header {
+			h4 {
+				@apply text-2xl font-bold;
+			}
+		}
+
+		.p-sidebar-content {
+			.register-proprietary-form {
+				@apply mx-2;
+			}
+		}
+
+		.p-sidebar-footer {
+		}
+	}
+}

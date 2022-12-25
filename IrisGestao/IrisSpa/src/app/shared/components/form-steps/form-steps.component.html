@@ -4,19 +4,35 @@
 			[ngClass]="{
 				'form-step': true,
 				current: step.isCurrent,
-				valid: step.isValid,
-				invalid: step.isValid !== undefined ? !step.isValid : false
+				valid: !step.isCurrent && step.isVisited && step.isValid,
+				invalid:
+					!step.isCurrent && step.isVisited && step.isValid !== undefined
+						? !step.isValid
+						: false
 			}"
 		>
 			<button type="button" (click)="callback ? callback(i + 1) : null">
-				<span *ngIf="step.isValid === undefined" class="form-step-value">
+				<span
+					*ngIf="
+						!step.isVisited || step.isCurrent || step.isValid === undefined
+					"
+					class="form-step-value"
+				>
 					{{ (i + 1).toString().padStart(2, "0") }}
 				</span>
-				<span *ngIf="step.isValid" class="form-step-value">
+				<span
+					*ngIf="!step.isCurrent && step.isVisited && step.isValid"
+					class="form-step-value"
+				>
 					<i class="ph-check"></i>
 				</span>
 				<span
-					*ngIf="step.isValid !== undefined && !step.isValid"
+					*ngIf="
+						!step.isCurrent &&
+						step.isVisited &&
+						step.isValid !== undefined &&
+						!step.isValid
+					"
 					class="form-step-value"
 				>
 					<i class="ph-x"></i>

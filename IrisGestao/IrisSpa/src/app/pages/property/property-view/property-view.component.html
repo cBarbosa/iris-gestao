@@ -3,11 +3,21 @@
 
 	<div class="content">
 		<div class="main-card">
-			<div class="left-side" *ngIf="property && property.idCategoriaImovelNavigation">
-				<p-tag [rounded]="true" [styleClass]="property.idCategoriaImovelNavigation.nome == 'Imóvel de carteira' ? 'wallet' : 'market'"></p-tag>
+			<div
+				class="left-side"
+				*ngIf="property && property.idCategoriaImovelNavigation"
+			>
+				<p-tag
+					[rounded]="true"
+					[styleClass]="
+						property.idCategoriaImovelNavigation.nome == 'Imóvel de carteira'
+							? 'wallet'
+							: 'market'
+					"
+				></p-tag>
 				<h4>
-					{{property.nome}}
-					<span class="property-id">#{{property.guidReferencia}}</span>
+					{{ property.nome }}
+					<span class="property-id">#{{ property.guidReferencia }}</span>
 					<button
 						pButton
 						pRipple
@@ -20,7 +30,10 @@
 						(click)="toggleFavorite()"
 					></button>
 				</h4>
-				<p>{{ property.imovelEndereco?.[0]?.rua ?? '' }} - {{ property.imovelEndereco?.[0]?.uf }}</p>
+				<p>
+					{{ property.imovelEndereco?.[0]?.rua ?? '' }} -
+					{{ property.imovelEndereco?.[0]?.uf }}
+				</p>
 				<div class="location">
 					<app-icon name="pin-building" styleClass="mr-1"></app-icon>
 					{{ property.idCategoriaImovelNavigation.nome }}
@@ -42,6 +55,15 @@
 						</div>
 						<div class="value">{{ property.areaTotal ?? 0 | area }}</div>
 					</span>
+					<span class="ml-7 mt-2">
+						<button
+							pButton
+							type="button"
+							class="p-button-outlined icon-left h-9"
+						>
+							Editar imóvel
+						</button>
+					</span>
 				</div>
 			</div>
 		</div>
@@ -56,7 +78,7 @@
 					iconPos="left"
 					class="p-button-outlined icon-left h-9"
 				>
-					Adicionar imóvel
+					Adicionar unidade
 				</button>
 			</div>
 
@@ -82,17 +104,15 @@
 					</tr>
 				</ng-template>
 				<!-- <ng-container *ngFor="let unit of property.unidade"></ng-container> -->
-				<ng-template pTemplate="body" let-unit >
+				<ng-template pTemplate="body" let-unit>
 					<tr>
-						<td>{{unit.tipo}}</td>
+						<td>{{ unit.tipo }}</td>
 						<td>{{ unit.areaHabitese ?? 0 | area }}</td>
 						<td>{{ unit.areaUtil | area }}</td>
-						<td> - </td>
-						<td> - </td>
+						<td>-</td>
+						<td>-</td>
 						<td class="w-52">
-							<ng-container
-								*ngIf="unit.unidadeLocada; else disponivel"
-							>
+							<ng-container *ngIf="unit.unidadeLocada; else disponivel">
 								<p-tag
 									value="Unidade locada"
 									[rounded]="true"
@@ -115,7 +135,7 @@
 								pButton
 								icon="pi pi-ellipsis-v"
 								class="p-button-rounded"
-								(click)="actionMenu.toggle($event);setCurrentUnit(unit)"
+								(click)="actionMenu.toggle($event); setCurrentUnit(unit)"
 							></button>
 						</td>
 					</tr>
@@ -147,8 +167,6 @@
 				</button>
 			</div>
 		</section>
-
-		
 
 		<ng-container *ngIf="imageList.length > 0">
 			<section class="photos">
@@ -204,7 +222,7 @@
 
 					<div class="data small">
 						<span class="label">Número de matrícula:</span>
-						<span class="value">{{unit.matricula}}</span>
+						<span class="value">{{ unit.matricula }}</span>
 					</div>
 					<div class="data small">
 						<span class="label">Mat. IPTU:</span>
@@ -212,15 +230,15 @@
 					</div>
 					<div class="data small">
 						<span class="label">Ins. IPTU:</span>
-						<span class="value">{{unit.inscricaoIPTU}}</span>
+						<span class="value">{{ unit.inscricaoIPTU }}</span>
 					</div>
 					<div class="data small">
 						<span class="label">N° Neoenergia:</span>
-						<span class="value">{{unit.matriculaEnergia}}</span>
+						<span class="value">{{ unit.matriculaEnergia }}</span>
 					</div>
 					<div class="data small">
 						<span class="label">N° CAESB:</span>
-						<span class="value">{{unit.matriculaAgua}}</span>
+						<span class="value">{{ unit.matriculaAgua }}</span>
 					</div>
 				</div>
 			</p-tabPanel>
@@ -258,7 +276,7 @@
 				type="button"
 				label="Editar"
 				class="p-button-outlined h-9 w-full"
-				(click)="navigateTo('property/edit/'+ this.unit.guidReferencia)"
+				(click)="navigateTo('property/edit/' + this.unit.guidReferencia)"
 			></button>
 
 			<button

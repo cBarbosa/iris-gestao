@@ -22,10 +22,10 @@ export class PropertyListComponent {
 	properties: Imovel[];
 
 	@Input()
-	pageSize: number | string = 10;
+	pageSize: number = 10;
 
 	@Input()
-	pageCount: number | string | null = null;
+	pageCount: number = 1;
 
 	@Input()
 	isLoading: boolean = false;
@@ -34,18 +34,42 @@ export class PropertyListComponent {
 	onPaginate: Function | null = null;
 
 	@Input()
-	pageIndex: number | string = 0;
+	pageIndex: number = 0;
+
+	@Input()
+	showPaginator: boolean = false;
+
+	@Input()
+	totalRecords: number;
 
 	startIndex: number = 0;
 	endIndex: number = 10;
 
-	totalRecords: number | null = 0;
-
-	showPaginator: boolean = false;
-
 	constructor() {}
 
 	ngOnInit() {
+		// this.setListConfig();
+		/*
+		this.pageSize = this.ensureNumber(this.pageSize, 10);
+		this.pageIndex = this.ensureNumber(this.pageIndex, 0);
+		this.startIndex = 0;
+		this.endIndex = this.startIndex + this.pageSize;
+
+		if (this.totalRecords === null) this.totalRecords = this.properties.length;
+
+		if (this.showPaginator === null)
+			this.showPaginator = Math.floor(this.totalRecords / this.pageSize) > 1;
+
+		*/
+
+		this.startIndex = (this.pageIndex - 1) * this.pageSize;
+		console.log('showPaginator', this.showPaginator);
+		console.log('totalRecords', this.totalRecords);
+		console.log('pageSize', this.pageSize);
+	}
+
+	setListConfig() {
+		/*
 		this.pageSize = this.ensureNumber(this.pageSize, 10);
 		this.pageIndex = this.ensureNumber(this.pageIndex, 0);
 
@@ -59,9 +83,11 @@ export class PropertyListComponent {
 		this.startIndex = this.pageIndex * this.pageSize;
 		this.endIndex = this.startIndex + this.pageSize;
 
-		this.showPaginator =
-			this.pageIndex >
-			Math.floor(this.ensureNumber(this.totalRecords, 0) / +this.pageSize);
+		if (this.showPaginator === null)
+			this.showPaginator =
+				this.pageIndex >
+				Math.floor(this.ensureNumber(this.totalRecords, 0) / +this.pageSize);
+	*/
 	}
 
 	ensureNumber(
@@ -86,7 +112,18 @@ export class PropertyListComponent {
 
 		if (this.onPaginate) this.onPaginate(event);
 
-		this.startIndex = event.first;
+		if (
+			this.showPaginator === null &&
+			this.totalRecords &&
+			typeof this.pageSize !== 'string'
+		)
+			this.showPaginator = Math.floor(this.totalRecords / this.pageSize) > 1;
+
+		console.log('showPaginator', this.showPaginator);
+		console.log('totalRecords', this.totalRecords);
+		console.log('pageSize', this.pageSize);
+
+		this.showPaginator = this.startIndex = event.first;
 		this.endIndex = event.first + event.rows;
 	}
 }
