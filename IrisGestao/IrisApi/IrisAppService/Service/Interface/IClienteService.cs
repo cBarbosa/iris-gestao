@@ -8,7 +8,7 @@ public interface IClienteService
     Task<CommandResult> GetAllPaging(int limit, int page);
     Task<CommandResult> GetByGuid(Guid guidReferencia);
     Task<CommandResult> Insert(CriarClienteCommand cmd);
-    Task<CommandResult> Update(int? codigo, CriarClienteCommand cmd);
+    Task<CommandResult> Update(Guid uuid, CriarClienteCommand cmd);
     Task<CommandResult> Delete(int? codigo);
     Task<CommandResult> GetAllOwners();
 }

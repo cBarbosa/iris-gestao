@@ -1,7 +1,7 @@
 <div class="content-wrapper">
 	<div class="flex justify-between py-9">
 		<h3 class="text-2xl font-bold">
-			Clientes <span class="ml-2 text-sm text-slate-600">3.432</span>
+			Clientes <span class="ml-2 text-sm text-slate-600">{{totalClientCount}}</span>
 		</h3>
 
 		<div class="options">
@@ -9,32 +9,24 @@
 				<i class="pi pi-search"></i>
 				<input pInputText type="text" placeholder="Buscar cliente" />
 			</span>
+			
+			<p-dropdown
+			class="mx-2"
+			styleClass="w-44"
+			placeholder="Tipo de cliente"
+			id="IdTipoCliente"
+			[options]="tiposCliente"
+			formControlName="IdTipoCliente"
+			aria-describedby="client-type-help"
+			></p-dropdown>
 
-			<p-dropdown
-				class="mx-2"
-				styleClass="w-44"
-				placeholder="Tipo de cliente"
-			></p-dropdown>
-			<p-dropdown
-				class="mx-2"
-				styleClass="w-32"
-				placeholder="Status"
-				[options]="statusOptions"
-				optionValue="status"
-			></p-dropdown>
-			<p-dropdown
-				class="ml-2 mr-4"
-				styleClass="w-32"
-				placeholder="Bairro"
-			></p-dropdown>
 			<button pButton type="button" class="p-button-outlined h-9"
-				(click)="navigateTo('client/register')">
+				(click)="navigateTo('client/register/new')">
 				<i class="pi pi-plus mr-3"></i>
-				Adicionar imóvel
+				Adicionar Cliente
 			</button>
 		</div>
 	</div>
-
 	<p-table
 		[value]="clientEntries"
 		styleClass="p-datatable-striped"

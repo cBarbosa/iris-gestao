@@ -8,6 +8,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
 
 @NgModule({
 	declarations: [ClientRegisterComponent],
@@ -19,6 +20,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 		InputTextModule,
 		CalendarModule,
 		DropdownModule,
+		DialogModule,
 	],
 })
 export class ClientRegisterModule {}

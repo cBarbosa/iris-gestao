@@ -15,6 +15,12 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
         
     }
 
+    public async Task<Cliente?> GetByReferenceGuid(Guid guid)
+    {
+        return await DbSet
+            .FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
+    }
+
     public async Task<object?> GetByGuid(Guid guid)
     {
         return await DbSet
