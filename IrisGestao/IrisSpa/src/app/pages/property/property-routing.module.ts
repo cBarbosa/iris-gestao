@@ -6,6 +6,17 @@ const routes: Routes = [
 		path: '',
 		children: [
 			{
+				path: 'listing/:pageIndex',
+				// component: PropertyListingComponent,
+				loadChildren: () =>
+					import('./property-listing/property-listing.module').then(
+						(m) => m.PropertyListingModule
+					),
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
 				path: 'listing',
 				// component: PropertyListingComponent,
 				loadChildren: () =>

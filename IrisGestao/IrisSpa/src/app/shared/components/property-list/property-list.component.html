@@ -4,8 +4,8 @@
 		<app-property-item [data]="item" class="mb-6"></app-property-item>
 	</ng-container>
 	<p-paginator
-		[rows]="+pageSize"
-		[totalRecords]="totalRecords ?? properties.length"
+		[rows]="pageSize"
+		[totalRecords]="totalRecords"
 		[alwaysShow]="showPaginator"
 		[first]="startIndex"
 		(onPageChange)="paginate($event)"

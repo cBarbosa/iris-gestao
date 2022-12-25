@@ -10,6 +10,9 @@ import { FormStepsComponent } from 'src/app/shared/components/form-steps/form-st
 import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
 import { DialogModule } from 'primeng/dialog';
+import { CheckboxModule } from 'primeng/checkbox';
+import { SidebarModule } from 'primeng/sidebar';
+import { TabViewModule } from 'primeng/tabview';
 
 @NgModule({
 	declarations: [PropertyRegisterComponent],
@@ -23,6 +26,9 @@ import { DialogModule } from 'primeng/dialog';
 		ButtonModule,
 		FileUploadModule,
 		DialogModule,
+		CheckboxModule,
+		SidebarModule,
+		TabViewModule,
 	],
 })
 export class PropertyRegisterModule {}

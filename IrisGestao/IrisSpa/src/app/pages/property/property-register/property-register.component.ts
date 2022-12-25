@@ -20,6 +20,7 @@ type Step = {
 	label: string;
 	isValid?: boolean;
 	isCurrent?: boolean;
+	isVisited?: boolean;
 };
 
 type DropdownItem = {
@@ -35,6 +36,7 @@ type DropdownItem = {
 })
 export class PropertyRegisterComponent {
 	registerForm: FormGroup;
+	registerProprietaryForm: FormGroup;
 
 	unitTypes: DropdownItem[] = [
 		{
@@ -72,6 +74,8 @@ export class PropertyRegisterComponent {
 		message: '',
 	};
 
+	registerProprietaryVisible = false;
+
 	constructor(
 		private fb: FormBuilder,
 		private location: Location,
@@ -86,15 +90,19 @@ export class PropertyRegisterComponent {
 			propertyType: this.fb.group({
 				name: ['', Validators.required],
 				proprietary: [null, [Validators.required]],
-				category: [null, [Validators.required]],
+				// category: [null, [Validators.required]],
+				unitType: [null, [Validators.required]],
 				costCentre: [null, [Validators.required]],
+			}),
+			edCorpSalaPavInfo: this.fb.group({
+				areaTotal: ['', [Validators.required]],
+			}),
+			salaPavInfo: this.fb.group({
+				areaUsable: ['', [Validators.required]],
+				areaOccupancy: ['', [Validators.required]],
 			}),
 			legalInfo: this.fb.group({
 				description: ['', [Validators.required]],
-				unitType: [null, [Validators.required]],
-				areaTotal: ['', [Validators.required]],
-				areaUsable: ['', [Validators.required]],
-				areaOccupancy: ['', [Validators.required]],
 				registration: ['', [Validators.required]],
 				iptu: ['', [Validators.required]],
 				neoenergia: ['', [Validators.required]],
@@ -102,12 +110,24 @@ export class PropertyRegisterComponent {
 				administration: ['', [Validators.required]],
 				potential: ['', [Validators.required]],
 			}),
+			legalInfoSalaPav: this.fb.group({
+				hasCopies: [false],
+				copies: [''],
+			}),
 			documents: this.fb.group({
 				occupancy: [''],
 				project: [''],
 				registration: [''],
 				others: [''],
 			}),
+		});
+
+		this.registerProprietaryForm = this.fb.group({
+			name: ['', [Validators.required]],
+			cpfCnpj: ['', [Validators.required]],
+			birthday: ['', [Validators.required]],
+			email: ['', [Validators.required]],
+			telephone: ['', [Validators.required]],
 		});
 
 		this.dominiosService.getTipoUnidade().subscribe((event) => {
@@ -149,6 +169,7 @@ export class PropertyRegisterComponent {
 			{
 				label: 'Tipo de imóvel',
 				isCurrent: true,
+				isVisited: false,
 			},
 			{
 				label: 'Informações legais',
@@ -158,15 +179,27 @@ export class PropertyRegisterComponent {
 			},
 		];
 
-		this.changeStep(this.currentStep);
+		// this.changeStep(this.currentStep);
 	}
 
 	get propertyTypeForm() {
 		return this.registerForm.controls['propertyType'] as FormGroup;
 	}
 
+	get propertyTypeSalaPavForm() {
+		return this.registerForm.controls['salaPavInfo'] as FormGroup;
+	}
+
+	get propertyTypeEdCorpSalaPavForm() {
+		return this.registerForm.controls['edCorpSalaPavInfo'] as FormGroup;
+	}
+
 	get legalInfoForm() {
 		return this.registerForm.controls['legalInfo'] as FormGroup;
+	}
+
+	get legalInfoSalaPavForm() {
+		return this.registerForm.controls['legalInfoSalaPav'] as FormGroup;
 	}
 
 	get documentsForm() {
@@ -174,25 +207,83 @@ export class PropertyRegisterComponent {
 	}
 
 	changeStep(step: number) {
-		this.currentStep = step;
-
-		if (step === 2) this.propertyTypeForm.markAllAsTouched();
-		if (step === 3) this.legalInfoForm.markAllAsTouched();
+		// if (step === 2) this.propertyTypeForm.markAllAsTouched();
+		// if (step === 3) this.legalInfoForm.markAllAsTouched();
 
 		this.stepList = this.stepList.map((entry: Step, i: number) => {
 			const stepData: Step = {
 				label: entry.label,
+				isCurrent: undefined,
+				isValid: undefined,
+				isVisited: entry.isVisited,
 			};
-			if (step > i + 1)
+
+			const stepListIndex = i + 1;
+
+			if (!entry.isVisited && stepListIndex === this.currentStep) {
+				stepData.isVisited = true;
+			}
+
+			if (stepListIndex === 1) {
 				stepData.isValid = this.propertyTypeForm.valid ? true : false;
 
-			if (step === i + 1) stepData.isCurrent = true;
+				if (stepData.isValid) {
+					const unitTypeValue =
+						this.propertyTypeForm.controls['unitType'].value;
+
+					if (unitTypeValue === 1) {
+						stepData.isValid = this.propertyTypeEdCorpSalaPavForm.valid
+							? true
+							: false;
+					} else if (unitTypeValue === 2 || unitTypeValue === 3) {
+						stepData.isValid = this.propertyTypeEdCorpSalaPavForm.valid
+							? this.propertyTypeSalaPavForm.valid
+								? true
+								: false
+							: false;
+					}
+				}
+			} else if (stepListIndex === 2) {
+				stepData.isValid = this.legalInfoForm.valid ? true : false;
+
+				if (stepData.isValid) {
+					const unitTypeValue =
+						this.propertyTypeForm.controls['unitType'].value;
+
+					if (unitTypeValue === 2 || unitTypeValue === 3) {
+						stepData.isValid = this.legalInfoSalaPavForm.valid;
+					}
+				}
+			} else if (stepListIndex === 3) {
+				stepData.isValid = this.documentsForm.valid ? true : false;
+			}
+
+			if (step > stepListIndex) {
+				if (stepListIndex === 2) {
+				} else if (stepListIndex === 3) {
+					stepData.isValid = this.legalInfoForm.valid ? true : false;
+				}
+			}
+
+			if (step === stepListIndex) {
+				stepData.isCurrent = true;
+			}
 
 			return stepData;
 		});
+
+		this.currentStep = step;
 	}
 
-	changeStepCb() {
+	updateStepValidity() {
+		this.changeStep(this.currentStep);
+	}
+
+	changeStepCb = (step: number) => {
+		if (this.stepList[step - 1].isVisited || step < this.currentStep)
+			this.changeStep(step);
+
+		/*
 		const stepList = this.stepList;
 		const setStepList = (list: Step[], currStep: number) => {
 			this.stepList = list;
@@ -222,17 +313,48 @@ export class PropertyRegisterComponent {
 				step
 			);
 		};
-	}
+		*/
+	};
 
 	nextStep() {
 		const currStep = this.currentStep;
-		if (currStep === 1 && this.propertyTypeForm.invalid) {
-			this.propertyTypeForm.markAllAsTouched();
-			return;
+		if (currStep === 1) {
+			if (this.propertyTypeForm.invalid) {
+				this.propertyTypeForm.markAllAsTouched();
+				return;
+			}
+			if (this.propertyTypeForm.controls['unitType'].value === 1) {
+				if (this.propertyTypeEdCorpSalaPavForm.invalid) {
+					this.propertyTypeEdCorpSalaPavForm.markAllAsTouched();
+					return;
+				}
+			} else if (
+				this.propertyTypeForm.controls['unitType'].value === 2 ||
+				this.propertyTypeForm.controls['unitType'].value === 3
+			) {
+				if (this.propertyTypeSalaPavForm.invalid) {
+					this.propertyTypeEdCorpSalaPavForm.markAllAsTouched();
+					this.propertyTypeSalaPavForm.markAllAsTouched();
+					return;
+				}
+			}
 		}
-		if (currStep === 2 && this.legalInfoForm.invalid) {
-			this.legalInfoForm.markAllAsTouched();
-			return;
+		if (currStep === 2) {
+			if (
+				this.propertyTypeForm.controls['unitType'].value === 2 ||
+				this.propertyTypeForm.controls['unitType'].value === 3
+			) {
+				if (this.legalInfoForm.invalid || this.legalInfoSalaPavForm.invalid) {
+					this.legalInfoForm.markAllAsTouched();
+					this.legalInfoSalaPavForm.markAllAsTouched();
+					return;
+				}
+			} else {
+				if (this.legalInfoForm.invalid) {
+					this.legalInfoForm.markAllAsTouched();
+					return;
+				}
+			}
 		}
 		if (currStep === 3) {
 			this.onSubmit();
@@ -256,6 +378,17 @@ export class PropertyRegisterComponent {
 		return Utils.checkHasError(c);
 	}
 
+	changeHasCopies(e: any) {
+		if (e) {
+			this.legalInfoSalaPavForm.controls['copies'].setValidators(
+				Validators.required
+			);
+		} else {
+			this.legalInfoSalaPavForm.controls['copies'].setValidators(null);
+		}
+		this.legalInfoSalaPavForm.controls['copies'].updateValueAndValidity();
+	}
+
 	onUpload(e: any) {}
 
 	onSubmit(e: any = null) {
@@ -265,9 +398,23 @@ export class PropertyRegisterComponent {
 			this.registerForm.markAllAsTouched();
 			return;
 		}
-		console.log('form submitted');
 
-		const propertyTypeFormData = this.propertyTypeForm.getRawValue();
+		let propertyTypeFormData = this.propertyTypeForm.getRawValue();
+		if (this.propertyTypeForm.controls['unitType'].value === 1) {
+			propertyTypeFormData = {
+				...propertyTypeFormData,
+				...this.propertyTypeEdCorpSalaPavForm.getRawValue(),
+			};
+		} else if (
+			this.propertyTypeForm.controls['unitType'].value === 2 ||
+			this.propertyTypeForm.controls['unitType'].value === 3
+		) {
+			propertyTypeFormData = {
+				...propertyTypeFormData,
+				...this.propertyTypeEdCorpSalaPavForm.getRawValue(),
+				...this.propertyTypeSalaPavForm.getRawValue(),
+			};
+		}
 		const legalInfoFormData = this.legalInfoForm.getRawValue();
 
 		const propertyObj = {
@@ -399,6 +546,23 @@ export class PropertyRegisterComponent {
 		};
 
 		registerPropertyAndUnity(propertyObj, unitObj);
+	}
+
+	onProprietarySubmit() {
+		if (this.registerProprietaryForm.invalid) {
+			this.registerProprietaryForm.markAllAsTouched();
+			return;
+		}
+
+		const proprietaryFormData = this.registerProprietaryForm.getRawValue();
+
+		const proprietaryObj = {
+			Nome: proprietaryFormData.name,
+			cpf_cnpj: proprietaryFormData.cpfCnpj,
+			dataNascimento: proprietaryFormData.birthday,
+			email: proprietaryFormData.email,
+			telefone: proprietaryFormData.telephone,
+		};
 	}
 
 	openModal() {
