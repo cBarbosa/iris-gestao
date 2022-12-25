@@ -41,29 +41,13 @@ public class ClienteService: IClienteService
 
     public async Task<CommandResult> Insert(CriarClienteCommand cmd)
     {
-        var Cliente = new Cliente
-        {
-            Nome                    = cmd.Nome,
-            CpfCnpj                 = cmd.CpfCnpj,
-            IdTipoCliente           = cmd.IdTipoCliente,
-            RazaoSocial             = cmd.RazaoSocial,
-            Endereco                = cmd.Endereco,
-            Bairro                  = cmd.Bairro,
-            Cidade                  = cmd.Cidade,
-            Estado                  = cmd.Estado,
-            Cep                     = cmd.Cep.Value,
-            DataNascimento          = cmd.DataNascimento,
-            Nps                     = cmd.Nps,
-            Telefone                = cmd.Telefone,
-            Email                   = cmd.Email,
-            GuidReferencia          = Guid.Parse(Guid.NewGuid().ToString().ToUpper()),
-            DataUltimaModificacao   = DateTime.Now
-        };
+        var cliente = new Cliente();
+        BindClienteData(cmd, cliente);
 
         try
         {
-            clienteRepository.Insert(Cliente);
-            return new CommandResult(true, SuccessResponseEnums.Success_1000, Cliente);
+            clienteRepository.Insert(cliente);
+            return new CommandResult(true, SuccessResponseEnums.Success_1000, cliente);
         }
         catch (Exception)
         {
@@ -72,38 +56,28 @@ public class ClienteService: IClienteService
         }
     }
 
-    public async Task<CommandResult> Update(int? codigo, CriarClienteCommand cmd)
+    public async Task<CommandResult> Update(Guid uuid, CriarClienteCommand cmd)
     {
-        Cliente _cliente = new Cliente();
-        if (cmd == null || !codigo.HasValue)
+
+        if (cmd == null || uuid.Equals(Guid.Empty))
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
-        var Cliente = new Cliente
+        var cliente = await clienteRepository.GetByReferenceGuid(uuid);
+
+        if (cliente == null)
         {
-            Id                      = codigo.Value,
-            Nome                    = cmd.Nome,
-            CpfCnpj                 = cmd.CpfCnpj,
-            IdTipoCliente           = cmd.IdTipoCliente,
-            RazaoSocial             = cmd.RazaoSocial,
-            Endereco                = cmd.Endereco,
-            Bairro                  = cmd.Bairro,
-            Cidade                  = cmd.Cidade,
-            Estado                  = cmd.Estado,
-            Cep                     = cmd.Cep.Value,
-            DataNascimento          = cmd.DataNascimento.HasValue ? cmd.DataNascimento : null,
-            Nps                     = cmd.Nps,
-            Telefone                = cmd.Telefone,
-            Email                   = cmd.Email,
-            GuidReferencia          = Guid.Parse(cmd.GuidReferencia.ToUpper()),
-            DataUltimaModificacao   = DateTime.Now
-        };
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+
+        cmd.GuidReferencia = uuid;
+        BindClienteData(cmd, cliente);
 
         try
         {
-            clienteRepository.Update(Cliente);
-            return new CommandResult(true, SuccessResponseEnums.Success_1001, Cliente);
+            clienteRepository.Update(cliente);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, cliente);
         }
         catch (Exception)
         {
@@ -148,5 +122,36 @@ public class ClienteService: IClienteService
         return proprietarios == null || !proprietarios.Any()
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
             : new CommandResult(true, SuccessResponseEnums.Success_1005, proprietarios);
+    }
+
+    private static void BindClienteData(CriarClienteCommand cmd, Cliente cliente)
+    {
+        switch (cliente.GuidReferencia)
+        {
+            case null:
+                cliente.GuidReferencia = Guid.NewGuid();
+                cliente.DataCriacao = DateTime.Now;
+                cliente.DataUltimaModificacao = DateTime.Now;
+                break;
+            default:
+                cliente.GuidReferencia = cliente.GuidReferencia;
+                cliente.DataUltimaModificacao = DateTime.Now;
+                break;
+        }
+        
+        cliente.Nome = cmd.Nome;
+        cliente.RazaoSocial = cmd.RazaoSocial == "" ? cmd.Nome : cmd.RazaoSocial;
+        cliente.CpfCnpj = cmd.CpfCnpj;
+        cliente.Telefone = cmd.Telefone;
+        cliente.Email = cmd.Email;
+        cliente.DataNascimento = cmd.DataNascimento;
+        cliente.IdTipoCliente = cmd.IdTipoCliente;
+        cliente.Endereco = cmd.Endereco;
+        cliente.Bairro = cmd.Bairro;
+        cliente.Cidade = cmd.Cidade;
+        cliente.Estado = cmd.Estado;
+        cliente.Cep = cmd.Cep.HasValue ? cmd.Cep.Value : 0; 
+        cliente.Nps = cmd.Nps;
+        cliente.Status = cmd.Status;
     }
 }

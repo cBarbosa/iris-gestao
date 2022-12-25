@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of, map } from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
 import { environment as env } from '../../../environments/environment';
+import { Cliente, ClienteType } from '../models';
 
 const httpOptions = {
 	headers: new HttpHeaders({
@@ -40,19 +41,51 @@ export class ClienteService {
 					else return console.error(`getClients: ${response.message}`);
 				})
 			);
+			}
+
+	updateUnit(uid:string, unit: ClienteType) {
+		return this.http.put<ApiResponse>(
+			`${env.config.apiUrl}Cliente/${uid}/atualizar`,
+			JSON.stringify(unit, null, 2),
+			httpOptions
+		);
+	}
+
+	saveUnit(unit: ClienteType) {
+		return this.http.post<ApiResponse>(
+			`${env.config.apiUrl}Cliente/Criar`,
+			JSON.stringify(unit, null, 2),
+			httpOptions
+		);
 	}
 
 	criarCliente(form: any) {
 		return this.http
 			.post<ApiResponse>(
 				`${env.config.apiUrl}Cliente/Criar`,
-				JSON.stringify(form),
+				JSON.stringify(form, null, 2),
 				httpOptions
 			)
 			.pipe(
 				map((response) => {
 					console.log('client response', response);
-					if (response.success) return response.data;
+					if (response.success) return response;
+					else return console.error(`getClients: ${response.message}`);
+				})
+			);
+	}
+
+	atualizarCliente(uid:string, form: any) {
+		return this.http
+			.put<ApiResponse>(
+				`${env.config.apiUrl}Cliente/${uid}/atualizar`,
+				JSON.stringify(form, null, 2),
+				httpOptions
+			)
+			.pipe(
+				map((response) => {
+					console.log('client response', response);
+					if (response.success) return response;
 					else return console.error(`getClients: ${response.message}`);
 				})
 			);

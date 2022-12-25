@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api';
 import { first } from 'rxjs';
 import { ClienteService } from '../../../shared/services/cliente.service';
+import { DominiosService } from '../../../shared/services/dominios.service';
 
 @Component({
 	selector: 'app-client-listing',
@@ -20,11 +21,36 @@ export class ClientListingComponent {
 	first = 0;
 	rows = 10;
 	public clientEntries: any[];
+	dropdownTipoCliente: any;
+	tiposCliente = [
+		{
+			label: 'Selecione',
+			value: null,
+		}
+	];
 
-	constructor(private router: Router, private clienteService: ClienteService) { }
+	constructor(
+				private router: Router
+				, private clienteService: ClienteService
+				, private dominiosService: DominiosService) { }
 
 	ngOnInit():void {
-		
+		this.getTiposCliente();
+	}
+
+	getTiposCliente(): void {
+		const tipoCliente = this.dominiosService
+			.getTipoCliente()
+			.subscribe(event => {
+				//console.log('getTiposCliente >> TipoCliente >> ' + JSON.stringify(event));
+				this.dropdownTipoCliente = event;
+				this.dropdownTipoCliente.data.forEach((tipo: any) => {
+					this.tiposCliente.push({
+						label: tipo.nome,
+						value: tipo.id
+					});
+				});
+			});
 	}
 
 	loadClientsPage(event: LazyLoadEvent) {
@@ -42,6 +68,7 @@ export class ClientListingComponent {
 			.subscribe((event: any) => {
 				this.clientEntries = [];
 				this.isLoadingClients = true;
+				this.totalClientCount = event.totalCount;
 				event.items.forEach((cliente: any) => {
 					//console.log('Cliente >> ' + JSON.stringify(cliente));
 					this.clientEntries.push({
@@ -58,19 +85,6 @@ export class ClientListingComponent {
 				});
 				this.isLoadingClients = false;
 			});
-	}
-
-	setClientEntries({ items }: any) {
-		this.clientEntries = items.map((item: any) => {
-			return {
-				name: 'Courtney Henry',
-				cpf_cnpj: '72.165.630/0001-27',
-				birthday: new Date(),
-				client_type: 'Locatário',
-				status: 'inativo',
-				action: '',
-			};
-		});
 	}
 
 	navigateTo(route: string) {
