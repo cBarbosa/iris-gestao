@@ -25,7 +25,7 @@ export class PropertyListingComponent implements OnInit {
 	showPaginator = false;
 
 	first = 0;
-	rows = 2;
+	rows = 10;
 	pageCount = 1;
 	pageIndex = 1;
 

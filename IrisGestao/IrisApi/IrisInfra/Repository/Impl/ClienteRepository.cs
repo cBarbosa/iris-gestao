@@ -94,7 +94,6 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
     public async Task<IEnumerable<object>?> GetAllOwners()
     {
         return await DbSet
-            .Where(x => x.Imovel.Any())
             .OrderBy(x => x.Nome)
             .Select(x => new
             {
