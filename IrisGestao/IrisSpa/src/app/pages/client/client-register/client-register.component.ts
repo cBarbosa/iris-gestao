@@ -95,16 +95,19 @@ export class ClientRegisterComponent implements OnInit {
 	};
 
 	ngOnInit() {
+		this.isLoadingView = true;
 		this.getTiposCliente();
-		if(this.uid != "new"){
-			this.getData();
-			this.operacaoCriar = false;
-		}
+		setTimeout(() => {
+			if(this.uid != "new"){
+				this.getData();
+				this.operacaoCriar = false;
+			}
+		}, 500);
+
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
-		this.currentStep = 1;
-
+		this.isLoadingView = false;
 	}
 
 	getData() : void {
