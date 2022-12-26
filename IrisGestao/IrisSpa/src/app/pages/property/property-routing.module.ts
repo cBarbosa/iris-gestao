@@ -18,7 +18,6 @@ const routes: Routes = [
 			},
 			{
 				path: 'listing',
-				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import('./property-listing/property-listing.module').then(
 						(m) => m.PropertyListingModule
@@ -29,7 +28,6 @@ const routes: Routes = [
 			},
 			{
 				path: 'details/:uid',
-				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import('./property-view/property-view.module').then(
 						(m) => m.PropertyViewModule
@@ -39,8 +37,15 @@ const routes: Routes = [
 				},
 			},
 			{
+				path: 'edit/unit/:uid',
+				loadChildren: () =>
+					import('./unit-edit/unit-edit.module').then((m) => m.UnitEditModule),
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
 				path: 'edit/:uid',
-				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import('./property-edit/property-edit.module').then(
 						(m) => m.PropertyEditModule
@@ -51,7 +56,6 @@ const routes: Routes = [
 			},
 			{
 				path: 'register',
-				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import('./property-register/property-register.module').then(
 						(m) => m.PropertyRegisterModule

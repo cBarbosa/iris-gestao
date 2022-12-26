@@ -6,6 +6,8 @@ const routes: Routes = [
 	{
 		path: '',
 		component: PropertyEditComponent,
+		// loadComponent: () =>
+		// 	import('./users.component').then((m) => UsersComponent),
 	},
 ];
 

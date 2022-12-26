@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 
 import { PropertyEditRoutingModule } from './property-edit-routing.module';
 import { PropertyEditComponent } from './property-edit.component';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { FileUploadModule } from 'primeng/fileupload';
-import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
+import { DialogModule } from 'primeng/dialog';
+import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 
 @NgModule({
 	declarations: [PropertyEditComponent],
@@ -17,8 +19,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 		PropertyEditRoutingModule,
 		ButtonModule,
 		InputTextModule,
+		DropdownModule,
 		FileUploadModule,
-		HttpClientModule,
+		DialogModule,
+		SpinnerComponent,
 	],
 })
 export class PropertyEditModule {}
