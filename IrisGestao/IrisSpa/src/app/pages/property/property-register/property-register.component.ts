@@ -152,16 +152,7 @@ export class PropertyRegisterComponent {
 			}
 		});
 
-		this.clienteService.getListaProprietarios().subscribe((event) => {
-			if (event) {
-				event.data.forEach((item: any) => {
-					this.proprietaries.push({
-						label: item.nome,
-						value: item.id,
-					});
-				});
-			}
-		});
+		this.getListaProprietarios();
 
 		this.currentStep = 1;
 
@@ -204,6 +195,19 @@ export class PropertyRegisterComponent {
 
 	get documentsForm() {
 		return this.registerForm.controls['documents'] as FormGroup;
+	}
+
+	getListaProprietarios() {
+		this.clienteService.getListaProprietarios().subscribe((event) => {
+			if (event) {
+				event.data.forEach((item: any) => {
+					this.proprietaries.push({
+						label: item.nome,
+						value: item.id,
+					});
+				});
+			}
+		});
 	}
 
 	changeStep(step: number) {
@@ -400,6 +404,7 @@ export class PropertyRegisterComponent {
 		}
 
 		let propertyTypeFormData = this.propertyTypeForm.getRawValue();
+
 		if (this.propertyTypeForm.controls['unitType'].value === 1) {
 			propertyTypeFormData = {
 				...propertyTypeFormData,
@@ -415,7 +420,18 @@ export class PropertyRegisterComponent {
 				...this.propertyTypeSalaPavForm.getRawValue(),
 			};
 		}
-		const legalInfoFormData = this.legalInfoForm.getRawValue();
+
+		let legalInfoFormData = this.legalInfoForm.getRawValue();
+
+		if (
+			this.propertyTypeForm.controls['unitType'].value === 2 ||
+			this.propertyTypeForm.controls['unitType'].value === 3
+		) {
+			legalInfoFormData = {
+				...legalInfoFormData,
+				...this.legalInfoSalaPavForm.getRawValue(),
+			};
+		}
 
 		const propertyObj = {
 			Nome: propertyTypeFormData.name,
@@ -439,22 +455,6 @@ export class PropertyRegisterComponent {
 			ValorPotencial: +legalInfoFormData.potential,
 			UnidadeLocada: false,
 		};
-		// name: ['', Validators.required],
-		// proprietary: [null, [Validators.required]],
-		// unitType: [null, [Validators.required]],
-		// costCentre: [null, [Validators.required]],
-
-		// description: ['', [Validators.required]],
-		// unitType: [null, [Validators.required]],
-		// areaTotal: ['', [Validators.required]],
-		// areaUsable: ['', [Validators.required]],
-		// areaOccupancy: ['', [Validators.required]],
-		// registration: ['', [Validators.required]],
-		// iptu: ['', [Validators.required]],
-		// neoenergia: ['', [Validators.required]],
-		// caesb: ['', [Validators.required]],
-		// administration: ['', [Validators.required]],
-		// potential: ['', [Validators.required]],
 
 		// Nome = nome do imóvel
 		// IdCategoriaImovel = combo de categoria (mercado e carteira)
@@ -557,12 +557,78 @@ export class PropertyRegisterComponent {
 		const proprietaryFormData = this.registerProprietaryForm.getRawValue();
 
 		const proprietaryObj = {
-			Nome: proprietaryFormData.name,
-			cpf_cnpj: proprietaryFormData.cpfCnpj,
+			nome: proprietaryFormData.name,
+			CpfCnpj: proprietaryFormData.cpfCnpj,
 			dataNascimento: proprietaryFormData.birthday,
 			email: proprietaryFormData.email,
 			telefone: proprietaryFormData.telephone,
 		};
+
+		// "CpfCnpj": "",
+		// "IdTipoCliente": 1,
+		// "nome": "Alexandre UX",
+		// "razaoSocial": "",
+		// "Status ": true,
+		// "endereco": "SCS Quadra 04 Lote A Edifício Vera Cruz 5º andar, ",
+		// "bairro": "Asa Sul",
+		// "cidade": "Brasília",
+		// "estado": "DF",
+		// "cep": 72322711,
+		// "dataNascimento": "1986-12-25",
+		// "email": "alexandre.ux@outlook.com",
+		// "telefone":"61991363588",
+		// "nps": 0
+
+		this.clienteService
+			.criarCliente(proprietaryObj)
+			.pipe(first())
+			.subscribe({
+				next: (response: any) => {
+					console.log('response: ', response);
+
+					if (response.success) {
+						this.modalContent = {
+							header: 'Cadastro realizado',
+							message:
+								response.message ??
+								'Cadastro de proprietário realizado com sucesso',
+							isError: false,
+						};
+
+						this.registerProprietaryForm.reset();
+						this.getListaProprietarios();
+
+						this.propertyTypeForm.controls['proprietary'].setValue(
+							response.data.id
+						);
+
+						this.registerProprietaryVisible = false;
+						this.openModal();
+					} else {
+						console.error(response.message);
+						this.modalContent = {
+							header: 'Cadastro não realizado',
+							message:
+								response.message ?? 'Erro no envio de dados de proprietário',
+							isError: true,
+						};
+
+						this.registerProprietaryVisible = false;
+						this.openModal();
+					}
+				},
+				error: (error: any) => {
+					console.error(error);
+					this.modalContent = {
+						header: 'Cadastro não realizado',
+						message: 'Erro no envio de dados de proprietário',
+						isError: true,
+					};
+
+					this.registerProprietaryVisible = false;
+					this.openModal();
+				},
+			});
 	}
 
 	openModal() {

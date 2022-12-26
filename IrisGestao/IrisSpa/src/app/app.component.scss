@@ -261,7 +261,8 @@
 				box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
 			}
 
-			&:enabled:hover {
+			&:enabled:hover,
+			&:enabled:focus {
 				border-color: #641b1e;
 			}
 		}
@@ -307,6 +308,10 @@
 
 				.p-button-label {
 					flex: 0 0 auto;
+				}
+
+				&.p-button-outlined {
+					border: solid 1px #641b1e;
 				}
 			}
 		}
@@ -425,6 +430,7 @@
 					border: 1px solid #a8a8a8;
 
 					&:focus,
+					&:enabled:focus,
 					&:hover {
 						border-color: #641b1e;
 					}
