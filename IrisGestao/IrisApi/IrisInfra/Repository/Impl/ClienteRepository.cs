@@ -1,5 +1,6 @@
 ﻿using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Command.Result;
+using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -101,6 +102,7 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
     {
         return await DbSet
             .OrderBy(x => x.Nome)
+            .Where(x => x.IdTipoCliente.Equals(TipoClienteEnum.PROPRIETARIO))
             .Select(x => new
             {
                 Id = x.Id,
