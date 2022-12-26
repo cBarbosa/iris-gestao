@@ -463,22 +463,18 @@ export class PropertyRegisterComponent {
 		const unitObj = {
 			Tipo: legalInfoFormData.description,
 			IdTipoUnidade: +propertyTypeFormData.unitType,
-			AreaUtil: +legalInfoFormData.areaUsable,
-			AreaTotal: +legalInfoFormData.areaTotal,
-			AreaHabitese: +legalInfoFormData.areaOccupancy,
-			Matricula: legalInfoFormData.administration,
+			AreaUtil: propertyTypeFormData.areaUsable ?? 0,
+			AreaTotal: +propertyTypeFormData.areaTotal,
+			AreaHabitese: propertyTypeFormData.areaOccupancy ?? 0,
+			Matricula: legalInfoFormData.registration,
 			InscricaoIptu: legalInfoFormData.iptu,
 			MatriculaEnergia: legalInfoFormData.neoenergia,
 			MatriculaAgua: legalInfoFormData.caesb,
 			TaxaAdministracao: +legalInfoFormData.administration,
 			ValorPotencial: +legalInfoFormData.potential,
-			QtdeCopias: +legalInfoFormData.copies,
+			QtdeCopias: legalInfoFormData.copies ?? null,
 			UnidadeLocada: false,
 		};
-
-		console.debug('unitObj', unitObj);
-
-		return;
 
 		const registerUnit = (unitObj: any, guid: string) => {
 			console.log('sending: ', unitObj);
