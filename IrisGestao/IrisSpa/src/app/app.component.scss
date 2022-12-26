@@ -265,6 +265,13 @@
 			&:enabled:focus {
 				border-color: #641b1e;
 			}
+
+			&:disabled:hover,
+			&:disabled:focus,
+			&:disabled:focus-visible {
+				border: 1px solid #a8a8a8;
+				box-shadow: none;
+			}
 		}
 
 		&.p-menu {

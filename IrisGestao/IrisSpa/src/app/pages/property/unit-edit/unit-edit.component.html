@@ -1,36 +1,38 @@
 <form class="edit-form" [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
+	<h1 class="text-2xl font-bold mb-6">Editar unidade</h1>
 	<div class="input-wrapper">
-		<section class="required-data">
+		<section class="property-data">
 			<h4>Editar imóvel</h4>
 			<p>Informações necessárias para o cadastro do imóvel</p>
 
-			<div class="photo-input">
+			<div class="photo-data">
 				<img [src]="unit.idImovelNavigation?.imgCapa" alt="edit-photo" />
+			</div>
 
-				<!-- <button
-					pButton
-					type="button"
-					label="Adicionar nova foto"
-					class="p-button-text"
-				></button> -->
-
-				<p-fileUpload
-					mode="basic"
-					name="demo[]"
-					accept="image/*"
-					chooseLabel="Adicionar nova foto"
-					chooseIcon=""
-					uploadIcon=""
-					cancelIcon=""
-					styleClass="h-8 text-sm p-button-text"
-				></p-fileUpload>
-
-				<button
-					pButton
-					type="button"
-					label="Excluir foto"
-					class="p-button-text"
-				></button>
+			<div class="field">
+				<label for="proprietary" class="block">Proprietário</label>
+				<input
+					id="proprietary"
+					type="text"
+					formControlName="proprietary"
+					aria-describedby="proprietary-help"
+					pInputText
+					[disabled]="true"
+				/>
+				<ng-container *ngIf="checkHasError(f['proprietary'])">
+					<small
+						id="proprietary-help"
+						*ngIf="f['proprietary'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o proprietário
+					</small>
+					<ng-template #error2>
+						<small id="proprietary-help" class="p-error block">
+							Proprietário inválido
+						</small>
+					</ng-template>
+				</ng-container>
 			</div>
 
 			<div class="field">
@@ -41,6 +43,7 @@
 					formControlName="name"
 					aria-describedby="name-help"
 					pInputText
+					[disabled]="true"
 				/>
 				<ng-container *ngIf="checkHasError(f['name'])">
 					<small
@@ -63,7 +66,7 @@
 					formControlName="category"
 					aria-describedby="category-help"
 					pInputText
-					readonly="true"
+					[disabled]="true"
 				/>
 				<ng-container *ngIf="checkHasError(f['category'])">
 					<small
@@ -89,7 +92,7 @@
 					formControlName="type"
 					aria-describedby="type-help"
 					pInputText
-					readonly="true"
+					[disabled]="true"
 				/>
 				<ng-container *ngIf="checkHasError(f['type'])">
 					<small
@@ -102,32 +105,6 @@
 					<ng-template #error2>
 						<small id="type-help" class="p-error block">
 							Tipo de unidade inválido
-						</small>
-					</ng-template>
-				</ng-container>
-			</div>
-
-			<div class="field">
-				<label for="proprietary" class="block">Proprietário</label>
-				<input
-					id="proprietary"
-					type="text"
-					formControlName="proprietary"
-					aria-describedby="proprietary-help"
-					pInputText
-					readonly="true"
-				/>
-				<ng-container *ngIf="checkHasError(f['proprietary'])">
-					<small
-						id="proprietary-help"
-						*ngIf="f['proprietary'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o proprietário
-					</small>
-					<ng-template #error2>
-						<small id="proprietary-help" class="p-error block">
-							Proprietário inválido
 						</small>
 					</ng-template>
 				</ng-container>

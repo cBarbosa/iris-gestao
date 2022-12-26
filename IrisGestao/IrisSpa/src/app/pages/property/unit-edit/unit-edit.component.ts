@@ -35,10 +35,10 @@ export class UnitEditComponent implements OnInit {
 		});
 
 		this.editForm = this.fb.group({
-			name: ['', Validators.required],
-			category: ['', [Validators.required]],
-			type: ['', [Validators.required]],
-			proprietary: ['', [Validators.required]],
+			name: [{ value: '', disabled: true }],
+			category: [{ value: '', disabled: true }],
+			type: [{ value: '', disabled: true }],
+			proprietary: [{ value: '', disabled: true }],
 			area_total: [''],
 			area_usable: [''],
 			area_occupancy: [''],

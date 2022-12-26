@@ -4,7 +4,7 @@
 	width: 100%;
 }
 .edit-form {
-	@apply pt-12;
+	@apply pt-8;
 	width: 100%;
 	max-width: 1155px;
 	margin: 0 2rem;
@@ -17,43 +17,26 @@
 			flex-grow: 1;
 
 			h4 {
-				@apply text-2xl font-bold mb-8;
+				@apply text-xl font-bold mb-5;
 				color: #262626;
 			}
 
 			p {
-				@apply mb-8;
+				@apply mb-5;
 				color: #646464;
 			}
 
-			&.required-data {
+			&.property-data {
 				max-width: 445px;
 				height: fit-content;
 				background-color: #f8f9fa;
 
-				.photo-input {
+				.photo-data {
 					@apply mb-6;
 
 					img {
 						width: 100%;
 						height: auto;
-					}
-
-					button {
-						@apply my-2 text-sm h-8 font-bold;
-					}
-
-					::ng-deep {
-						.p-fileupload {
-							display: inline-block;
-							.p-button {
-								@apply my-2 text-sm h-8 font-bold;
-
-								.p-button-icon {
-									display: none;
-								}
-							}
-						}
 					}
 				}
 			}
