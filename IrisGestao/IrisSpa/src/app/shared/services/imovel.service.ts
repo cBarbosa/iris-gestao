@@ -120,8 +120,8 @@ export class ImovelService {
 			.pipe(
 				map((response) => {
 					console.log('response', response);
-					if (response.success) return response.data;
-					else return console.error(`getUnit: ${response.message}`);
+					if (!response.success) console.error(`getUnit: ${response.message}`);
+					return response;
 				})
 			);
 	}

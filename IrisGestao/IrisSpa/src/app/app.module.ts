@@ -10,11 +10,16 @@ import { AuthInterceptor } from './shared/helpers/auth/auth.interceptor';
 import { ErrorInterceptor } from './shared/helpers/auth/error.interceptor';
 import { registerLocaleData } from '@angular/common';
 import { CpfCnpjPipeModule } from './shared/pipes';
+import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { CurrencyMaskInputMode, NgxCurrencyModule } from 'ngx-currency';
 
 import localePT from '@angular/common/locales/pt';
 import ptBr from '@angular/common/locales/pt';
+
 registerLocaleData(localePT);
 registerLocaleData(ptBr);
+
+export const options: Partial<null | IConfig> | (() => Partial<IConfig>) = null;
 
 @NgModule({
 	declarations: [AppComponent],
@@ -25,6 +30,22 @@ registerLocaleData(ptBr);
 		RouterModule,
 		AuthModule,
 		CpfCnpjPipeModule,
+		NgxMaskModule.forRoot({
+			dropSpecialCharacters: true,
+			thousandSeparator: '.',
+		}),
+		NgxCurrencyModule.forRoot({
+			align: 'left',
+			allowNegative: false,
+			allowZero: true,
+			decimal: ',',
+			precision: 2,
+			prefix: 'R$ ',
+			suffix: '',
+			thousands: '.',
+			nullable: true,
+			inputMode: CurrencyMaskInputMode.FINANCIAL,
+		}),
 	],
 	providers: [
 		{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
