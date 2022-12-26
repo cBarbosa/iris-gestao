@@ -396,8 +396,17 @@ export class PropertyRegisterComponent {
 	onUpload(e: any) {}
 
 	onSubmit(e: any = null) {
-
-		if (this.registerForm.invalid) {
+		if (
+			this.propertyTypeForm.invalid ||
+			this.legalInfoForm.invalid ||
+			this.documentsForm.invalid ||
+			(this.propertyTypeForm.controls['unitType'].value === 1 &&
+				this.propertyTypeEdCorpSalaPavForm.invalid) ||
+			((this.propertyTypeForm.controls['unitType'].value === 2 ||
+				this.propertyTypeForm.controls['unitType'].value === 3) &&
+				(this.propertyTypeSalaPavForm.invalid ||
+					this.legalInfoSalaPavForm.invalid))
+		) {
 			this.registerForm.markAllAsTouched();
 			return;
 		}
@@ -566,7 +575,7 @@ export class PropertyRegisterComponent {
 			cidade: '',
 			estado: '',
 			endereco: '',
-			razaoSocial: ''
+			razaoSocial: '',
 		};
 
 		this.clienteService
@@ -574,7 +583,6 @@ export class PropertyRegisterComponent {
 			.pipe(first())
 			.subscribe({
 				next: (response: any) => {
-
 					if (response.success) {
 						this.modalContent = {
 							header: 'Cadastro realizado',
