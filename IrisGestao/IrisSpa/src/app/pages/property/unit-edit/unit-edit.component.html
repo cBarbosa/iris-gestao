@@ -1,40 +1,148 @@
-<form class="edit-form" [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
+<div class="alert-message" *ngIf="invalidGuid || isLoading">
+	<div class="loading" *ngIf="isLoading">
+		<app-spinner></app-spinner>
+	</div>
+	<div
+		class="invalid flex justify-center items-center h-full"
+		*ngIf="invalidGuid"
+	>
+		<div class="bg-white rounded border border-slate-200">
+			<div class="text-center w-full text-xl font-bold p-20 text-red-600">
+				Não foi possível carregar dados do imóvel
+			</div>
+		</div>
+	</div>
+</div>
+
+<form
+	class="edit-form"
+	[formGroup]="editForm"
+	(ngSubmit)="onSubmit($event)"
+	*ngIf="!isLoading && !invalidGuid"
+>
+	<h1 class="text-2xl font-bold mb-6">Editar unidade</h1>
 	<div class="input-wrapper">
-		<section class="required-data">
-			<h4>Editar imóvel</h4>
-			<p>Informações necessárias para o cadastro do imóvel</p>
+		<section class="property-data" formGroupName="propertyInfo">
+			<h4>Informações do imóvel</h4>
+			<p>
+				Aqui você encontra todas as informações referente ao imóvel selecionado.
+			</p>
 
-			<div class="photo-input">
-				<img [src]="unit.idImovelNavigation?.imgCapa" alt="edit-photo" />
-
-				<!-- <button
-					pButton
-					type="button"
-					label="Adicionar nova foto"
-					class="p-button-text"
-				></button> -->
-
-				<p-fileUpload
-					mode="basic"
-					name="demo[]"
-					accept="image/*"
-					chooseLabel="Adicionar nova foto"
-					chooseIcon=""
-					uploadIcon=""
-					cancelIcon=""
-					styleClass="h-8 text-sm p-button-text"
-				></p-fileUpload>
-
-				<button
-					pButton
-					type="button"
-					label="Excluir foto"
-					class="p-button-text"
-				></button>
+			<div class="photo-data">
+				<img
+					[src]="unit?.idImovelNavigation?.imgCapa ?? ''"
+					alt="property-photo"
+				/>
 			</div>
 
 			<div class="field">
-				<label for="name" class="block">Nome do imóvel</label>
+				<label for="proprietary" class="block">Proprietário</label>
+				<input
+					id="proprietary"
+					type="text"
+					formControlName="proprietary"
+					aria-describedby="proprietary-help"
+					pInputText
+				/>
+			</div>
+
+			<div class="field">
+				<label for="property-name" class="block">Nome do imóvel</label>
+				<input
+					id="property-name"
+					type="text"
+					formControlName="propertyName"
+					aria-describedby="property-name-help"
+					pInputText
+				/>
+			</div>
+
+			<div class="field">
+				<label for="category" class="block">Categorização</label>
+				<input
+					id="category"
+					type="text"
+					formControlName="category"
+					aria-describedby="category-help"
+					pInputText
+				/>
+			</div>
+
+			<div class="field">
+				<label for="type" class="block">Tipo de unidade</label>
+				<input
+					id="type"
+					type="text"
+					formControlName="type"
+					aria-describedby="type-help"
+					pInputText
+				/>
+			</div>
+
+			<h5>Documentos</h5>
+
+			<div class="document-list">
+				<div class="document project">
+					<span>Projeto</span>
+					<span class="buttons">
+						<button
+							pButton
+							type="button"
+							class="p-button-rounded p-button-text"
+						>
+							<i class="ph-download-simple"></i>
+						</button>
+					</span>
+				</div>
+				<div class="document registration">
+					<span>Matrícula</span>
+					<span class="buttons">
+						<button
+							pButton
+							type="button"
+							class="p-button-rounded p-button-text"
+						>
+							<i class="ph-download-simple"></i>
+						</button>
+					</span>
+				</div>
+				<div class="document occupancy">
+					<span>Habite-se</span>
+					<span class="buttons">
+						<button
+							pButton
+							type="button"
+							class="p-button-rounded p-button-text"
+						>
+							<i class="ph-download-simple"></i>
+						</button>
+					</span>
+				</div>
+			</div>
+		</section>
+		<section class="aditional-data" formGroupName="unitInfo">
+			<h4>Informações da unidade</h4>
+
+			<h5 class="mb-5">Fotos do imóvel</h5>
+			<div class="property-photos">
+				<div class="photo">
+					<img
+						src="../../../../assets/images/property/3.png"
+						alt="Foto do imóvel"
+					/>
+					<button pButton type="button">
+						<i class="ph-trash"></i>
+					</button>
+				</div>
+
+				<button pButton type="button" class="p-button-rounded add-photo-button">
+					<i class="ph-plus"></i>
+					<div>Adicionar foto</div>
+				</button>
+			</div>
+
+			<div class="field">
+				<label for="name" class="block">Nome da unidade</label>
 				<input
 					id="name"
 					type="text"
@@ -47,8 +155,9 @@
 						id="name-help"
 						*ngIf="f['name'].hasError('required'); else error2"
 						class="p-error block"
-						>Informe o nome</small
 					>
+						Informe o nome da unidade
+					</small>
 					<ng-template #error2>
 						<small id="name-help" class="p-error block"> Nome inválido </small>
 					</ng-template>
@@ -56,101 +165,18 @@
 			</div>
 
 			<div class="field">
-				<label for="category" class="block">Categorização</label>
-				<input
-					id="category"
-					type="text"
-					formControlName="category"
-					aria-describedby="category-help"
-					pInputText
-					readonly="true"
-				/>
-				<ng-container *ngIf="checkHasError(f['category'])">
-					<small
-						id="category-help"
-						*ngIf="f['category'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe a categorização
-					</small>
-					<ng-template #error2>
-						<small id="category-help" class="p-error block">
-							Categorização inválida
-						</small>
-					</ng-template>
-				</ng-container>
-			</div>
-
-			<div class="field">
-				<label for="type" class="block">Tipo de unidade</label>
-				<input
-					id="type"
-					type="text"
-					formControlName="type"
-					aria-describedby="type-help"
-					pInputText
-					readonly="true"
-				/>
-				<ng-container *ngIf="checkHasError(f['type'])">
-					<small
-						id="type-help"
-						*ngIf="f['type'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o tipo de unidade
-					</small>
-					<ng-template #error2>
-						<small id="type-help" class="p-error block">
-							Tipo de unidade inválido
-						</small>
-					</ng-template>
-				</ng-container>
-			</div>
-
-			<div class="field">
-				<label for="proprietary" class="block">Proprietário</label>
-				<input
-					id="proprietary"
-					type="text"
-					formControlName="proprietary"
-					aria-describedby="proprietary-help"
-					pInputText
-					readonly="true"
-				/>
-				<ng-container *ngIf="checkHasError(f['proprietary'])">
-					<small
-						id="proprietary-help"
-						*ngIf="f['proprietary'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o proprietário
-					</small>
-					<ng-template #error2>
-						<small id="proprietary-help" class="p-error block">
-							Proprietário inválido
-						</small>
-					</ng-template>
-				</ng-container>
-			</div>
-		</section>
-		<section class="aditional-data">
-			<h4>Informações adicionais do imóvel</h4>
-			<p>Informações adicionais do cadastro do imóvel</p>
-
-			<div class="field">
 				<label for="area-total" class="block">Área total</label>
 				<input
 					id="area-total"
 					type="text"
-					formControlName="area_total"
+					formControlName="areaTotal"
 					aria-describedby="area-total-help"
-					class="ng-invalid ng-dirty"
 					pInputText
 				/>
-				<ng-container *ngIf="checkHasError(f['area_total'])">
+				<ng-container *ngIf="checkHasError(f['areaTotal'])">
 					<small
 						id="area-total-help"
-						*ngIf="f['area_total'].hasError('required'); else error2"
+						*ngIf="f['areaTotal'].hasError('required'); else error2"
 						class="p-error block"
 					>
 						Informe a área total
@@ -168,14 +194,14 @@
 				<input
 					id="area-usable"
 					type="text"
-					formControlName="area_usable"
+					formControlName="areaUsable"
 					aria-describedby="area-usable-help"
 					pInputText
 				/>
-				<ng-container *ngIf="checkHasError(f['area_usable'])">
+				<ng-container *ngIf="checkHasError(f['areaUsable'])">
 					<small
 						id="area-usable-help"
-						*ngIf="f['area_usable'].hasError('required'); else error2"
+						*ngIf="f['areaUsable'].hasError('required'); else error2"
 						class="p-error block"
 					>
 						Informe a área útil
@@ -193,14 +219,14 @@
 				<input
 					id="area-occupancy"
 					type="text"
-					formControlName="area_occupancy"
+					formControlName="areaOccupancy"
 					aria-describedby="area-occupancy-help"
 					pInputText
 				/>
-				<ng-container *ngIf="checkHasError(f['area_occupancy'])">
+				<ng-container *ngIf="checkHasError(f['areaOccupancy'])">
 					<small
 						id="area-occupancy-help"
-						*ngIf="f['area_occupancy'].hasError('required'); else error2"
+						*ngIf="f['areaOccupancy'].hasError('required'); else error2"
 						class="p-error block"
 					>
 						Informe a área Habite-se
@@ -233,6 +259,31 @@
 					<ng-template #error2>
 						<small id="occupancy-help" class="p-error block">
 							Habite-se inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="registration" class="block">Número da matrícula</label>
+				<input
+					id="registration"
+					type="text"
+					formControlName="registration"
+					aria-describedby="registration-help"
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['registration'])">
+					<small
+						id="registration-help"
+						*ngIf="f['registration'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o número da matrícula
+					</small>
+					<ng-template #error2>
+						<small id="registration-help" class="p-error block">
+							Matrícula inválida
 						</small>
 					</ng-template>
 				</ng-container>
@@ -379,7 +430,7 @@
 			type="reset"
 			label="Cancelar"
 			class="p-button-outlined h-11"
-			[disabled]="editForm.pristine"
+			[disabled]="editForm.invalid || isLoadingView"
 		></button>
 
 		<button
@@ -387,7 +438,38 @@
 			type="submit"
 			label="Continuar"
 			class="h-11"
-			[disabled]="editForm.pristine"
+			[disabled]="editForm.invalid || isLoadingView"
 		></button>
 	</div>
 </form>
+
+<p-dialog
+	[(visible)]="displayModal"
+	[modal]="true"
+	[draggable]="false"
+	[resizable]="false"
+	styleClass="form-modal"
+>
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+		<button
+			pButton
+			label="Continuar"
+			(click)="closeModal(navigateTo, 'property/details/' + propertyGuid)"
+		></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</p-dialog>
