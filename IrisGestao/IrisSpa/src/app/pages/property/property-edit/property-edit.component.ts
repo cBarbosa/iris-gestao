@@ -32,6 +32,7 @@ export class PropertyEditComponent {
 	propertyGuid: string;
 	isLoading = true;
 	invalidGuid = false;
+
 	propertyCategories: DropdownItem[] = [
 		{
 			label: 'Selecione',
@@ -174,7 +175,6 @@ export class PropertyEditComponent {
 	}
 
 	openModal() {
-		console.log('openning modal');
 		this.displayModal = true;
 	}
 

@@ -15,6 +15,7 @@ import {
 } from 'src/app/shared/services';
 import { first } from 'rxjs';
 import { Router } from '@angular/router';
+import { EmailValidator } from 'src/app/shared/validators/custom-validators';
 
 type Step = {
 	label: string;
@@ -62,6 +63,9 @@ export class PropertyRegisterComponent {
 		},
 	];
 
+	onInputDate: Function;
+	onBlurDate: Function;
+
 	stepList: Step[];
 	currentStep: number;
 
@@ -107,8 +111,8 @@ export class PropertyRegisterComponent {
 				iptu: ['', [Validators.required]],
 				neoenergia: ['', [Validators.required]],
 				caesb: ['', [Validators.required]],
-				administration: ['', [Validators.required]],
-				potential: ['', [Validators.required]],
+				administration: [null, [Validators.required]],
+				potential: [null, [Validators.required]],
 			}),
 			legalInfoSalaPav: this.fb.group({
 				hasCopies: [false],
@@ -122,11 +126,15 @@ export class PropertyRegisterComponent {
 			}),
 		});
 
+		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
+		this.onInputDate = onInputDate;
+		this.onBlurDate = onBlurDate;
+
 		this.registerProprietaryForm = this.fb.group({
 			name: ['', [Validators.required]],
 			cpfCnpj: ['', [Validators.required]],
 			birthday: ['', [Validators.required]],
-			email: ['', [Validators.required]],
+			email: ['', [Validators.required, EmailValidator]],
 			telephone: ['', [Validators.required]],
 		});
 
@@ -200,12 +208,16 @@ export class PropertyRegisterComponent {
 	getListaProprietarios() {
 		this.clienteService.getListaProprietarios().subscribe((event) => {
 			if (event) {
+				this.proprietaries = [];
 				event.data.forEach((item: any) => {
 					this.proprietaries.push({
 						label: item.nome,
 						value: item.id,
 					});
 				});
+				this.propertyTypeForm
+					.get('proprietary')
+					?.setValue(this.propertyTypeForm.get('proprietary')?.value ?? null);
 			}
 		});
 	}
@@ -396,8 +408,17 @@ export class PropertyRegisterComponent {
 	onUpload(e: any) {}
 
 	onSubmit(e: any = null) {
-
-		if (this.registerForm.invalid) {
+		if (
+			this.propertyTypeForm.invalid ||
+			this.legalInfoForm.invalid ||
+			this.documentsForm.invalid ||
+			(this.propertyTypeForm.controls['unitType'].value === 1 &&
+				this.propertyTypeEdCorpSalaPavForm.invalid) ||
+			((this.propertyTypeForm.controls['unitType'].value === 2 ||
+				this.propertyTypeForm.controls['unitType'].value === 3) &&
+				(this.propertyTypeSalaPavForm.invalid ||
+					this.legalInfoSalaPavForm.invalid))
+		) {
 			this.registerForm.markAllAsTouched();
 			return;
 		}
@@ -557,16 +578,16 @@ export class PropertyRegisterComponent {
 
 		const proprietaryObj = {
 			nome: proprietaryFormData.name,
-			cpfCnpj: proprietaryFormData.cpfCnpj,
-			dataNascimento: proprietaryFormData.birthday,
+			cpfCnpj: proprietaryFormData.cpfCnpj.toString(),
+			dataNascimento: (proprietaryFormData.birthday as Date).toISOString(),
 			email: proprietaryFormData.email,
-			telefone: proprietaryFormData.telephone,
+			telefone: proprietaryFormData.telephone.toString(),
 			idTipoCliente: 1,
 			bairro: '',
 			cidade: '',
 			estado: '',
 			endereco: '',
-			razaoSocial: ''
+			razaoSocial: '',
 		};
 
 		this.clienteService
@@ -574,7 +595,6 @@ export class PropertyRegisterComponent {
 			.pipe(first())
 			.subscribe({
 				next: (response: any) => {
-
 					if (response.success) {
 						this.modalContent = {
 							header: 'Cadastro realizado',
@@ -585,11 +605,12 @@ export class PropertyRegisterComponent {
 						};
 
 						this.registerProprietaryForm.reset();
-						this.getListaProprietarios();
 
 						this.propertyTypeForm.controls['proprietary'].setValue(
 							response.data.id
 						);
+
+						this.getListaProprietarios();
 
 						// this.registerProprietaryVisible = false;
 						this.openModal();

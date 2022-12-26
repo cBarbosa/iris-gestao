@@ -2,11 +2,11 @@
 	<div class="input-wrapper">
 		<section class="form-details">
 			<div *ngIf="operacaoClonar">
-				<h4 *ngIf="operacaoClonar">Clonar cliente: {{cliente?.nome}}</h4>
+				<h4 *ngIf="operacaoClonar">Clonar cliente: {{ cliente?.nome }}</h4>
 			</div>
 			<div *ngIf="!operacaoClonar">
 				<h4 *ngIf="operacaoCriar">Adicionar novo cliente</h4>
-				<h4 *ngIf="!operacaoCriar">Editar cliente: {{cliente?.nome}}</h4>
+				<h4 *ngIf="!operacaoCriar">Editar cliente: {{ cliente?.nome }}</h4>
 			</div>
 			<p><span class="form-step-value">01</span>Informações do cliente</p>
 		</section>
@@ -15,6 +15,8 @@
 			<p>
 				Adicione aqui as informações do cliente desejado. Após o preenchimento
 				clique em continuar para salvar as informações
+			</p>
+
 			<div class="field">
 				<label for="Nome" class="block">Nome</label>
 				<input
@@ -43,7 +45,7 @@
 				<label for="DataNascimento" class="block">Nascimento</label>
 				<p-calendar
 					id="DataNascimento"
-					formControlbirthday="DataNascimento"
+					formControlName="DataNascimento"
 					dateFormat="dd/mm/yy"
 					(onInput)="onInputDate($event)"
 					(onBlur)="onBlurDate()"
@@ -99,7 +101,6 @@
 					aria-describedby="CpfCnpj-help"
 					pInputText
 					maxlength="14"
-					
 				/>
 				<ng-container *ngIf="checkHasError(f['CpfCnpj'])">
 					<small
@@ -110,7 +111,9 @@
 						Informe o CPF do cliente
 					</small>
 					<ng-template #error2>
-						<small id="CpfCnpj-help" class="p-error block"> CPF inválido </small>
+						<small id="CpfCnpj-help" class="p-error block">
+							CPF inválido
+						</small>
 					</ng-template>
 				</ng-container>
 			</div>
@@ -186,13 +189,15 @@
 						Informe o Endereco do cliente
 					</small>
 					<ng-template #error2>
-						<small id="Endereco-help" class="p-error block"> Endereco inválido </small>
+						<small id="Endereco-help" class="p-error block">
+							Endereco inválido
+						</small>
 					</ng-template>
 				</ng-container>
 			</div>
-			
-			<nav id="container">		
-				<div class="field" style="width: 45%;">
+
+			<nav id="container">
+				<div class="field" style="width: 45%">
 					<label for="Bairro" class="block">Bairro</label>
 					<input
 						id="Bairro"
@@ -211,11 +216,13 @@
 							Informe o Bairro do cliente
 						</small>
 						<ng-template #error2>
-							<small id="Bairro-help" class="p-error block"> Bairro inválido </small>
+							<small id="Bairro-help" class="p-error block">
+								Bairro inválido
+							</small>
 						</ng-template>
 					</ng-container>
 				</div>
-				<div class="field" style="width: 45%; margin-left: auto;">
+				<div class="field" style="width: 45%; margin-left: auto">
 					<label for="Cidade" class="block">Cidade</label>
 					<input
 						id="Cidade"
@@ -234,13 +241,15 @@
 							Informe o Cidade do cliente
 						</small>
 						<ng-template #error2>
-							<small id="Cidade-help" class="p-error block"> Cidade inválido </small>
+							<small id="Cidade-help" class="p-error block">
+								Cidade inválido
+							</small>
 						</ng-template>
 					</ng-container>
 				</div>
 			</nav>
 			<nav id="container">
-				<div class="field" style="width: 45%;">
+				<div class="field" style="width: 45%">
 					<label for="Estado" class="block">Estado</label>
 					<input
 						id="Estado"
@@ -259,11 +268,13 @@
 							Informe o Estado do cliente
 						</small>
 						<ng-template #error2>
-							<small id="Estado-help" class="p-error block"> Estado inválido </small>
+							<small id="Estado-help" class="p-error block">
+								Estado inválido
+							</small>
 						</ng-template>
 					</ng-container>
-				</div>		
-				<div class="field" style="width: 45%; margin-left: auto;">
+				</div>
+				<div class="field" style="width: 45%; margin-left: auto">
 					<label for="Cep" class="block">CEP</label>
 					<input
 						id="Cep"
@@ -288,7 +299,6 @@
 				</div>
 			</nav>
 		</section>
-		
 	</div>
 	<div class="form-actions">
 		<button
@@ -308,10 +318,10 @@
 			[disabled]="editForm.pristine"
 		></button>
 
-		<button 
-			pButton 
-			type="submit" 
-			label="Continuar" 
+		<button
+			pButton
+			type="submit"
+			label="Continuar"
 			class="h-11"
 			[disabled]="!editForm.valid"
 		></button>
@@ -335,13 +345,15 @@
 			{{ modalContent.message }}
 		</p>
 
-		<button *ngIf="!operacaoCriar"
+		<button
+			*ngIf="!operacaoCriar"
 			pButton
 			label="Ver Detalhes"
-			(click)="closeModal(navigateTo, 'client/details/'+ uid)"
+			(click)="closeModal(navigateTo, 'client/details/' + uid)"
 		></button>
-		
-		<button *ngIf="operacaoCriar"
+
+		<button
+			*ngIf="operacaoCriar"
 			pButton
 			label="Continuar"
 			(click)="closeModal(navigateTo, 'client/listing')"
@@ -356,5 +368,5 @@
 			</p>
 			<button pButton label="Continuar" (click)="closeModal()"></button>
 		</div>
-	</ng-template> 
+	</ng-template>
 </p-dialog>

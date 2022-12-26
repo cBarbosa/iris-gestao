@@ -2,7 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { first } from 'rxjs/internal/operators/first';
-import { Imovel, ImovelUnidade, ImageData as ImagemData } from 'src/app/shared/models';
+import {
+	Imovel,
+	ImovelUnidade,
+	ImageData as ImagemData,
+} from 'src/app/shared/models';
 import { ImovelService } from 'src/app/shared/services';
 
 @Component({
@@ -24,32 +28,32 @@ export class PropertyViewComponent implements OnInit {
 	isCorporativeBuilding = false;
 
 	constructor(
-		private router: Router
-		, private route: ActivatedRoute
-		, private imovelService: ImovelService) {
+		private router: Router,
+		private route: ActivatedRoute,
+		private imovelService: ImovelService
+	) {
+		this.route.paramMap.subscribe((paramMap) => {
+			this.uid = paramMap.get('uid') ?? '';
+		});
 
-			this.route.paramMap.subscribe(paramMap => {
-				this.uid = paramMap.get('uid') ?? ''; 
-			});
-
-			this.tableMenu = [
-				{
-					label: 'Detalhes',
-					icon: 'ph-eye',
-					command: () => this.showDetails(),
-				},
-				{
-					label: 'Editar',
-					icon: 'ph-note-pencil',
-					command: () => this.navigateTo('property/edit/unit/'+ this.unit?.guidReferencia),
-				},
-				{
-					label: 'Duplicar',
-					icon: 'ph-copy-simple'
-				}
-			];
-
-		};
+		this.tableMenu = [
+			{
+				label: 'Detalhes',
+				icon: 'ph-eye',
+				command: () => this.showDetails(),
+			},
+			{
+				label: 'Editar',
+				icon: 'ph-note-pencil',
+				command: () =>
+					this.navigateTo('property/edit/unit/' + this.unit?.guidReferencia),
+			},
+			{
+				label: 'Duplicar',
+				icon: 'ph-copy-simple',
+			},
+		];
+	}
 
 	ngOnInit(): void {
 		this.getData();
@@ -67,7 +71,7 @@ export class PropertyViewComponent implements OnInit {
 		this.router.navigate([route]);
 	}
 
-	getData() : void {
+	getData(): void {
 		this.isLoadingView = true;
 
 		const view = this.imovelService
@@ -82,8 +86,7 @@ export class PropertyViewComponent implements OnInit {
 			});
 	}
 
-	setCurrentUnit(item: ImovelUnidade) :void {
+	setCurrentUnit(item: ImovelUnidade): void {
 		this.unit = item;
-	};
-
+	}
 }
