@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
+import { NgxCurrencyModule } from 'ngx-currency';
 
 @NgModule({
 	declarations: [UnitRegisterComponent],
@@ -22,7 +23,8 @@ import { DialogModule } from 'primeng/dialog';
 		FileUploadModule,
 		HttpClientModule,
 		DropdownModule,
-		DialogModule
+		DialogModule,
+		NgxCurrencyModule
 	],
 })
 export class UnitRegisterModule {}

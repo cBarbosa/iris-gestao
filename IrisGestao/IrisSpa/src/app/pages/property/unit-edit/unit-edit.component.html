@@ -30,7 +30,8 @@
 
 			<div class="photo-data">
 				<img
-					[src]="unit?.idImovelNavigation?.imgCapa ?? ''"
+				*ngIf="unit"
+					[src]="unit.idImovelNavigation?.imgCapa ?? ''"
 					alt="property-photo"
 				/>
 			</div>
@@ -69,12 +70,12 @@
 			</div>
 
 			<div class="field">
-				<label for="type" class="block">Tipo de unidade</label>
+				<label for="typeStr" class="block">Tipo de imóvel</label>
 				<input
-					id="type"
+					id="typeStr"
 					type="text"
-					formControlName="type"
-					aria-describedby="type-help"
+					formControlName="typeStr"
+					aria-describedby="typeStr-help"
 					pInputText
 				/>
 			</div>
@@ -139,6 +140,30 @@
 					<i class="ph-plus"></i>
 					<div>Adicionar foto</div>
 				</button>
+			</div>
+
+			<div class="field">
+				<label for="type" class="block">Tipo da unidade</label>
+				<p-dropdown
+					id="type"
+					[options]="unitTypes"
+					formControlName="type"
+					aria-describedby="type-help"
+				></p-dropdown>
+				<ng-container *ngIf="checkHasError(f['type'])">
+					<small
+						id="type-help"
+						*ngIf="f['type'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o tipo de unidade
+					</small>
+					<ng-template #error2>
+						<small id="type-help" class="p-error block">
+							Tipo de unidade inválido
+						</small>
+					</ng-template>
+				</ng-container>
 			</div>
 
 			<div class="field">
@@ -465,7 +490,7 @@
 			type="submit"
 			label="Continuar"
 			class="h-11"
-			[disabled]="isLoadingView"
+			[disabled]="isLoadingView || editUnitForm.invalid"
 		></button>
 	</div>
 </form>

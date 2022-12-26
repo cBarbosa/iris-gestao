@@ -5,32 +5,37 @@
 			<p>Informações necessárias para o cadastro do imóvel</p>
 
 			<div class="photo-input">
-				<img *ngIf="property != undefined && property.imgCapa != undefined" [src]="property.imgCapa" alt="edit-photo" />
+				<img
+					*ngIf="property != undefined && property.imgCapa != undefined"
+					[src]="property.imgCapa"
+					alt="edit-photo"
+				/>
+			</div>
 
-				<!-- <button
-					pButton
-					type="button"
-					label="Adicionar nova foto"
-					class="p-button-text"
-				></button> -->
-
-				<p-fileUpload
-					mode="basic"
-					name="demo[]"
-					accept="image/*"
-					chooseLabel="Adicionar nova foto"
-					chooseIcon=""
-					uploadIcon=""
-					cancelIcon=""
-					styleClass="h-8 text-sm p-button-text"
-				></p-fileUpload>
-
-				<button
-					pButton
-					type="button"
-					label="Excluir foto"
-					class="p-button-text"
-				></button>
+			<div class="field">
+				<label for="proprietary" class="block">Proprietário</label>
+				<input
+					id="proprietary"
+					type="text"
+					formControlName="proprietary"
+					aria-describedby="proprietary-help"
+					pInputText
+					readonly="true"
+				/>
+				<ng-container *ngIf="checkHasError(f['proprietary'])">
+					<small
+						id="proprietary-help"
+						*ngIf="f['proprietary'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o proprietário
+					</small>
+					<ng-template #error2>
+						<small id="proprietary-help" class="p-error block">
+							Proprietário inválido
+						</small>
+					</ng-template>
+				</ng-container>
 			</div>
 
 			<div class="field">
@@ -108,35 +113,70 @@
 				</ng-container>
 			</div>
 
-			<div class="field">
-				<label for="proprietary" class="block">Proprietário</label>
-				<input
-					id="proprietary"
-					type="text"
-					formControlName="proprietary"
-					aria-describedby="proprietary-help"
-					pInputText
-					readonly="true"
-				/>
-				<ng-container *ngIf="checkHasError(f['proprietary'])">
-					<small
-						id="proprietary-help"
-						*ngIf="f['proprietary'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o proprietário
-					</small>
-					<ng-template #error2>
-						<small id="proprietary-help" class="p-error block">
-							Proprietário inválido
-						</small>
-					</ng-template>
-				</ng-container>
+			<h5>Documentos</h5>
+
+			<div class="document-list">
+				<div class="document project">
+					<span>Projeto</span>
+					<span class="buttons">
+						<button
+							pButton
+							type="button"
+							class="p-button-rounded p-button-text"
+						>
+							<i class="ph-download-simple"></i>
+						</button>
+					</span>
+				</div>
+				<div class="document registration">
+					<span>Matrícula</span>
+					<span class="buttons">
+						<button
+							pButton
+							type="button"
+							class="p-button-rounded p-button-text"
+						>
+							<i class="ph-download-simple"></i>
+						</button>
+					</span>
+				</div>
+				<div class="document occupancy">
+					<span>Habite-se</span>
+					<span class="buttons">
+						<button
+							pButton
+							type="button"
+							class="p-button-rounded p-button-text"
+						>
+							<i class="ph-download-simple"></i>
+						</button>
+					</span>
+				</div>
 			</div>
+
+			
 		</section>
 		<section class="aditional-data">
-			<h4>Informações adicionais do imóvel</h4>
+			<h4>Informações da unidade</h4>
 			<p>Informações adicionais do cadastro do imóvel</p>
+
+			<h5 class="mb-5">Fotos do imóvel</h5>
+			<div class="property-photos">
+				<div class="photo">
+					<img
+						src="../../../../assets/images/property/3.png"
+						alt="Foto do imóvel"
+					/>
+					<button pButton type="button">
+						<i class="ph-trash"></i>
+					</button>
+				</div>
+
+				<button pButton type="button" class="p-button-rounded add-photo-button">
+					<i class="ph-plus"></i>
+					<div>Adicionar foto</div>
+				</button>
+			</div>
 
 			<div class="field">
 				<label for="type" class="block">Tipo da unidade</label>
@@ -163,7 +203,7 @@
 			</div>
 
 			<div class="field">
-				<label for="name" class="block">Nome</label>
+				<label for="name" class="block">Nome da unidade</label>
 				<input
 					id="name"
 					type="text"

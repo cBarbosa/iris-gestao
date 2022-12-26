@@ -182,6 +182,17 @@
 }
 
 :host ::ng-deep {
+
+	.p-inputwrapper {
+		width: 100%;
+
+		.p-component {
+			&.p-dropdown {
+				width: 100%;
+			}
+		}
+	}
+	
 	.form-modal {
 		text-align: center;
 		max-width: 25rem;

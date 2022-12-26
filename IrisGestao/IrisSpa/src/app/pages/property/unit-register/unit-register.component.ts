@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/internal/operators/first';
-import { Imovel, ImovelUnidade, ImovelUnidadeType } from 'src/app/shared/models';
+import { Imovel, ImovelUnidadeType } from 'src/app/shared/models';
 import { DominiosService, ImovelService } from 'src/app/shared/services';
 
 import { Utils } from 'src/app/shared/utils';

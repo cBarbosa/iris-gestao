@@ -5,7 +5,7 @@ export class Cliente {
     constructor(
         public guidReferencia: string,
         public DataNascimento?: Date,
-        public CpfCnpj?: string,
+        public cpfCnpj?: string,
         public nome?: string,
         public telefone?: string,
         public email?: string,
