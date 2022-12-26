@@ -10,6 +10,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
+import { NgxMaskModule } from 'ngx-mask';
+import { NgxCurrencyModule } from 'ngx-currency';
 
 @NgModule({
 	declarations: [UnitEditComponent],
@@ -23,6 +25,8 @@ import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/sp
 		HttpClientModule,
 		DialogModule,
 		SpinnerComponent,
+		NgxCurrencyModule,
+		NgxMaskModule.forChild(),
 	],
 })
 export class UnitEditModule {}

@@ -160,6 +160,11 @@ export class UnitEditComponent implements OnInit {
 	}
 
 	saveChanges(): void {
+		if (this.editUnitForm.invalid) {
+			this.editUnitForm.markAllAsTouched();
+			return;
+		}
+
 		this.isLoadingView = true;
 		this.editUnitForm.disable();
 

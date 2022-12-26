@@ -12,7 +12,9 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { DialogModule } from 'primeng/dialog';
 import { CheckboxModule } from 'primeng/checkbox';
 import { SidebarModule } from 'primeng/sidebar';
-import { TabViewModule } from 'primeng/tabview';
+import { NgxMaskModule } from 'ngx-mask';
+import { NgxCurrencyModule } from 'ngx-currency';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
 	declarations: [PropertyRegisterComponent],
@@ -28,7 +30,9 @@ import { TabViewModule } from 'primeng/tabview';
 		DialogModule,
 		CheckboxModule,
 		SidebarModule,
-		TabViewModule,
+		CalendarModule,
+		NgxMaskModule.forChild(),
+		NgxCurrencyModule,
 	],
 })
 export class PropertyRegisterModule {}
