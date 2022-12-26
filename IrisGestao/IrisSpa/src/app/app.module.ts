@@ -32,6 +32,7 @@ export const options: Partial<null | IConfig> | (() => Partial<IConfig>) = null;
 		CpfCnpjPipeModule,
 		NgxMaskModule.forRoot({
 			dropSpecialCharacters: true,
+			thousandSeparator: '.',
 		}),
 		NgxCurrencyModule.forRoot({
 			align: 'left',

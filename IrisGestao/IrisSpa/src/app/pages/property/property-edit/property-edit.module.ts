@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
+import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
 	declarations: [PropertyEditComponent],
@@ -23,6 +24,7 @@ import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/sp
 		FileUploadModule,
 		DialogModule,
 		SpinnerComponent,
+		NgxMaskModule.forChild(),
 	],
 })
 export class PropertyEditModule {}

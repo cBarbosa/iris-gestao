@@ -157,6 +157,7 @@
 					type="text"
 					formControlName="name"
 					aria-describedby="name-help"
+					maxlength="100"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['name'])">
@@ -204,6 +205,8 @@
 					type="text"
 					formControlName="costCentre"
 					aria-describedby="cost-centre-help"
+					mask="0*"
+					maxlength="20"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['costCentre'])">

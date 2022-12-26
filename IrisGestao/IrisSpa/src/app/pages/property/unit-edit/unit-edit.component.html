@@ -174,7 +174,7 @@
 					aria-describedby="area-total-help"
 					[dropSpecialCharacters]="true"
 					suffix=" m²"
-					mask="0*"
+					mask="separator.2"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['areaTotal'])">
@@ -202,7 +202,7 @@
 					aria-describedby="area-usable-help"
 					[dropSpecialCharacters]="true"
 					suffix=" m²"
-					mask="0*"
+					mask="separator.2"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['areaUsable'])">
@@ -230,7 +230,7 @@
 					aria-describedby="area-occupancy-help"
 					[dropSpecialCharacters]="true"
 					suffix=" m²"
-					mask="0*"
+					mask="separator.2"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['areaOccupancy'])">
@@ -454,10 +454,10 @@
 		<button
 			pButton
 			pRipple
-			type="reset"
+			type="button"
 			label="Cancelar"
 			class="p-button-outlined h-11"
-			[disabled]="editForm.invalid || isLoadingView"
+			(click)="navigateTo('property/details/' + propertyGuid)"
 		></button>
 
 		<button

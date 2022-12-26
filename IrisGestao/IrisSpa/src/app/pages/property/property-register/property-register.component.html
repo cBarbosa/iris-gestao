@@ -32,6 +32,7 @@
 						type="text"
 						formControlName="name"
 						aria-describedby="name-help"
+						maxlength="100"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['name'])">
@@ -141,6 +142,7 @@
 						type="text"
 						formControlName="costCentre"
 						aria-describedby="cost-centre-help"
+						mask="0*"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['costCentre'])">
@@ -175,6 +177,8 @@
 							type="text"
 							formControlName="areaTotal"
 							aria-describedby="area-total-help"
+							suffix=" m²"
+							mask="separator.2"
 							pInputText
 						/>
 						<ng-container
@@ -217,6 +221,8 @@
 							type="text"
 							formControlName="areaUsable"
 							aria-describedby="area-usable-help"
+							suffix=" m²"
+							mask="separator.2"
 							pInputText
 						/>
 						<ng-container
@@ -253,6 +259,8 @@
 							type="text"
 							formControlName="areaOccupancy"
 							aria-describedby="area-occupancy-help"
+							suffix=" m²"
+							mask="separator.2"
 							pInputText
 						/>
 						<ng-container
@@ -305,6 +313,7 @@
 						type="text"
 						formControlName="description"
 						aria-describedby="description-help"
+						maxlength="150"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['description'])">
@@ -330,6 +339,7 @@
 						type="text"
 						formControlName="registration"
 						aria-describedby="registration-help"
+						mask="000000000.0000/000"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['registration'])">
@@ -355,6 +365,7 @@
 						type="text"
 						formControlName="iptu"
 						aria-describedby="iptu-help"
+						mask="000000000.0000/000"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['iptu'])">
@@ -382,6 +393,7 @@
 						type="text"
 						formControlName="neoenergia"
 						aria-describedby="neoenergia-help"
+						mask="000000000.0000/000"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['neoenergia'])">
@@ -407,6 +419,7 @@
 						type="text"
 						formControlName="caesb"
 						aria-describedby="caesb-help"
+						mask="000000000.0000/000"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['caesb'])">
@@ -434,6 +447,7 @@
 						type="text"
 						formControlName="administration"
 						aria-describedby="administration-help"
+						currencyMask
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['administration'])">
@@ -459,6 +473,7 @@
 						type="text"
 						formControlName="potential"
 						aria-describedby="potential-help"
+						currencyMask
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['potential'])">
@@ -507,6 +522,7 @@
 							type="text"
 							formControlName="copies"
 							aria-describedby="copies-help"
+							mask="0*"
 							pInputText
 						/>
 						<ng-container
@@ -714,6 +730,7 @@
 						type="text"
 						formControlName="name"
 						aria-describedby="name-help"
+						maxlength="100"
 						pInputText
 					/>
 					<ng-container
@@ -744,6 +761,7 @@
 						type="text"
 						formControlName="cpfCnpj"
 						aria-describedby="cpf-cnpj-help"
+						mask="CPF_CNPJ"
 						pInputText
 					/>
 					<ng-container
@@ -771,13 +789,15 @@
 
 				<div class="field">
 					<label for="birthday" class="block">Nascimento</label>
-					<input
+					<p-calendar
 						id="birthday"
-						type="text"
 						formControlName="birthday"
+						dateFormat="dd/mm/yy"
+						(onInput)="onInputDate($event)"
+						(onBlur)="onBlurDate()"
+						placeholder="dd/mm/aaaa"
 						aria-describedby="birthday-help"
-						pInputText
-					/>
+					></p-calendar>
 					<ng-container
 						*ngIf="checkHasError(registerProprietaryForm.controls['birthday'])"
 					>
@@ -838,6 +858,7 @@
 						type="text"
 						formControlName="telephone"
 						aria-describedby="telephone-help"
+						mask="(00) 0 0000-0000"
 						pInputText
 					/>
 					<ng-container
