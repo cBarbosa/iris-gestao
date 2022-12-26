@@ -40,7 +40,7 @@ export class PropertyViewComponent implements OnInit {
 				{
 					label: 'Editar',
 					icon: 'ph-note-pencil',
-					command: () => this.navigateTo('property/edit/'+ this.unit?.guidReferencia),
+					command: () => this.navigateTo('property/edit/unit/'+ this.unit?.guidReferencia),
 				},
 				{
 					label: 'Duplicar',
