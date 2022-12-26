@@ -21,5 +21,6 @@ namespace IrisGestao.Domain.Command.Request
         public decimal? TaxaAdministracao { get; set; }
         public decimal? ValorPotencial { get; set; }
         public bool UnidadeLocada { get; set; }
+        public int? QtdeCopias { get; set; }
     }
 }

@@ -15,7 +15,6 @@ public class ImovelController : Controller
         this.imovelService = imovelService;
     }
  
-    // GET
     [HttpGet]
     [Produces("application/json")]
    public async Task<IActionResult> GetAll(
@@ -25,7 +24,6 @@ public class ImovelController : Controller
        , [FromQuery] int? page = 1) =>
         Ok(await imovelService.GetAllPaging(idCategoria, nome, limit ?? 10, page ?? 1));
 
-    // GET
     [HttpGet("{guid}/guid/")]
     [Produces("application/json")]
     public async Task<IActionResult> GetByGuid([FromRoute] Guid guid) =>
