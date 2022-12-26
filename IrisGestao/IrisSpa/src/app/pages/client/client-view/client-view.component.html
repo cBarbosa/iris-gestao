@@ -7,18 +7,20 @@
 				<header>
 					<h3>{{cliente?.nome}} <span>{{cliente?.idTipoClienteNavigation?.nome}}</span></h3>
 					<div class="actions">
-						<button pButton type="button" class="p-button-outlined h-7 text-xs">
-							Editar
+						<button pButton type="button" class="p-button-outlined h-7"
+						(click)="navigateTo('client/register/'+ cliente.guidReferencia)">
+							Editar cliente
 						</button>
-						<button pButton type="button" class="p-button-outlined h-7">
+						<!--button pButton type="button" class="p-button-outlined h-7"
+						(click)="navigateTo('client/register/'+ cliente.guidReferencia + '/Clone')">
 							Duplicar
-						</button>
+						</button-->
 					</div>
 				</header>
 				<div class="client-info">
 					<div class="client-data">
 						<div class="data-label">CPF/CNPJ</div>
-						<div class="data-value">{{cliente?.cpfCnpj}}</div>
+						<div class="data-value">{{cliente?.cpfCnpj | cpfcnpj }}</div>
 					</div>
 					<div class="client-data">
 						<div class="data-label">Aniversário</div>

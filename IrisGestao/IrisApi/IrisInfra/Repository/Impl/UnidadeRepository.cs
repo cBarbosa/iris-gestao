@@ -75,6 +75,7 @@ public class UnidadeRepository : Repository<Unidade>, IUnidadeRepository
                     {
                         GuidReferencia = y.IdImovelNavigation.GuidReferencia,
                         Nome = y.IdImovelNavigation.Nome,
+                        NumCentroCusto = y.IdImovelNavigation.NumCentroCusto,
                         AreaTotal = y.IdImovelNavigation.Unidade.Sum(x => x.AreaTotal),
                         AreaUtil = y.IdImovelNavigation.Unidade.Sum(x => x.AreaUtil),
                         AreaHabitese = y.IdImovelNavigation.Unidade.Sum(x => x.AreaHabitese),

@@ -901,10 +901,19 @@
 		<p>
 			{{ modalContent.message }}
 		</p>
+
+		<button
+			pButton
+			label="Continuar"
+			(click)="closeModal(); registerProprietaryVisible = false"
+			*ngIf="registerProprietaryVisible"
+		></button>
+
 		<button
 			pButton
 			label="Continuar"
 			(click)="closeModal(navigateTo, 'property/listing')"
+			*ngIf="!registerProprietaryVisible"
 		></button>
 	</div>
 	<ng-template #error>

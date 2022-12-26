@@ -4,7 +4,8 @@ export class Cliente {
 
     constructor(
         public guidReferencia: string,
-        public cpfCnpj?: string,
+        public DataNascimento?: Date,
+        public CpfCnpj?: string,
         public nome?: string,
         public telefone?: string,
         public email?: string,
@@ -16,3 +17,17 @@ export class Cliente {
         public idTipoClienteNavigation?: ClienteTipo,
     ) { }
 }
+
+export type ClienteType = {
+    TipoCliente: number;
+    CpfCnpj: string;
+    DataNascimento: string;
+    Nome: string;
+    Telefone: string;
+    Email: string;
+    Cep: string;
+    Endereco: string;
+    Bairro: string;
+    Cidade: string;
+    Estado: string;
+};

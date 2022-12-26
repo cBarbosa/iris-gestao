@@ -25,7 +25,18 @@ const routes: Routes = [
 		},
 	},
 	{
-		path: 'register',
+		path: 'register/:uid',
+		// component: PropertyListingComponent,
+		loadChildren: () =>
+			import('./client-register/client-register.module').then(
+				(m) => m.ClientRegisterModule
+			),
+		data: {
+			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+		},
+	},
+	{
+		path: 'register/:uid/Clone',
 		// component: PropertyListingComponent,
 		loadChildren: () =>
 			import('./client-register/client-register.module').then(

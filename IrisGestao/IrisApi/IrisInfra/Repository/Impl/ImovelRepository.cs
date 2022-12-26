@@ -44,6 +44,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                         {
                             GuidReferencia = x.GuidReferencia,
                             Nome = x.Nome,
+                            NumCentroCusto = x.NumCentroCusto,
                             ImovelEndereco = x.ImovelEndereco,
                             Unidade = x.Unidade.Select(y => new
                                 {
@@ -82,6 +83,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                             },
                             IdClienteProprietarioNavigation = x.IdClienteProprietarioNavigation == null ? null : new 
                             {
+                                Id = x.IdClienteProprietarioNavigation.Id,
                                 GuidReferencia = x.IdClienteProprietarioNavigation.GuidReferencia,
                                 CpfCnpj = x.IdClienteProprietarioNavigation.CpfCnpj,
                                 Nome = x.IdClienteProprietarioNavigation.Nome,
@@ -132,6 +134,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                         {
                             GuidReferencia = x.GuidReferencia,
                             Nome = x.Nome,
+                            NumCentroCusto = x.NumCentroCusto,
                             ImovelEndereco = x.ImovelEndereco,
                             Unidade = x.Unidade.Select(y => new
                                 {
@@ -155,8 +158,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                                         Id = y.IdTipoUnidadeNavigation.Id,
                                         Nome = y.IdTipoUnidadeNavigation.Nome
                                     }
-                                }
-                                ),
+                            }),
                             AreaTotal = x.Unidade.Sum(x => x.AreaTotal),
                             AreaUtil = x.Unidade.Sum(x => x.AreaUtil),
                             AreaHabitese = x.Unidade.Sum(x => x.AreaHabitese),
@@ -171,6 +173,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                             },
                             IdClienteProprietarioNavigation = x.IdClienteProprietarioNavigation == null ? null : new 
                             {
+                                Id = x.IdClienteProprietarioNavigation.Id,
                                 GuidReferencia = x.IdClienteProprietarioNavigation.GuidReferencia,
                                 CpfCnpj = x.IdClienteProprietarioNavigation.CpfCnpj,
                                 Nome = x.IdClienteProprietarioNavigation.Nome,
