@@ -148,6 +148,7 @@
 					type="text"
 					formControlName="name"
 					aria-describedby="name-help"
+					maxlength="100"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['name'])">
@@ -171,6 +172,9 @@
 					type="text"
 					formControlName="areaTotal"
 					aria-describedby="area-total-help"
+					[dropSpecialCharacters]="true"
+					suffix=" m²"
+					mask="0*"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['areaTotal'])">
@@ -196,6 +200,9 @@
 					type="text"
 					formControlName="areaUsable"
 					aria-describedby="area-usable-help"
+					[dropSpecialCharacters]="true"
+					suffix=" m²"
+					mask="0*"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['areaUsable'])">
@@ -221,6 +228,9 @@
 					type="text"
 					formControlName="areaOccupancy"
 					aria-describedby="area-occupancy-help"
+					[dropSpecialCharacters]="true"
+					suffix=" m²"
+					mask="0*"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['areaOccupancy'])">
@@ -246,6 +256,9 @@
 					type="text"
 					formControlName="occupancy"
 					aria-describedby="occupancy-help"
+					[specialCharacters]="['.', '\/']"
+					[dropSpecialCharacters]="true"
+					mask="000000000.0000/000"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['occupancy'])">
@@ -271,6 +284,9 @@
 					type="text"
 					formControlName="registration"
 					aria-describedby="registration-help"
+					[specialCharacters]="['.', '\/']"
+					[dropSpecialCharacters]="true"
+					mask="000000000.0000/000"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['registration'])">
@@ -296,6 +312,9 @@
 					type="text"
 					formControlName="iptu"
 					aria-describedby="iptu-help"
+					[specialCharacters]="['.', '\/']"
+					[dropSpecialCharacters]="true"
+					mask="000000000.0000/000"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['iptu'])">
@@ -321,6 +340,9 @@
 					type="text"
 					formControlName="neoenergia"
 					aria-describedby="neoenergia-help"
+					[specialCharacters]="['.', '\/']"
+					[dropSpecialCharacters]="true"
+					mask="000000000.0000/000"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['neoenergia'])">
@@ -346,6 +368,9 @@
 					type="text"
 					formControlName="caesb"
 					aria-describedby="caesb-help"
+					[specialCharacters]="['.', '\/']"
+					[dropSpecialCharacters]="true"
+					mask="000000000.0000/000"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['caesb'])">
@@ -371,6 +396,7 @@
 					type="text"
 					formControlName="administration"
 					aria-describedby="administration-help"
+					currencyMask
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['administration'])">
@@ -396,6 +422,7 @@
 					type="text"
 					formControlName="potential"
 					aria-describedby="potential-help"
+					currencyMask
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['potential'])">
@@ -438,7 +465,7 @@
 			type="submit"
 			label="Continuar"
 			class="h-11"
-			[disabled]="editForm.invalid || isLoadingView"
+			[disabled]="isLoadingView"
 		></button>
 	</div>
 </form>
