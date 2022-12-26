@@ -396,7 +396,6 @@ export class PropertyRegisterComponent {
 	onUpload(e: any) {}
 
 	onSubmit(e: any = null) {
-		console.log('submitting form');
 
 		if (this.registerForm.invalid) {
 			this.registerForm.markAllAsTouched();
@@ -435,7 +434,7 @@ export class PropertyRegisterComponent {
 
 		const propertyObj = {
 			Nome: propertyTypeFormData.name,
-			IdCategoriaImovel: +propertyTypeFormData.category,
+			//IdCategoriaImovel: +propertyTypeFormData.category,
 			IdClienteProprietario: +propertyTypeFormData.proprietary,
 			NumCentroCusto: +propertyTypeFormData.costCentre,
 			MonoUsuario: false,
@@ -558,33 +557,23 @@ export class PropertyRegisterComponent {
 
 		const proprietaryObj = {
 			nome: proprietaryFormData.name,
-			CpfCnpj: proprietaryFormData.cpfCnpj,
+			cpfCnpj: proprietaryFormData.cpfCnpj,
 			dataNascimento: proprietaryFormData.birthday,
 			email: proprietaryFormData.email,
 			telefone: proprietaryFormData.telephone,
+			idTipoCliente: 1,
+			bairro: '',
+			cidade: '',
+			estado: '',
+			endereco: '',
+			razaoSocial: ''
 		};
-
-		// "CpfCnpj": "",
-		// "IdTipoCliente": 1,
-		// "nome": "Alexandre UX",
-		// "razaoSocial": "",
-		// "Status ": true,
-		// "endereco": "SCS Quadra 04 Lote A Edifício Vera Cruz 5º andar, ",
-		// "bairro": "Asa Sul",
-		// "cidade": "Brasília",
-		// "estado": "DF",
-		// "cep": 72322711,
-		// "dataNascimento": "1986-12-25",
-		// "email": "alexandre.ux@outlook.com",
-		// "telefone":"61991363588",
-		// "nps": 0
 
 		this.clienteService
 			.criarCliente(proprietaryObj)
 			.pipe(first())
 			.subscribe({
 				next: (response: any) => {
-					console.log('response: ', response);
 
 					if (response.success) {
 						this.modalContent = {
@@ -602,10 +591,9 @@ export class PropertyRegisterComponent {
 							response.data.id
 						);
 
-						this.registerProprietaryVisible = false;
+						// this.registerProprietaryVisible = false;
 						this.openModal();
 					} else {
-						console.error(response.message);
 						this.modalContent = {
 							header: 'Cadastro não realizado',
 							message:
