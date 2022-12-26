@@ -240,6 +240,7 @@
 			background-color: #ffffff;
 
 			&.ng-pristine,
+			&.ng-dirty,
 			&.ng-valid {
 				border: 1px solid #a8a8a8;
 
@@ -248,8 +249,8 @@
 				}
 			}
 
-			&.ng-touched:not(.ng-invalid):hover,
-			&.ng-pristine:hover {
+			&.ng-touched:not(.ng-invalid):not(:disabled):hover,
+			&.ng-pristine:not(:disabled):hover {
 				border-color: #641b1e;
 			}
 
