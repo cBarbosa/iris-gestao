@@ -6,7 +6,6 @@ import {
 	FormGroup,
 	Validators,
 } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { Utils } from 'src/app/shared/utils';
 import {
 	ClienteService,
@@ -455,7 +454,7 @@ export class PropertyRegisterComponent {
 
 		const propertyObj = {
 			Nome: propertyTypeFormData.name,
-			//IdCategoriaImovel: +propertyTypeFormData.category,
+			IdCategoriaImovel: 1, // TODO indicar a categoria do imóvel
 			IdClienteProprietario: +propertyTypeFormData.proprietary,
 			NumCentroCusto: +propertyTypeFormData.costCentre,
 			MonoUsuario: false,
@@ -463,7 +462,7 @@ export class PropertyRegisterComponent {
 
 		const unitObj = {
 			Tipo: legalInfoFormData.description,
-			IdTipoUnidade: +legalInfoFormData.unitType,
+			IdTipoUnidade: +propertyTypeFormData.unitType,
 			AreaUtil: +legalInfoFormData.areaUsable,
 			AreaTotal: +legalInfoFormData.areaTotal,
 			AreaHabitese: +legalInfoFormData.areaOccupancy,
@@ -473,25 +472,13 @@ export class PropertyRegisterComponent {
 			MatriculaAgua: legalInfoFormData.caesb,
 			TaxaAdministracao: +legalInfoFormData.administration,
 			ValorPotencial: +legalInfoFormData.potential,
+			QtdeCopias: +legalInfoFormData.copies,
 			UnidadeLocada: false,
 		};
 
-		// Nome = nome do imóvel
-		// IdCategoriaImovel = combo de categoria (mercado e carteira)
-		// IdClienteProprietario = combo dos clientes
-		// NumCentroCusto = número do centro de custo (numéricos)
+		console.debug('unitObj', unitObj);
 
-		// Tipo = descrição da unidade (texto 150)
-		// IdTipoUnidade = combo de tipo de imóvel edificio corporativo, sala ...
-		// AreaUtil = campo númerico
-		// AreaHabitese = campo numérico
-		// Matricula = campo texto
-		// InscricaoIptu = campo texto
-		// MatriculaEnergia = campo texto
-		// MatriculaAgua = campo texto
-		// TaxaAdministracao = campo monetário
-		// ValorPotencial = campo monetário
-		// UnidadeLocada = true ou false, se for um problema passa fixo false.
+		return;
 
 		const registerUnit = (unitObj: any, guid: string) => {
 			console.log('sending: ', unitObj);

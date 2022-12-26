@@ -12,6 +12,7 @@ import { DialogModule } from 'primeng/dialog';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 import { NgxMaskModule } from 'ngx-mask';
 import { NgxCurrencyModule } from 'ngx-currency';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
 	declarations: [UnitEditComponent],
@@ -24,6 +25,7 @@ import { NgxCurrencyModule } from 'ngx-currency';
 		FileUploadModule,
 		HttpClientModule,
 		DialogModule,
+		DropdownModule,
 		SpinnerComponent,
 		NgxCurrencyModule,
 		NgxMaskModule.forChild(),

@@ -57,6 +57,142 @@
 					}
 				}
 			}
+
+			&.proprierty-data {
+				max-width: 445px;
+				height: fit-content;
+				background-color: #f8f9fa;
+
+				h4 {
+					@apply mb-7;
+				}
+
+				.photo-input {
+					@apply mb-6;
+
+					img {
+						width: 100%;
+						height: auto;
+					}
+					.buttons {
+						@apply flex justify-between my-4;
+
+						button {
+							@apply my-2 text-sm h-11 w-48 font-bold;
+						}
+
+						::ng-deep {
+							.p-fileupload {
+								display: inline-block;
+
+								.p-button {
+									@apply my-2 text-sm h-11 w-48 font-bold;
+
+									.p-button-icon {
+										display: none;
+									}
+								}
+							}
+						}
+					}
+				}
+
+				.document-list {
+					@apply mb-5 mt-5 mb-7;
+
+					.document {
+						@apply my-3 flex justify-between text-sm;
+						color: #641b1e;
+
+						.buttons {
+							@apply text-xl;
+
+							button {
+								@apply mx-1 w-7 h-7 rounded-full;
+								padding: 0 0 0 0.37rem;
+								text-align: center;
+
+								&:hover {
+									background-color: #f7ded3;
+								}
+							}
+						}
+
+						> span:first-child:before {
+							content: "";
+							display: inline-block;
+							@apply w-6 h-6 mr-4 rounded;
+							margin-bottom: -0.4rem;
+							background-color: #f7ded3;
+							background-position: center center;
+							background-repeat: no-repeat;
+						}
+
+						&.project > span:first-child:before {
+							background-image: url("../../../../assets/images/icons/blueprint-buildings.svg");
+						}
+						&.registration > span:first-child:before {
+							background-image: url("../../../../assets/images/icons/blueprint-home.svg");
+						}
+						&.occupancy > span:first-child:before {
+							background-image: url("../../../../assets/images/icons/blueprint-buildings.svg");
+						}
+					}
+				}
+			}
+
+			.property-photos {
+				display: flex;
+				align-items: flex-start;
+
+				.photo {
+					position: relative;
+					overflow: hidden;
+					width: 7.5rem;
+					height: 6.5rem;
+
+					&:not(:last-child) {
+						margin-right: 1rem;
+					}
+
+					img {
+						min-width: 100%;
+						min-height: 100%;
+						max-width: none;
+						max-height: 100%;
+						background-color: #262626;
+					}
+
+					button {
+						position: absolute;
+						bottom: 0;
+						left: 0;
+						border-radius: 0;
+						padding: 0 0 0 0.36rem;
+						@apply text-xl w-8 h-8;
+						color: #ffffff;
+					}
+				}
+
+				.add-photo-button {
+					width: 7.5rem;
+					height: 6.5rem;
+					display: block;
+					border-radius: 0;
+					color: #641b1e;
+					padding: 0.4rem;
+					background-color: #f7ded3;
+					@apply text-sm;
+
+					i {
+						@apply text-2xl;
+					}
+
+					&:hover {
+						background-color: rgb(248, 212, 197);
+					}
+				}
+			}
 		}
 	}
 
