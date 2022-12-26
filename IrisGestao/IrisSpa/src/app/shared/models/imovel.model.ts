@@ -12,6 +12,7 @@ export class Imovel {
         public areaUtil?: number,
         public areaHabitese?: number,
         public imgCapa?: string,
+        public numCentroCusto?: number,
         public idCategoriaImovelNavigation?: ImovelCategoria,
         public idClienteProprietarioNavigation?: Cliente,
         public imovelEndereco?: ImovelEndereco[],

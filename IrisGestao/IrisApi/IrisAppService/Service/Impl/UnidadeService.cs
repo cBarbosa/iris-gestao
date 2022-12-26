@@ -70,16 +70,23 @@ public class UnidadeService: IUnidadeService
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
         }
-        
-        var unidade = new Unidade();
-        cmd.GuidReferencia = Guid.Empty;
-        BindUnidadeData(cmd, unidade);
 
+        cmd.GuidReferencia = Guid.Empty;
         try
         {
-            unidade.IdImovel = imovel.Id;
-            unidadeRepository.Insert(unidade);
-            return new CommandResult(true, SuccessResponseEnums.Success_1000, unidade);
+            if (!cmd.QtdeCopias.HasValue
+                || cmd.IdTipoUnidade.Equals(TipoUnidadeEnum.PAVIMENTO_CORPORATIVO))
+            {
+                await CriaVariasUnidades(1, cmd, imovel);
+            }
+            else
+            {
+                await CriaVariasUnidades(cmd.QtdeCopias ?? 1, cmd, imovel);
+            }
+
+            return new CommandResult(true,
+                SuccessResponseEnums.Success_1000,
+                $"{cmd.QtdeCopias ?? 1} unidades cadastradas com sucesso");
         }
         catch (Exception)
         {
@@ -168,5 +175,16 @@ public class UnidadeService: IUnidadeService
         unidade.ValorPotencial = cmd.ValorPotencial;
         unidade.UnidadeLocada = cmd.UnidadeLocada;
         unidade.Tipo = cmd.Tipo ?? string.Empty;
+    }
+
+    private async Task CriaVariasUnidades(int qtdUnidades, CriarUnidadeCommand cmd, Imovel imovel)
+    {
+        for (int i = 0; i < qtdUnidades; i++)
+        {
+            var unidade = new Unidade();
+            BindUnidadeData(cmd, unidade);
+            unidade.IdImovel = imovel.Id;
+            unidadeRepository.Insert(unidade);
+        }
     }
 }

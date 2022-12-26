@@ -6,6 +6,10 @@
 .content-wrapper {
 	max-width: 1440px;
 	margin: 0 auto;
+	min-width: 49rem;
+	width: 96%;
+	margin-left: 20px;
+	margin-right: 2px;
 	@apply pb-8;
 
 	::ng-deep {

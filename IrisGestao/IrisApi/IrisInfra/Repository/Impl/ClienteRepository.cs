@@ -1,5 +1,6 @@
 ﻿using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Command.Result;
+using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,12 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
         : base(configuration, logger)
     {
         
+    }
+
+    public async Task<Cliente?> GetByReferenceGuid(Guid guid)
+    {
+        return await DbSet
+            .FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
     }
 
     public async Task<object?> GetByGuid(Guid guid)
@@ -94,8 +101,8 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
     public async Task<IEnumerable<object>?> GetAllOwners()
     {
         return await DbSet
-            .Where(x => x.Imovel.Any())
             .OrderBy(x => x.Nome)
+            .Where(x => x.IdTipoCliente.Equals(TipoClienteEnum.PROPRIETARIO))
             .Select(x => new
             {
                 Id = x.Id,
