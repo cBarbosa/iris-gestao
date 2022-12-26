@@ -89,6 +89,19 @@ export class ImovelService {
 			);
 	}
 
+	updateProperty(uid: string, property: any) {
+		return this.http
+			.put<ApiResponse>(`${env.config.apiUrl}Imovel/${uid}/atualizar`, property)
+			.pipe(
+				map((response) => {
+					console.log('response', response);
+					if (!response.success)
+						console.error(`updateProperty: ${response.message}`);
+					return response;
+				})
+			);
+	}
+
 	getUnit(uid: string) {
 		return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Unidade/${uid}/guid`)

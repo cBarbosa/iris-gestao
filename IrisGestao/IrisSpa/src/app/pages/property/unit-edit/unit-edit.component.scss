@@ -1,0 +1,97 @@
+:host {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+}
+.edit-form {
+	@apply pt-12;
+	width: 100%;
+	max-width: 1155px;
+	margin: 0 2rem;
+
+	.input-wrapper {
+		display: flex;
+
+		section {
+			@apply p-6;
+			flex-grow: 1;
+
+			h4 {
+				@apply text-2xl font-bold mb-8;
+				color: #262626;
+			}
+
+			p {
+				@apply mb-8;
+				color: #646464;
+			}
+
+			&.required-data {
+				max-width: 445px;
+				height: fit-content;
+				background-color: #f8f9fa;
+
+				.photo-input {
+					@apply mb-6;
+
+					img {
+						width: 100%;
+						height: auto;
+					}
+
+					button {
+						@apply my-2 text-sm h-8 font-bold;
+					}
+
+					::ng-deep {
+						.p-fileupload {
+							display: inline-block;
+							.p-button {
+								@apply my-2 text-sm h-8 font-bold;
+
+								.p-button-icon {
+									display: none;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.form-actions {
+		display: flex;
+		gap: 1rem;
+		width: 100%;
+		border-top: 1px solid #eaeaea;
+		@apply py-8 px-6;
+
+		button {
+			&:first-child {
+				margin-right: auto;
+			}
+		}
+	}
+}
+
+.field {
+	margin-bottom: 1.7rem;
+
+	label {
+		@apply text-sm mb-2;
+		color: #262626;
+	}
+
+	input {
+		width: 100%;
+	}
+
+	.p-error {
+		position: absolute;
+	}
+
+	&:last-child {
+		margin-bottom: 0.7rem;
+	}
+}
