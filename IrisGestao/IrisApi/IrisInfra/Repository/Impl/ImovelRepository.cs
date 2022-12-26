@@ -83,6 +83,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                             },
                             IdClienteProprietarioNavigation = x.IdClienteProprietarioNavigation == null ? null : new 
                             {
+                                Id = x.IdClienteProprietarioNavigation.Id,
                                 GuidReferencia = x.IdClienteProprietarioNavigation.GuidReferencia,
                                 CpfCnpj = x.IdClienteProprietarioNavigation.CpfCnpj,
                                 Nome = x.IdClienteProprietarioNavigation.Nome,
@@ -172,6 +173,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                             },
                             IdClienteProprietarioNavigation = x.IdClienteProprietarioNavigation == null ? null : new 
                             {
+                                Id = x.IdClienteProprietarioNavigation.Id,
                                 GuidReferencia = x.IdClienteProprietarioNavigation.GuidReferencia,
                                 CpfCnpj = x.IdClienteProprietarioNavigation.CpfCnpj,
                                 Nome = x.IdClienteProprietarioNavigation.Nome,
