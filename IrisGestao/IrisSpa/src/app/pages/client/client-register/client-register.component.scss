@@ -95,7 +95,48 @@
 			width: 100%;
 		}
 	}
+
+	.p-button {
+		&.text-sm {
+			height: 1rem;
+			font-size: 0.875rem;
+		}
+	}
+
+	.form-modal {
+		text-align: center;
+		max-width: 25rem;
+
+		h2 {
+			@apply font-bold;
+			font-size: 2rem;
+			color: #353635;
+		}
+
+		i {
+			@apply mt-4;
+			font-size: 5rem;
+			color: #319016;
+		}
+
+		p {
+			@apply text-lg mt-4;
+			color: #262626;
+		}
+
+		.p-button {
+			@apply mt-10;
+			width: 100%;
+		}
+
+		.modal-error {
+			i {
+				color: #e24c4c;
+			}
+		}
+	}
 }
+
 
 #container{
 	display: flex;
