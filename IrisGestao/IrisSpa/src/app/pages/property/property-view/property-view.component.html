@@ -70,7 +70,7 @@
 		</div>
 
 		<section class="units" *ngIf="property && property.unidade">
-			<div class="w-full flex justify-between">
+			<div class="w-full flex justify-between" *ngIf="!isCorporativeBuilding">
 				<h3>Unidades</h3>
 				<button
 					pButton
@@ -78,6 +78,7 @@
 					icon="pi pi-plus"
 					iconPos="left"
 					class="p-button-outlined icon-left h-9"
+					(click)="navigateTo('property/register/unit/' + this.uid)"
 				>
 					Adicionar unidade
 				</button>

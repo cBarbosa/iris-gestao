@@ -64,6 +64,14 @@ const routes: Routes = [
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
 			},
+			{
+				path: 'register/unit/:uid',
+				loadChildren: () =>
+					import('./unit-register/unit-register.module').then((m) => m.UnitRegisterModule),
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
 		],
 	},
 ];

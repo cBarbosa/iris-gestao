@@ -125,4 +125,18 @@ export class ImovelService {
 				})
 			);
 	}
+
+	createUnit(uid: string, unit: ImovelUnidadeType) {
+		return this.http
+			.post<ApiResponse>(`${env.config.apiUrl}Unidade/${uid}/criar`, unit)
+			.pipe(
+				map((response) => {
+					console.log('response', response);
+					if (!response.success)
+						console.error(`createUnit: ${response.message}`);
+					return response;
+				})
+			);
+	}
+	
 }
