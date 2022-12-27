@@ -210,7 +210,6 @@ export class PropertyRegisterComponent {
 			.pipe(first())
 			.subscribe((event) => {
 				if (event) {
-					console.log('getListaProprietarios', event.data);
 					this.proprietaries = [
 						{
 							label: 'Selecione',
@@ -224,7 +223,6 @@ export class PropertyRegisterComponent {
 							value: item.id,
 						});
 					});
-					console.log('proprietaries list', this.proprietaries);
 				}
 			});
 	}
@@ -487,17 +485,12 @@ export class PropertyRegisterComponent {
 		};
 
 		const registerUnit = (unitObj: any, guid: string) => {
-			console.log('sending: ', unitObj);
-
 			this.imovelService
 				.registerUnit(unitObj, guid)
 				.pipe(first())
 				.subscribe({
 					next: (response: any) => {
-						console.log('response: ', response);
-
 						if (response.success) {
-							console.log('DADOS DE UNIDADE ENVIADOS');
 							this.modalContent = {
 								header: 'Cadastro realizado com sucesso',
 								message: response.message,
@@ -531,8 +524,6 @@ export class PropertyRegisterComponent {
 				.pipe(first())
 				.subscribe({
 					next: (response: any) => {
-						console.log('response: ', response);
-
 						if (response.success) {
 							registerUnit(unitObj, response.data.guidReferencia);
 						} else {
@@ -599,19 +590,11 @@ export class PropertyRegisterComponent {
 
 						this.registerProprietaryForm.reset();
 
-						console.log('data.id', response.data.id);
-
 						this.getListaProprietarios();
 
 						this.setNewProprietary = () => {
 							this.propertyTypeForm.controls['proprietary'].setValue(
 								response.data.id
-							);
-
-							console.log('response.data.id', response.data.id);
-							console.log(
-								'proprietary',
-								this.propertyTypeForm.controls['proprietary'].value
 							);
 						};
 
