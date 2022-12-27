@@ -7,18 +7,18 @@
 				class="left-side"
 				*ngIf="property && property.idCategoriaImovelNavigation"
 			>
-				<p-tag
+				<!-- <p-tag
 					[rounded]="true"
 					[styleClass]="
 						property.idCategoriaImovelNavigation.nome == 'Imóvel de carteira'
 							? 'wallet'
 							: 'market'
 					"
-				></p-tag>
+				></p-tag> -->
 				<h4>
 					{{ property.nome }}
 					<span class="property-id">#{{ property.numCentroCusto }}</span>
-					<button
+					<!-- <button
 						pButton
 						pRipple
 						type="button"
@@ -28,7 +28,7 @@
 							favorite: isFavorite
 						}"
 						(click)="toggleFavorite()"
-					></button>
+					></button> -->
 				</h4>
 				<p>
 					{{ property.imovelEndereco?.[0]?.rua ?? '' }} -
@@ -78,6 +78,8 @@
 					icon="pi pi-plus"
 					iconPos="left"
 					class="p-button-outlined icon-left h-9"
+					(click)="navigateTo('property/register/unit/' + this.uid)"
+					*ngIf="!isCorporativeBuilding"
 				>
 					Adicionar unidade
 				</button>

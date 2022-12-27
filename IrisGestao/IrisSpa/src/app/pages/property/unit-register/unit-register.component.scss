@@ -2,10 +2,9 @@
 	display: flex;
 	justify-content: center;
 	width: 100%;
-	min-height: 100vh;
 }
 .edit-form {
-	@apply pt-8;
+	@apply pt-12;
 	width: 100%;
 	max-width: 1155px;
 	margin: 0 2rem;
@@ -18,35 +17,88 @@
 			flex-grow: 1;
 
 			h4 {
-				@apply text-xl font-bold mb-5;
+				@apply text-2xl font-bold mb-8;
 				color: #262626;
 			}
 
-			h5 {
-				@apply text-lg font-bold;
-			}
-
 			p {
-				@apply mb-5;
+				@apply mb-8;
 				color: #646464;
 			}
 
-			&.property-data {
+			&.required-data {
 				max-width: 445px;
 				height: fit-content;
 				background-color: #f8f9fa;
 
-				.photo-data {
+				.photo-input {
 					@apply mb-6;
 
 					img {
 						width: 100%;
 						height: auto;
 					}
+
+					button {
+						@apply my-2 text-sm h-8 font-bold;
+					}
+
+					::ng-deep {
+						.p-fileupload {
+							display: inline-block;
+							.p-button {
+								@apply my-2 text-sm h-8 font-bold;
+
+								.p-button-icon {
+									display: none;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			&.proprierty-data {
+				max-width: 445px;
+				height: fit-content;
+				background-color: #f8f9fa;
+
+				h4 {
+					@apply mb-7;
+				}
+
+				.photo-input {
+					@apply mb-6;
+
+					img {
+						width: 100%;
+						height: auto;
+					}
+					.buttons {
+						@apply flex justify-between my-4;
+
+						button {
+							@apply my-2 text-sm h-11 w-48 font-bold;
+						}
+
+						::ng-deep {
+							.p-fileupload {
+								display: inline-block;
+
+								.p-button {
+									@apply my-2 text-sm h-11 w-48 font-bold;
+
+									.p-button-icon {
+										display: none;
+									}
+								}
+							}
+						}
+					}
 				}
 
 				.document-list {
-					@apply mt-5 mb-1;
+					@apply mb-5 mt-5 mb-7;
 
 					.document {
 						@apply my-3 flex justify-between text-sm;
@@ -92,7 +144,6 @@
 			.property-photos {
 				display: flex;
 				align-items: flex-start;
-				@apply mb-7;
 
 				.photo {
 					position: relative;
@@ -182,7 +233,6 @@
 }
 
 :host ::ng-deep {
-
 	.p-inputwrapper {
 		width: 100%;
 
@@ -192,7 +242,15 @@
 			}
 		}
 	}
-	
+
+	.p-calendar {
+		width: 100%;
+
+		.p-inputtext {
+			width: 100%;
+		}
+	}
+
 	.form-modal {
 		text-align: center;
 		max-width: 25rem;
@@ -224,19 +282,5 @@
 				color: #e24c4c;
 			}
 		}
-	}
-}
-
-.alert-message {
-	display: flex;
-	width: 100%;
-	height: 100vh;
-	background-color: #f8f9fa;
-	justify-content: center;
-
-	.loading {
-		max-width: 1440px;
-		width: 100%;
-		margin: 5rem;
 	}
 }

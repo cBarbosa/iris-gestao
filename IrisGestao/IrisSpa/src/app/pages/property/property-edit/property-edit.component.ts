@@ -96,39 +96,17 @@ export class PropertyEditComponent {
 					event?.idCategoriaImovelNavigation?.id
 				);
 				this.editForm.controls['costCentre'].setValue(event?.numCentroCusto);
+
+				this.getListaProprietarios();
+				this.getListaCategorias();
+
 			} else {
 				this.invalidGuid = true;
 			}
 			this.isLoading = false;
 		});
 
-		this.dominiosService.getCategoriaImovel().subscribe((event) => {
-			if (event) {
-				event.data.forEach((item: any) => {
-					this.propertyCategories.push({
-						label: item.nome,
-						value: item.id,
-					});
-				});
-				this.editForm.controls['category'].setValue(
-					this.editForm.controls['category'].value ?? null
-				);
-			}
-		});
-
-		this.clienteService.getListaProprietarios().subscribe((event) => {
-			if (event) {
-				event.data.forEach((item: any) => {
-					this.proprietaries.push({
-						label: item.nome,
-						value: item.id,
-					});
-				});
-				this.editForm.controls['proprietary'].setValue(
-					this.editForm.controls['proprietary'].value ?? null
-				);
-			}
-		});
+		
 	}
 
 	get f(): { [key: string]: AbstractControl<any, any> } {
@@ -213,4 +191,38 @@ export class PropertyEditComponent {
 	navigateTo = (route: string) => {
 		this.router.navigate([route]);
 	};
+
+	getListaProprietarios() : void {
+
+		this.clienteService.getListaProprietarios()
+			.subscribe((event) => {
+			if (event) {
+				event.data.forEach((item: any) => {
+					this.proprietaries.push({
+						label: item.nome,
+						value: item.id,
+					});
+				});
+				this.editForm.controls['proprietary'].setValue(
+					this.editForm.controls['proprietary'].value ?? null
+				);
+			}
+		});
+	}
+
+	getListaCategorias() : void {
+		this.dominiosService.getCategoriaImovel().subscribe((event) => {
+			if (event) {
+				event.data.forEach((item: any) => {
+					this.propertyCategories.push({
+						label: item.nome,
+						value: item.id,
+					});
+				});
+				this.editForm.controls['category'].setValue(
+					this.editForm.controls['category'].value ?? null
+				);
+			}
+		});
+	}
 }

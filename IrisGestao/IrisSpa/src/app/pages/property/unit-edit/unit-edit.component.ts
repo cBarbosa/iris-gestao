@@ -9,9 +9,15 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/internal/operators/first';
 import { ImovelUnidade, ImovelUnidadeType } from 'src/app/shared/models';
-import { ImovelService } from 'src/app/shared/services';
+import { DominiosService, ImovelService } from 'src/app/shared/services';
 
 import { Utils } from 'src/app/shared/utils';
+
+type DropdownItem = {
+	label: string;
+	value: any;
+	disabled?: boolean;
+};
 
 @Component({
 	selector: 'app-unit-edit',
@@ -37,12 +43,21 @@ export class UnitEditComponent implements OnInit {
 		message: '',
 	};
 
+	unitTypes: DropdownItem[] = [
+		{
+			label: 'Selecione',
+			value: null,
+			disabled: true,
+		},
+	];
+
 	constructor(
 		private fb: FormBuilder,
 		private route: ActivatedRoute,
 		private router: Router,
 		private location: Location,
-		private imovelService: ImovelService
+		private imovelService: ImovelService,
+		private dominiosService: DominiosService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
@@ -59,9 +74,10 @@ export class UnitEditComponent implements OnInit {
 				proprietary: [{ value: '', disabled: true }],
 				propertyName: [{ value: '', disabled: true }],
 				category: [{ value: '', disabled: true }],
-				type: [{ value: '', disabled: true }],
+				typeStr: [{ value: '', disabled: true }],
 			}),
 			unitInfo: this.fb.group({
+				type: ['', [Validators.required]],
 				name: ['', Validators.required],
 				areaTotal: ['', Validators.required],
 				areaUsable: ['', Validators.required],
@@ -120,22 +136,18 @@ export class UnitEditComponent implements OnInit {
 					if (unidade) {
 						this.unit = unidade;
 						this.isLoadingView = false;
-						this.propertyGuid =
-							unidade.idImovelNavigation?.guidReferencia ?? '';
+						this.propertyGuid = unidade.idImovelNavigation?.guidReferencia ?? '';
 
-						console.log('this.propertyInfoForm', this.propertyInfoForm);
 						this.propertyInfoForm.patchValue({
-							proprietary:
-								unidade.idImovelNavigation?.idClienteProprietarioNavigation
-									?.nome,
-							propertyName: unidade.tipo,
-							category:
-								unidade.idImovelNavigation?.idCategoriaImovelNavigation?.nome,
-							type: unidade.idTipoUnidadeNavigation?.nome,
+							proprietary : unidade.idImovelNavigation?.idClienteProprietarioNavigation?.nome,
+							propertyName: unidade.idImovelNavigation?.nome,
+							category: unidade.idImovelNavigation?.idCategoriaImovelNavigation?.nome,
+							typeStr: unidade.idTipoUnidadeNavigation?.nome,
 						});
 
 						this.editUnitForm.patchValue({
-							name: '',
+							type: unidade.idTipoUnidadeNavigation?.id,
+							name: unidade.tipo,
 							areaTotal: unidade.areaTotal,
 							areaUsable: unidade.areaUtil,
 							areaOccupancy: unidade.areaHabitese,
@@ -147,6 +159,8 @@ export class UnitEditComponent implements OnInit {
 							administration: unidade.taxaAdministracao,
 							potential: unidade.valorPotencial,
 						});
+
+						this.getListTypes();
 					} else {
 						this.invalidGuid = true;
 					}
@@ -168,21 +182,23 @@ export class UnitEditComponent implements OnInit {
 		this.isLoadingView = true;
 		this.editUnitForm.disable();
 
+		var data = {
+			Tipo: this.editUnitForm.get('name')?.value,
+			IdTipoUnidade: this.editUnitForm.get('type')?.value,
+			AreaUtil: this.editUnitForm.get('areaUsable')?.value,
+			AreaTotal: this.editUnitForm.get('areaTotal')?.value,
+			AreaHabitese: this.editUnitForm.get('areaOccupancy')?.value,
+			Matricula: this.editUnitForm.get('occupancy')?.value,
+			InscricaoIptu: this.editUnitForm.get('iptu')?.value,
+			MatriculaEnergia: this.editUnitForm.get('neoenergia')?.value,
+			MatriculaAgua: this.editUnitForm.get('caesb')?.value,
+			TaxaAdministracao: this.editUnitForm.get('administration')?.value,
+			ValorPotencial: this.editUnitForm.get('potential')?.value,
+			UnidadeLocada: this.unit.unidadeAlocada,
+		} as ImovelUnidadeType;
+
 		const save = this.imovelService
-			.saveUnit(this.uid, {
-				Tipo: this.editUnitForm.get('name')?.value,
-				IdTipoUnidade: this.unit.idTipoUnidadeNavigation?.id,
-				AreaUtil: this.editUnitForm.get('areaUsable')?.value,
-				AreaTotal: this.editUnitForm.get('areaTotal')?.value,
-				AreaHabitese: this.editUnitForm.get('areaOccupancy')?.value,
-				Matricula: this.editUnitForm.get('occupancy')?.value,
-				InscricaoIptu: this.editUnitForm.get('iptu')?.value,
-				MatriculaEnergia: this.editUnitForm.get('neoenergia')?.value,
-				MatriculaAgua: this.editUnitForm.get('caesb')?.value,
-				TaxaAdministracao: this.editUnitForm.get('administration')?.value,
-				ValorPotencial: this.editUnitForm.get('potential')?.value,
-				UnidadeLocada: this.unit.unidadeAlocada,
-			} as ImovelUnidadeType)
+			.saveUnit(this.uid, data)
 			?.pipe(first())
 			.subscribe({
 				next: (response: any) => {
@@ -215,18 +231,6 @@ export class UnitEditComponent implements OnInit {
 					this.openModal();
 				},
 			});
-
-		// "IdTipoUnidade": 3,
-		// "AreaUtil": 120.2,
-		// "AreaTotal": 147,
-		// "AreaHabitese": 142,
-		// "Matricula": "1231456",
-		// "InscricaoIptu": "998547512",
-		// "MatriculaEnergia": "987545123",
-		// "MatriculaAgua": "985635",
-		// "TaxaAdministracao": 257,
-		// "ValorPotencial": 300,
-		// "UnidadeLocada": true
 	}
 
 	openModal() {
@@ -246,4 +250,21 @@ export class UnitEditComponent implements OnInit {
 	navigateTo = (route: string) => {
 		this.router.navigate([route]);
 	};
+
+	getListTypes() : void {
+		this.dominiosService.getTipoUnidade().subscribe((event) => {
+			if (event) {
+				event.data.forEach((item: any) => {
+					this.unitTypes.push({
+						label: item.nome,
+						value: item.id,
+					});
+				});
+
+				this.editUnitForm.controls['type'].setValue(
+					this.unit.idTipoUnidadeNavigation?.id ?? 1
+				);
+			}
+		});
+	}
 }

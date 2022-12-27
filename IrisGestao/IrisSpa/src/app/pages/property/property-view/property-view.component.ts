@@ -25,6 +25,7 @@ export class PropertyViewComponent implements OnInit {
 	isFavorite = true;
 	detailsVisible = false;
 	isLoadingView = false;
+	isCorporativeBuilding = false;
 
 	constructor(
 		private router: Router,
@@ -81,6 +82,7 @@ export class PropertyViewComponent implements OnInit {
 				this.units = imovel.unidade!;
 				this.imageList = imovel.imagens!;
 				this.isLoadingView = false;
+				this.isCorporativeBuilding = this.units[0].idTipoUnidadeNavigation?.id == 1;
 			});
 	}
 
