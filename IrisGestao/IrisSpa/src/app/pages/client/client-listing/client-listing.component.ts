@@ -26,28 +26,29 @@ export class ClientListingComponent {
 		{
 			label: 'Selecione',
 			value: null,
-		}
+		},
 	];
 
 	constructor(
-				private router: Router
-				, private clienteService: ClienteService
-				, private dominiosService: DominiosService) { }
+		private router: Router,
+		private clienteService: ClienteService,
+		private dominiosService: DominiosService
+	) {}
 
-	ngOnInit():void {
+	ngOnInit(): void {
 		this.getTiposCliente();
 	}
 
 	getTiposCliente(): void {
 		const tipoCliente = this.dominiosService
 			.getTipoCliente()
-			.subscribe(event => {
+			.subscribe((event) => {
 				//console.log('getTiposCliente >> TipoCliente >> ' + JSON.stringify(event));
 				this.dropdownTipoCliente = event;
 				this.dropdownTipoCliente.data.forEach((tipo: any) => {
 					this.tiposCliente.push({
 						label: tipo.nome,
-						value: tipo.id
+						value: tipo.id,
 					});
 				});
 			});
@@ -63,7 +64,7 @@ export class ClientListingComponent {
 
 	getClientsPage(page = 1): void {
 		const clients = this.clienteService
-			.getClients()
+			.getClients(this.rows, page)
 			?.pipe(first())
 			.subscribe((event: any) => {
 				this.clientEntries = [];
@@ -90,5 +91,4 @@ export class ClientListingComponent {
 	navigateTo(route: string) {
 		this.router.navigate([route]);
 	}
-
 }
