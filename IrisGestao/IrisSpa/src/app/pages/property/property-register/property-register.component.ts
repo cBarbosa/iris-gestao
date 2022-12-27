@@ -162,7 +162,7 @@ export class PropertyRegisterComponent {
 
 		this.getListaProprietarios();
 
-		this.currentStep = 1;
+		this.currentStep = 2;
 
 		this.stepList = [
 			{
@@ -205,21 +205,43 @@ export class PropertyRegisterComponent {
 		return this.registerForm.controls['documents'] as FormGroup;
 	}
 
-	getListaProprietarios() {
-		this.clienteService.getListaProprietarios().subscribe((event) => {
-			if (event) {
-				this.proprietaries = [];
-				event.data.forEach((item: any) => {
-					this.proprietaries.push({
-						label: item.nome,
-						value: item.id,
+	getListaProprietarios(newProprietaryId?: number) {
+		this.clienteService
+			.getListaProprietarios()
+			.pipe(first())
+			.subscribe((event) => {
+				if (event) {
+					console.log('getListaProprietarios', event.data);
+					this.proprietaries = [];
+					event.data.forEach((item: any) => {
+						this.proprietaries.push({
+							label: item.nome,
+							value: item.id,
+						});
 					});
-				});
-				this.propertyTypeForm
-					.get('proprietary')
-					?.setValue(this.propertyTypeForm.get('proprietary')?.value ?? null);
-			}
-		});
+
+					if (newProprietaryId !== undefined) {
+						this.propertyTypeForm.controls['proprietary'].setValue(
+							newProprietaryId
+						);
+
+						this.propertyTypeForm.controls[
+							'proprietary'
+						].valueChanges.subscribe((v: any) => {
+							this.propertyTypeForm.updateValueAndValidity();
+							this.propertyTypeForm.controls[
+								'proprietary'
+							].updateValueAndValidity();
+
+							console.log('setting', newProprietaryId);
+							console.log(
+								'value now: ',
+								this.propertyTypeForm.controls['proprietary'].value
+							);
+						});
+					}
+				}
+			});
 	}
 
 	changeStep(step: number) {
@@ -610,7 +632,14 @@ export class PropertyRegisterComponent {
 							response.data.id
 						);
 
-						this.getListaProprietarios();
+						console.log(
+							'proprietary',
+							this.propertyTypeForm.controls['proprietary'].value
+						);
+
+						console.log('data.id', response.data.id);
+
+						this.getListaProprietarios(response.data.id);
 
 						// this.registerProprietaryVisible = false;
 						this.openModal();
