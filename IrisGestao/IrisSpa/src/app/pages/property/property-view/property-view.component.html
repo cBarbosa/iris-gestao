@@ -228,7 +228,7 @@
 
 					<div class="data small">
 						<span class="label">Número de matrícula:</span>
-						<span class="value">{{ unit.matricula }}</span>
+						<span class="value">{{ unit.matricula ?? "" | matricula }}</span>
 					</div>
 					<div class="data small">
 						<span class="label">Mat. IPTU:</span>
@@ -236,15 +236,21 @@
 					</div>
 					<div class="data small">
 						<span class="label">Ins. IPTU:</span>
-						<span class="value">{{ unit.inscricaoIPTU }}</span>
+						<span class="value">{{
+							unit.inscricaoIPTU ?? "" | matricula
+						}}</span>
 					</div>
 					<div class="data small">
 						<span class="label">N° Neoenergia:</span>
-						<span class="value">{{ unit.matriculaEnergia }}</span>
+						<span class="value">{{
+							unit.matriculaEnergia ?? "" | matricula
+						}}</span>
 					</div>
 					<div class="data small">
 						<span class="label">N° CAESB:</span>
-						<span class="value">{{ unit.matriculaAgua }}</span>
+						<span class="value">{{
+							unit.matriculaAgua ?? "" | matricula
+						}}</span>
 					</div>
 				</div>
 			</p-tabPanel>
