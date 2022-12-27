@@ -1,6 +1,10 @@
-<form class="edit-form" [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
+<form
+	class="edit-form"
+	[formGroup]="registerForm"
+	(ngSubmit)="onSubmit($event)"
+>
 	<div class="input-wrapper">
-		<section class="required-data">
+		<section class="proprierty-data">
 			<h4>Cadastrar unidade</h4>
 			<p>Informações necessárias para o cadastro do imóvel</p>
 
@@ -56,7 +60,9 @@
 						>Informe o nome</small
 					>
 					<ng-template #error2>
-						<small id="nameCompany-help" class="p-error block"> Nome inválido </small>
+						<small id="nameCompany-help" class="p-error block">
+							Nome inválido
+						</small>
 					</ng-template>
 				</ng-container>
 			</div>
@@ -153,8 +159,6 @@
 					</span>
 				</div>
 			</div>
-
-			
 		</section>
 		<section class="aditional-data">
 			<h4>Informações da unidade</h4>
@@ -234,7 +238,6 @@
 					type="number"
 					formControlName="area_total"
 					aria-describedby="area-total-help"
-					
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['area_total'])">
@@ -469,16 +472,9 @@
 			type="reset"
 			label="Cancelar"
 			class="p-button-outlined h-11"
-			[disabled]="editForm.pristine"
 		></button>
 
-		<button
-			pButton
-			type="submit"
-			label="Continuar"
-			class="h-11"
-			[disabled]="editForm.invalid"
-		></button>
+		<button pButton type="submit" label="Continuar" class="h-11"></button>
 	</div>
 </form>
 
@@ -499,7 +495,7 @@
 		<button
 			pButton
 			label="Continuar"
-			(click)="navigateTo('property/details/'+ uid);"
+			(click)="navigateTo('property/details/' + uid)"
 		></button>
 	</div>
 	<ng-template #error>
@@ -509,10 +505,7 @@
 			<p>
 				{{ modalContent.message }}
 			</p>
-			<button
-				pButton label="Continuar"
-				(click)="closeModal()"
-			></button>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
 		</div>
 	</ng-template>
 </p-dialog>

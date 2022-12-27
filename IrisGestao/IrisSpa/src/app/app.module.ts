@@ -33,6 +33,7 @@ export const options: Partial<null | IConfig> | (() => Partial<IConfig>) = null;
 		NgxMaskModule.forRoot({
 			dropSpecialCharacters: true,
 			thousandSeparator: '.',
+			decimalMarker: ',',
 		}),
 		NgxCurrencyModule.forRoot({
 			align: 'left',

@@ -25,7 +25,7 @@ type DropdownItem = {
 	styleUrls: ['./unit-register.component.scss'],
 })
 export class UnitRegisterComponent implements OnInit {
-	editForm: FormGroup;
+	registerForm: FormGroup;
 	uid: string = '';
 	isLoadingView: boolean = false;
 	property: Imovel;
@@ -53,18 +53,17 @@ export class UnitRegisterComponent implements OnInit {
 		private dominiosService: DominiosService,
 		private router: Router
 	) {
-
-    this.route.paramMap.subscribe((paramMap) => {
+		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
 		});
 
-		this.editForm = this.fb.group({
+		this.registerForm = this.fb.group({
 			name: ['', Validators.required],
-			nameCompany: [''],
-			category: [''],
-			type: ['', [Validators.required]],
-			typeStr: [''],
-			proprietary: ['', [Validators.required]],
+			nameCompany: [{ value: '', disabled: true }],
+			category: [{ value: '', disabled: true }],
+			type: [null, [Validators.required]],
+			typeStr: [{ value: '', disabled: true }],
+			proprietary: [{ value: '', disabled: true }, [Validators.required]],
 			area_total: [''],
 			area_usable: [''],
 			area_occupancy: [''],
@@ -82,7 +81,7 @@ export class UnitRegisterComponent implements OnInit {
 	}
 
 	get f(): { [key: string]: AbstractControl<any, any> } {
-		return this.editForm.controls;
+		return this.registerForm.controls;
 	}
 
 	checkHasError(c: AbstractControl) {
@@ -90,8 +89,8 @@ export class UnitRegisterComponent implements OnInit {
 	}
 
 	onSubmit(e: any = null) {
-		if (this.editForm.invalid) {
-			this.editForm.markAllAsTouched();
+		if (this.registerForm.invalid) {
+			this.registerForm.markAllAsTouched();
 			// Object.keys(this.proposalForm.controls).forEach(key => {
 			// 	this.proposalForm.get(key)?.markAsDirty()
 			// })
@@ -109,17 +108,17 @@ export class UnitRegisterComponent implements OnInit {
 		this.isLoadingView = true;
 
 		var data = {
-			IdTipoUnidade: this.editForm.get('type')?.value,
-			Tipo: this.editForm.get('name')?.value,
-			AreaUtil: this.editForm.get('area_usable')?.value,
-			AreaTotal: this.editForm.get('area_total')?.value,
-			AreaHabitese: this.editForm.get('area_occupancy')?.value,
-			Matricula: this.editForm.get('occupancy')?.value,
-			InscricaoIptu: this.editForm.get('iptu')?.value,
-			MatriculaEnergia: this.editForm.get('neoenergia')?.value,
-			MatriculaAgua: this.editForm.get('caesb')?.value,
-			TaxaAdministracao: this.editForm.get('administration')?.value,
-			ValorPotencial: this.editForm.get('potential')?.value,
+			IdTipoUnidade: this.registerForm.get('type')?.value,
+			Tipo: this.registerForm.get('name')?.value,
+			AreaUtil: this.registerForm.get('area_usable')?.value,
+			AreaTotal: this.registerForm.get('area_total')?.value,
+			AreaHabitese: this.registerForm.get('area_occupancy')?.value,
+			Matricula: this.registerForm.get('occupancy')?.value,
+			InscricaoIptu: this.registerForm.get('iptu')?.value,
+			MatriculaEnergia: this.registerForm.get('neoenergia')?.value,
+			MatriculaAgua: this.registerForm.get('caesb')?.value,
+			TaxaAdministracao: this.registerForm.get('administration')?.value,
+			ValorPotencial: this.registerForm.get('potential')?.value,
 			UnidadeLocada: false,
 		} as ImovelUnidadeType;
 
@@ -158,18 +157,17 @@ export class UnitRegisterComponent implements OnInit {
 			});
 	}
 
-  getData(): void {
+	getData(): void {
 		this.isLoadingView = true;
 
 		const view = this.imovelService
 			.getProperty(this.uid)
 			?.pipe(first())
 			.subscribe((imovel: Imovel) => {
-
 				this.property = imovel;
 				this.isLoadingView = false;
 
-				this.editForm.patchValue({
+				this.registerForm.patchValue({
 					nameCompany: imovel.nome,
 					category: imovel.idCategoriaImovelNavigation?.nome,
 					type: imovel.unidade?.[0]?.idTipoUnidadeNavigation?.id,
@@ -183,7 +181,7 @@ export class UnitRegisterComponent implements OnInit {
 			});
 	}
 
-	getListTypes() : void {
+	getListTypes(): void {
 		this.dominiosService.getTipoUnidade().subscribe((event) => {
 			if (event) {
 				event.data.forEach((item: any) => {
@@ -192,7 +190,7 @@ export class UnitRegisterComponent implements OnInit {
 						value: item.id,
 					});
 				});
-				this.editForm.controls['type'].setValue(
+				this.registerForm.controls['type'].setValue(
 					this.property?.unidade?.[0]?.idTipoUnidadeNavigation?.id ?? null
 				);
 			}
