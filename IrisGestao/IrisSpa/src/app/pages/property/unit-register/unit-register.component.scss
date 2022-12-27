@@ -21,6 +21,10 @@
 				color: #262626;
 			}
 
+			h5 {
+				@apply text-lg font-bold;
+			}
+
 			p {
 				@apply mb-8;
 				color: #646464;
@@ -144,6 +148,7 @@
 			.property-photos {
 				display: flex;
 				align-items: flex-start;
+				@apply mb-7;
 
 				.photo {
 					position: relative;

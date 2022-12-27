@@ -11,6 +11,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { TabViewModule } from 'primeng/tabview';
 import { AreaPipeModule } from 'src/app/shared/pipes';
 import { PhotoGalleryComponent } from 'src/app/shared/components/photo-gallery/photo-gallery.component';
+import { MatriculaPipeModule } from 'src/app/shared/pipes/matricula.module';
 
 @NgModule({
 	declarations: [PropertyViewComponent],
@@ -25,6 +26,7 @@ import { PhotoGalleryComponent } from 'src/app/shared/components/photo-gallery/p
 		SidebarModule,
 		TabViewModule,
 		AreaPipeModule,
+		MatriculaPipeModule,
 		PhotoGalleryComponent,
 	],
 })

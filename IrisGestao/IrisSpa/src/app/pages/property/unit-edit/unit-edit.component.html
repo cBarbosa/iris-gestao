@@ -200,6 +200,7 @@
 					[dropSpecialCharacters]="true"
 					suffix=" m²"
 					mask="separator.2"
+					maxlength="14"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['areaTotal'])">
@@ -228,6 +229,7 @@
 					[dropSpecialCharacters]="true"
 					suffix=" m²"
 					mask="separator.2"
+					maxlength="14"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['areaUsable'])">
@@ -256,6 +258,7 @@
 					[dropSpecialCharacters]="true"
 					suffix=" m²"
 					mask="separator.2"
+					maxlength="14"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['areaOccupancy'])">
@@ -421,7 +424,8 @@
 					type="text"
 					formControlName="administration"
 					aria-describedby="administration-help"
-					currencyMask
+					mask="percent"
+					suffix="%"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['administration'])">
@@ -448,6 +452,7 @@
 					formControlName="potential"
 					aria-describedby="potential-help"
 					currencyMask
+					maxlength="14"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['potential'])">
