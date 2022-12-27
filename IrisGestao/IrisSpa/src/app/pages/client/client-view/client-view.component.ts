@@ -42,13 +42,11 @@ constructor(
 		.getClienteById(this.uid)
 		.subscribe(event => {
 		this.cliente = event;
+		
 		event.imovel.forEach((imovel: Imovel) => {
-		// console.debug('Imovel Data >> ' + JSON.stringify(imovel));
-		this.properties.push(imovel);
-	});
-		//this.proposal = protocol.data.protocolProposal;
-		//console.log('this.cliente >> ' + JSON.stringify(this.cliente));
-	
+			//console.debug('Imovel Data >> ' + JSON.stringify(imovel));
+			this.properties.push(imovel);
+		});
 		});
 	}
 

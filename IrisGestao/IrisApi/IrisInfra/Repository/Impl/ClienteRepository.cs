@@ -33,7 +33,6 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                         .Where(x => x.GuidReferencia.Equals(guid))
                         .Select(x => new
                         {
-                            
                             CpfCnpj                 = x.CpfCnpj,
                             GuidReferencia          = x.GuidReferencia,
                             Nome                    = x.Nome,
@@ -65,7 +64,17 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                                 Imagens             = ImagemListFake,
                                 Anexos              = AnexoListFake,
                                 ImovelEndereco      = y.ImovelEndereco,
-                                IdCategoriaImovelNavigation = y.IdCategoriaImovelNavigation
+                                IdCategoriaImovelNavigation = y.IdCategoriaImovelNavigation == null ? null : new
+                                {
+                                    Id = y.IdCategoriaImovelNavigation.Id,
+                                    Nome = y.IdCategoriaImovelNavigation.Nome
+                                },
+                                IdClienteProprietarioNavigation = y.IdClienteProprietarioNavigation == null ? null : new
+                                {
+                                    CpfCnpj         = x.CpfCnpj,
+                                    Nome            = x.Nome,
+                                    Telefone        = x.Telefone
+                                }
                             })
                         })
                         .FirstOrDefaultAsync();
