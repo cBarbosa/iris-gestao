@@ -161,7 +161,7 @@ export class PropertyRegisterComponent {
 
 		this.getListaProprietarios();
 
-		this.currentStep = 2;
+		this.currentStep = 1;
 
 		this.stepList = [
 			{
@@ -204,44 +204,32 @@ export class PropertyRegisterComponent {
 		return this.registerForm.controls['documents'] as FormGroup;
 	}
 
-	getListaProprietarios(newProprietaryId?: number) {
+	getListaProprietarios() {
 		this.clienteService
 			.getListaProprietarios()
 			.pipe(first())
 			.subscribe((event) => {
 				if (event) {
 					console.log('getListaProprietarios', event.data);
-					this.proprietaries = [];
+					this.proprietaries = [
+						{
+							label: 'Selecione',
+							value: null,
+							disabled: true,
+						},
+					];
 					event.data.forEach((item: any) => {
 						this.proprietaries.push({
 							label: item.nome,
 							value: item.id,
 						});
 					});
-
-					if (newProprietaryId !== undefined) {
-						this.propertyTypeForm.controls['proprietary'].setValue(
-							newProprietaryId
-						);
-
-						this.propertyTypeForm.controls[
-							'proprietary'
-						].valueChanges.subscribe((v: any) => {
-							this.propertyTypeForm.updateValueAndValidity();
-							this.propertyTypeForm.controls[
-								'proprietary'
-							].updateValueAndValidity();
-
-							console.log('setting', newProprietaryId);
-							console.log(
-								'value now: ',
-								this.propertyTypeForm.controls['proprietary'].value
-							);
-						});
-					}
+					console.log('proprietaries list', this.proprietaries);
 				}
 			});
 	}
+
+	setNewProprietary: () => void = () => {};
 
 	changeStep(step: number) {
 		// if (step === 2) this.propertyTypeForm.markAllAsTouched();
@@ -611,18 +599,21 @@ export class PropertyRegisterComponent {
 
 						this.registerProprietaryForm.reset();
 
-						this.propertyTypeForm.controls['proprietary'].setValue(
-							response.data.id
-						);
-
-						console.log(
-							'proprietary',
-							this.propertyTypeForm.controls['proprietary'].value
-						);
-
 						console.log('data.id', response.data.id);
 
-						this.getListaProprietarios(response.data.id);
+						this.getListaProprietarios();
+
+						this.setNewProprietary = () => {
+							this.propertyTypeForm.controls['proprietary'].setValue(
+								response.data.id
+							);
+
+							console.log('response.data.id', response.data.id);
+							console.log(
+								'proprietary',
+								this.propertyTypeForm.controls['proprietary'].value
+							);
+						};
 
 						// this.registerProprietaryVisible = false;
 						this.openModal();
