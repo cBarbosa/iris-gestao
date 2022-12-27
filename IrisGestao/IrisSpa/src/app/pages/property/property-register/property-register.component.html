@@ -143,6 +143,7 @@
 						formControlName="costCentre"
 						aria-describedby="cost-centre-help"
 						mask="0*"
+						maxlength="20"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['costCentre'])">
@@ -179,6 +180,7 @@
 							aria-describedby="area-total-help"
 							suffix=" m²"
 							mask="separator.2"
+							maxlength="14"
 							pInputText
 						/>
 						<ng-container
@@ -223,6 +225,7 @@
 							aria-describedby="area-usable-help"
 							suffix=" m²"
 							mask="separator.2"
+							maxlength="14"
 							pInputText
 						/>
 						<ng-container
@@ -261,6 +264,7 @@
 							aria-describedby="area-occupancy-help"
 							suffix=" m²"
 							mask="separator.2"
+							maxlength="14"
 							pInputText
 						/>
 						<ng-container
@@ -447,7 +451,8 @@
 						type="text"
 						formControlName="administration"
 						aria-describedby="administration-help"
-						currencyMask
+						mask="percent"
+						suffix="%"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['administration'])">
@@ -473,6 +478,7 @@
 						type="text"
 						formControlName="potential"
 						aria-describedby="potential-help"
+						maxlength="14"
 						currencyMask
 						pInputText
 					/>
@@ -523,6 +529,7 @@
 							formControlName="copies"
 							aria-describedby="copies-help"
 							mask="0*"
+							maxlength="9"
 							pInputText
 						/>
 						<ng-container
@@ -828,6 +835,7 @@
 						type="text"
 						formControlName="email"
 						aria-describedby="email-help"
+						maxlength="150"
 						pInputText
 					/>
 					<ng-container

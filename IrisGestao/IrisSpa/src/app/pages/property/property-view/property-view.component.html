@@ -218,7 +218,10 @@
 					</div>
 					<div class="data">
 						<span class="label">Taxa de administração</span>
-						<span class="value">{{ unit.taxaAdministracao | currency }}</span>
+						<span class="value">{{
+							(unit.taxaAdministracao ? unit.taxaAdministracao / 100 : 0)
+								| percent : "1.2" : "pt"
+						}}</span>
 					</div>
 
 					<div class="data small">
