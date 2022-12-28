@@ -134,13 +134,6 @@ export class PropertyEditComponent {
 			Classificacao: '5',
 		};
 
-		// "Nome": "Edifício Trade Center 2",
-		// "IdCategoriaImovel": 1,
-		// "IdClienteProprietario": 2,
-		// "NumCentroCusto": 2604,
-		// "MonoUsuario": false,
-		// "Classificacao": "5"
-
 		this.imovelService
 			.updateProperty(this.propertyGuid, propertyObj)
 			.pipe(first())

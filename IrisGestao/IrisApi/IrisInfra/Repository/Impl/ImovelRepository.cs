@@ -16,13 +16,13 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
         
     }
 
-    public async Task<IEnumerable<Imovel>> GetById(int codigo)
+    public async Task<IEnumerable<Imovel>> GetById(int id)
     {
         return await  DbSet
                 .Include(x => x.Unidade)
                 .Include(x => x.IdClienteProprietarioNavigation)
                 .Include(x => x.IdCategoriaImovelNavigation)
-            .Where(x => x.Id == codigo)
+            .Where(x => x.Id == id)
             .ToListAsync();
     }
 

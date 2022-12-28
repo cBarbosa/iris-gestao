@@ -67,4 +67,14 @@ public class UnidadeController : Controller
 
         return Ok(result);
     }
+    
+    [HttpPut("{guid}/duplicar")]
+    [Produces("application/json")]
+    public async Task<IActionResult> Clone(
+        Guid guid)
+    {
+        var result = await unidadeService.Clone(guid);
+
+        return Ok(result);
+    }
 }

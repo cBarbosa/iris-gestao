@@ -27,6 +27,15 @@ export class PropertyViewComponent implements OnInit {
 	isLoadingView = false;
 	isCorporativeBuilding = false;
 
+	displayModal = false;
+	modalContent: {
+		isError?: boolean;
+		header?: string;
+		message: string;
+	} = {
+		message: '',
+	};
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
@@ -46,11 +55,13 @@ export class PropertyViewComponent implements OnInit {
 				label: 'Editar',
 				icon: 'ph-note-pencil',
 				command: () =>
-					this.navigateTo('property/edit/unit/' + this.unit?.guidReferencia),
+					this.navigateTo('property/edit/unit/' + this.unit!.guidReferencia),
 			},
 			{
 				label: 'Duplicar',
 				icon: 'ph-copy-simple',
+				command: () =>
+					this.cloneUnit(this.unit!.guidReferencia!),
 			},
 		];
 	}
@@ -89,4 +100,57 @@ export class PropertyViewComponent implements OnInit {
 	setCurrentUnit(item: ImovelUnidade): void {
 		this.unit = item;
 	}
+
+	cloneUnit(uid: string) :void {
+		this.isLoadingView = true;
+
+		this.imovelService
+			.cloneUnit(uid)
+			.pipe(first())
+			.subscribe({
+				next: (response: any) => {
+					if (response.success) {
+						this.modalContent = {
+							header: 'Operação realizada com sucesso',
+							message: response.message,
+						};
+					} else {
+						this.modalContent = {
+							header: 'Operação não realizada',
+							message: response.message,
+							isError: true,
+						};
+					}
+
+					this.openModal();
+					this.isLoadingView = false;
+				},
+				error: (error: any) => {
+					console.error(error);
+					this.modalContent = {
+						header: 'Operação não realizada',
+						message: 'Erro no envio de dados',
+						isError: true,
+					};
+
+					this.openModal();
+					this.isLoadingView = false;
+				},
+			});
+	}
+
+	openModal() {
+		this.displayModal = true;
+	}
+
+	closeModal(onClose?: Function, ...params: any[]) {
+		this.displayModal = false;
+
+		if (onClose !== undefined) onClose(...params);
+	}
+
+	reloadPage() {
+		this.closeModal();
+		this.getData();
+	};
 }

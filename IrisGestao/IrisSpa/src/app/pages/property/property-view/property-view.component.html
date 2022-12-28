@@ -301,3 +301,34 @@
 		</div>
 	</ng-template>
 </p-sidebar>
+
+<p-dialog
+	[(visible)]="displayModal"
+	[modal]="true"
+	[draggable]="false"
+	[resizable]="false"
+	styleClass="form-modal"
+>
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+		<button
+			pButton
+			label="Continuar"
+			(click)="reloadPage()"
+		></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</p-dialog>
