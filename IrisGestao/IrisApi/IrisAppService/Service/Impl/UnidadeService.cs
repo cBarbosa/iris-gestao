@@ -4,6 +4,7 @@ using IrisGestao.Domain.Command.Request;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
+using Microsoft.Extensions.Logging;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -11,13 +12,16 @@ public class UnidadeService: IUnidadeService
 {
     private readonly IUnidadeRepository unidadeRepository;
     private readonly IImovelRepository imovelRepository;
+    private readonly ILogger<UnidadeService> logger;
     
     public UnidadeService(
         IUnidadeRepository unidadeRepository
-        , IImovelRepository imovelRepository)
+        , IImovelRepository imovelRepository
+        , ILogger<UnidadeService> logger)
     {
         this.unidadeRepository = unidadeRepository;
         this.imovelRepository = imovelRepository;
+        this.logger = logger;
     }
 
     public async Task<CommandResult> GetAll()
@@ -116,8 +120,9 @@ public class UnidadeService: IUnidadeService
             unidadeRepository.Update(unidade);
             return new CommandResult(true, SuccessResponseEnums.Success_1001, unidade);
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            logger.LogError(e.Message);
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
     }
@@ -147,6 +152,47 @@ public class UnidadeService: IUnidadeService
                 return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
                 throw;
             }
+        }
+    }
+    
+    public async Task<CommandResult> Clone(Guid guid)
+    {
+        var _unidade = await unidadeRepository.GetByReferenceGuid(guid);
+
+        if (_unidade == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
+        }
+
+        try
+        {
+            var unidade = new Unidade
+            {
+                GuidReferencia = $"{Guid.NewGuid()}",
+                Tipo = $"{_unidade.Tipo} 01",
+                IdImovel = _unidade.IdImovel,
+                DataCriacao = DateTime.Now,
+                IdTipoUnidade = _unidade.IdTipoUnidade,
+                AreaUtil = _unidade.AreaUtil,
+                AreaTotal = _unidade.AreaTotal,
+                AreaHabitese = _unidade.AreaHabitese,
+                InscricaoIPTU = _unidade.InscricaoIPTU,
+                Matricula = _unidade.Matricula,
+                MatriculaEnergia = _unidade.MatriculaEnergia,
+                MatriculaAgua = _unidade.MatriculaAgua,
+                TaxaAdministracao = _unidade.TaxaAdministracao,
+                ValorPotencial = _unidade.ValorPotencial,
+                UnidadeLocada = _unidade.UnidadeLocada
+            };
+
+            unidadeRepository.Insert(unidade);
+        
+            return new CommandResult(true, SuccessResponseEnums.Success_1000, unidade);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
         }
     }
     

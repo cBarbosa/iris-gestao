@@ -12,6 +12,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { AreaPipeModule } from 'src/app/shared/pipes';
 import { PhotoGalleryComponent } from 'src/app/shared/components/photo-gallery/photo-gallery.component';
 import { MatriculaPipeModule } from 'src/app/shared/pipes/matricula.module';
+import { DialogModule } from 'primeng/dialog';
 
 @NgModule({
 	declarations: [PropertyViewComponent],
@@ -28,6 +29,7 @@ import { MatriculaPipeModule } from 'src/app/shared/pipes/matricula.module';
 		AreaPipeModule,
 		MatriculaPipeModule,
 		PhotoGalleryComponent,
+		DialogModule,
 	],
 })
 export class PropertyViewModule {}

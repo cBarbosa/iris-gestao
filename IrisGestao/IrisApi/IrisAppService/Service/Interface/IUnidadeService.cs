@@ -12,4 +12,5 @@ public interface IUnidadeService
     Task<CommandResult> Delete(int? codigo);
     Task<CommandResult> BuscarBuscarUnidadePorImovel(int codigoImovel);
     Task<CommandResult> GetByUid(Guid guid);
+    Task<CommandResult> Clone(Guid guid);
 }
