@@ -194,7 +194,8 @@
 					formControlName="Cep"
 					aria-describedby="cep-help"
 					pInputText
-					mask="00.000-00"
+					mask="00.000-000"
+					(blur)="setAddressByCEP($event)"
 				/>
 				<ng-container *ngIf="checkHasError(f['Cep'])">
 					<small

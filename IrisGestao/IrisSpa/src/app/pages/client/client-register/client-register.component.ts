@@ -21,6 +21,7 @@ import {
 	EmailValidator,
 	PastDateValidator,
 } from 'src/app/shared/validators/custom-validators';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 type Step = {
 	label: string;
@@ -61,6 +62,8 @@ export class ClientRegisterComponent implements OnInit {
 			value: null,
 		},
 	];
+	isLoadingAddressData = false;
+	prevCepInputValue = '';
 
 	stepList: Step[];
 	currentStep: number;
@@ -71,7 +74,8 @@ export class ClientRegisterComponent implements OnInit {
 		private router: Router,
 		private location: Location,
 		private clienteService: ClienteService,
-		private dominiosService: DominiosService
+		private dominiosService: DominiosService,
+		private commonService: CommonService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
@@ -117,7 +121,7 @@ export class ClientRegisterComponent implements OnInit {
 		this.onBlurDate = onBlurDate;
 		this.isLoadingView = false;
 
-		this.currentStep = 1;
+		this.currentStep = 2;
 
 		this.stepList = [
 			{
@@ -273,6 +277,50 @@ export class ClientRegisterComponent implements OnInit {
 			});
 	}
 
+	setAddressByCEP(e: any) {
+		console.log('event', e);
+		const cep = e.target.value.replace(/\D/g, '');
+		console.log(cep, this.prevCepInputValue);
+
+		if (cep.length !== 8 || cep === this.prevCepInputValue) {
+			this.prevCepInputValue = cep;
+			return;
+		}
+
+		this.isLoadingAddressData = true;
+		this.commonService
+			.getAddressByCEP(cep)
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					console.log(event);
+
+					if (event.success) {
+						if (event.data.resultado === '1') {
+							this.addressInfoForm.controls['Endereco'].setValue(
+								event.data.logradouro
+							);
+							this.addressInfoForm.controls['Bairro'].setValue(
+								event.data.bairro
+							);
+							this.addressInfoForm.controls['Cidade'].setValue(
+								event.data.cidade
+							);
+							this.addressInfoForm.controls['Estado'].setValue(event.data.uf);
+						}
+					} else {
+					}
+					this.isLoadingAddressData = false;
+				},
+				error: (err) => {
+					console.error(err);
+					this.isLoadingAddressData = false;
+				},
+			});
+
+		this.prevCepInputValue = cep;
+	}
+
 	onSubmitOld(e: any = null) {
 		console.log('submitting form >> onSubmit');
 
@@ -311,7 +359,7 @@ export class ClientRegisterComponent implements OnInit {
 
 		console.log('OnSubmit >> this.uid >> ' + this.uid);
 
-		if(this.uid === "new"){
+		if (this.uid === 'new') {
 			this.clienteService
 				.saveUnit(this.clienteType)
 				.pipe(first())
@@ -382,14 +430,16 @@ export class ClientRegisterComponent implements OnInit {
 					this.openModal();
 				},
 			});
-		};
-
-	};
+		}
+	}
 
 	onSubmit(e: any = null) {
 		console.log('onSubmit >> Operação Clonar >> ' + this.operacaoClonar);
 		console.log('onSubmit >> Operação Criar >> ' + this.operacaoCriar);
-		console.log('onSubmit >> dados >> FormDados >> ' + JSON.stringify(this.registerForm.value));
+		console.log(
+			'onSubmit >> dados >> FormDados >> ' +
+				JSON.stringify(this.registerForm.value)
+		);
 
 		if (this.registerForm.invalid) {
 			console.log('onSubmit >> Form invalido');
@@ -397,82 +447,75 @@ export class ClientRegisterComponent implements OnInit {
 			return;
 		}
 
-		if(this.operacaoClonar)
-		{
+		if (this.operacaoClonar) {
 			console.log('onSubmit >> dados >> FormDados >> Clonar');
-			this.clienteService
-			.criarCliente(this.registerForm.value)
-				.subscribe({
-					next: (response: any) => {
-						console.log('onSubmit >> response >> ', response);
+			this.clienteService.criarCliente(this.registerForm.value).subscribe({
+				next: (response: any) => {
+					console.log('onSubmit >> response >> ', response);
 
-						if (response.success) {
-							console.log('DADOS DE Cliente ENVIADOS');
-							this.modalContent = {
-								header: 'Cadastro realizado com sucesso',
-								message: response.message,
-								isError: false,
-							};
-						} else {
-							this.modalContent = {
-								header: 'Cadastro não realizado',
-								message: response.message,
-								isError: true,
-							};
-						}
-
-						this.openModal();
-					},
-					error: (error: any) => {
-						console.error(error);
+					if (response.success) {
+						console.log('DADOS DE Cliente ENVIADOS');
+						this.modalContent = {
+							header: 'Cadastro realizado com sucesso',
+							message: response.message,
+							isError: false,
+						};
+					} else {
 						this.modalContent = {
 							header: 'Cadastro não realizado',
-							message: 'Erro no envio de dados',
+							message: response.message,
 							isError: true,
 						};
+					}
 
-						this.openModal();
-					},
-				});
-		}
-		else if(this.uid === "new"){
+					this.openModal();
+				},
+				error: (error: any) => {
+					console.error(error);
+					this.modalContent = {
+						header: 'Cadastro não realizado',
+						message: 'Erro no envio de dados',
+						isError: true,
+					};
+
+					this.openModal();
+				},
+			});
+		} else if (this.uid === 'new') {
 			console.log('onSubmit >> dados >> FormDados >> New ');
-			this.clienteService
-			.criarCliente(this.registerForm.value)
-				.subscribe({
-					next: (response: any) => {
-						console.log('onSubmit >> response >> ', response);
+			this.clienteService.criarCliente(this.registerForm.value).subscribe({
+				next: (response: any) => {
+					console.log('onSubmit >> response >> ', response);
 
-						if (response.success) {
-							console.log('DADOS DE Cliente ENVIADOS');
-							this.modalContent = {
-								header: 'Cadastro realizado com sucesso',
-								message: response.message,
-								isError: false,
-							};
-						} else {
-							this.modalContent = {
-								header: 'Cadastro não realizado',
-								message: response.message,
-								isError: true,
-							};
-						}
-
-						this.openModal();
-					},
-					error: (error: any) => {
-						console.error(error);
+					if (response.success) {
+						console.log('DADOS DE Cliente ENVIADOS');
+						this.modalContent = {
+							header: 'Cadastro realizado com sucesso',
+							message: response.message,
+							isError: false,
+						};
+					} else {
 						this.modalContent = {
 							header: 'Cadastro não realizado',
-							message: 'Erro no envio de dados',
+							message: response.message,
 							isError: true,
 						};
+					}
 
-						this.openModal();
-					},
-				});
-		}
-		else{
+					this.openModal();
+				},
+				error: (error: any) => {
+					console.error(error);
+					this.modalContent = {
+						header: 'Cadastro não realizado',
+						message: 'Erro no envio de dados',
+						isError: true,
+					};
+
+					this.openModal();
+				},
+			});
+		} else {
 			console.log('onSubmit >> dados >> FormDados >> Update ');
 			this.clienteService
 				.atualizarCliente(this.uid, this.registerForm.value)
