@@ -194,7 +194,8 @@
 					formControlName="Cep"
 					aria-describedby="cep-help"
 					pInputText
-					mask="00.000-00"
+					mask="00.000-000"
+					(blur)="setAddressByCEP($event)"
 				/>
 				<ng-container *ngIf="checkHasError(f['Cep'])">
 					<small
@@ -285,16 +286,15 @@
 					</ng-template>
 				</ng-container>
 			</div>
+
 			<div class="field">
 				<label for="Estado" class="block">Estado</label>
-				<input
+				<p-dropdown
 					id="Estado"
-					type="text"
+					[options]="dropdownUfList"
 					formControlName="Estado"
 					aria-describedby="Estado-help"
-					pInputText
-					maxlength="2"
-				/>
+				></p-dropdown>
 				<ng-container *ngIf="checkHasError(f['Estado'])">
 					<small
 						id="Estado-help"
