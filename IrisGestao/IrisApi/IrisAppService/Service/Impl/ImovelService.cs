@@ -115,7 +115,7 @@ public class ImovelService: IImovelService
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
             : new CommandResult(true, SuccessResponseEnums.Success_1005, imovel);
     }
-    
+
     private static void BindImoveisData(CriarImovelCommand cmd, Imovel imovel)
     {
         switch (imovel.GuidReferencia)

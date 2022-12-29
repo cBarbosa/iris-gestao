@@ -138,5 +138,18 @@ export class ImovelService {
 				})
 			);
 	}
+
+	cloneUnit(uid: string) {
+		return this.http
+			.put<ApiResponse>(`${env.config.apiUrl}Unidade/${uid}/duplicar`, null)
+			.pipe(
+				map((response) => {
+					console.log('response', response);
+					if (!response.success)
+						console.error(`cloneUnit: ${response.message}`);
+					return response;
+				})
+			);
+	}
 	
 }

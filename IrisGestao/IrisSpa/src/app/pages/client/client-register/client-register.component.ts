@@ -311,49 +311,9 @@ export class ClientRegisterComponent implements OnInit {
 
 		console.log('OnSubmit >> this.uid >> ' + this.uid);
 
-		if (this.uid === 'new') {
-			const registerUnit = (unitObj: any) => {
-				console.log('sending: ', unitObj);
-
-				this.clienteService
-					.saveUnit(this.clienteType)
-					.pipe(first())
-					.subscribe({
-						next: (response: any) => {
-							console.log('response: ', response);
-
-							if (response.success) {
-								console.log('DADOS DE UNIDADE ENVIADOS');
-								this.modalContent = {
-									header: 'Cadastro realizado com sucesso',
-									message: response.message,
-									isError: false,
-								};
-							} else {
-								this.modalContent = {
-									header: 'Cadastro não realizado',
-									message: response.message,
-									isError: true,
-								};
-							}
-
-							this.openModal();
-						},
-						error: (error: any) => {
-							console.error(error);
-							this.modalContent = {
-								header: 'Cadastro não realizado',
-								message: 'Erro no envio de dados',
-								isError: true,
-							};
-
-							this.openModal();
-						},
-					});
-			};
-		} else {
+		if(this.uid === "new"){
 			this.clienteService
-				.updateUnit(this.uid, this.clienteType)
+				.saveUnit(this.clienteType)
 				.pipe(first())
 				.subscribe({
 					next: (response: any) => {
@@ -362,23 +322,23 @@ export class ClientRegisterComponent implements OnInit {
 						if (response.success) {
 							console.log('DADOS DE UNIDADE ENVIADOS');
 							this.modalContent = {
-								header: 'Atualização realizada com sucesso',
+								header: 'Cadastro realizado com sucesso',
 								message: response.message,
+								isError: false,
 							};
 						} else {
 							this.modalContent = {
-								header: 'Atualização não realizada',
+								header: 'Cadastro não realizado',
 								message: response.message,
 								isError: true,
 							};
 						}
-
 						this.openModal();
 					},
 					error: (error: any) => {
 						console.error(error);
 						this.modalContent = {
-							header: 'Atualização não realizada',
+							header: 'Cadastro não realizado',
 							message: 'Erro no envio de dados',
 							isError: true,
 						};
@@ -386,21 +346,6 @@ export class ClientRegisterComponent implements OnInit {
 						this.openModal();
 					},
 				});
-		}
-	}
-
-	onSubmit(e: any = null) {
-		console.log('onSubmit >> Operação Clonar >> ' + this.operacaoClonar);
-		console.log('onSubmit >> Operação Criar >> ' + this.operacaoCriar);
-		console.log(
-			'onSubmit >> dados >> FormDados >> ' +
-				JSON.stringify(this.registerForm.value)
-		);
-
-		if (this.registerForm.invalid) {
-			console.log('onSubmit >> Form invalido');
-			this.registerForm.markAllAsTouched();
-			return;
 		}
 
 		if (this.operacaoClonar) {
@@ -437,12 +382,27 @@ export class ClientRegisterComponent implements OnInit {
 					this.openModal();
 				},
 			});
-		} else if (this.uid === 'new') {
-			const registerUnit = (unitObj: any) => {
-				console.log('onSubmit >> Salvar >> sending >> ', unitObj);
+		};
 
-				console.log('onSubmit >> dados >> FormDados >> New ');
-				this.clienteService.criarCliente(this.registerForm.value).subscribe({
+	};
+
+	onSubmit(e: any = null) {
+		console.log('onSubmit >> Operação Clonar >> ' + this.operacaoClonar);
+		console.log('onSubmit >> Operação Criar >> ' + this.operacaoCriar);
+		console.log('onSubmit >> dados >> FormDados >> ' + JSON.stringify(this.registerForm.value));
+
+		if (this.registerForm.invalid) {
+			console.log('onSubmit >> Form invalido');
+			this.registerForm.markAllAsTouched();
+			return;
+		}
+
+		if(this.operacaoClonar)
+		{
+			console.log('onSubmit >> dados >> FormDados >> Clonar');
+			this.clienteService
+			.criarCliente(this.registerForm.value)
+				.subscribe({
 					next: (response: any) => {
 						console.log('onSubmit >> response >> ', response);
 
@@ -474,8 +434,45 @@ export class ClientRegisterComponent implements OnInit {
 						this.openModal();
 					},
 				});
-			};
-		} else {
+		}
+		else if(this.uid === "new"){
+			console.log('onSubmit >> dados >> FormDados >> New ');
+			this.clienteService
+			.criarCliente(this.registerForm.value)
+				.subscribe({
+					next: (response: any) => {
+						console.log('onSubmit >> response >> ', response);
+
+						if (response.success) {
+							console.log('DADOS DE Cliente ENVIADOS');
+							this.modalContent = {
+								header: 'Cadastro realizado com sucesso',
+								message: response.message,
+								isError: false,
+							};
+						} else {
+							this.modalContent = {
+								header: 'Cadastro não realizado',
+								message: response.message,
+								isError: true,
+							};
+						}
+
+						this.openModal();
+					},
+					error: (error: any) => {
+						console.error(error);
+						this.modalContent = {
+							header: 'Cadastro não realizado',
+							message: 'Erro no envio de dados',
+							isError: true,
+						};
+
+						this.openModal();
+					},
+				});
+		}
+		else{
 			console.log('onSubmit >> dados >> FormDados >> Update ');
 			this.clienteService
 				.atualizarCliente(this.uid, this.registerForm.value)
