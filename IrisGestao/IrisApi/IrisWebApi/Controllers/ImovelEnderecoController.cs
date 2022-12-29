@@ -15,27 +15,24 @@ public class ImovelEnderecoController : Controller
         this.imovelEnderecoService = ImovelEnderecoService;
     }
  
-    // GET
-    [HttpGet("/api/[controller]")]
+    [HttpGet()]
     [Produces("application/json")]
    public async Task<IActionResult> GetAll() =>
         Ok(await imovelEnderecoService.GetAll());
 
-    // GET
-    [HttpGet("/api/[controller]/{codigo}/id/")]
+    [HttpGet("{codigo}/id")]
     [Produces("application/json")]
     public async Task<IActionResult> BuscarImovelEndereco([FromRoute] int codigo) =>
         Ok(await imovelEnderecoService.GetById(codigo));
 
 
-    // GET
-    [HttpGet("/api/[controller]/{codigo}/idImovel/")]
+    [HttpGet("{codigo}/idImovel")]
     [Produces("application/json")]
     public async Task<IActionResult> BuscarEnderecoPorImovel([FromRoute] int codigo) =>
         Ok(await imovelEnderecoService.BuscarEnderecoPorImovel(codigo));
 
 
-    [HttpPost("/api/[controller]/criar")]
+    [HttpPost("criar")]
     [Produces("application/json")]
     public async Task<IActionResult> Cadatrar([FromBody] CriarImovelEnderecoCommand cmd)
     {
@@ -47,7 +44,7 @@ public class ImovelEnderecoController : Controller
         return Ok(result);
     }
 
-    [HttpPut("/api/[controller]/{codigo}/atualizar/")]
+    [HttpPut("{codigo}/atualizar")]
     [Produces("application/json")]
     public async Task<IActionResult> Atualizar(int? codigo, [FromBody] CriarImovelEnderecoCommand cmd)
     {
@@ -59,7 +56,7 @@ public class ImovelEnderecoController : Controller
         return Ok(result);
     }
 
-    [HttpDelete("/api/[controller]/{codigo}/deletar/")]
+    [HttpDelete("{codigo}/deletar")]
     [Produces("application/json")]
     public async Task<IActionResult> Deletar(int? codigo)
     {
@@ -70,5 +67,9 @@ public class ImovelEnderecoController : Controller
 
         return Ok(result);
     }
+    
+    [HttpGet("{cep}/cep")]
+    [Produces("application/json")]
+    public async Task<IActionResult> BuscarEnderecoPorCEP([FromRoute] string cep) =>
+        Ok(await imovelEnderecoService.BuscarEnderecoPorCEP(cep));
 }
-
