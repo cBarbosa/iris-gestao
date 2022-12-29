@@ -22,7 +22,5 @@ export class FormStepsComponent {
 	@Input()
 	callback: ((step: number) => any) | null = null;
 
-	ngOnInit() {
-		console.log(this.list);
-	}
+	ngOnInit() {}
 }

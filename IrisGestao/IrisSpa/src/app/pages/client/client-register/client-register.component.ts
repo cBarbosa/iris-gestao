@@ -30,6 +30,12 @@ type Step = {
 	isVisited?: boolean;
 };
 
+type DropdownItem = {
+	label: string;
+	value: any;
+	disabled?: boolean;
+};
+
 @Component({
 	selector: 'app-client-edit',
 	templateUrl: './client-register.component.html',
@@ -62,11 +68,41 @@ export class ClientRegisterComponent implements OnInit {
 			value: null,
 		},
 	];
-	isLoadingAddressData = false;
 	prevCepInputValue = '';
 
 	stepList: Step[];
 	currentStep: number;
+
+	dropdownUfList: DropdownItem[] = [
+		{ label: 'Selecione', value: null, disabled: true },
+		{ label: 'Acre', value: 'AC' },
+		{ label: 'Alagoas', value: 'AL' },
+		{ label: 'Amapá', value: 'AP' },
+		{ label: 'Amazonas', value: 'AM' },
+		{ label: 'Bahia', value: 'BA' },
+		{ label: 'Ceará', value: 'CE' },
+		{ label: 'Distrito Federal', value: 'DF' },
+		{ label: 'Espírito Santo', value: 'ES' },
+		{ label: 'Goías', value: 'GO' },
+		{ label: 'Maranhão', value: 'MA' },
+		{ label: 'Mato Grosso', value: 'MT' },
+		{ label: 'Mato Grosso do Sul', value: 'MS' },
+		{ label: 'Minas Gerais', value: 'MG' },
+		{ label: 'Pará', value: 'PA' },
+		{ label: 'Paraíba', value: 'PB' },
+		{ label: 'Paraná', value: 'PR' },
+		{ label: 'Pernambuco', value: 'PE' },
+		{ label: 'Piauí', value: 'PI' },
+		{ label: 'Rio de Janeiro', value: 'RJ' },
+		{ label: 'Rio Grande do Norte', value: 'RN' },
+		{ label: 'Rio Grande do Sul', value: 'RS' },
+		{ label: 'Rondônia', value: 'RO' },
+		{ label: 'Roraíma', value: 'RR' },
+		{ label: 'Santa Catarina', value: 'SC' },
+		{ label: 'São Paulo', value: 'SP' },
+		{ label: 'Sergipe', value: 'SE' },
+		{ label: 'Tocantins', value: 'TO' },
+	];
 
 	constructor(
 		private fb: FormBuilder,
@@ -121,7 +157,7 @@ export class ClientRegisterComponent implements OnInit {
 		this.onBlurDate = onBlurDate;
 		this.isLoadingView = false;
 
-		this.currentStep = 2;
+		this.currentStep = 1;
 
 		this.stepList = [
 			{
@@ -278,23 +314,23 @@ export class ClientRegisterComponent implements OnInit {
 	}
 
 	setAddressByCEP(e: any) {
-		console.log('event', e);
 		const cep = e.target.value.replace(/\D/g, '');
-		console.log(cep, this.prevCepInputValue);
 
 		if (cep.length !== 8 || cep === this.prevCepInputValue) {
 			this.prevCepInputValue = cep;
 			return;
 		}
+		this.addressInfoForm.controls['Cep'].disable();
+		this.addressInfoForm.controls['Endereco'].disable();
+		this.addressInfoForm.controls['Bairro'].disable();
+		this.addressInfoForm.controls['Cidade'].disable();
+		this.addressInfoForm.controls['Estado'].disable();
 
-		this.isLoadingAddressData = true;
 		this.commonService
 			.getAddressByCEP(cep)
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
-					console.log(event);
-
 					if (event.success) {
 						if (event.data.resultado === '1') {
 							this.addressInfoForm.controls['Endereco'].setValue(
@@ -310,11 +346,21 @@ export class ClientRegisterComponent implements OnInit {
 						}
 					} else {
 					}
-					this.isLoadingAddressData = false;
+
+					this.addressInfoForm.controls['Cep'].enable();
+					this.addressInfoForm.controls['Endereco'].enable();
+					this.addressInfoForm.controls['Bairro'].enable();
+					this.addressInfoForm.controls['Cidade'].enable();
+					this.addressInfoForm.controls['Estado'].enable();
 				},
 				error: (err) => {
 					console.error(err);
-					this.isLoadingAddressData = false;
+
+					this.addressInfoForm.controls['Cep'].enable();
+					this.addressInfoForm.controls['Endereco'].enable();
+					this.addressInfoForm.controls['Bairro'].enable();
+					this.addressInfoForm.controls['Cidade'].enable();
+					this.addressInfoForm.controls['Estado'].enable();
 				},
 			});
 
