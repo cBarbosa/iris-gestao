@@ -9,6 +9,8 @@ import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
+import { FormStepsComponent } from 'src/app/shared/components/form-steps/form-steps.component';
+import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
 	declarations: [ClientRegisterComponent],
@@ -21,6 +23,8 @@ import { DialogModule } from 'primeng/dialog';
 		CalendarModule,
 		DropdownModule,
 		DialogModule,
+		FormStepsComponent,
+		NgxMaskModule.forChild(),
 	],
 })
 export class ClientRegisterModule {}

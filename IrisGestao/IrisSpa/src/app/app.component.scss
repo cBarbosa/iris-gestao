@@ -402,6 +402,12 @@
 			&.ng-touched.ng-invalid {
 				.p-dropdown {
 					border-color: #e24c4c;
+
+					&:focus,
+					&:enabled:focus,
+					&:hover {
+						border-color: #641b1e;
+					}
 				}
 			}
 
@@ -441,6 +447,20 @@
 					&:enabled:focus,
 					&:hover {
 						border-color: #641b1e;
+					}
+				}
+			}
+
+			&.ng-touched.ng-invalid {
+				.p-calendar {
+					.p-inputtext {
+						border-color: #e24c4c;
+
+						&:focus,
+						&:enabled:focus,
+						&:hover {
+							border-color: #641b1e;
+						}
 					}
 				}
 			}
