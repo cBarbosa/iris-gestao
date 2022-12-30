@@ -5,7 +5,9 @@
 
 			<div class="main-card">
 				<header>
-					<h3>{{cliente?.nome}} <span>{{cliente?.idTipoClienteNavigation?.nome}}</span></h3>
+					<h3>{{cliente?.nome}} 
+						<!-- <span>{{cliente?.idTipoClienteNavigation?.nome}}</span> -->
+					</h3>
 					<div class="actions">
 						<button pButton type="button" class="p-button-outlined h-7"
 						(click)="navigateTo('client/register/'+ cliente.guidReferencia)">
