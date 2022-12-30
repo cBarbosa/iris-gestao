@@ -4,6 +4,7 @@ using IrisGestao.Domain.Command.Request;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
+using Microsoft.Extensions.Logging;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -11,12 +12,15 @@ public class ClienteService: IClienteService
 {
     private readonly IClienteRepository clienteRepository;
     private readonly IImovelRepository imovelRepository;
+    private readonly ILogger<IClienteService> logger;
 
     public ClienteService(IClienteRepository clienteRepository
-                         ,IImovelRepository imovelRepository)
+                         ,IImovelRepository imovelRepository
+                         , ILogger<IClienteService> logger)
     {
         this.clienteRepository = clienteRepository;
         this.imovelRepository = imovelRepository;
+        this.logger = logger;
     }
 
     public async Task<CommandResult> GetAllPaging(int limit, int page)
@@ -31,8 +35,6 @@ public class ClienteService: IClienteService
     public async Task<CommandResult> GetByGuid(Guid guid)
     {
         var cliente = await clienteRepository.GetByGuid(guid);
-        //var imoveis = await imovelRepository.GetAllByCliente(guid);
-        //cliente.Imovel = imoveis;
 
         return cliente == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
@@ -49,10 +51,10 @@ public class ClienteService: IClienteService
             clienteRepository.Insert(cliente);
             return new CommandResult(true, SuccessResponseEnums.Success_1000, cliente);
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            logger.LogError(e.Message);
             return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
-            throw;
         }
     }
 
@@ -79,10 +81,10 @@ public class ClienteService: IClienteService
             clienteRepository.Update(cliente);
             return new CommandResult(true, SuccessResponseEnums.Success_1001, cliente);
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            logger.LogError(e.Message);
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
-            throw;
         }
     }
 
@@ -107,10 +109,10 @@ public class ClienteService: IClienteService
                 clienteRepository.Delete(codigo.Value);
                 return new CommandResult(true, SuccessResponseEnums.Success_1002, null);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                logger.LogError(e.Message);
                 return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
-                throw;
             }
         }
     }
@@ -131,7 +133,6 @@ public class ClienteService: IClienteService
             case null:
                 cliente.GuidReferencia = Guid.NewGuid();
                 cliente.DataCriacao = DateTime.Now;
-                cliente.DataUltimaModificacao = DateTime.Now;
                 break;
             default:
                 cliente.GuidReferencia = cliente.GuidReferencia;
@@ -140,7 +141,9 @@ public class ClienteService: IClienteService
         }
         
         cliente.Nome = cmd.Nome;
-        cliente.RazaoSocial = cmd.RazaoSocial == "" ? cmd.Nome : cmd.RazaoSocial;
+        cliente.RazaoSocial = string.Empty.Equals(cmd.RazaoSocial)
+            ? cmd.Nome
+            : cmd.RazaoSocial;
         cliente.CpfCnpj = cmd.CpfCnpj;
         cliente.Telefone = cmd.Telefone;
         cliente.Email = cmd.Email;

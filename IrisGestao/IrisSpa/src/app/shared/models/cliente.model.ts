@@ -19,7 +19,7 @@ export class Cliente {
 }
 
 export type ClienteType = {
-    TipoCliente: number;
+    // TipoCliente: number;
     CpfCnpj: string;
     DataNascimento: string;
     Nome: string;

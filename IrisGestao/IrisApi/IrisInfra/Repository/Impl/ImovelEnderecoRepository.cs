@@ -32,4 +32,10 @@ public class ImovelEnderecoRepository : Repository<ImovelEndereco>, IImovelEnder
 
         return lstUnidades.AsEnumerable();
     }
+
+    public async Task<ImovelEndereco?> GetByImovelReferenceGuid(Guid uuid)
+    {
+        return await DbSet
+            .FirstOrDefaultAsync(x => x.IdImovelNavigation.GuidReferencia.Equals(uuid));
+    }
 }

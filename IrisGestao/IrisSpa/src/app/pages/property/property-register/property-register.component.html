@@ -161,6 +161,133 @@
 						</ng-template>
 					</ng-container>
 				</div>
+
+				<div class="field">
+					<label for="Cep" class="block">CEP</label>
+					<input
+						id="Cep"
+						type="text"
+						formControlName="zipcode"
+						aria-describedby="cep-help"
+						pInputText
+						mask="00.000-000"
+						(blur)="setAddressByCEP($event)"
+					/>
+					<ng-container *ngIf="checkHasError(f['zipcode'])">
+						<small
+							id="cep-help"
+							*ngIf="f['zipcode'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o CEP do endereço
+						</small>
+						<ng-template #error2>
+							<small id="cep-help" class="p-error block"> CEP inválido </small>
+						</ng-template>
+					</ng-container>
+				</div>
+	
+				<div class="field">
+					<label for="Endereco" class="block">Endereço</label>
+					<input
+						id="Endereco"
+						type="text"
+						formControlName="street"
+						aria-describedby="Endereco-help"
+						pInputText
+						maxlength="100"
+					/>
+					<ng-container *ngIf="checkHasError(f['street'])">
+						<small
+							id="Endereco-help"
+							*ngIf="f['street'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o Endereco do cliente
+						</small>
+						<ng-template #error2>
+							<small id="Endereco-help" class="p-error block">
+								Endereco inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+	
+				<div class="field">
+					<label for="Bairro" class="block">Bairro</label>
+					<input
+						id="Bairro"
+						type="text"
+						formControlName="neighborhood"
+						aria-describedby="Bairro-help"
+						pInputText
+						maxlength="50"
+					/>
+					<ng-container *ngIf="checkHasError(f['neighborhood'])">
+						<small
+							id="Bairro-help"
+							*ngIf="f['neighborhood'].hasError('required'); else error2"
+							class="p-Bairro block"
+						>
+							Informe o Bairro do cliente
+						</small>
+						<ng-template #error2>
+							<small id="Bairro-help" class="p-error block">
+								Bairro inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+	
+				<div class="field">
+					<label for="Cidade" class="block">Cidade</label>
+					<input
+						id="Cidade"
+						type="text"
+						formControlName="city"
+						aria-describedby="Cidade-help"
+						pInputText
+						maxlength="50"
+					/>
+					<ng-container *ngIf="checkHasError(f['city'])">
+						<small
+							id="Cidade-help"
+							*ngIf="f['city'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o Cidade do cliente
+						</small>
+						<ng-template #error2>
+							<small id="Cidade-help" class="p-error block">
+								Cidade inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+	
+				<div class="field">
+					<label for="Estado" class="block">Estado</label>
+					<p-dropdown
+						id="Estado"
+						[options]="dropdownUfList"
+						formControlName="state"
+						aria-describedby="Estado-help"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['state'])">
+						<small
+							id="Estado-help"
+							*ngIf="f['state'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o Estado do cliente
+						</small>
+						<ng-template #error2>
+							<small id="Estado-help" class="p-error block">
+								Estado inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
 			</div>
 
 			<ng-container
@@ -295,6 +422,8 @@
 					</div>
 				</div>
 			</ng-container>
+
+			
 		</section>
 
 		<!-- ------------------------------------------------------------------------ -->

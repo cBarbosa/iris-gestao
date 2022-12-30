@@ -78,7 +78,7 @@ export class ClientListingComponent {
 						birthday: cliente.dataNascimento
 							? new Date(cliente.dataNascimento)
 							: new Date(),
-						client_type: cliente.idTipoClienteNavigation.nome,
+						// client_type: cliente.idTipoClienteNavigation.nome,
 						status: 'ativo',
 						action: '',
 						guidReferencia: cliente.guidReferencia,

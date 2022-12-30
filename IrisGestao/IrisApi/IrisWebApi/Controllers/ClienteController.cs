@@ -29,17 +29,10 @@ public class ClienteController : Controller
 
     [HttpPost("criar")]
     [Produces("application/json")]
-    public async Task<IActionResult> Cadatrar([FromBody] CriarClienteCommand cmd)
-    {
-        var result = await clienteService.Insert(cmd);
+    public async Task<IActionResult> Cadatrar([FromBody] CriarClienteCommand cmd) =>
+        Ok(await clienteService.Insert(cmd));
 
-        if (result == null)
-            return BadRequest("Operação não realizada");
-
-        return Ok(result);
-    }
-
-    [HttpPut("{guid}/atualizar")]
+        [HttpPut("{guid}/atualizar")]
     [Produces("application/json")]
     public async Task<IActionResult> Atualizar(
         Guid guid,

@@ -9,6 +9,7 @@ import {
 import { Utils } from 'src/app/shared/utils';
 import {
 	ClienteService,
+	CommonService,
 	DominiosService,
 	ImovelService,
 } from 'src/app/shared/services';
@@ -79,12 +80,44 @@ export class PropertyRegisterComponent {
 
 	registerProprietaryVisible = false;
 
+	dropdownUfList: DropdownItem[] = [
+		{ label: 'Selecione', value: null, disabled: true },
+		{ label: 'Acre', value: 'AC' },
+		{ label: 'Alagoas', value: 'AL' },
+		{ label: 'Amapá', value: 'AP' },
+		{ label: 'Amazonas', value: 'AM' },
+		{ label: 'Bahia', value: 'BA' },
+		{ label: 'Ceará', value: 'CE' },
+		{ label: 'Distrito Federal', value: 'DF' },
+		{ label: 'Espírito Santo', value: 'ES' },
+		{ label: 'Goías', value: 'GO' },
+		{ label: 'Maranhão', value: 'MA' },
+		{ label: 'Mato Grosso', value: 'MT' },
+		{ label: 'Mato Grosso do Sul', value: 'MS' },
+		{ label: 'Minas Gerais', value: 'MG' },
+		{ label: 'Pará', value: 'PA' },
+		{ label: 'Paraíba', value: 'PB' },
+		{ label: 'Paraná', value: 'PR' },
+		{ label: 'Pernambuco', value: 'PE' },
+		{ label: 'Piauí', value: 'PI' },
+		{ label: 'Rio de Janeiro', value: 'RJ' },
+		{ label: 'Rio Grande do Norte', value: 'RN' },
+		{ label: 'Rio Grande do Sul', value: 'RS' },
+		{ label: 'Rondônia', value: 'RO' },
+		{ label: 'Roraíma', value: 'RR' },
+		{ label: 'Santa Catarina', value: 'SC' },
+		{ label: 'São Paulo', value: 'SP' },
+		{ label: 'Sergipe', value: 'SE' },
+		{ label: 'Tocantins', value: 'TO' },
+	];
+
 	constructor(
 		private fb: FormBuilder,
 		private location: Location,
 		private imovelService: ImovelService,
 		private dominiosService: DominiosService,
 		private clienteService: ClienteService,
+		private commonService: CommonService,
 		private router: Router
 	) {}
 
@@ -96,6 +129,11 @@ export class PropertyRegisterComponent {
 				// category: [null, [Validators.required]],
 				unitType: [null, [Validators.required]],
 				costCentre: [null, [Validators.required]],
+				zipcode: [null, [Validators.required]],
+				street: [null, [Validators.required]],
+				neighborhood: [null, [Validators.required]],
+				city: [null, [Validators.required]],
+				state: [null, [Validators.required]]
 			}),
 			edCorpSalaPavInfo: this.fb.group({
 				areaTotal: ['', [Validators.required]],
@@ -465,6 +503,11 @@ export class PropertyRegisterComponent {
 			IdCategoriaImovel: 1, // TODO indicar a categoria do imóvel
 			IdClienteProprietario: +propertyTypeFormData.proprietary,
 			NumCentroCusto: +propertyTypeFormData.costCentre,
+			CEP: +propertyTypeFormData.zipcode,
+			Rua: propertyTypeFormData.street,
+			Cidade: propertyTypeFormData.city,
+			Bairro: propertyTypeFormData.neighborhood,
+			UF: propertyTypeFormData.state,
 			MonoUsuario: false,
 		};
 
@@ -481,7 +524,7 @@ export class PropertyRegisterComponent {
 			TaxaAdministracao: +legalInfoFormData.administration,
 			ValorPotencial: +legalInfoFormData.potential,
 			QtdeCopias: legalInfoFormData.copies ?? null,
-			UnidadeLocada: false,
+			UnidadeLocada: false
 		};
 
 		const registerUnit = (unitObj: any, guid: string) => {
@@ -646,5 +689,68 @@ export class PropertyRegisterComponent {
 
 	navigateTo = (route: string) => {
 		this.router.navigate([route]);
+	};
+
+	setAddressByCEP(e: any) {
+		const cep = e.target.value.replace(/\D/g, '');
+
+		// if (cep.length !== 8 || cep === this.prevCepInputValue) {
+		// 	this.prevCepInputValue = cep;
+		// 	return;
+		// }
+
+		// this.addressInfoForm.controls['Cep'].disable();
+		// this.addressInfoForm.controls['Endereco'].disable();
+		// this.addressInfoForm.controls['Bairro'].disable();
+		// this.addressInfoForm.controls['Cidade'].disable();
+		// this.addressInfoForm.controls['Estado'].disable();
+
+		this.commonService
+			.getAddressByCEP(cep)
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					console.debug('cep', event);
+					if (event.success) {
+						if (event.data.resultado === '1') {
+
+							// this.registerForm.patchValue({
+							// 	propertyType: {
+							// 		street: event.data.logradouro,
+							// 		city: event.data.cidade,
+							// 		neighborhood: event.data.bairro,
+							// 		state: event.data.uf
+							// 	}});
+
+							
+
+							this.propertyTypeForm.controls['street'].setValue(event.data.logradouro);
+							this.propertyTypeForm.controls['city'].setValue(event.data.cidade);
+							this.propertyTypeForm.controls['neighborhood'].setValue(event.data.bairro);
+							this.propertyTypeForm.controls['state'].setValue(event.data.uf);
+
+							console.debug('formData', this.propertyTypeForm);
+
+						}
+					}
+
+					// this.registerForm.controls['Cep'].enable();
+					// this.registerForm.controls['Endereco'].enable();
+					// this.registerForm.controls['Bairro'].enable();
+					// this.registerForm.controls['Cidade'].enable();
+					// this.registerForm.controls['Estado'].enable();
+				},
+				error: (err) => {
+					console.error(err);
+
+					// this.registerForm.controls['Cep'].enable();
+					// this.registerForm.controls['Endereco'].enable();
+					// this.registerForm.controls['Bairro'].enable();
+					// this.registerForm.controls['Cidade'].enable();
+					// this.registerForm.controls['Estado'].enable();
+				},
+			});
+
+		// this.prevCepInputValue = cep;
 	};
 }
