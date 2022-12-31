@@ -14,4 +14,7 @@ export class SpinnerComponent {
 
 	@Input()
 	styleClass: string;
+
+	@Input()
+	onlyIcon: boolean;
 }

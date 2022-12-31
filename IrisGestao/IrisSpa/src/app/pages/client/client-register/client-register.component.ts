@@ -44,7 +44,7 @@ type DropdownItem = {
 export class ClientRegisterComponent implements OnInit {
 	registerForm: FormGroup;
 	uid: string = '';
-	isLoadingView: boolean = false;
+	isLoadingData: boolean = false;
 	displayModal: boolean = false;
 	modalContent: {
 		isError?: boolean;
@@ -60,6 +60,7 @@ export class ClientRegisterComponent implements OnInit {
 	cliente: any;
 	onInputDate: Function;
 	onBlurDate: Function;
+
 	prevCepInputValue = '';
 	isLoadingCep = false;
 
@@ -105,7 +106,9 @@ export class ClientRegisterComponent implements OnInit {
 		private clienteService: ClienteService,
 		private dominiosService: DominiosService,
 		private commonService: CommonService
-	) {
+	) {}
+
+	ngOnInit() {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? 'new';
 
@@ -134,16 +137,12 @@ export class ClientRegisterComponent implements OnInit {
 		});
 
 		this.getData();
-	}
-
-	ngOnInit() {
-		this.isLoadingView = true;
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
 
-		this.currentStep = 2;
+		this.currentStep = 1;
 
 		this.stepList = [
 			{
@@ -162,7 +161,7 @@ export class ClientRegisterComponent implements OnInit {
 			return;
 		}
 
-		this.isLoadingView = true;
+		this.isLoadingData = true;
 		var datePipe = new DatePipe('en-US');
 
 		const view = this.clienteService
@@ -193,7 +192,19 @@ export class ClientRegisterComponent implements OnInit {
 						Estado: cliente?.estado,
 					},
 				});
-				this.isLoadingView = false;
+
+				this.stepList = [
+					{
+						label: 'Informações do cliente',
+						isCurrent: true,
+						isVisited: true,
+					},
+					{
+						label: 'Endereço',
+						isVisited: true,
+					},
+				];
+				this.isLoadingData = false;
 			});
 	}
 

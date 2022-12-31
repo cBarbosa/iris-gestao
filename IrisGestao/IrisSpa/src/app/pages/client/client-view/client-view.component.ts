@@ -18,7 +18,7 @@ export class ClientViewComponent implements OnInit {
 	uid: string;
 	cliente: any;
 	totalClientCount: number;
-	isLoadingClients = false;
+	isLoadingView = false;
 
 	constructor(
 		private router: Router,
@@ -35,12 +35,12 @@ export class ClientViewComponent implements OnInit {
 	}
 
 	getByIdCliente() {
-		this.isLoadingClients = true;
+		this.isLoadingView = true;
 		this.clienteService.getClienteById(this.uid).subscribe((event) => {
 			this.cliente = event;
 
 			this.properties = [...event.imovel];
-			this.isLoadingClients = false;
+			this.isLoadingView = false;
 		});
 	}
 

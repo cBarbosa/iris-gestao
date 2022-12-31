@@ -11,6 +11,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import { NgxCurrencyModule } from 'ngx-currency';
+import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 
 @NgModule({
 	declarations: [UnitRegisterComponent],
@@ -24,7 +25,8 @@ import { NgxCurrencyModule } from 'ngx-currency';
 		HttpClientModule,
 		DropdownModule,
 		DialogModule,
-		NgxCurrencyModule
+		NgxCurrencyModule,
+		SpinnerComponent,
 	],
 })
 export class UnitRegisterModule {}

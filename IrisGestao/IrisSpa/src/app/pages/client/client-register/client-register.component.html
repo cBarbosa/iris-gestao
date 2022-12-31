@@ -1,82 +1,92 @@
-<form
-	class="edit-form"
-	[formGroup]="registerForm"
-	(ngSubmit)="onSubmit($event)"
->
-	<div class="input-wrapper">
-		<section class="form-details">
-			<div *ngIf="operacaoClonar">
-				<h4 *ngIf="operacaoClonar">Clonar cliente: {{ cliente?.nome }}</h4>
-			</div>
-			<div *ngIf="!operacaoClonar">
-				<h4 *ngIf="operacaoCriar">Adicionar novo cliente</h4>
-				<h4 *ngIf="!operacaoCriar">Editar cliente: {{ cliente?.nome }}</h4>
-			</div>
-			<app-form-steps
-				[list]="stepList"
-				[callback]="changeStepCb"
-			></app-form-steps>
-		</section>
-		<section *ngIf="currentStep === 1" formGroupName="clientInfo">
-			<h4>Informações do cliente</h4>
-			<p>
-				Adicione aqui as informações do cliente desejado. Após o preenchimento
-				clique em continuar para salvar as informações
-			</p>
+<ng-container *ngIf="uid !== 'new' && isLoadingData; else clientForm">
+	<div class="flex relative justify-center items-center w-full h-full pt-20">
+		<div class="w-full max-w-3xl">
+			<app-spinner text="Carregando"></app-spinner>
+		</div>
+	</div>
+</ng-container>
+<ng-template #clientForm>
+	<form
+		class="edit-form"
+		[formGroup]="registerForm"
+		(ngSubmit)="onSubmit($event)"
+	>
+		<div class="input-wrapper">
+			<section class="form-details">
+				<div *ngIf="operacaoClonar">
+					<h4 *ngIf="operacaoClonar">Clonar cliente: {{ cliente?.nome }}</h4>
+				</div>
+				<div *ngIf="!operacaoClonar">
+					<h4 *ngIf="operacaoCriar">Adicionar novo cliente</h4>
+					<h4 *ngIf="!operacaoCriar">Editar cliente: {{ cliente?.nome }}</h4>
+				</div>
+				<app-form-steps
+					[list]="stepList"
+					[callback]="changeStepCb"
+				></app-form-steps>
+			</section>
+			<section *ngIf="currentStep === 1" formGroupName="clientInfo">
+				<h4>Informações do cliente</h4>
+				<p>
+					Adicione aqui as informações do cliente desejado. Após o preenchimento
+					clique em continuar para salvar as informações
+				</p>
 
-			<div class="field">
-				<label for="Nome" class="block">Nome</label>
-				<input
-					id="Nome"
-					type="text"
-					formControlName="Nome"
-					aria-describedby="name-help"
-					pInputText
-					maxlength="100"
-				/>
-				<ng-container *ngIf="checkHasError(f['Nome'])">
-					<small
-						id="name-help"
-						*ngIf="f['Nome'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o nome do cliente
-					</small>
-					<ng-template #error2>
-						<small id="name-help" class="p-error block"> Nome inválido </small>
-					</ng-template>
-				</ng-container>
-			</div>
-
-			<div class="field">
-				<label for="DataNascimento" class="block">Nascimento</label>
-				<p-calendar
-					id="DataNascimento"
-					formControlName="DataNascimento"
-					dateFormat="dd/mm/yy"
-					(onInput)="onInputDate($event)"
-					(onBlur)="onBlurDate()"
-					placeholder="dd/mm/aaaa"
-					aria-describedby="birthday-help"
-					panelStyleClass="hidden"
-				></p-calendar>
-				<ng-container *ngIf="checkHasError(f['DataNascimento'])">
-					<small
-						id="birthday-help"
-						*ngIf="f['DataNascimento'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe a data de nascimento
-					</small>
-					<ng-template #error2>
-						<small id="birthday-help" class="p-error block">
-							Data de nascimento inválido
+				<div class="field">
+					<label for="Nome" class="block">Nome</label>
+					<input
+						id="Nome"
+						type="text"
+						formControlName="Nome"
+						aria-describedby="name-help"
+						pInputText
+						maxlength="100"
+					/>
+					<ng-container *ngIf="checkHasError(f['Nome'])">
+						<small
+							id="name-help"
+							*ngIf="f['Nome'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o nome do cliente
 						</small>
-					</ng-template>
-				</ng-container>
-			</div>
+						<ng-template #error2>
+							<small id="name-help" class="p-error block">
+								Nome inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
 
-			<!-- <div class="field">
+				<div class="field">
+					<label for="DataNascimento" class="block">Nascimento</label>
+					<p-calendar
+						id="DataNascimento"
+						formControlName="DataNascimento"
+						dateFormat="dd/mm/yy"
+						(onInput)="onInputDate($event)"
+						(onBlur)="onBlurDate()"
+						placeholder="dd/mm/aaaa"
+						aria-describedby="birthday-help"
+						panelStyleClass="hidden"
+					></p-calendar>
+					<ng-container *ngIf="checkHasError(f['DataNascimento'])">
+						<small
+							id="birthday-help"
+							*ngIf="f['DataNascimento'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe a data de nascimento
+						</small>
+						<ng-template #error2>
+							<small id="birthday-help" class="p-error block">
+								Data de nascimento inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<!-- <div class="field">
 				<label for="IdTipoCliente" class="block">Tipo de cliente</label>
 				<p-dropdown
 					id="IdTipoCliente"
@@ -100,251 +110,252 @@
 				</ng-container>
 			</div> -->
 
-			<div class="field">
-				<label for="CpfCnpj" class="block">CPF/CNPJ</label>
-				<input
-					id="CpfCnpj"
-					type="text"
-					formControlName="CpfCnpj"
-					aria-describedby="CpfCnpj-help"
-					mask="CPF_CNPJ"
-					pInputText
-				/>
-				<ng-container *ngIf="checkHasError(f['CpfCnpj'])">
-					<small
-						id="CpfCnpj-help"
-						*ngIf="f['CpfCnpj'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o CPF do cliente
-					</small>
-					<ng-template #error2>
-						<small id="CpfCnpj-help" class="p-error block">
-							CPF inválido
-						</small>
-					</ng-template>
-				</ng-container>
-			</div>
-
-			<div class="field">
-				<label for="Email" class="block">Email</label>
-				<input
-					id="Email"
-					type="email"
-					formControlName="Email"
-					aria-describedby="email-help"
-					pInputText
-					maxlength="80"
-				/>
-				<ng-container *ngIf="checkHasError(f['Email'])">
-					<small
-						id="email-help"
-						*ngIf="f['Email'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o email
-					</small>
-					<ng-template #error2>
-						<small id="email-help" class="p-error block">
-							Email inválido
-						</small>
-					</ng-template>
-				</ng-container>
-			</div>
-
-			<div class="field">
-				<label for="Telefone" class="block">Telefone</label>
-				<input
-					id="Telefone"
-					type="text"
-					formControlName="Telefone"
-					aria-describedby="telephone-help"
-					pInputText
-					mask="(00) 0000-0000 || (00) 0 0000-0000"
-				/>
-				<ng-container *ngIf="checkHasError(f['Telefone'])">
-					<small
-						id="telephone-help"
-						*ngIf="f['Telefone'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o telefone do cliente
-					</small>
-					<ng-template #error2>
-						<small id="telephone-help" class="p-error block">
-							Telefone inválido
-						</small>
-					</ng-template>
-				</ng-container>
-			</div>
-		</section>
-
-		<section *ngIf="currentStep === 2" formGroupName="addressInfo">
-			<h4>Endereço do cliente</h4>
-			<p>
-				Adicione aqui as informações do cliente desejado. Após o preenchimento
-				clique em continuar para salvar as informações
-			</p>
-
-			<div class="field">
-				<label for="Cep" class="block">CEP</label>
-				<span class="p-input-icon-right w-full">
-					<i class="pi pi-spin pi-spinner" *ngIf="isLoadingCep"></i>
+				<div class="field">
+					<label for="CpfCnpj" class="block">CPF/CNPJ</label>
 					<input
-						id="Cep"
+						id="CpfCnpj"
 						type="text"
-						formControlName="Cep"
-						aria-describedby="cep-help"
+						formControlName="CpfCnpj"
+						aria-describedby="CpfCnpj-help"
+						mask="CPF_CNPJ"
 						pInputText
-						mask="00.000-000"
-						(blur)="setAddressByCEP($event)"
 					/>
-				</span>
-				<ng-container *ngIf="checkHasError(f['Cep'])">
-					<small
-						id="cep-help"
-						*ngIf="f['Cep'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o CEP do cliente
-					</small>
-					<ng-template #error2>
-						<small id="cep-help" class="p-error block"> CEP inválido </small>
-					</ng-template>
-				</ng-container>
-			</div>
-			<div class="field">
-				<label for="Endereco" class="block">Endereço</label>
-				<input
-					id="Endereco"
-					type="text"
-					formControlName="Endereco"
-					aria-describedby="Endereco-help"
-					pInputText
-					maxlength="100"
-				/>
-				<ng-container *ngIf="checkHasError(f['Endereco'])">
-					<small
-						id="Endereco-help"
-						*ngIf="f['Endereco'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o Endereco do cliente
-					</small>
-					<ng-template #error2>
-						<small id="Endereco-help" class="p-error block">
-							Endereco inválido
+					<ng-container *ngIf="checkHasError(f['CpfCnpj'])">
+						<small
+							id="CpfCnpj-help"
+							*ngIf="f['CpfCnpj'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o CPF do cliente
 						</small>
-					</ng-template>
-				</ng-container>
-			</div>
+						<ng-template #error2>
+							<small id="CpfCnpj-help" class="p-error block">
+								CPF inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
 
-			<div class="field">
-				<label for="Bairro" class="block">Bairro</label>
-				<input
-					id="Bairro"
-					type="text"
-					formControlName="Bairro"
-					aria-describedby="Bairro-help"
-					pInputText
-					maxlength="50"
-				/>
-				<ng-container *ngIf="checkHasError(f['Bairro'])">
-					<small
-						id="Bairro-help"
-						*ngIf="f['Bairro'].hasError('required'); else error2"
-						class="p-Bairro block"
-					>
-						Informe o Bairro do cliente
-					</small>
-					<ng-template #error2>
-						<small id="Bairro-help" class="p-error block">
-							Bairro inválido
+				<div class="field">
+					<label for="Email" class="block">Email</label>
+					<input
+						id="Email"
+						type="email"
+						formControlName="Email"
+						aria-describedby="email-help"
+						pInputText
+						maxlength="80"
+					/>
+					<ng-container *ngIf="checkHasError(f['Email'])">
+						<small
+							id="email-help"
+							*ngIf="f['Email'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o email
 						</small>
-					</ng-template>
-				</ng-container>
-			</div>
-			<div class="field">
-				<label for="Cidade" class="block">Cidade</label>
-				<input
-					id="Cidade"
-					type="text"
-					formControlName="Cidade"
-					aria-describedby="Cidade-help"
-					pInputText
-					maxlength="50"
-				/>
-				<ng-container *ngIf="checkHasError(f['Cidade'])">
-					<small
-						id="Cidade-help"
-						*ngIf="f['Cidade'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o Cidade do cliente
-					</small>
-					<ng-template #error2>
-						<small id="Cidade-help" class="p-error block">
-							Cidade inválido
+						<ng-template #error2>
+							<small id="email-help" class="p-error block">
+								Email inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="Telefone" class="block">Telefone</label>
+					<input
+						id="Telefone"
+						type="text"
+						formControlName="Telefone"
+						aria-describedby="telephone-help"
+						pInputText
+						mask="(00) 0000-0000 || (00) 0 0000-0000"
+					/>
+					<ng-container *ngIf="checkHasError(f['Telefone'])">
+						<small
+							id="telephone-help"
+							*ngIf="f['Telefone'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o telefone do cliente
 						</small>
-					</ng-template>
-				</ng-container>
-			</div>
+						<ng-template #error2>
+							<small id="telephone-help" class="p-error block">
+								Telefone inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+			</section>
 
-			<div class="field">
-				<label for="Estado" class="block">Estado</label>
-				<p-dropdown
-					id="Estado"
-					[options]="dropdownUfList"
-					formControlName="Estado"
-					aria-describedby="Estado-help"
-				></p-dropdown>
-				<ng-container *ngIf="checkHasError(f['Estado'])">
-					<small
-						id="Estado-help"
-						*ngIf="f['Estado'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o Estado do cliente
-					</small>
-					<ng-template #error2>
-						<small id="Estado-help" class="p-error block">
-							Estado inválido
+			<section *ngIf="currentStep === 2" formGroupName="addressInfo">
+				<h4>Endereço do cliente</h4>
+				<p>
+					Adicione aqui as informações do cliente desejado. Após o preenchimento
+					clique em continuar para salvar as informações
+				</p>
+
+				<div class="field">
+					<label for="Cep" class="block">CEP</label>
+					<span class="p-input-icon-right w-full">
+						<i class="pi pi-spin pi-spinner" *ngIf="isLoadingCep"></i>
+						<input
+							id="Cep"
+							type="text"
+							formControlName="Cep"
+							aria-describedby="cep-help"
+							pInputText
+							mask="00.000-000"
+							(blur)="setAddressByCEP($event)"
+						/>
+					</span>
+					<ng-container *ngIf="checkHasError(f['Cep'])">
+						<small
+							id="cep-help"
+							*ngIf="f['Cep'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o CEP do cliente
 						</small>
-					</ng-template>
-				</ng-container>
-			</div>
-		</section>
-	</div>
-	<div class="form-actions">
-		<button
-			pButton
-			type="button"
-			label="Voltar"
-			class="p-button-text h-11"
-			(click)="prevStep()"
-		></button>
+						<ng-template #error2>
+							<small id="cep-help" class="p-error block"> CEP inválido </small>
+						</ng-template>
+					</ng-container>
+				</div>
+				<div class="field">
+					<label for="Endereco" class="block">Endereço</label>
+					<input
+						id="Endereco"
+						type="text"
+						formControlName="Endereco"
+						aria-describedby="Endereco-help"
+						pInputText
+						maxlength="100"
+					/>
+					<ng-container *ngIf="checkHasError(f['Endereco'])">
+						<small
+							id="Endereco-help"
+							*ngIf="f['Endereco'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o Endereco do cliente
+						</small>
+						<ng-template #error2>
+							<small id="Endereco-help" class="p-error block">
+								Endereco inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
 
-		<button
-			pButton
-			pRipple
-			type="button"
-			label="Cancelar"
-			class="p-button-outlined h-11"
-			(click)="navigateTo('/client/listing')"
-		></button>
+				<div class="field">
+					<label for="Bairro" class="block">Bairro</label>
+					<input
+						id="Bairro"
+						type="text"
+						formControlName="Bairro"
+						aria-describedby="Bairro-help"
+						pInputText
+						maxlength="50"
+					/>
+					<ng-container *ngIf="checkHasError(f['Bairro'])">
+						<small
+							id="Bairro-help"
+							*ngIf="f['Bairro'].hasError('required'); else error2"
+							class="p-Bairro block"
+						>
+							Informe o Bairro do cliente
+						</small>
+						<ng-template #error2>
+							<small id="Bairro-help" class="p-error block">
+								Bairro inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+				<div class="field">
+					<label for="Cidade" class="block">Cidade</label>
+					<input
+						id="Cidade"
+						type="text"
+						formControlName="Cidade"
+						aria-describedby="Cidade-help"
+						pInputText
+						maxlength="50"
+					/>
+					<ng-container *ngIf="checkHasError(f['Cidade'])">
+						<small
+							id="Cidade-help"
+							*ngIf="f['Cidade'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o Cidade do cliente
+						</small>
+						<ng-template #error2>
+							<small id="Cidade-help" class="p-error block">
+								Cidade inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
 
-		<button
-			pButton
-			type="button"
-			label="Continuar"
-			class="h-11"
-			(click)="nextStep()"
-		></button>
-		<div class="error" *ngIf="registerForm.hasError('yourErrorName')">
-			Some text
+				<div class="field">
+					<label for="Estado" class="block">Estado</label>
+					<p-dropdown
+						id="Estado"
+						[options]="dropdownUfList"
+						formControlName="Estado"
+						aria-describedby="Estado-help"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['Estado'])">
+						<small
+							id="Estado-help"
+							*ngIf="f['Estado'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o Estado do cliente
+						</small>
+						<ng-template #error2>
+							<small id="Estado-help" class="p-error block">
+								Estado inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+			</section>
 		</div>
-	</div>
-</form>
+		<div class="form-actions">
+			<button
+				pButton
+				type="button"
+				label="Voltar"
+				class="p-button-text h-11"
+				(click)="prevStep()"
+			></button>
+
+			<button
+				pButton
+				pRipple
+				type="button"
+				label="Cancelar"
+				class="p-button-outlined h-11"
+				(click)="navigateTo('/client/listing')"
+			></button>
+
+			<button
+				pButton
+				type="button"
+				label="Continuar"
+				class="h-11"
+				(click)="nextStep()"
+			></button>
+			<div class="error" *ngIf="registerForm.hasError('yourErrorName')">
+				Some text
+			</div>
+		</div>
+	</form>
+</ng-template>
 
 <p-dialog
 	[(visible)]="displayModal"
