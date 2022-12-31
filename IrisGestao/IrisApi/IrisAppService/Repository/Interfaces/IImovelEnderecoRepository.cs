@@ -7,4 +7,5 @@ public interface IImovelEnderecoRepository : IRepository<ImovelEndereco>, IDispo
 {
     IEnumerable<ImovelEndereco> GetById(int codigo);
     IEnumerable<ImovelEndereco> BuscarEnderecoPorImovel(int codigo);
+    Task<ImovelEndereco?> GetByImovelReferenceGuid(Guid uuid);
 }

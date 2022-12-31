@@ -12,4 +12,5 @@ public interface IImovelEnderecoService
 
     Task<CommandResult> Delete(int? codigo);
     Task<CommandResult> BuscarEnderecoPorImovel(int codigo);
+    Task<CommandResult> BuscarEnderecoPorCEP(string cep);
 }

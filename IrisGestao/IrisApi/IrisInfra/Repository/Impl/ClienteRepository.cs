@@ -25,7 +25,7 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
     public async Task<object?> GetByGuid(Guid guid)
     {
         return await DbSet
-                        .Include(x => x.IdTipoClienteNavigation)
+                        // .Include(x => x.IdTipoClienteNavigation)
                         .Include(x => x.Imovel)
                             .ThenInclude(y => y.Unidade)
                         .Include(x => x.Imovel)
@@ -47,11 +47,11 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                             bairro                  = x.Bairro,
                             cidade                  = x.Cidade,
                             estado                  = x.Estado,
-                            IdTipoClienteNavigation = new
-                            {
-                                Id = x.IdTipoClienteNavigation.Id,
-                                Nome = x.IdTipoClienteNavigation.Nome
-                            },
+                            // IdTipoClienteNavigation = new
+                            // {
+                            //     Id = x.IdTipoClienteNavigation.Id,
+                            //     Nome = x.IdTipoClienteNavigation.Nome
+                            // },
                             Imovel = x.Imovel.Select(y => new
                             {
                                 Nome                = y.Nome,

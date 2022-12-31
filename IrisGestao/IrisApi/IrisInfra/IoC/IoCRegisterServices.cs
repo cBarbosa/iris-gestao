@@ -1,6 +1,7 @@
 ﻿using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.ApplicationService.Service.Impl;
 using IrisGestao.ApplicationService.Services.Interface;
+using IrisGestao.Infraestructure.ExternalServices;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IrisGestao.Infraestructure.IoC;
@@ -27,6 +28,9 @@ public class IoCRegisterServices
         services.AddScoped<IUnidadeService, UnidadeService>();
         services.AddScoped<IImovelEnderecoService, ImovelEnderecoService>();
         services.AddScoped<IEventoService, EventoService>();
+        
+        //External Services
+        services.AddScoped<IRepublicaVirtualService, RepublicaVirtualService>();
 
         //Repositories
         services.AddTransient(typeof(IRepository<>), typeof(Repository.Impl.Repository<>));
