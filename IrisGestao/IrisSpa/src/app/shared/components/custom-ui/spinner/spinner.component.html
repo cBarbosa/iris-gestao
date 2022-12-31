@@ -1,4 +1,9 @@
-<div [class]="styleClass ? styleClass + ' loading' : 'loading'">
+<div
+	[class]="
+		(styleClass ? styleClass + ' loading' : 'loading') +
+		(onlyIcon ? ' only-icon' : '')
+	"
+>
 	<div class="loading-placeholder">
 		<div class="text" *ngIf="text">{{ text }}</div>
 		<div class="lds-ellipsis">

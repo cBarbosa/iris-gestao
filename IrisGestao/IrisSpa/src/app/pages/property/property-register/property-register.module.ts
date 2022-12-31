@@ -20,8 +20,8 @@ import { CalendarModule } from 'primeng/calendar';
 	declarations: [PropertyRegisterComponent],
 	imports: [
 		CommonModule,
-		PropertyRegisterRoutingModule,
 		ReactiveFormsModule,
+		PropertyRegisterRoutingModule,
 		InputTextModule,
 		DropdownModule,
 		FormStepsComponent,

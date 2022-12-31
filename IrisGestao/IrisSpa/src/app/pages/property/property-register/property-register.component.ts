@@ -66,6 +66,9 @@ export class PropertyRegisterComponent {
 	onInputDate: Function;
 	onBlurDate: Function;
 
+	prevCepInputValue = '';
+	isLoadingCep = false;
+
 	stepList: Step[];
 	currentStep: number;
 
@@ -133,7 +136,7 @@ export class PropertyRegisterComponent {
 				street: [null, [Validators.required]],
 				neighborhood: [null, [Validators.required]],
 				city: [null, [Validators.required]],
-				state: [null, [Validators.required]]
+				state: [null, [Validators.required]],
 			}),
 			edCorpSalaPavInfo: this.fb.group({
 				areaTotal: ['', [Validators.required]],
@@ -524,7 +527,7 @@ export class PropertyRegisterComponent {
 			TaxaAdministracao: +legalInfoFormData.administration,
 			ValorPotencial: +legalInfoFormData.potential,
 			QtdeCopias: legalInfoFormData.copies ?? null,
-			UnidadeLocada: false
+			UnidadeLocada: false,
 		};
 
 		const registerUnit = (unitObj: any, guid: string) => {
@@ -694,16 +697,17 @@ export class PropertyRegisterComponent {
 	setAddressByCEP(e: any) {
 		const cep = e.target.value.replace(/\D/g, '');
 
-		// if (cep.length !== 8 || cep === this.prevCepInputValue) {
-		// 	this.prevCepInputValue = cep;
-		// 	return;
-		// }
+		if (cep.length !== 8 || cep === this.prevCepInputValue) {
+			this.prevCepInputValue = cep;
+			return;
+		}
 
-		// this.addressInfoForm.controls['Cep'].disable();
-		// this.addressInfoForm.controls['Endereco'].disable();
-		// this.addressInfoForm.controls['Bairro'].disable();
-		// this.addressInfoForm.controls['Cidade'].disable();
-		// this.addressInfoForm.controls['Estado'].disable();
+		this.isLoadingCep = true;
+		this.propertyTypeForm.controls['zipcode'].disable();
+		this.propertyTypeForm.controls['street'].disable();
+		this.propertyTypeForm.controls['neighborhood'].disable();
+		this.propertyTypeForm.controls['city'].disable();
+		this.propertyTypeForm.controls['state'].disable();
 
 		this.commonService
 			.getAddressByCEP(cep)
@@ -713,44 +717,43 @@ export class PropertyRegisterComponent {
 					console.debug('cep', event);
 					if (event.success) {
 						if (event.data.resultado === '1') {
+							this.registerForm.patchValue({
+								propertyType: {
+									street: event.data.logradouro,
+									city: event.data.cidade,
+									neighborhood: event.data.bairro,
+									state: event.data.uf,
+								},
+							});
 
-							// this.registerForm.patchValue({
-							// 	propertyType: {
-							// 		street: event.data.logradouro,
-							// 		city: event.data.cidade,
-							// 		neighborhood: event.data.bairro,
-							// 		state: event.data.uf
-							// 	}});
-
-							
-
-							this.propertyTypeForm.controls['street'].setValue(event.data.logradouro);
-							this.propertyTypeForm.controls['city'].setValue(event.data.cidade);
-							this.propertyTypeForm.controls['neighborhood'].setValue(event.data.bairro);
-							this.propertyTypeForm.controls['state'].setValue(event.data.uf);
+							// this.propertyTypeForm.controls['street'].setValue(event.data.logradouro);
+							// this.propertyTypeForm.controls['city'].setValue(event.data.cidade);
+							// this.propertyTypeForm.controls['neighborhood'].setValue(event.data.bairro);
+							// this.propertyTypeForm.controls['state'].setValue(event.data.uf);
 
 							console.debug('formData', this.propertyTypeForm);
-
 						}
 					}
 
-					// this.registerForm.controls['Cep'].enable();
-					// this.registerForm.controls['Endereco'].enable();
-					// this.registerForm.controls['Bairro'].enable();
-					// this.registerForm.controls['Cidade'].enable();
-					// this.registerForm.controls['Estado'].enable();
+					this.isLoadingCep = false;
+					this.propertyTypeForm.controls['zipcode'].enable();
+					this.propertyTypeForm.controls['street'].enable();
+					this.propertyTypeForm.controls['neighborhood'].enable();
+					this.propertyTypeForm.controls['city'].enable();
+					this.propertyTypeForm.controls['state'].enable();
 				},
 				error: (err) => {
 					console.error(err);
 
-					// this.registerForm.controls['Cep'].enable();
-					// this.registerForm.controls['Endereco'].enable();
-					// this.registerForm.controls['Bairro'].enable();
-					// this.registerForm.controls['Cidade'].enable();
-					// this.registerForm.controls['Estado'].enable();
+					this.isLoadingCep = false;
+					this.propertyTypeForm.controls['zipcode'].enable();
+					this.propertyTypeForm.controls['street'].enable();
+					this.propertyTypeForm.controls['neighborhood'].enable();
+					this.propertyTypeForm.controls['city'].enable();
+					this.propertyTypeForm.controls['state'].enable();
 				},
 			});
 
-		// this.prevCepInputValue = cep;
-	};
+		this.prevCepInputValue = cep;
+	}
 }

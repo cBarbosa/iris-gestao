@@ -164,15 +164,18 @@
 
 				<div class="field">
 					<label for="Cep" class="block">CEP</label>
-					<input
-						id="Cep"
-						type="text"
-						formControlName="zipcode"
-						aria-describedby="cep-help"
-						pInputText
-						mask="00.000-000"
-						(blur)="setAddressByCEP($event)"
-					/>
+					<span class="p-input-icon-right w-full">
+						<i class="pi pi-spin pi-spinner" *ngIf="isLoadingCep"></i>
+						<input
+							id="Cep"
+							type="text"
+							formControlName="zipcode"
+							aria-describedby="cep-help"
+							pInputText
+							mask="00.000-000"
+							(blur)="setAddressByCEP($event)"
+						/>
+					</span>
 					<ng-container *ngIf="checkHasError(f['zipcode'])">
 						<small
 							id="cep-help"
@@ -186,7 +189,7 @@
 						</ng-template>
 					</ng-container>
 				</div>
-	
+
 				<div class="field">
 					<label for="Endereco" class="block">Endereço</label>
 					<input
@@ -212,7 +215,7 @@
 						</ng-template>
 					</ng-container>
 				</div>
-	
+
 				<div class="field">
 					<label for="Bairro" class="block">Bairro</label>
 					<input
@@ -238,7 +241,7 @@
 						</ng-template>
 					</ng-container>
 				</div>
-	
+
 				<div class="field">
 					<label for="Cidade" class="block">Cidade</label>
 					<input
@@ -264,7 +267,7 @@
 						</ng-template>
 					</ng-container>
 				</div>
-	
+
 				<div class="field">
 					<label for="Estado" class="block">Estado</label>
 					<p-dropdown
@@ -422,8 +425,6 @@
 					</div>
 				</div>
 			</ng-container>
-
-			
 		</section>
 
 		<!-- ------------------------------------------------------------------------ -->
@@ -855,8 +856,8 @@
 <form [formGroup]="registerProprietaryForm" *ngIf="registerProprietaryVisible">
 	<p-sidebar [(visible)]="registerProprietaryVisible" position="right">
 		<ng-template pTemplate="header">
-			<h4>Adicionar novo proprietário</h4></ng-template
-		>
+			<h4>Adicionar novo proprietário</h4>
+		</ng-template>
 		<ng-template pTemplate="content">
 			<div class="register-proprietary-form">
 				<div class="field">
