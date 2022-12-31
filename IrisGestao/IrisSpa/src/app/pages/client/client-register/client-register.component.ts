@@ -117,6 +117,8 @@ export class ClientRegisterComponent implements OnInit {
 			}
 		});
 
+		if (this.uid !== 'new') this.operacaoCriar = false;
+
 		this.registerForm = this.fb.group({
 			clientInfo: this.fb.group({
 				CpfCnpj: ['', [Validators.required, CpfCnpjValidator]],
@@ -174,6 +176,8 @@ export class ClientRegisterComponent implements OnInit {
 				// this.registerForm.controls['DataNascimento'].setValue(
 				// 	datePipe.transform(cliente?.dataNascimento)
 				// );
+
+				this.prevCepInputValue = cliente?.cep;
 
 				this.registerForm.patchValue({
 					clientInfo: {
@@ -300,7 +304,7 @@ export class ClientRegisterComponent implements OnInit {
 	setAddressByCEP(e: any) {
 		const cep = e.target.value.replace(/\D/g, '');
 
-		if (cep.length !== 8 || cep === this.prevCepInputValue) {
+		if (cep.length !== 8 || cep === this.prevCepInputValue.toString()) {
 			this.prevCepInputValue = cep;
 			return;
 		}
