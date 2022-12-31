@@ -12,7 +12,7 @@ import {
 	ClienteService,
 	DominiosService,
 	ImovelService,
-	CommonService
+	CommonService,
 } from 'src/app/shared/services';
 import { Utils } from 'src/app/shared/utils';
 
@@ -49,6 +49,9 @@ export class PropertyEditComponent {
 			disabled: true,
 		},
 	];
+
+	prevCepInputValue = '';
+	isLoadingCep = false;
 
 	displayModal = false;
 	modalContent: {
@@ -118,49 +121,47 @@ export class PropertyEditComponent {
 			category: [null, Validators.required],
 			costCentre: [null, [Validators.required]],
 			zipcode: [null, [Validators.required]],
-			street: ['', [Validators.required]],
-			neighborhood: ['', [Validators.required]],
-			city: ['', [Validators.required]],
-			state: ['', [Validators.required]]
+			street: [null, [Validators.required]],
+			neighborhood: [null, [Validators.required]],
+			city: [null, [Validators.required]],
+			state: [null, [Validators.required]],
 		});
 
-		this.imovelService.getProperty(this.propertyGuid)
-			.subscribe((event) => {
-				if (event) {
-					this.editForm.controls['proprietary'].setValue(
-						event?.idClienteProprietarioNavigation?.id
-					);
-					this.editForm.controls['name'].setValue(event?.nome);
-					this.editForm.controls['category'].setValue(
-						event?.idCategoriaImovelNavigation?.id
-					);
-					this.editForm.controls['costCentre'].setValue(event?.numCentroCusto);
-					this.editForm.controls['zipcode'].setValue(
-						event?.imovelEndereco[0]?.cep
-					);
-					this.editForm.controls['street'].setValue(
-						event?.imovelEndereco[0]?.rua
-					);
-					this.editForm.controls['state'].setValue(
-						event?.imovelEndereco[0]?.uf
-					);
-					this.editForm.controls['neighborhood'].setValue(
-						event?.imovelEndereco[0]?.bairro
-					);
-					this.editForm.controls['city'].setValue(
-						event?.imovelEndereco[0]?.cidade
-					);
+		this.imovelService.getProperty(this.propertyGuid).subscribe((event) => {
+			if (event) {
+				const cep = event?.imovelEndereco[0]?.cep.toString() ?? '';
+				const formatedCep = `${cep.slice(0, 2)}.${cep.slice(2, 5)}-${cep.slice(
+					5
+				)}`;
+				this.prevCepInputValue = formatedCep;
 
-					this.getListaProprietarios();
-					this.getListaCategorias();
+				this.editForm.controls['proprietary'].setValue(
+					event?.idClienteProprietarioNavigation?.id
+				);
+				this.editForm.controls['name'].setValue(event?.nome);
+				this.editForm.controls['category'].setValue(
+					event?.idCategoriaImovelNavigation?.id
+				);
+				this.editForm.controls['costCentre'].setValue(event?.numCentroCusto);
+				this.editForm.controls['zipcode'].setValue(formatedCep);
+				this.editForm.controls['street'].setValue(
+					event?.imovelEndereco[0]?.rua
+				);
+				this.editForm.controls['state'].setValue(event?.imovelEndereco[0]?.uf);
+				this.editForm.controls['neighborhood'].setValue(
+					event?.imovelEndereco[0]?.bairro
+				);
+				this.editForm.controls['city'].setValue(
+					event?.imovelEndereco[0]?.cidade
+				);
 
-				} else {
-					this.invalidGuid = true;
-				}
-				this.isLoading = false;
+				this.getListaProprietarios();
+				this.getListaCategorias();
+			} else {
+				this.invalidGuid = true;
+			}
+			this.isLoading = false;
 		});
-
-		
 	}
 
 	get f(): { [key: string]: AbstractControl<any, any> } {
@@ -186,7 +187,7 @@ export class PropertyEditComponent {
 			NumCentroCusto: +editFormData.costCentre,
 			MonoUsuario: false,
 			Classificacao: '',
-			CEP: +editFormData.zipcode,
+			CEP: +editFormData.zipcode.replace(/\D/g, ''),
 			Rua: editFormData.street,
 			Cidade: editFormData.city,
 			Bairro: editFormData.neighborhood,
@@ -244,10 +245,8 @@ export class PropertyEditComponent {
 		this.router.navigate([route]);
 	};
 
-	getListaProprietarios() : void {
-
-		this.clienteService.getListaProprietarios()
-			.subscribe((event) => {
+	getListaProprietarios(): void {
+		this.clienteService.getListaProprietarios().subscribe((event) => {
 			if (event) {
 				event.data.forEach((item: any) => {
 					this.proprietaries.push({
@@ -262,7 +261,7 @@ export class PropertyEditComponent {
 		});
 	}
 
-	getListaCategorias() : void {
+	getListaCategorias(): void {
 		this.dominiosService.getCategoriaImovel().subscribe((event) => {
 			if (event) {
 				event.data.forEach((item: any) => {
@@ -276,21 +275,22 @@ export class PropertyEditComponent {
 				);
 			}
 		});
-	};
+	}
 
 	setAddressByCEP(e: any) {
 		const cep = e.target.value.replace(/\D/g, '');
 
-		// if (cep.length !== 8 || cep === this.prevCepInputValue) {
-		// 	this.prevCepInputValue = cep;
-		// 	return;
-		// }
+		if (cep.length !== 8 || e.target.value === this.prevCepInputValue) {
+			this.prevCepInputValue = e.target.value;
+			return;
+		}
 
-		// this.addressInfoForm.controls['Cep'].disable();
-		// this.addressInfoForm.controls['Endereco'].disable();
-		// this.addressInfoForm.controls['Bairro'].disable();
-		// this.addressInfoForm.controls['Cidade'].disable();
-		// this.addressInfoForm.controls['Estado'].disable();
+		this.isLoadingCep = true;
+		this.editForm.controls['zipcode'].disable();
+		this.editForm.controls['street'].disable();
+		this.editForm.controls['neighborhood'].disable();
+		this.editForm.controls['city'].disable();
+		this.editForm.controls['state'].disable();
 
 		this.commonService
 			.getAddressByCEP(cep)
@@ -300,44 +300,36 @@ export class PropertyEditComponent {
 					console.debug('cep', event);
 					if (event.success) {
 						if (event.data.resultado === '1') {
-
-							// this.registerForm.patchValue({
-							// 	propertyType: {
-							// 		street: event.data.logradouro,
-							// 		city: event.data.cidade,
-							// 		neighborhood: event.data.bairro,
-							// 		state: event.data.uf
-							// 	}});
-
-							
-
-							this.editForm.controls['street'].setValue(event.data.logradouro);
-							this.editForm.controls['city'].setValue(event.data.cidade);
-							this.editForm.controls['neighborhood'].setValue(event.data.bairro);
-							this.editForm.controls['state'].setValue(event.data.uf);
+							this.editForm.patchValue({
+								street: event.data.logradouro,
+								city: event.data.cidade,
+								neighborhood: event.data.bairro,
+								state: event.data.uf,
+							});
 
 							console.debug('formData', this.editForm);
-
 						}
 					}
 
-					// this.registerForm.controls['Cep'].enable();
-					// this.registerForm.controls['Endereco'].enable();
-					// this.registerForm.controls['Bairro'].enable();
-					// this.registerForm.controls['Cidade'].enable();
-					// this.registerForm.controls['Estado'].enable();
+					this.isLoadingCep = false;
+					this.editForm.controls['zipcode'].enable();
+					this.editForm.controls['street'].enable();
+					this.editForm.controls['neighborhood'].enable();
+					this.editForm.controls['city'].enable();
+					this.editForm.controls['state'].enable();
 				},
 				error: (err) => {
 					console.error(err);
 
-					// this.registerForm.controls['Cep'].enable();
-					// this.registerForm.controls['Endereco'].enable();
-					// this.registerForm.controls['Bairro'].enable();
-					// this.registerForm.controls['Cidade'].enable();
-					// this.registerForm.controls['Estado'].enable();
+					this.isLoadingCep = false;
+					this.editForm.controls['zipcode'].enable();
+					this.editForm.controls['street'].enable();
+					this.editForm.controls['neighborhood'].enable();
+					this.editForm.controls['city'].enable();
+					this.editForm.controls['state'].enable();
 				},
 			});
 
-		// this.prevCepInputValue = cep;
-	};
+		this.prevCepInputValue = e.target.value;
+	}
 }

@@ -11,6 +11,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { FormStepsComponent } from 'src/app/shared/components/form-steps/form-steps.component';
 import { NgxMaskModule } from 'ngx-mask';
+import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 
 @NgModule({
 	declarations: [ClientRegisterComponent],
@@ -25,6 +26,7 @@ import { NgxMaskModule } from 'ngx-mask';
 		DialogModule,
 		FormStepsComponent,
 		NgxMaskModule.forChild(),
+		SpinnerComponent,
 	],
 })
 export class ClientRegisterModule {}

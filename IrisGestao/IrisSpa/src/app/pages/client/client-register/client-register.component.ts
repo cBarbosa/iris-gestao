@@ -15,6 +15,7 @@ import {
 } from '@angular/forms';
 import { Utils } from 'src/app/shared/utils';
 import {
+	CpfCnpjValidator,
 	CpfValidator,
 	EmailValidator,
 	PastDateValidator,
@@ -43,7 +44,7 @@ type DropdownItem = {
 export class ClientRegisterComponent implements OnInit {
 	registerForm: FormGroup;
 	uid: string = '';
-	isLoadingView: boolean = false;
+	isLoadingData: boolean = false;
 	displayModal: boolean = false;
 	modalContent: {
 		isError?: boolean;
@@ -59,7 +60,9 @@ export class ClientRegisterComponent implements OnInit {
 	cliente: any;
 	onInputDate: Function;
 	onBlurDate: Function;
+
 	prevCepInputValue = '';
+	isLoadingCep = false;
 
 	stepList: Step[];
 	currentStep: number;
@@ -103,19 +106,21 @@ export class ClientRegisterComponent implements OnInit {
 		private clienteService: ClienteService,
 		private dominiosService: DominiosService,
 		private commonService: CommonService
-	) {
+	) {}
+
+	ngOnInit() {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? 'new';
 
 			if (this.router.url.indexOf('/Clone') > -1) {
 				this.operacaoClonar = true;
 			}
-
 		});
 
 		this.registerForm = this.fb.group({
 			clientInfo: this.fb.group({
-				CpfCnpj: ['', [Validators.required, CpfValidator]],
+				CpfCnpj: ['', [Validators.required, CpfCnpjValidator]],
+				// IdTipoCliente: ['', [Validators.required]],
 				Nome: ['', Validators.required],
 				razaoSocial: [''],
 				DataNascimento: [null, [Validators.required, PastDateValidator]],
@@ -132,10 +137,6 @@ export class ClientRegisterComponent implements OnInit {
 		});
 
 		this.getData();
-	}
-
-	ngOnInit() {
-		this.isLoadingView = true;
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
@@ -156,12 +157,11 @@ export class ClientRegisterComponent implements OnInit {
 	}
 
 	getData(): void {
-
 		if (this.uid == 'new') {
 			return;
 		}
 
-		this.isLoadingView = true;
+		this.isLoadingData = true;
 		var datePipe = new DatePipe('en-US');
 
 		const view = this.clienteService
@@ -182,17 +182,29 @@ export class ClientRegisterComponent implements OnInit {
 						razaoSocial: cliente?.nome,
 						DataNascimento: formattedDate,
 						Telefone: cliente?.telefone,
-						Email: cliente?.email
+						Email: cliente?.email,
 					},
 					addressInfo: {
 						Cep: cliente?.cep,
 						Endereco: cliente?.endereco,
 						Bairro: cliente?.bairro,
 						Cidade: cliente?.cidade,
-						Estado: cliente?.estado
-					}
+						Estado: cliente?.estado,
+					},
 				});
-				this.isLoadingView = false;
+
+				this.stepList = [
+					{
+						label: 'Informações do cliente',
+						isCurrent: true,
+						isVisited: true,
+					},
+					{
+						label: 'Endereço',
+						isVisited: true,
+					},
+				];
+				this.isLoadingData = false;
 			});
 	}
 
@@ -292,6 +304,7 @@ export class ClientRegisterComponent implements OnInit {
 			this.prevCepInputValue = cep;
 			return;
 		}
+		this.isLoadingCep = true;
 		this.addressInfoForm.controls['Cep'].disable();
 		this.addressInfoForm.controls['Endereco'].disable();
 		this.addressInfoForm.controls['Bairro'].disable();
@@ -319,6 +332,7 @@ export class ClientRegisterComponent implements OnInit {
 					} else {
 					}
 
+					this.isLoadingCep = false;
 					this.addressInfoForm.controls['Cep'].enable();
 					this.addressInfoForm.controls['Endereco'].enable();
 					this.addressInfoForm.controls['Bairro'].enable();
@@ -328,6 +342,7 @@ export class ClientRegisterComponent implements OnInit {
 				error: (err) => {
 					console.error(err);
 
+					this.isLoadingCep = false;
 					this.addressInfoForm.controls['Cep'].enable();
 					this.addressInfoForm.controls['Endereco'].enable();
 					this.addressInfoForm.controls['Bairro'].enable();
@@ -339,9 +354,7 @@ export class ClientRegisterComponent implements OnInit {
 		this.prevCepInputValue = cep;
 	}
 
-
 	onSubmit(e: any = null) {
-		
 		if (this.registerForm.invalid) {
 			this.registerForm.markAllAsTouched();
 			return;
@@ -364,7 +377,6 @@ export class ClientRegisterComponent implements OnInit {
 		if (this.operacaoClonar) {
 			this.clienteService.criarCliente(data).subscribe({
 				next: (response: any) => {
-
 					if (response.success) {
 						this.modalContent = {
 							header: 'Cadastro realizado com sucesso',
@@ -393,10 +405,8 @@ export class ClientRegisterComponent implements OnInit {
 				},
 			});
 		} else if (this.uid === 'new') {
-			
 			this.clienteService.criarCliente(data).subscribe({
 				next: (response: any) => {
-
 					if (response.success) {
 						this.modalContent = {
 							header: 'Cadastro realizado com sucesso',
@@ -425,37 +435,34 @@ export class ClientRegisterComponent implements OnInit {
 				},
 			});
 		} else {
-			this.clienteService
-				.atualizarCliente(this.uid, data)
-				.subscribe({
-					next: (response: any) => {
-
-						if (response.success) {
-							this.modalContent = {
-								header: 'Atualização realizada com sucesso',
-								message: response.message,
-							};
-						} else {
-							this.modalContent = {
-								header: 'Atualização não realizada',
-								message: response.message,
-								isError: true,
-							};
-						}
-
-						this.openModal();
-					},
-					error: (error: any) => {
-						console.error(error);
+			this.clienteService.atualizarCliente(this.uid, data).subscribe({
+				next: (response: any) => {
+					if (response.success) {
+						this.modalContent = {
+							header: 'Atualização realizada com sucesso',
+							message: response.message,
+						};
+					} else {
 						this.modalContent = {
 							header: 'Atualização não realizada',
-							message: 'Erro no envio de dados',
+							message: response.message,
 							isError: true,
 						};
+					}
 
-						this.openModal();
-					},
-				});
+					this.openModal();
+				},
+				error: (error: any) => {
+					console.error(error);
+					this.modalContent = {
+						header: 'Atualização não realizada',
+						message: 'Erro no envio de dados',
+						isError: true,
+					};
+
+					this.openModal();
+				},
+			});
 		}
 	}
 

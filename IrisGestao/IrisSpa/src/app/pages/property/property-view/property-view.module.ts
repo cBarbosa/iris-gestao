@@ -13,6 +13,7 @@ import { AreaPipeModule } from 'src/app/shared/pipes';
 import { PhotoGalleryComponent } from 'src/app/shared/components/photo-gallery/photo-gallery.component';
 import { MatriculaPipeModule } from 'src/app/shared/pipes/matricula.module';
 import { DialogModule } from 'primeng/dialog';
+import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 
 @NgModule({
 	declarations: [PropertyViewComponent],
@@ -30,6 +31,7 @@ import { DialogModule } from 'primeng/dialog';
 		MatriculaPipeModule,
 		PhotoGalleryComponent,
 		DialogModule,
+		SpinnerComponent,
 	],
 })
 export class PropertyViewModule {}
