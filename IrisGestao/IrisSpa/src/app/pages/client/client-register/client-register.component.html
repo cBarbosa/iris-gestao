@@ -58,6 +58,7 @@
 					(onBlur)="onBlurDate()"
 					placeholder="dd/mm/aaaa"
 					aria-describedby="birthday-help"
+					panelStyleClass="hidden"
 				></p-calendar>
 				<ng-container *ngIf="checkHasError(f['DataNascimento'])">
 					<small
@@ -100,15 +101,14 @@
 			</div>
 
 			<div class="field">
-				<label for="CpfCnpj" class="block">CPF</label>
+				<label for="CpfCnpj" class="block">CPF/CNPJ</label>
 				<input
 					id="CpfCnpj"
 					type="text"
 					formControlName="CpfCnpj"
 					aria-describedby="CpfCnpj-help"
-					mask="000.000.000-00"
+					mask="CPF_CNPJ"
 					pInputText
-					mask="000.000.000-00"
 				/>
 				<ng-container *ngIf="checkHasError(f['CpfCnpj'])">
 					<small
@@ -188,15 +188,18 @@
 
 			<div class="field">
 				<label for="Cep" class="block">CEP</label>
-				<input
-					id="Cep"
-					type="text"
-					formControlName="Cep"
-					aria-describedby="cep-help"
-					pInputText
-					mask="00.000-000"
-					(blur)="setAddressByCEP($event)"
-				/>
+				<span class="p-input-icon-right w-full">
+					<i class="pi pi-spin pi-spinner" *ngIf="isLoadingCep"></i>
+					<input
+						id="Cep"
+						type="text"
+						formControlName="Cep"
+						aria-describedby="cep-help"
+						pInputText
+						mask="00.000-000"
+						(blur)="setAddressByCEP($event)"
+					/>
+				</span>
 				<ng-container *ngIf="checkHasError(f['Cep'])">
 					<small
 						id="cep-help"

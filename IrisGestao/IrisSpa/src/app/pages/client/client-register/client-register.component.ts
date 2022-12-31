@@ -17,6 +17,7 @@ import {
 } from '@angular/forms';
 import { Utils } from 'src/app/shared/utils';
 import {
+	CpfCnpjValidator,
 	CpfValidator,
 	EmailValidator,
 	PastDateValidator,
@@ -69,6 +70,7 @@ export class ClientRegisterComponent implements OnInit {
 		},
 	];
 	prevCepInputValue = '';
+	isLoadingCep = false;
 
 	stepList: Step[];
 	currentStep: number;
@@ -124,7 +126,7 @@ export class ClientRegisterComponent implements OnInit {
 
 		this.registerForm = this.fb.group({
 			clientInfo: this.fb.group({
-				CpfCnpj: ['', [Validators.required, CpfValidator]],
+				CpfCnpj: ['', [Validators.required, CpfCnpjValidator]],
 				IdTipoCliente: ['', [Validators.required]],
 				Nome: ['', Validators.required],
 				razaoSocial: [''],
@@ -157,7 +159,7 @@ export class ClientRegisterComponent implements OnInit {
 		this.onBlurDate = onBlurDate;
 		this.isLoadingView = false;
 
-		this.currentStep = 1;
+		this.currentStep = 2;
 
 		this.stepList = [
 			{
@@ -320,6 +322,7 @@ export class ClientRegisterComponent implements OnInit {
 			this.prevCepInputValue = cep;
 			return;
 		}
+		this.isLoadingCep = true;
 		this.addressInfoForm.controls['Cep'].disable();
 		this.addressInfoForm.controls['Endereco'].disable();
 		this.addressInfoForm.controls['Bairro'].disable();
@@ -347,6 +350,7 @@ export class ClientRegisterComponent implements OnInit {
 					} else {
 					}
 
+					this.isLoadingCep = false;
 					this.addressInfoForm.controls['Cep'].enable();
 					this.addressInfoForm.controls['Endereco'].enable();
 					this.addressInfoForm.controls['Bairro'].enable();
@@ -356,6 +360,7 @@ export class ClientRegisterComponent implements OnInit {
 				error: (err) => {
 					console.error(err);
 
+					this.isLoadingCep = false;
 					this.addressInfoForm.controls['Cep'].enable();
 					this.addressInfoForm.controls['Endereco'].enable();
 					this.addressInfoForm.controls['Bairro'].enable();

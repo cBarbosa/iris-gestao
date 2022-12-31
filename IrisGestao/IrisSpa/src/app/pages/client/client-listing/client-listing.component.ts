@@ -67,22 +67,20 @@ export class ClientListingComponent {
 			.getClients(this.rows, page)
 			?.pipe(first())
 			.subscribe((event: any) => {
-				this.clientEntries = [];
-				this.isLoadingClients = true;
 				this.totalClientCount = event.totalCount;
-				event.items.forEach((cliente: any) => {
-					//console.log('Cliente >> ' + JSON.stringify(cliente));
-					this.clientEntries.push({
+				this.clientEntries = event.items.map((cliente: any) => {
+					// console.log('Cliente >> ', cliente);
+					return {
 						name: cliente.nome,
 						cpf_cnpj: cliente.cpfCnpj,
 						birthday: cliente.dataNascimento
 							? new Date(cliente.dataNascimento)
 							: new Date(),
-						client_type: cliente.idTipoClienteNavigation.nome,
+						client_type: cliente.idTipoClienteNavigation?.nome,
 						status: 'ativo',
 						action: '',
 						guidReferencia: cliente.guidReferencia,
-					});
+					};
 				});
 				this.isLoadingClients = false;
 			});

@@ -7,6 +7,7 @@ import { ClientViewRoutingModule } from './client-view-routing.module';
 import { ClientViewComponent } from './client-view.component';
 import { ButtonModule } from 'primeng/button';
 import { PropertyItemModule } from 'src/app/shared/components/property-item/property-item.module';
+import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 
 @NgModule({
 	declarations: [ClientViewComponent],
@@ -16,6 +17,7 @@ import { PropertyItemModule } from 'src/app/shared/components/property-item/prop
 		ButtonModule,
 		PropertyItemModule,
 		CpfCnpjPipeModule,
+		SpinnerComponent,
 	],
 })
 export class ClientViewModule {}
