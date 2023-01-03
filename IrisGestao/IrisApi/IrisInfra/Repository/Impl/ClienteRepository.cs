@@ -30,6 +30,7 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                             .ThenInclude(y => y.Unidade)
                         .Include(x => x.Imovel)
                             .ThenInclude(y => y.ImovelEndereco)
+                        .Include(z=> z.Contato)
                         .Where(x => x.GuidReferencia.Equals(guid))
                         .Select(x => new
                         {
@@ -75,6 +76,17 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                                     Nome            = x.Nome,
                                     Telefone        = x.Telefone
                                 }
+                            }),
+                            Contato = x.Contato.Select(z => new
+                            {
+                                Nome = z.Nome,
+                                Cargo = z.Cargo,
+                                Email = z.Email,
+                                Telefone = z.Telefone,
+                                DataNascimento = z.DataNascimento,
+                                DataCriacao = z.DataCriacao,
+                                DataAtualização = z.DataUltimaModificacao,
+                                guidReferenciaContato  = z.GuidReferencia,
                             })
                         })
                         .FirstOrDefaultAsync();
