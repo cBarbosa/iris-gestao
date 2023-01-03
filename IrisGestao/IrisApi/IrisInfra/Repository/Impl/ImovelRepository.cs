@@ -26,7 +26,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
             .ToListAsync();
     }
 
-    public async Task<CommandPagingResult?> GetAllPaging(int? idCategoria, string? nome, int limit, int page)
+    public async Task<CommandPagingResult?> GetAllPaging(int? idCategoria, int? idProprietario, string? nome, int limit, int page)
     {
         var skip = (page - 1) * limit;
 
@@ -39,7 +39,17 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                         .Include(x => x.ImovelEndereco)
                         .Include(x => x.Unidade)
                             .ThenInclude(y => y.IdTipoUnidadeNavigation)
-                        .Where(x => x.IdCategoriaImovel.Equals(TipoImovelEnum.IMOVEL_CARTEIRA))
+                        .Where(x => x.IdCategoriaImovel.Equals(TipoImovelEnum.IMOVEL_CARTEIRA) 
+                                    && (idCategoria.HasValue
+                                        ? x.Unidade.FirstOrDefault(y => y.IdTipoUnidade.Equals(idCategoria.Value)) != null
+                                        : true)
+                                    && (idProprietario.HasValue
+                                        ? x.IdClienteProprietario.Equals(idProprietario.Value)
+                                        : true)
+                                    && (!string.IsNullOrEmpty(nome)
+                                        ? x.Nome.Contains(nome!)
+                                        : true)
+                            )
                         .Select(x => new
                         {
                             GuidReferencia = x.GuidReferencia,

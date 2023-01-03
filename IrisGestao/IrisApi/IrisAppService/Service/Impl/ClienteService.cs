@@ -23,9 +23,9 @@ public class ClienteService: IClienteService
         this.logger = logger;
     }
 
-    public async Task<CommandResult> GetAllPaging(int limit, int page)
+    public async Task<CommandResult> GetAllPaging(int? idTipo, string? nome, int limit, int page)
     {
-        var Clientes = await clienteRepository.GetAllPaging(limit, page);
+        var Clientes = await clienteRepository.GetAllPaging(idTipo ,nome, limit, page);
 
         return Clientes == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)

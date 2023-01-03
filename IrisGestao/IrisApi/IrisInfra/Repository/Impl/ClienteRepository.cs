@@ -60,6 +60,7 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                                 AreaTotal           = y.Unidade.Sum(x => x.AreaTotal),
                                 AreaUtil            = y.Unidade.Sum(x => x.AreaUtil),
                                 AreaHabitese        = y.Unidade.Sum(x => x.AreaHabitese),
+                                NumCentroCusto      = y.NumCentroCusto,
                                 ImgCapa             = "../../../../assets/images/imovel.png",
                                 Imagens             = ImagemListFake,
                                 Anexos              = AnexoListFake,
@@ -80,7 +81,7 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                         .FirstOrDefaultAsync();
     }
 
-    public async Task<CommandPagingResult?> GetAllPaging(int limit, int page)
+    public async Task<CommandPagingResult?> GetAllPaging(int? idTipo, string? nome, int limit, int page)
     {
         var skip = (page - 1) * limit;
 
@@ -90,6 +91,15 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                 .Include(x => x.IdTipoClienteNavigation)
                 .Include(x => x.Imovel)
                     .ThenInclude(y => y.ImovelEndereco)
+                .Where(x =>
+                        (idTipo.HasValue
+                            ? x.IdTipoCliente.Equals(idTipo.Value)
+                            : true)
+                        && (!string.IsNullOrEmpty(nome)
+                            ? x.Nome.Contains(nome)
+                            : true)
+                    )
+                .OrderBy(x => x.Nome)
                 .ToListAsync();
 
             var totalCount = clientes.Count();
@@ -119,6 +129,7 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                 Nome = x.Nome,
                 QtdeImoveis = x.Imovel.Count()
             })
+            .OrderBy(y => y.Nome)
             .ToListAsync();
     }
 

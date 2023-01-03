@@ -7,6 +7,6 @@ public interface IClienteRepository : IRepository<Cliente>, IDisposable
 {
     Task<object?> GetByGuid(Guid guid);
     Task<Cliente?> GetByReferenceGuid(Guid guid);
-    Task <CommandPagingResult?> GetAllPaging(int limit, int page);
+    Task <CommandPagingResult?> GetAllPaging(int? idTipo, string? nome, int limit, int page);
     Task<IEnumerable<object>?> GetAllOwners();
 }

@@ -24,9 +24,9 @@ public class ImovelService: IImovelService
         this.logger = logger;
     }
 
-    public async Task<CommandResult> GetAllPaging(int? idCategoria, string? nome, int limit, int page)
+    public async Task<CommandResult> GetAllPaging(int? idCategoria, int? idProprietario, string? nome, int limit, int page)
     {
-        var result = await imovelRepository.GetAllPaging(idCategoria, nome, limit, page);
+        var result = await imovelRepository.GetAllPaging(idCategoria, idProprietario, nome, limit, page);
 
         return result == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
