@@ -76,4 +76,11 @@
 			}
 		}
 	}
+
+	&.only-icon {
+		.loading-placeholder {
+			background-color: transparent;
+			border-color: transparent;
+		}
+	}
 }

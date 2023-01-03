@@ -1,13 +1,21 @@
-<div class="property-view">
-	<div class="cover"></div>
+<ng-container *ngIf="isLoadingView; else details">
+	<div class="flex relative justify-center items-center w-full h-full pt-20">
+		<div class="w-full max-w-3xl">
+			<app-spinner text="Carregando"></app-spinner>
+		</div>
+	</div>
+</ng-container>
+<ng-template #details>
+	<div class="property-view">
+		<div class="cover"></div>
 
-	<div class="content">
-		<div class="main-card">
-			<div
-				class="left-side"
-				*ngIf="property && property.idCategoriaImovelNavigation"
-			>
-				<!-- <p-tag
+		<div class="content">
+			<div class="main-card">
+				<div
+					class="left-side"
+					*ngIf="property && property.idCategoriaImovelNavigation"
+				>
+					<!-- <p-tag
 					[rounded]="true"
 					[styleClass]="
 						property.idCategoriaImovelNavigation.nome == 'Imóvel de carteira'
@@ -15,10 +23,10 @@
 							: 'market'
 					"
 				></p-tag> -->
-				<h4>
-					{{ property.nome }}
-					<span class="property-id">#{{ property.numCentroCusto }}</span>
-					<!-- <button
+					<h4>
+						{{ property.nome }}
+						<span class="property-id">#{{ property.numCentroCusto }}</span>
+						<!-- <button
 						pButton
 						pRipple
 						type="button"
@@ -29,156 +37,157 @@
 						}"
 						(click)="toggleFavorite()"
 					></button> -->
-				</h4>
-				<p>
-					{{ property.imovelEndereco?.[0]?.rua ?? '' }} -
-					{{ property.imovelEndereco?.[0]?.uf }}
-				</p>
-				<div class="location">
-					<app-icon name="pin-building" styleClass="mr-1"></app-icon>
-					{{ property.idCategoriaImovelNavigation.nome }}
-				</div>
-			</div>
-			<div class="right-side" *ngIf="property">
-				<div class="property-features">
-					<div class="feature">
-						<div class="label">
-							<app-icon name="door" styleClass="mr-1"></app-icon>
-							Unidades
-						</div>
-						<div class="value">{{ property.nroUnidades ?? 0 }}</div>
+					</h4>
+					<p>
+						{{ property.imovelEndereco?.[0]?.rua ?? '' }} -
+						{{ property.imovelEndereco?.[0]?.uf }}
+					</p>
+					<div class="location">
+						<app-icon name="pin-building" styleClass="mr-1"></app-icon>
+						{{ property.idCategoriaImovelNavigation.nome }}
 					</div>
-					<span class="feature">
-						<div class="label">
-							<app-icon name="area" styleClass="mr-1"></app-icon>
-							Metragem total
+				</div>
+				<div class="right-side" *ngIf="property">
+					<div class="property-features">
+						<div class="feature">
+							<div class="label">
+								<app-icon name="door" styleClass="mr-1"></app-icon>
+								Unidades
+							</div>
+							<div class="value">{{ property.nroUnidades ?? 0 }}</div>
 						</div>
-						<div class="value">{{ property.areaTotal ?? 0 | area }}</div>
-					</span>
-					<span class="ml-7 mt-2">
-						<button
-							pButton
-							type="button"
-							class="p-button-outlined icon-left h-9"
-							(click)="navigateTo('property/edit/' + uid)"
-						>
-							Editar imóvel
-						</button>
-					</span>
+						<span class="feature">
+							<div class="label">
+								<app-icon name="area" styleClass="mr-1"></app-icon>
+								Metragem total
+							</div>
+							<div class="value">{{ property.areaTotal ?? 0 | area }}</div>
+						</span>
+						<span class="ml-7 mt-2">
+							<button
+								pButton
+								type="button"
+								class="p-button-outlined icon-left h-9"
+								(click)="navigateTo('property/edit/' + uid)"
+							>
+								Editar imóvel
+							</button>
+						</span>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<section class="units" *ngIf="property && property.unidade">
-			<div class="w-full flex justify-between">
-				<h3>Unidades</h3>
-				<button
-					pButton
-					type="button"
-					icon="pi pi-plus"
-					iconPos="left"
-					class="p-button-outlined icon-left h-9"
-					(click)="navigateTo('property/register/unit/' + this.uid)"
-					*ngIf="!isCorporativeBuilding"
+			<section class="units" *ngIf="property && property.unidade">
+				<div class="w-full flex justify-between">
+					<h3>Unidades</h3>
+					<button
+						pButton
+						type="button"
+						icon="pi pi-plus"
+						iconPos="left"
+						class="p-button-outlined icon-left h-9"
+						(click)="navigateTo('property/register/unit/' + this.uid)"
+						*ngIf="!isCorporativeBuilding"
+					>
+						Adicionar unidade
+					</button>
+				</div>
+
+				<div *ngIf="property.unidade && property.unidade!.length === 0">
+					sem unidades cadastradas
+				</div>
+
+				<p-table
+					[value]="units"
+					styleClass="p-datatable-striped"
+					[tableStyle]="{ 'min-width': '50rem' }"
+					*ngIf="property.unidade && property.unidade!.length > 0"
 				>
-					Adicionar unidade
-				</button>
-			</div>
-
-			<div *ngIf="property.unidade && property.unidade!.length === 0">
-				sem unidades cadastradas
-			</div>
-
-			<p-table
-				[value]="units"
-				styleClass="p-datatable-striped"
-				[tableStyle]="{ 'min-width': '50rem' }"
-				*ngIf="property.unidade && property.unidade!.length > 0"
-			>
-				<ng-template pTemplate="header">
-					<tr>
-						<th>Nome</th>
-						<th>Área Habite-se</th>
-						<th>Área Útil</th>
-						<th>Locatário</th>
-						<th>Vencimento</th>
-						<th>Locação</th>
-						<th></th>
-					</tr>
-				</ng-template>
-				<!-- <ng-container *ngFor="let unit of property.unidade"></ng-container> -->
-				<ng-template pTemplate="body" let-unit>
-					<tr>
-						<td>{{ unit.tipo }}</td>
-						<td>{{ unit.areaHabitese ?? 0 | area }}</td>
-						<td>{{ unit.areaUtil | area }}</td>
-						<td>-</td>
-						<td>-</td>
-						<td class="w-52">
-							<ng-container *ngIf="unit.unidadeLocada; else disponivel">
-								<p-tag
-									value="Unidade locada"
-									[rounded]="true"
-									severity="danger"
-									styleClass="w-36"
-								></p-tag>
-							</ng-container>
-							<ng-template #disponivel>
-								<p-tag
-									value="Unidade disponível"
-									[rounded]="true"
-									severity="success"
-									styleClass="w-36"
-								></p-tag>
-							</ng-template>
-						</td>
-						<td class="action w-16">
-							<button
-								type="button"
-								pButton
-								icon="pi pi-ellipsis-v"
-								class="p-button-rounded"
-								(click)="actionMenu.toggle($event); setCurrentUnit(unit)"
-							></button>
-						</td>
-					</tr>
-				</ng-template>
-			</p-table>
-		</section>
-
-		<section class="attachments">
-			<h3>Anexos</h3>
-
-			<div class="attachments-card">
-				<button type="button" class="attachment">
-					<span class="icon">
-						<app-icon name="att-proj" size="1.5rem"></app-icon>
-					</span>
-					<span class="label">Projeto</span>
-				</button>
-				<button type="button" class="attachment">
-					<span class="icon">
-						<app-icon name="att-mat" size="1.5rem"></app-icon>
-					</span>
-					<span class="label">Matrícula</span>
-				</button>
-				<button type="button" class="attachment">
-					<span class="icon">
-						<app-icon name="att-hab" size="1.5rem"></app-icon>
-					</span>
-					<span class="label">Habite-se</span>
-				</button>
-			</div>
-		</section>
-
-		<ng-container *ngIf="imageList.length > 0">
-			<section class="photos">
-				<h3>Fotos</h3>
-				<app-photo-gallery [imageList]="imageList"></app-photo-gallery>
+					<ng-template pTemplate="header">
+						<tr>
+							<th>Nome</th>
+							<th>Área Habite-se</th>
+							<th>Área Útil</th>
+							<th>Locatário</th>
+							<th>Vencimento</th>
+							<th>Locação</th>
+							<th></th>
+						</tr>
+					</ng-template>
+					<!-- <ng-container *ngFor="let unit of property.unidade"></ng-container> -->
+					<ng-template pTemplate="body" let-unit>
+						<tr>
+							<td>{{ unit.tipo }}</td>
+							<td>{{ unit.areaHabitese ?? 0 | area }}</td>
+							<td>{{ unit.areaUtil | area }}</td>
+							<td>-</td>
+							<td>-</td>
+							<td class="w-52">
+								<ng-container *ngIf="unit.unidadeLocada; else disponivel">
+									<p-tag
+										value="Unidade locada"
+										[rounded]="true"
+										severity="danger"
+										styleClass="w-36"
+									></p-tag>
+								</ng-container>
+								<ng-template #disponivel>
+									<p-tag
+										value="Unidade disponível"
+										[rounded]="true"
+										severity="success"
+										styleClass="w-36"
+									></p-tag>
+								</ng-template>
+							</td>
+							<td class="action w-16">
+								<button
+									type="button"
+									pButton
+									icon="pi pi-ellipsis-v"
+									class="p-button-rounded"
+									(click)="actionMenu.toggle($event); setCurrentUnit(unit)"
+								></button>
+							</td>
+						</tr>
+					</ng-template>
+				</p-table>
 			</section>
-		</ng-container>
+
+			<section class="attachments">
+				<h3>Anexos</h3>
+
+				<div class="attachments-card">
+					<button type="button" class="attachment">
+						<span class="icon">
+							<app-icon name="att-proj" size="1.5rem"></app-icon>
+						</span>
+						<span class="label">Projeto</span>
+					</button>
+					<button type="button" class="attachment">
+						<span class="icon">
+							<app-icon name="att-mat" size="1.5rem"></app-icon>
+						</span>
+						<span class="label">Matrícula</span>
+					</button>
+					<button type="button" class="attachment">
+						<span class="icon">
+							<app-icon name="att-hab" size="1.5rem"></app-icon>
+						</span>
+						<span class="label">Habite-se</span>
+					</button>
+				</div>
+			</section>
+
+			<ng-container *ngIf="imageList.length > 0">
+				<section class="photos">
+					<h3>Fotos</h3>
+					<app-photo-gallery [imageList]="imageList"></app-photo-gallery>
+				</section>
+			</ng-container>
+		</div>
 	</div>
-</div>
+</ng-template>
 
 <p-menu #actionMenu [popup]="true" [model]="tableMenu"></p-menu>
 
@@ -315,11 +324,7 @@
 		<p>
 			{{ modalContent.message }}
 		</p>
-		<button
-			pButton
-			label="Continuar"
-			(click)="reloadPage()"
-		></button>
+		<button pButton label="Continuar" (click)="reloadPage()"></button>
 	</div>
 	<ng-template #error>
 		<div class="modal-error">

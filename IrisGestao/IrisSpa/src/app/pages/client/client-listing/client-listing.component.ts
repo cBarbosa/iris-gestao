@@ -67,12 +67,10 @@ export class ClientListingComponent {
 			.getClients(this.rows, page)
 			?.pipe(first())
 			.subscribe((event: any) => {
-				this.clientEntries = [];
-				this.isLoadingClients = true;
 				this.totalClientCount = event.totalCount;
-				event.items.forEach((cliente: any) => {
-					//console.log('Cliente >> ' + JSON.stringify(cliente));
-					this.clientEntries.push({
+				this.clientEntries = event.items.map((cliente: any) => {
+					// console.log('Cliente >> ', cliente);
+					return {
 						name: cliente.nome,
 						cpf_cnpj: cliente.cpfCnpj,
 						birthday: cliente.dataNascimento
@@ -82,7 +80,7 @@ export class ClientListingComponent {
 						status: 'ativo',
 						action: '',
 						guidReferencia: cliente.guidReferencia,
-					});
+					};
 				});
 				this.isLoadingClients = false;
 			});

@@ -11,42 +11,36 @@ import { ClienteService } from '../../../shared/services/cliente.service';
 	selector: 'app-client-view',
 	templateUrl: './client-view.component.html',
 	styleUrls: ['./client-view.component.scss'],
-	providers: [ClienteService, DatePipe]
+	providers: [ClienteService, DatePipe],
 })
-export class ClientViewComponent  implements OnInit {
+export class ClientViewComponent implements OnInit {
 	properties: Imovel[] = [];
 	uid: string;
 	cliente: any;
 	totalClientCount: number;
-	isLoadingClients = false;
+	isLoadingView = false;
 
-constructor(
-	private router: Router
-	, private route: ActivatedRoute
-	, private clienteService: ClienteService) {
-
-		this.route.paramMap.subscribe(paramMap => {
-			this.uid = paramMap.get('uid') ?? ''; 
+	constructor(
+		private router: Router,
+		private route: ActivatedRoute,
+		private clienteService: ClienteService
+	) {
+		this.route.paramMap.subscribe((paramMap) => {
+			this.uid = paramMap.get('uid') ?? '';
 		});
-	};
+	}
 
 	ngOnInit(): void {
-
 		this.getByIdCliente();
 	}
 
-	getByIdCliente()
-	{
-		this
-		.clienteService
-		.getClienteById(this.uid)
-		.subscribe(event => {
-		this.cliente = event;
-		
-		event.imovel.forEach((imovel: Imovel) => {
-			//console.debug('Imovel Data >> ' + JSON.stringify(imovel));
-			this.properties.push(imovel);
-		});
+	getByIdCliente() {
+		this.isLoadingView = true;
+		this.clienteService.getClienteById(this.uid).subscribe((event) => {
+			this.cliente = event;
+
+			this.properties = [...event.imovel];
+			this.isLoadingView = false;
 		});
 	}
 

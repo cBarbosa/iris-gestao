@@ -8,157 +8,164 @@
 			<h4>Cadastrar unidade</h4>
 			<p>Informações necessárias para o cadastro do imóvel</p>
 
-			<div class="photo-input">
-				<img
-					*ngIf="property != undefined && property.imgCapa != undefined"
-					[src]="property.imgCapa"
-					alt="edit-photo"
-				/>
-			</div>
-
-			<div class="field">
-				<label for="proprietary" class="block">Proprietário</label>
-				<input
-					id="proprietary"
-					type="text"
-					formControlName="proprietary"
-					aria-describedby="proprietary-help"
-					pInputText
-					readonly="true"
-				/>
-				<ng-container *ngIf="checkHasError(f['proprietary'])">
-					<small
-						id="proprietary-help"
-						*ngIf="f['proprietary'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o proprietário
-					</small>
-					<ng-template #error2>
-						<small id="proprietary-help" class="p-error block">
-							Proprietário inválido
-						</small>
-					</ng-template>
-				</ng-container>
-			</div>
-
-			<div class="field">
-				<label for="nameCompany" class="block">Nome do imóvel</label>
-				<input
-					id="nameCompany"
-					type="text"
-					formControlName="nameCompany"
-					aria-describedby="nameCompany-help"
-					pInputText
-					readonly="true"
-				/>
-				<ng-container *ngIf="checkHasError(f['nameCompany'])">
-					<small
-						id="nameCompany-help"
-						*ngIf="f['nameCompany'].hasError('required'); else error2"
-						class="p-error block"
-						>Informe o nome</small
-					>
-					<ng-template #error2>
-						<small id="nameCompany-help" class="p-error block">
-							Nome inválido
-						</small>
-					</ng-template>
-				</ng-container>
-			</div>
-
-			<div class="field">
-				<label for="category" class="block">Categorização</label>
-				<input
-					id="category"
-					type="text"
-					formControlName="category"
-					aria-describedby="category-help"
-					pInputText
-					readonly="true"
-				/>
-				<ng-container *ngIf="checkHasError(f['category'])">
-					<small
-						id="category-help"
-						*ngIf="f['category'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe a categorização
-					</small>
-					<ng-template #error2>
-						<small id="category-help" class="p-error block">
-							Categorização inválida
-						</small>
-					</ng-template>
-				</ng-container>
-			</div>
-
-			<div class="field">
-				<label for="typeStr" class="block">Tipo de unidade</label>
-				<input
-					id="typeStr"
-					type="text"
-					formControlName="typeStr"
-					aria-describedby="typeStr-help"
-					pInputText
-					readonly="true"
-				/>
-				<ng-container *ngIf="checkHasError(f['typeStr'])">
-					<small
-						id="typeStr-help"
-						*ngIf="f['typeStr'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o tipo de unidade
-					</small>
-					<ng-template #error2>
-						<small id="typeStr-help" class="p-error block">
-							Tipo de unidade inválido
-						</small>
-					</ng-template>
-				</ng-container>
-			</div>
-
-			<h5>Documentos</h5>
-
-			<div class="document-list">
-				<div class="document project">
-					<span>Projeto</span>
-					<span class="buttons">
-						<button
-							pButton
-							type="button"
-							class="p-button-rounded p-button-text"
-						>
-							<i class="ph-download-simple"></i>
-						</button>
-					</span>
+			<div class="property-inputs" *ngIf="!isLoadingView; else spinner">
+				<div class="photo-input">
+					<img
+						*ngIf="property != undefined && property.imgCapa != undefined"
+						[src]="property.imgCapa"
+						alt="edit-photo"
+					/>
 				</div>
-				<div class="document registration">
-					<span>Matrícula</span>
-					<span class="buttons">
-						<button
-							pButton
-							type="button"
-							class="p-button-rounded p-button-text"
+
+				<div class="field">
+					<label for="proprietary" class="block">Proprietário</label>
+					<input
+						id="proprietary"
+						type="text"
+						formControlName="proprietary"
+						aria-describedby="proprietary-help"
+						pInputText
+						readonly="true"
+					/>
+					<ng-container *ngIf="checkHasError(f['proprietary'])">
+						<small
+							id="proprietary-help"
+							*ngIf="f['proprietary'].hasError('required'); else error2"
+							class="p-error block"
 						>
-							<i class="ph-download-simple"></i>
-						</button>
-					</span>
+							Informe o proprietário
+						</small>
+						<ng-template #error2>
+							<small id="proprietary-help" class="p-error block">
+								Proprietário inválido
+							</small>
+						</ng-template>
+					</ng-container>
 				</div>
-				<div class="document occupancy">
-					<span>Habite-se</span>
-					<span class="buttons">
-						<button
-							pButton
-							type="button"
-							class="p-button-rounded p-button-text"
+
+				<div class="field">
+					<label for="nameCompany" class="block">Nome do imóvel</label>
+					<input
+						id="nameCompany"
+						type="text"
+						formControlName="nameCompany"
+						aria-describedby="nameCompany-help"
+						pInputText
+						readonly="true"
+					/>
+					<ng-container *ngIf="checkHasError(f['nameCompany'])">
+						<small
+							id="nameCompany-help"
+							*ngIf="f['nameCompany'].hasError('required'); else error2"
+							class="p-error block"
+							>Informe o nome</small
 						>
-							<i class="ph-download-simple"></i>
-						</button>
-					</span>
+						<ng-template #error2>
+							<small id="nameCompany-help" class="p-error block">
+								Nome inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="category" class="block">Categorização</label>
+					<input
+						id="category"
+						type="text"
+						formControlName="category"
+						aria-describedby="category-help"
+						pInputText
+						readonly="true"
+					/>
+					<ng-container *ngIf="checkHasError(f['category'])">
+						<small
+							id="category-help"
+							*ngIf="f['category'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe a categorização
+						</small>
+						<ng-template #error2>
+							<small id="category-help" class="p-error block">
+								Categorização inválida
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="typeStr" class="block">Tipo de unidade</label>
+					<input
+						id="typeStr"
+						type="text"
+						formControlName="typeStr"
+						aria-describedby="typeStr-help"
+						pInputText
+						readonly="true"
+					/>
+					<ng-container *ngIf="checkHasError(f['typeStr'])">
+						<small
+							id="typeStr-help"
+							*ngIf="f['typeStr'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o tipo de unidade
+						</small>
+						<ng-template #error2>
+							<small id="typeStr-help" class="p-error block">
+								Tipo de unidade inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<h5>Documentos</h5>
+
+				<div class="document-list">
+					<div class="document project">
+						<span>Projeto</span>
+						<span class="buttons">
+							<button
+								pButton
+								type="button"
+								class="p-button-rounded p-button-text"
+							>
+								<i class="ph-download-simple"></i>
+							</button>
+						</span>
+					</div>
+					<div class="document registration">
+						<span>Matrícula</span>
+						<span class="buttons">
+							<button
+								pButton
+								type="button"
+								class="p-button-rounded p-button-text"
+							>
+								<i class="ph-download-simple"></i>
+							</button>
+						</span>
+					</div>
+					<div class="document occupancy">
+						<span>Habite-se</span>
+						<span class="buttons">
+							<button
+								pButton
+								type="button"
+								class="p-button-rounded p-button-text"
+							>
+								<i class="ph-download-simple"></i>
+							</button>
+						</span>
+					</div>
 				</div>
 			</div>
+			<ng-template #spinner>
+				<div class="spinner">
+					<app-spinner [onlyIcon]="true"></app-spinner>
+				</div>
+			</ng-template>
 		</section>
 		<section class="aditional-data">
 			<h4>Informações da unidade</h4>
