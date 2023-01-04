@@ -96,6 +96,24 @@
 					color: #641b1e;
 					background-color: rgba(100, 27, 30, 0.04);
 				}
+
+				&.white-theme {
+					border-color: #ffffff;
+					color: #ffffff;
+
+					&:not([disabled]):hover {
+						border-color: #ffffff;
+						color: #ffffff;
+						background-color: rgba(255, 255, 255, 0.06);
+					}
+
+					&:not([disabled]):focus-visible,
+					&:not([disabled]):active {
+						box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+						border-color: #ffffff;
+						color: #ffffff;
+					}
+				}
 			}
 
 			&.p-button-text {
@@ -273,6 +291,38 @@
 				border: 1px solid #a8a8a8;
 				box-shadow: none;
 			}
+
+			&.white-theme {
+				&.ng-pristine,
+				&.ng-dirty,
+				&.ng-valid {
+					border: 1px solid #ffffff;
+
+					&:focus {
+						box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+					}
+				}
+
+				&.ng-touched:not(.ng-invalid):not(:disabled):hover,
+				&.ng-pristine:not(:disabled):hover {
+					border-color: #ffffff;
+				}
+
+				&:focus {
+					box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+				}
+
+				&:enabled:hover,
+				&:enabled:focus {
+					border-color: #ffffff;
+				}
+
+				&:disabled:hover,
+				&:disabled:focus,
+				&:disabled:focus-visible {
+					border: 1px solid #ffffff;
+				}
+			}
 		}
 
 		&.p-menu {
@@ -433,6 +483,12 @@
 								}
 							}
 						}
+					}
+				}
+
+				&.white-theme {
+					&:not(.p-disabled).p-focus {
+						box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
 					}
 				}
 			}

@@ -17,16 +17,19 @@ const httpOptions = {
 export class ClienteService {
 	constructor(private http: HttpClient) {}
 
-	getClients(limit: number = 50, page: number = 1) {
+	getClients(limit: number = 50, page: number = 1, filter: string = '') {
 		return this.http
 			.get<ApiResponse>(
-				`${env.config.apiUrl}Cliente?limit=${limit}&page=${page}`
+				`${env.config.apiUrl}Cliente?limit=${limit}&page=${page}${
+					filter ? `&nome=${filter}` : ''
+				}`
 			)
 			.pipe(
 				map((response) => {
 					console.log('client response', response);
-					if (response.success) return response.data;
-					else return console.error(`getClients: ${response.message}`);
+					if (!response.success)
+						console.error(`getClients: ${response.message}`);
+					return response;
 				})
 			);
 	}
@@ -41,9 +44,9 @@ export class ClienteService {
 					else return console.error(`getClients: ${response.message}`);
 				})
 			);
-			}
+	}
 
-	updateUnit(uid:string, unit: ClienteType) {
+	updateUnit(uid: string, unit: ClienteType) {
 		return this.http.put<ApiResponse>(
 			`${env.config.apiUrl}Cliente/${uid}/atualizar`,
 			JSON.stringify(unit, null, 2),
@@ -75,7 +78,7 @@ export class ClienteService {
 			);
 	}
 
-	atualizarCliente(uid:string, form: any) {
+	atualizarCliente(uid: string, form: any) {
 		return this.http
 			.put<ApiResponse>(
 				`${env.config.apiUrl}Cliente/${uid}/atualizar`,

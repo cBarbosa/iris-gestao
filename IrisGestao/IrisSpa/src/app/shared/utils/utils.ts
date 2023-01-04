@@ -5,6 +5,14 @@ export class Utils {
 		return control?.invalid && (control.dirty || control.touched);
 	}
 
+	static debounce(func: Function, wait: number = 500): Function {
+		let timer: number | null = null;
+		return function (...args: any) {
+			timer !== null && clearTimeout(timer);
+			timer = window.setTimeout((): any => func(...args), wait);
+		};
+	}
+
 	static calendarMaskHandlers(): any {
 		// TO MASK CALENDAR INPUT
 		let calendarDateMask: string;
