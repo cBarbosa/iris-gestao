@@ -9,11 +9,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { CpfCnpjPipeModule } from 'src/app/shared/pipes';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
 	declarations: [ClientListingComponent],
 	imports: [
 		CommonModule,
+		FormsModule,
+		ReactiveFormsModule,
 		DropdownModule,
 		TableModule,
 		TagModule,
