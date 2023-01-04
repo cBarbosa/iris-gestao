@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api';
 import { first } from 'rxjs';
 import { Utils } from 'src/app/shared/utils';
@@ -22,24 +22,31 @@ export class ClientListingComponent {
 	noRestults = false;
 	first = 0;
 	rows = 10;
+	pageIndex = 1;
 	public clientEntries: any[];
 	dropdownTipoCliente: any;
 	tiposCliente = [
 		{
-			label: 'Tipo do cliente',
+			label: 'Todos os tipos de cliente',
 			value: null,
 		},
 	];
 
-	filterText: string = '';
+	filterText: string;
+	filterType: number;
 
 	constructor(
 		private router: Router,
+		private activatedRoute: ActivatedRoute,
 		private clienteService: ClienteService,
 		private dominiosService: DominiosService
 	) {}
 
 	ngOnInit(): void {
+		const routePageIndex =
+			this.activatedRoute.snapshot.paramMap.get('pageIndex') ?? 1;
+		this.pageIndex = +routePageIndex;
+
 		this.getTiposCliente();
 	}
 
@@ -66,10 +73,10 @@ export class ClientListingComponent {
 		}
 	}
 
-	getClientsPage(page = 1, filter?: string): void {
+	getClientsPage(page = 1, filter?: string, typeId?: number): void {
 		this.isLoadingClients = true;
 		const clients = this.clienteService
-			.getClients(this.rows, page, filter)
+			.getClients(this.rows, page, filter, typeId)
 			?.pipe(first())
 			.subscribe({
 				next: (event: any) => {
@@ -110,9 +117,8 @@ export class ClientListingComponent {
 
 	filterClients = (e: Event) => {
 		console.log(e);
-		const filter: string = e.toString();
 
-		this.getClientsPage(1, filter);
+		this.getClientsPage(1, this.filterText, this.filterType);
 	};
 
 	filterClientDebounce: Function = Utils.debounce(this.filterClients, 1000);

@@ -33,4 +33,16 @@ export class CommonService {
 				})
 			);
 	}
+
+	getUnitType() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/tipo-unidade`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getUnitType: ${response.message}`);
+					return response;
+				})
+			);
+	}
 }

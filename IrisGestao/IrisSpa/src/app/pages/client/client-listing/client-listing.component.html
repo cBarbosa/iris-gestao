@@ -27,6 +27,8 @@
 					id="IdTipoCliente"
 					[options]="tiposCliente"
 					aria-describedby="client-type-help"
+					[(ngModel)]="filterType"
+					(ngModelChange)="filterClientDebounce($event)"
 				></p-dropdown>
 
 				<button

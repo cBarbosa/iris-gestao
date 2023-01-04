@@ -17,12 +17,17 @@ const httpOptions = {
 export class ClienteService {
 	constructor(private http: HttpClient) {}
 
-	getClients(limit: number = 50, page: number = 1, filter: string = '') {
+	getClients(
+		limit: number = 50,
+		page: number = 1,
+		filter?: string,
+		typeId?: number
+	) {
 		return this.http
 			.get<ApiResponse>(
 				`${env.config.apiUrl}Cliente?limit=${limit}&page=${page}${
 					filter ? `&nome=${filter}` : ''
-				}`
+				}${typeId ? `&idTipo=${typeId}` : ''}`
 			)
 			.pipe(
 				map((response) => {
