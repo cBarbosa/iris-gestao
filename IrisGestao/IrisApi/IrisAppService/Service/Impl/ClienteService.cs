@@ -13,13 +13,16 @@ public class ClienteService: IClienteService
     private readonly IClienteRepository clienteRepository;
     private readonly IImovelRepository imovelRepository;
     private readonly ILogger<IClienteService> logger;
+    private readonly IContatoService contatoService;
 
     public ClienteService(IClienteRepository clienteRepository
                          ,IImovelRepository imovelRepository
+                         , IContatoService contatoService
                          , ILogger<IClienteService> logger)
     {
         this.clienteRepository = clienteRepository;
         this.imovelRepository = imovelRepository;
+        this.contatoService = contatoService;
         this.logger = logger;
     }
 
@@ -49,6 +52,12 @@ public class ClienteService: IClienteService
         try
         {
             clienteRepository.Insert(cliente);
+            if(cmd.Contato != null)
+            {
+                var contato = new Contato();
+                cmd.Contato.GuidClienteReferencia = cliente.GuidReferencia.Value;
+                await contatoService.Insert(cmd.Contato);
+            }
             return new CommandResult(true, SuccessResponseEnums.Success_1000, cliente);
         }
         catch (Exception e)
@@ -60,7 +69,6 @@ public class ClienteService: IClienteService
 
     public async Task<CommandResult> Update(Guid uuid, CriarClienteCommand cmd)
     {
-
         if (cmd == null || uuid.Equals(Guid.Empty))
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
