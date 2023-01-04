@@ -67,7 +67,6 @@ export class ClientListingComponent {
 
 	loadClientsPage(event: LazyLoadEvent) {
 		if (event.first != null) {
-			this.isLoadingClients = true;
 			const page = Math.floor(event.first / this.rows) + 1;
 			this.getClientsPage(page, this.filterText);
 		}
@@ -75,6 +74,8 @@ export class ClientListingComponent {
 
 	getClientsPage(page = 1, filter?: string, typeId?: number): void {
 		this.isLoadingClients = true;
+		this.clientEntries = [];
+
 		const clients = this.clienteService
 			.getClients(this.rows, page, filter, typeId)
 			?.pipe(first())

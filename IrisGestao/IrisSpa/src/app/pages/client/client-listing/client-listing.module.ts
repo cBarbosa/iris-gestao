@@ -10,6 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { CpfCnpjPipeModule } from 'src/app/shared/pipes';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 
 @NgModule({
 	declarations: [ClientListingComponent],
@@ -24,6 +25,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 		ButtonModule,
 		ClientListingRoutingModule,
 		CpfCnpjPipeModule,
+		SpinnerComponent,
 	],
 })
 export class ClientListingModule {}

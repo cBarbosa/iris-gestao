@@ -43,23 +43,26 @@
 			</div>
 		</header>
 		<ng-container>
-			<ng-container *ngIf="noRestults">
+			<ng-container *ngIf="isLoadingClients">
+				<app-spinner styleClass="mt-11"></app-spinner>
+			</ng-container>
+			<ng-container *ngIf="!isLoadingClients && noRestults">
 				<div class="no-results-warn">
 					<span>Nenhum resultado</span>
 				</div>
 			</ng-container>
+
 			<p-table
 				[value]="clientEntries"
 				styleClass="p-datatable-striped"
 				[tableStyle]="{ 'min-width': '50rem' }"
-				[paginator]="!noRestults"
+				[paginator]="!noRestults && !isLoadingClients"
 				[rows]="rows"
 				[(first)]="first"
 				responsiveLayout="scroll"
 				[totalRecords]="totalClientCount"
 				[lazy]="true"
 				(onLazyLoad)="loadClientsPage($event)"
-				[loading]="isLoadingClients"
 			>
 				<ng-template pTemplate="header">
 					<tr>
