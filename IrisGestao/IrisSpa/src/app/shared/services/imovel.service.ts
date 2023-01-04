@@ -42,19 +42,28 @@ const httpOptions = {
 export class ImovelService {
 	constructor(private http: HttpClient) {}
 
-	getProperties(limit: number = 50, page: number = 1) {
-		return this.http
-			.get<ApiResponse>(
-				`${env.config.apiUrl}Imovel?limit=${limit}&page=${page}`
-			)
-			.pipe(
-				map((response) => {
-					console.log('response', response);
-					if (!response.success)
-						console.error(`getProperties: ${response.message}`);
-					return response;
-				})
-			);
+	getProperties(
+		limit: number = 50,
+		page: number = 1,
+		filter?: string,
+		categoryId?: number,
+		proprietaryId?: number
+	) {
+		const requestPath = `${
+			env.config.apiUrl
+		}Imovel?limit=${limit}&page=${page}${filter ? `&nome=${filter}` : ''}${
+			categoryId ? `&idCategoria=${categoryId}` : ''
+		}${proprietaryId ? `&idProprietario=${proprietaryId}` : ''}`;
+
+		console.log('requestPath', requestPath);
+		return this.http.get<ApiResponse>(requestPath).pipe(
+			map((response) => {
+				console.log('response', response);
+				if (!response.success)
+					console.error(`getProperties: ${response.message}`);
+				return response;
+			})
+		);
 	}
 
 	registerProperty(propertyObj: Property) {
@@ -151,5 +160,4 @@ export class ImovelService {
 				})
 			);
 	}
-	
 }

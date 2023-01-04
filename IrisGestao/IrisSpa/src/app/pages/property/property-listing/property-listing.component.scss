@@ -7,6 +7,16 @@
 	max-width: 1440px;
 	margin: 0 auto;
 	@apply pb-8;
+
+	.no-results-warn {
+		background-color: #ffffff;
+		padding: 3rem 3rem;
+		width: 100%;
+		text-align: center;
+		margin-top: 2rem;
+		@apply text-xl border border-slate-200;
+		border-radius: 4px;
+	}
 }
 
 :host ::ng-deep {
@@ -59,6 +69,15 @@
 			&:not(.p-disabled).p-focus {
 				@apply ring-1;
 			}
+		}
+
+		&.p-inputwrapper.ng-valid {
+			.p-dropdown {
+				@apply border-slate-200;
+			}
+		}
+		&.p-inputtext.ng-valid {
+			@apply border-slate-200;
 		}
 	}
 }

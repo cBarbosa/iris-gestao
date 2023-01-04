@@ -10,11 +10,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { PropertyListComponent } from 'src/app/shared/components/property-list/property-list.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
 	declarations: [PropertyListingComponent],
 	imports: [
 		CommonModule,
+		FormsModule,
+		ReactiveFormsModule,
 		PropertyListingRoutingModule,
 		PropertyItemModule,
 		InputTextModule,
