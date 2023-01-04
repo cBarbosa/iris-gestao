@@ -26,5 +26,6 @@ namespace IrisGestao.Domain.Command.Request
         public DateTime DataCriacao { get; set; }
         public DateTime DataUltimaModificacao { get; set; }
         public Guid GuidReferencia { get; set; }
+        public CriarContatoCommand? Contato { get; set; }
     }
 }
