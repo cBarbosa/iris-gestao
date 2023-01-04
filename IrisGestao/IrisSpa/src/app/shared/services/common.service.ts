@@ -21,4 +21,16 @@ export class CommonService {
 				})
 			);
 	}
+
+	getPropertyCategories() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/categoria-imovel`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getPropertyCategories: ${response.message}`);
+					return response;
+				})
+			);
+	}
 }
