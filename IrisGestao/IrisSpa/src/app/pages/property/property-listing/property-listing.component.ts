@@ -117,7 +117,7 @@ export class PropertyListingComponent implements OnInit {
 			});
 
 		this.commonService
-			.getPropertyCategories()
+			.getUnitType()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {
