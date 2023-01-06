@@ -8,17 +8,19 @@ import { IconModule } from 'src/app/shared/components/custom-ui/icon/icon.module
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { AreaPipeModule, CpfCnpjPipeModule } from '../../pipes';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
 	declarations: [PropertyItemComponent],
 	imports: [
 		CommonModule,
+		RouterModule,
 		CstmButtonModule,
 		IconModule,
 		TagModule,
 		ButtonModule,
 		AreaPipeModule,
-		CpfCnpjPipeModule
+		CpfCnpjPipeModule,
 	],
 	exports: [PropertyItemComponent],
 })

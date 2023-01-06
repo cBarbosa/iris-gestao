@@ -68,14 +68,8 @@ export class ContatoService {
 	}
 
 	deleteContact(guid: string) {
-		return this.http
-			.get<ApiResponse>(`${env.config.apiUrl}Contato/${guid}/deletar`)
-			.pipe(
-				map((response) => {
-					if (!response.success)
-						console.error(`deleteContact: ${response.message}`);
-					return response;
-				})
-			);
+		return this.http.delete<ApiResponse>(
+			`${env.config.apiUrl}Contato/${guid}/deletar`
+		);
 	}
 }

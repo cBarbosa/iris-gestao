@@ -34,6 +34,7 @@ export class ClientViewComponent implements OnInit {
 
 	tableMenu: MenuItem[];
 
+	isCnpj: boolean = false;
 	contacts: Contato[];
 	selectedContact: Contato | null = null;
 
@@ -78,6 +79,8 @@ export class ClientViewComponent implements OnInit {
 		this.isLoadingView = true;
 		this.clienteService.getClienteById(this.uid).subscribe((event) => {
 			this.cliente = event;
+			this.isCnpj = event.cpfCnpj.length > 11;
+			console.log('>>>>>>>>>', this.isCnpj);
 
 			this.properties = [...event.imovel];
 			this.contacts = event.contato.map((contato: Contato) => {
@@ -187,9 +190,7 @@ export class ClientViewComponent implements OnInit {
 		this.closeConfirmationModal();
 		if (this.selectedContact?.guidReferenciaContato) {
 			this.contatoService
-				.deleteContact(
-					this.selectedContact.guidReferenciaContato + 'askdlfjçlkdsaj'
-				)
+				.deleteContact(this.selectedContact.guidReferenciaContato)
 				.subscribe({
 					next: (response) => {
 						if (response.success) {

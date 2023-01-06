@@ -89,10 +89,7 @@ export class ContactRegisterSidebarComponent implements OnInit {
 		this.registerForm = this.fb.group({
 			name: [this.data?.nome ?? '', Validators.required],
 			role: [this.data?.cargo ?? ''],
-			birthday: [
-				this.data?.dataNascimento ?? null,
-				[Validators.required, PastDateValidator],
-			],
+			birthday: [this.data?.dataNascimento ?? null, PastDateValidator],
 			email: [this.data?.email ?? '', EmailValidator],
 			telephone: [this.data?.telefone ?? ''],
 		});

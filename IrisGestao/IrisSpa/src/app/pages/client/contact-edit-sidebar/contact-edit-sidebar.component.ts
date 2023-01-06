@@ -61,10 +61,7 @@ export class ContactEditSidebarComponent implements OnInit, OnChanges {
 		this.editForm = this.fb.group({
 			name: [this.data.nome, Validators.required],
 			role: [this.data.cargo],
-			birthday: [
-				this.data.dataNascimento,
-				[Validators.required, PastDateValidator],
-			],
+			birthday: [this.data.dataNascimento, PastDateValidator],
 			email: [this.data.email, EmailValidator],
 			telephone: [this.data.telefone],
 		});
