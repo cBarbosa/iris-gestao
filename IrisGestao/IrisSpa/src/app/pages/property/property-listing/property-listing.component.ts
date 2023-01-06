@@ -152,6 +152,7 @@ export class PropertyListingComponent implements OnInit {
 		categoryId?: number,
 		proprietaryId?: number
 	): void {
+		this.isLoadingList = true;
 		const list = this.imovelService
 			.getProperties(this.rows, page, filter, categoryId, proprietaryId)
 			?.pipe(first())
