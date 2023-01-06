@@ -202,6 +202,7 @@ export class ClientRegisterComponent implements OnInit {
 						DataNascimento: formattedDate,
 						Telefone: cliente?.telefone,
 						Email: cliente?.email,
+						tipoCliente: cliente.cpfCnpj.length > 11 ? 'cnpj' : 'cpf',
 					},
 					addressInfo: {
 						Cep: cliente?.cep,
@@ -461,8 +462,7 @@ export class ClientRegisterComponent implements OnInit {
 			Cidade: this.registerForm.value.addressInfo.Cidade,
 			Estado: this.registerForm.value.addressInfo.Estado,
 			RazaoSocial: this.registerForm.value.clientInfo.razaoSocial,
-			IdTipoCliente:
-				this.registerForm.value.clientInfo.tipoCliente === 'cpf' ? 1 : 2,
+			IdTipoCliente: 1,
 			Status: true,
 			nps: 0,
 		};

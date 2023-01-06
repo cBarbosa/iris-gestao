@@ -11,7 +11,11 @@ export class PropertyItemComponent {
 	@Input('data')
 	propertyData: Imovel;
 
-	constructor(private router: Router) { };
+	constructor(private router: Router) {}
+
+	ngOnInit() {
+		console.log(this.propertyData);
+	}
 
 	navigateTo(route: string) {
 		this.router.navigate([route]);

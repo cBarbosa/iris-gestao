@@ -138,7 +138,7 @@
 					</ng-container>
 				</div>
 
-				<div class="contact-field" *ngIf="isCnpj">
+				<div class="contact-field" *ngIf="isCnpj && uid === 'new'">
 					<div class="add-contact" *ngIf="linkedContact == null; else contact">
 						<button
 							pButton

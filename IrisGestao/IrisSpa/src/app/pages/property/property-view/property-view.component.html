@@ -38,6 +38,15 @@
 						(click)="toggleFavorite()"
 					></button> -->
 					</h4>
+					<a
+						[routerLink]="[
+							'/client/details/' +
+								property.idClienteProprietarioNavigation?.guidReferencia
+						]"
+						class="text-sm mt-[-0.8rem]"
+					>
+						{{ property.idClienteProprietarioNavigation?.nome }}
+					</a>
 					<p>
 						{{ property.imovelEndereco?.[0]?.rua ?? '' }} -
 						{{ property.imovelEndereco?.[0]?.uf }}

@@ -37,10 +37,22 @@
 				<h6>Proprietário</h6>
 				<ul>
 					<li>
-						<a>{{ propertyData.idClienteProprietarioNavigation?.nome }}</a>
+						<a
+							[routerLink]="[
+								'/client/details/' +
+									propertyData.idClienteProprietarioNavigation?.guidReferencia
+							]"
+						>
+							{{ propertyData.idClienteProprietarioNavigation?.nome }}
+						</a>
 					</li>
-					<li>{{ propertyData.idClienteProprietarioNavigation?.cpfCnpj ?? '' | cpfcnpj }}</li>
-					<li>{{ propertyData.idClienteProprietarioNavigation?.telefone}}</li>
+					<li>
+						{{
+							propertyData.idClienteProprietarioNavigation?.cpfCnpj ?? ""
+								| cpfcnpj
+						}}
+					</li>
+					<li>{{ propertyData.idClienteProprietarioNavigation?.telefone }}</li>
 				</ul>
 			</div>
 			<button

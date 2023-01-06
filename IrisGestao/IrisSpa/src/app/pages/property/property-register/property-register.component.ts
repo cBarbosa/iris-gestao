@@ -206,15 +206,15 @@ export class PropertyRegisterComponent {
 
 		this.stepList = [
 			{
-				label: 'Tipo de imóvel',
+				label: 'Edifício',
 				isCurrent: true,
 				isVisited: false,
 			},
 			{
-				label: 'Informações legais',
+				label: 'Unidades',
 			},
 			{
-				label: 'Documentos',
+				label: 'Anexos',
 			},
 		];
 

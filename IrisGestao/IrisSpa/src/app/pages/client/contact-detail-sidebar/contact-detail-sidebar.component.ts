@@ -56,7 +56,7 @@ export class ContactDetailSidebarComponent {
 		this.closeConfirmationModal();
 		if (this.data.guidReferenciaContato) {
 			this.contatoService
-				.deleteContact(this.data.guidReferenciaContato + 'askdlfjçlkdsaj')
+				.deleteContact(this.data.guidReferenciaContato)
 				.subscribe({
 					next: (response) => {
 						if (response.success) {

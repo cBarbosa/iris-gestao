@@ -69,6 +69,7 @@ export class ClientListingComponent {
 		if (event.first != null) {
 			const page = Math.floor(event.first / this.rows) + 1;
 			this.getClientsPage(page, this.filterText);
+			this.scrollTop();
 		}
 	}
 
@@ -123,6 +124,13 @@ export class ClientListingComponent {
 	};
 
 	filterClientDebounce: Function = Utils.debounce(this.filterClients, 1000);
+
+	scrollTop() {
+		window.scroll({
+			top: 0,
+			left: 0,
+		});
+	}
 
 	navigateTo(route: string) {
 		this.router.navigate([route]);
