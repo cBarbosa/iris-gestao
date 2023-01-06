@@ -167,7 +167,6 @@ export function PastDateValidator(control: AbstractControl) {
 
 	if (typeof checkingDate.getTime() === 'number') {
 		const today = new Date();
-		console.log(today, ' -> ', checkingDate);
 
 		if (today.getTime() - checkingDate.getTime() >= 0) {
 			return null;

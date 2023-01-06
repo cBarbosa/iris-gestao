@@ -12,6 +12,9 @@ import { DialogModule } from 'primeng/dialog';
 import { FormStepsComponent } from 'src/app/shared/components/form-steps/form-steps.component';
 import { NgxMaskModule } from 'ngx-mask';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
+import { SidebarModule } from 'primeng/sidebar';
+import { ContactRegisterSidebarComponent } from '../contact-register-sidebar/contact-register-sidebar.component';
+import { TelefonePipeModule } from 'src/app/shared/pipes/telefone.module';
 
 @NgModule({
 	declarations: [ClientRegisterComponent],
@@ -27,6 +30,9 @@ import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/sp
 		FormStepsComponent,
 		NgxMaskModule.forChild(),
 		SpinnerComponent,
+		SidebarModule,
+		ContactRegisterSidebarComponent,
+		TelefonePipeModule,
 	],
 })
 export class ClientRegisterModule {}
