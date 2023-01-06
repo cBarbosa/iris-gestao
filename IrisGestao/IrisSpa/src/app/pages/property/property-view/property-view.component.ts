@@ -44,7 +44,9 @@ export class PropertyViewComponent implements OnInit {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
 		});
+	}
 
+	ngOnInit(): void {
 		this.tableMenu = [
 			{
 				label: 'Detalhes',
@@ -60,13 +62,10 @@ export class PropertyViewComponent implements OnInit {
 			{
 				label: 'Duplicar',
 				icon: 'ph-copy-simple',
-				command: () =>
-					this.cloneUnit(this.unit!.guidReferencia!),
+				command: () => this.cloneUnit(this.unit!.guidReferencia!),
 			},
 		];
-	}
 
-	ngOnInit(): void {
 		this.getData();
 	}
 
@@ -93,7 +92,8 @@ export class PropertyViewComponent implements OnInit {
 				this.units = imovel.unidade!;
 				this.imageList = imovel.imagens!;
 				this.isLoadingView = false;
-				this.isCorporativeBuilding = this.units[0].idTipoUnidadeNavigation?.id == 1;
+				this.isCorporativeBuilding =
+					this.units[0].idTipoUnidadeNavigation?.id == 1;
 			});
 	}
 
@@ -101,7 +101,7 @@ export class PropertyViewComponent implements OnInit {
 		this.unit = item;
 	}
 
-	cloneUnit(uid: string) :void {
+	cloneUnit(uid: string): void {
 		this.isLoadingView = true;
 
 		this.imovelService
@@ -152,5 +152,5 @@ export class PropertyViewComponent implements OnInit {
 	reloadPage() {
 		this.closeModal();
 		this.getData();
-	};
+	}
 }

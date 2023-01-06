@@ -15,12 +15,14 @@ import {
 } from '@angular/forms';
 import { Utils } from 'src/app/shared/utils';
 import {
+	CnpjValidator,
 	CpfCnpjValidator,
 	CpfValidator,
 	EmailValidator,
 	PastDateValidator,
 } from 'src/app/shared/validators/custom-validators';
 import { CommonService } from 'src/app/shared/services/common.service';
+import { Contato } from 'src/app/shared/models/contato.model';
 
 type Step = {
 	label: string;
@@ -56,10 +58,19 @@ export class ClientRegisterComponent implements OnInit {
 	operacaoCriar: boolean = true;
 	operacaoClonar: boolean = false;
 	unit: Cliente;
-	clienteType: ClienteType;
 	cliente: any;
 	onInputDate: Function;
 	onBlurDate: Function;
+
+	linkedContact: {
+		dataCriacao: string;
+		nome: string;
+		email: string;
+		telefone: string;
+		cargo: string;
+		dataNascimento: Date;
+	} | null;
+	contactRegisterVisible = false;
 
 	prevCepInputValue = '';
 	isLoadingCep = false;
@@ -67,6 +78,10 @@ export class ClientRegisterComponent implements OnInit {
 	stepList: Step[];
 	currentStep: number;
 
+	dropDownClientTypeList: DropdownItem[] = [
+		{ label: 'Pessoa física', value: 'cpf' },
+		{ label: 'Pessoa jurídica', value: 'cnpj' },
+	];
 	dropdownUfList: DropdownItem[] = [
 		{ label: 'Selecione', value: null, disabled: true },
 		{ label: 'Acre', value: 'AC' },
@@ -121,8 +136,8 @@ export class ClientRegisterComponent implements OnInit {
 
 		this.registerForm = this.fb.group({
 			clientInfo: this.fb.group({
-				CpfCnpj: ['', [Validators.required, CpfCnpjValidator]],
-				// IdTipoCliente: ['', [Validators.required]],
+				CpfCnpj: ['', [Validators.required, CpfValidator]],
+				tipoCliente: ['cpf', [Validators.required]],
 				Nome: ['', Validators.required],
 				razaoSocial: [''],
 				DataNascimento: [null, [Validators.required, PastDateValidator]],
@@ -226,6 +241,30 @@ export class ClientRegisterComponent implements OnInit {
 		return this.registerForm.controls;
 	}
 
+	get CpfCnpjMask() {
+		if (this.f['tipoCliente'].value === 'cpf') return '000.000.000-00';
+		return '00.000.000/0000-00';
+	}
+
+	get currCpfCnpj() {
+		if (this.f['tipoCliente'].value === 'cpf') return 'CPF';
+		return 'CNPJ';
+	}
+
+	get isCnpj() {
+		if (this.f['tipoCliente'].value === 'cpf') return false;
+		return true;
+	}
+
+	clientTypeChange() {
+		if (this.f['tipoCliente'].value === 'cpf') {
+			this.f['CpfCnpj'].setValidators([Validators.required, CpfValidator]);
+		} else {
+			this.f['CpfCnpj'].setValidators([Validators.required, CnpjValidator]);
+		}
+		this.f['CpfCnpj'].updateValueAndValidity();
+	}
+
 	changeStep(step: number) {
 		this.stepList = this.stepList.map((entry: Step, i: number) => {
 			const stepData: Step = {
@@ -286,6 +325,45 @@ export class ClientRegisterComponent implements OnInit {
 	checkHasError(c: AbstractControl) {
 		return Utils.checkHasError(c);
 	}
+
+	showContactRegister() {
+		this.contactRegisterVisible = true;
+	}
+
+	hideContactRegister = () => {
+		this.contactRegisterVisible = false;
+	};
+
+	resetLinkedContact() {
+		this.linkedContact = null;
+	}
+
+	onUpdateContactLinked = ({
+		idFornecedor,
+		nome,
+		email,
+		telefone,
+		cargo,
+		dataNascimento,
+	}: {
+		idFornecedor: string | null;
+		nome: string;
+		email: string;
+		telefone: string;
+		cargo: string;
+		dataNascimento: Date;
+	}) => {
+		this.hideContactRegister();
+
+		this.linkedContact = {
+			dataCriacao: new Date().toISOString(),
+			nome,
+			email,
+			telefone,
+			cargo,
+			dataNascimento: dataNascimento,
+		};
+	};
 
 	openModal() {
 		this.displayModal = true;
@@ -364,10 +442,17 @@ export class ClientRegisterComponent implements OnInit {
 			return;
 		}
 
-		var data = {
+		const data: any = {
 			CpfCnpj: this.registerForm.value.clientInfo.CpfCnpj,
 			Nome: this.registerForm.value.clientInfo.Nome,
-			DataNascimento: this.registerForm.value.clientInfo.DataNascimento,
+			DataNascimento: new Date(
+				this.registerForm.value.clientInfo.DataNascimento.getTime() -
+					this.registerForm.value.clientInfo.DataNascimento.getTimezoneOffset() *
+						60 *
+						1000
+			)
+				.toISOString()
+				.split('T')[0],
 			Telefone: this.registerForm.value.clientInfo.Telefone,
 			Email: this.registerForm.value.clientInfo.Email,
 			Cep: this.registerForm.value.addressInfo.Cep,
@@ -376,7 +461,32 @@ export class ClientRegisterComponent implements OnInit {
 			Cidade: this.registerForm.value.addressInfo.Cidade,
 			Estado: this.registerForm.value.addressInfo.Estado,
 			RazaoSocial: this.registerForm.value.clientInfo.razaoSocial,
+			IdTipoCliente:
+				this.registerForm.value.clientInfo.tipoCliente === 'cpf' ? 1 : 2,
+			Status: true,
+			nps: 0,
 		};
+
+		if (
+			this.registerForm.value.clientInfo.tipoCliente === 'cnpj' &&
+			this.linkedContact
+		) {
+			data.Contato = {
+				idFornecedor: null,
+				nome: this.linkedContact.nome,
+				email: this.linkedContact.email,
+				telefone: this.linkedContact.telefone,
+				cargo: this.linkedContact.cargo,
+				dataNascimento: new Date(
+					this.linkedContact.dataNascimento.getTime() -
+						this.linkedContact.dataNascimento.getTimezoneOffset() * 60 * 1000
+				)
+					.toISOString()
+					.split('T')[0],
+			};
+		}
+
+		console.log('sending', data);
 
 		if (this.operacaoClonar) {
 			this.clienteService.criarCliente(data).subscribe({

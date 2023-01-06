@@ -1,4 +1,25 @@
 :host ::ng-deep {
+	.field {
+		margin-bottom: 1.7rem;
+
+		label {
+			@apply text-sm mb-2;
+			color: #262626;
+		}
+
+		input {
+			width: 100%;
+		}
+
+		.p-error {
+			position: absolute;
+		}
+
+		&:last-child {
+			margin-bottom: 0.7rem;
+		}
+	}
+
 	.p-component {
 		font-family: inherit;
 

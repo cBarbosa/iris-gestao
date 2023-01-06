@@ -1,0 +1,73 @@
+<div class="details-data">
+	<div class="data" *ngIf="data.nome">
+		<span class="label">Nome</span>
+		<span class="value large">{{ data.nome }}</span>
+	</div>
+	<div class="data" *ngIf="data.cargo">
+		<span class="label">Cargo</span>
+		<span class="value">{{ data.cargo }}</span>
+	</div>
+	<div class="data" *ngIf="data.dataNascimento">
+		<span class="label">Nascimento</span>
+		<span class="value">{{ data.dataNascimento }}</span>
+	</div>
+	<div class="data" *ngIf="data.email">
+		<span class="label">Email</span>
+		<span class="value"
+			><a>{{ data.email }}</a>
+		</span>
+	</div>
+	<div class="data" *ngIf="data.telefone">
+		<span class="label">Telefone</span>
+		<span class="value">{{ data.telefone | telefone }}</span>
+	</div>
+
+	<div class="flex gap-5 mt-9">
+		<button
+			pButton
+			pRipple
+			type="button"
+			label="Excluir"
+			class="p-button-outlined h-11"
+			(click)="confirmDelete()"
+		></button>
+		<button
+			pButton
+			pRipple
+			type="button"
+			label="Editar"
+			class="h-11"
+			(click)="editContact()"
+		></button>
+	</div>
+</div>
+
+<p-dialog
+	[(visible)]="displayConfirmationModal"
+	[modal]="true"
+	[draggable]="false"
+	[resizable]="false"
+	styleClass="confirmation-modal"
+>
+	<h2>Deseja realmente excluir o contato?</h2>
+	<p>
+		Ao excluir as informações elas serão retiradas do CNPJ cadastrado. Caso
+		queira continuar, clique em confirmar.
+	</p>
+
+	<div class="flex justify-between gap-5">
+		<button
+			pButton
+			label="Cancelar"
+			class="p-button-outlined w-full"
+			(click)="closeConfirmationModal()"
+		></button>
+
+		<button
+			pButton
+			label="Continuar"
+			(click)="deleteContact()"
+			class="w-full"
+		></button>
+	</div>
+</p-dialog>

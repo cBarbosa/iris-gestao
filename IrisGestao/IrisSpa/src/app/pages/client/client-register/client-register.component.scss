@@ -3,7 +3,7 @@
 	justify-content: center;
 	width: 100%;
 }
-.edit-form {
+.register-form {
 	@apply pt-12;
 	width: 100%;
 	max-width: 1155px;
@@ -37,6 +37,43 @@
 				width: 100%;
 				height: fit-content;
 				// background-color: #f8f9fa;
+			}
+		}
+	}
+
+	.contact-field {
+		.add-contact {
+			margin-top: -0.5rem;
+			margin-bottom: 1rem;
+
+			::ng-deep {
+				.p-button {
+					@apply h-9 px-3;
+					margin-left: -0.5rem;
+				}
+			}
+		}
+
+		.contact-data {
+			background-color: #f8f8f8;
+			max-height: 190px;
+			padding: 1rem;
+			margin-bottom: 1.5rem;
+
+			> :first-child {
+				border-bottom: solid 1px #eaeaea;
+				@apply py-2 mb-3;
+				color: #262626;
+			}
+			> :last-child {
+				color: #646464;
+			}
+
+			::ng-deep {
+				.p-button {
+					@apply h-9;
+					margin-top: -0.4rem;
+				}
 			}
 		}
 	}
@@ -78,6 +115,14 @@
 }
 
 :host ::ng-deep {
+	.p-sidebar-content {
+		height: 100%;
+	}
+
+	.p-sidebar-footer {
+		display: none;
+	}
+
 	.p-inputwrapper {
 		width: 100%;
 

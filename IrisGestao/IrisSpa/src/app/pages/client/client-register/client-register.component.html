@@ -7,7 +7,7 @@
 </ng-container>
 <ng-template #clientForm>
 	<form
-		class="edit-form"
+		class="register-form"
 		[formGroup]="registerForm"
 		(ngSubmit)="onSubmit($event)"
 	>
@@ -86,38 +86,40 @@
 					</ng-container>
 				</div>
 
-				<!-- <div class="field">
-				<label for="IdTipoCliente" class="block">Tipo de cliente</label>
-				<p-dropdown
-					id="IdTipoCliente"
-					[options]="tiposCliente"
-					formControlName="IdTipoCliente"
-					aria-describedby="client-type-help"
-				></p-dropdown>
-				<ng-container *ngIf="checkHasError(f['IdTipoCliente'])">
-					<small
-						id="client-type-help"
-						*ngIf="f['IdTipoCliente'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o tipo de cliente
-					</small>
-					<ng-template #error2>
-						<small id="client-type-help" class="p-error block">
-							Tipo de cliente inválido
+				<div class="field">
+					<label for="client-type" class="block">Tipo de cliente</label>
+					<p-dropdown
+						id="client-type"
+						[options]="dropDownClientTypeList"
+						formControlName="tipoCliente"
+						aria-describedby="client-type-help"
+						(onChange)="clientTypeChange()"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['tipoCliente'])">
+						<small
+							id="client-type-help"
+							*ngIf="f['tipoCliente'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o tipo de cliente
 						</small>
-					</ng-template>
-				</ng-container>
-			</div> -->
+						<ng-template #error2>
+							<small id="client-type-help" class="p-error block">
+								Tipo de cliente inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
 
 				<div class="field">
-					<label for="CpfCnpj" class="block">CPF/CNPJ</label>
+					<label for="CpfCnpj" class="block">{{ currCpfCnpj }}</label>
 					<input
 						id="CpfCnpj"
 						type="text"
 						formControlName="CpfCnpj"
 						aria-describedby="CpfCnpj-help"
-						mask="CPF_CNPJ"
+						[specialCharacters]="['/', '.', '-']"
+						[mask]="CpfCnpjMask"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['CpfCnpj'])">
@@ -126,14 +128,71 @@
 							*ngIf="f['CpfCnpj'].hasError('required'); else error2"
 							class="p-error block"
 						>
-							Informe o CPF do cliente
+							Informe o {{ currCpfCnpj }} do cliente
 						</small>
 						<ng-template #error2>
 							<small id="CpfCnpj-help" class="p-error block">
-								CPF inválido
+								{{ currCpfCnpj }} inválido
 							</small>
 						</ng-template>
 					</ng-container>
+				</div>
+
+				<div class="contact-field" *ngIf="isCnpj">
+					<div class="add-contact" *ngIf="linkedContact == null; else contact">
+						<button
+							pButton
+							type="button"
+							class="p-button-text text-sm"
+							label="Vincular um contato"
+							icon="pi pi-plus"
+							iconPos="left"
+							(click)="showContactRegister()"
+						></button>
+					</div>
+					<ng-template #contact>
+						<div class="contact-data" *ngIf="linkedContact">
+							<div class="flex justify-between">
+								<span>{{ linkedContact.nome }}</span>
+								<span class="flex-inline justify-between gap-3">
+									<button
+										pButton
+										type="button"
+										class="p-button-text"
+										label="Editar"
+										(click)="showContactRegister()"
+									></button>
+									<button
+										pButton
+										type="button"
+										class="p-button-text"
+										label="Excluir"
+										(click)="resetLinkedContact()"
+									></button>
+								</span>
+							</div>
+							<div
+								class="text-sm flex flex-wrap flex-col gap-4 max-h-24 justify-center"
+							>
+								<div *ngIf="linkedContact.cargo" class="basis-0 max-w-[50%]">
+									Cargo: {{ linkedContact.cargo }}
+								</div>
+								<div *ngIf="linkedContact.email" class="basis-0 max-w-[50%]">
+									Email: {{ linkedContact.email }}
+								</div>
+								<div
+									*ngIf="linkedContact.dataNascimento"
+									class="basis-0 max-w-[50%]"
+								>
+									Nascimento:
+									{{ linkedContact.dataNascimento.toLocaleDateString() }}
+								</div>
+								<div *ngIf="linkedContact.telefone" class="basis-0 max-w-[50%]">
+									Telefone: {{ linkedContact.telefone | telefone }}
+								</div>
+							</div>
+						</div>
+					</ng-template>
 				</div>
 
 				<div class="field">
@@ -356,6 +415,19 @@
 		</div>
 	</form>
 </ng-template>
+
+<p-sidebar [(visible)]="contactRegisterVisible" position="right">
+	<ng-template pTemplate="header">
+		<span class="text-2xl font-bold">Vincular um contato</span>
+	</ng-template>
+	<app-contact-register-sidebar
+		[cancel]="hideContactRegister"
+		[onSubmitForm]="onUpdateContactLinked"
+		[data]="linkedContact"
+		[registerOnSubmit]="false"
+		*ngIf="contactRegisterVisible"
+	></app-contact-register-sidebar>
+</p-sidebar>
 
 <p-dialog
 	[(visible)]="displayModal"
