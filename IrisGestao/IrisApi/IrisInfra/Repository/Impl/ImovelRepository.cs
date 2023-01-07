@@ -40,6 +40,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                         .Include(x => x.Unidade)
                             .ThenInclude(y => y.IdTipoUnidadeNavigation)
                         .Where(x => x.IdCategoriaImovel.Equals(TipoImovelEnum.IMOVEL_CARTEIRA) 
+                                    && (x.Status)
                                     && (idCategoria.HasValue
                                         ? x.Unidade.FirstOrDefault(y => y.IdTipoUnidade.Equals(idCategoria.Value)) != null
                                         : true)
@@ -72,17 +73,18 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                                     ValorPotencial = y.ValorPotencial,
                                     DataCriacao = y.DataCriacao,
                                     DataUltimaModificacao = y.DataUltimaModificacao,
+                                    Ativo = y.Status,
                                     IdTipoUnidadeNavigation = new
                                     {
                                         Id = y.IdTipoUnidadeNavigation.Id,
                                         Nome = y.IdTipoUnidadeNavigation.Nome
                                     }
                                 }
-                                ),
-                            AreaTotal = x.Unidade.Sum(x => x.AreaTotal),
-                            AreaUtil = x.Unidade.Sum(x => x.AreaUtil),
-                            AreaHabitese = x.Unidade.Sum(x => x.AreaHabitese),
-                            NroUnidades = x.Unidade.Count,
+                                ).Where(y => y.Ativo),
+                            AreaTotal = x.Unidade.Where(x => x.Status).Sum(x => x.AreaTotal),
+                            AreaUtil = x.Unidade.Where(x=> x.Status).Sum(x => x.AreaUtil),
+                            AreaHabitese = x.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
+                            NroUnidades = x.Unidade.Where(x => x.Status).Count(),
                             ImgCapa = "../../../../assets/images/imovel.png",
                             Imagens = ImagemListFake,
                             Anexos = AnexoListFake,
@@ -163,16 +165,17 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                                     DataCriacao = y.DataCriacao,
                                     DataUltimaModificacao = y.DataUltimaModificacao,
                                     UnidadeLocada = y.UnidadeLocada,
+                                    Ativo = y.Status,
                                     IdTipoUnidadeNavigation = new
                                     {
                                         Id = y.IdTipoUnidadeNavigation.Id,
                                         Nome = y.IdTipoUnidadeNavigation.Nome
                                     }
-                            }),
-                            AreaTotal = x.Unidade.Sum(x => x.AreaTotal),
-                            AreaUtil = x.Unidade.Sum(x => x.AreaUtil),
-                            AreaHabitese = x.Unidade.Sum(x => x.AreaHabitese),
-                            NroUnidades = x.Unidade.Count,
+                            }).Where(y => y.Ativo),
+                            AreaTotal = x.Unidade.Where(x => x.Status).Sum(x => x.AreaTotal),
+                            AreaUtil = x.Unidade.Where(x => x.Status).Sum(x => x.AreaUtil),
+                            AreaHabitese = x.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
+                            NroUnidades = x.Unidade.Where(x => x.Status).Count(),
                             ImgCapa = ImagemCapaFake,
                             Imagens = ImagemListFake,
                             Anexos = AnexoListFake,

@@ -11,4 +11,5 @@ public interface IClienteService
     Task<CommandResult> Update(Guid uuid, CriarClienteCommand cmd);
     Task<CommandResult> Delete(int? codigo);
     Task<CommandResult> GetAllOwners();
+    Task<CommandResult> AlterarStatus(Guid uuid, bool status);
 }

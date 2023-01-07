@@ -154,7 +154,34 @@ public class UnidadeService: IUnidadeService
             }
         }
     }
-    
+
+    public async Task<CommandResult> AlterarStatus(Guid guid, bool status)
+    {
+        if (guid.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var unidade = await unidadeRepository.GetByReferenceGuid(guid);
+
+        if (unidade == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+        unidade.Status = status;
+
+        try
+        {
+            unidadeRepository.Update(unidade);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, unidade);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+    }
+
     public async Task<CommandResult> Clone(Guid guid)
     {
         var _unidade = await unidadeRepository.GetByReferenceGuid(guid);
@@ -203,6 +230,8 @@ public class UnidadeService: IUnidadeService
             // TODO alterar o tipo para GUID
             unidade.GuidReferencia = $"{Guid.NewGuid()}";
             unidade.DataCriacao = DateTime.Now;
+            unidade.DataUltimaModificacao = DateTime.Now;
+            unidade.Status = true;
         }
         else
         {

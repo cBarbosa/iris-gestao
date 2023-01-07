@@ -23,10 +23,12 @@ export class PropertyViewComponent implements OnInit {
 	imageList: ImagemData[] = [];
 
 	isFavorite = true;
+	isInativarImovel = false;
 	detailsVisible = false;
 	isLoadingView = false;
 	isCorporativeBuilding = false;
-
+	displayConfirmationInactiveUnitModal = false;
+	displayConfirmationInactiveImovelModal = false;
 	displayModal = false;
 	modalContent: {
 		isError?: boolean;
@@ -64,10 +66,26 @@ export class PropertyViewComponent implements OnInit {
 				icon: 'ph-copy-simple',
 				command: () => this.cloneUnit(this.unit!.guidReferencia!),
 			},
+			{
+				label: 'Inativar',
+				icon: 'ph-trash',
+				command: () => this.confirmInativar(),
+			},
 		];
 
 		this.getData();
 	}
+
+	onUpdateUnitList = (modalContent: {
+		isError?: boolean;
+		header?: string;
+		message: string;
+	}) => {
+		this.getData();
+
+		this.modalContent = modalContent;
+		this.displayModal = true;
+	};
 
 	toggleFavorite() {
 		this.isFavorite = !this.isFavorite;
@@ -79,6 +97,22 @@ export class PropertyViewComponent implements OnInit {
 
 	navigateTo(route: string) {
 		this.router.navigate([route]);
+	}
+
+	confirmInativar() {
+		this.displayConfirmationInactiveUnitModal = true;
+	}
+
+	closeConfirmationInativarModal() {
+		this.displayConfirmationInactiveUnitModal = false;
+	}
+	
+	confirmImovelInativar() {
+		this.displayConfirmationInactiveImovelModal = true;
+	}
+
+	closeConfirmationInativarImovelModal() {
+		this.displayConfirmationInactiveImovelModal = false;
 	}
 
 	getData(): void {
@@ -135,6 +169,72 @@ export class PropertyViewComponent implements OnInit {
 
 					this.openModal();
 					this.isLoadingView = false;
+				},
+			});
+	}
+
+	inativarUnit() {
+		this.closeConfirmationInativarModal();
+		this.imovelService
+			.inactiveUnit(this.unit!.guidReferencia!, false)
+			.subscribe({
+				next: (response) => {
+					console.log('inativarUnit >> retorno '+ JSON.stringify(response));
+					if (response.success) {
+						this.closeConfirmationInativarModal();
+						//this.isInativar = true;
+						this.onUpdateUnitList({
+							header: 'Unidade Inativada',
+							message: response.message ?? 'Unidade inativada com sucesso',
+						});
+					} else {
+						this.onUpdateUnitList({
+							header: 'Unidade não inativada',
+							message: response.message ?? 'Erro na inativação da Unidade',
+							isError: true,
+						});
+					}
+				},
+				error: (err) => {
+					console.error(err);
+					this.onUpdateUnitList({
+						header: 'Unidade não inativada',
+						message: 'Erro no envio de dados',
+						isError: true,
+					});
+				},
+			});
+	}
+
+	inativarImovel() {
+		this.closeConfirmationInativarImovelModal();
+		this.imovelService
+			.inactiveImovel(this.uid, false)
+			.subscribe({
+				next: (response) => {
+					console.log('inactiveImovel >> retorno '+ JSON.stringify(response));
+					if (response.success) {
+						this.closeConfirmationInativarImovelModal();
+						this.isInativarImovel = true;
+						this.onUpdateUnitList({
+							header: 'Imóvel Inativado',
+							message: response.message ?? 'Imóvel inativado com sucesso',
+						});
+					} else {
+						this.onUpdateUnitList({
+							header: 'Imóvel não inativado',
+							message: response.message ?? 'Erro na inativação do Imóvel',
+							isError: true,
+						});
+					}
+				},
+				error: (err) => {
+					console.error(err);
+					this.onUpdateUnitList({
+						header: 'Imóvel não inativado',
+						message: 'Erro no envio de dados',
+						isError: true,
+					});
 				},
 			});
 	}

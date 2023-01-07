@@ -34,7 +34,7 @@ public class ClienteController : Controller
     public async Task<IActionResult> Cadatrar([FromBody] CriarClienteCommand cmd) =>
         Ok(await clienteService.Insert(cmd));
 
-        [HttpPut("{guid}/atualizar")]
+    [HttpPut("{guid}/atualizar")]
     [Produces("application/json")]
     public async Task<IActionResult> Atualizar(
         Guid guid,
@@ -44,6 +44,17 @@ public class ClienteController : Controller
 
         if (result == null)
             return BadRequest("Operação não realizada");
+
+        return Ok(result);
+    }
+
+    [HttpPut("{guid}/{status}/alterar-status")]
+    [Produces("application/json")]
+    public async Task<IActionResult> AlterarStatus(
+    Guid guid,
+    bool status)
+    {
+        var result = await clienteService.AlterarStatus(guid, status);
 
         return Ok(result);
     }

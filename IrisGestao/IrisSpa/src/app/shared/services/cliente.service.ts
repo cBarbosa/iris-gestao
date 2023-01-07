@@ -99,6 +99,13 @@ export class ClienteService {
 			);
 	}
 
+	inativarCliente(uid: string, status: boolean) {
+		return this.http.put<ApiResponse>(
+			`${env.config.apiUrl}Cliente/${uid}/${status}/alterar-status`,
+			httpOptions
+		);
+	}
+
 	getListaProprietarios() {
 		return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Cliente/lista-proprietarios`)
