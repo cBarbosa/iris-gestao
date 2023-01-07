@@ -56,6 +56,17 @@ public class UnidadeController : Controller
         return Ok(result);
     }
 
+    [HttpPut("{guid}/{status}/alterar-status")]
+    [Produces("application/json")]
+    public async Task<IActionResult> AlterarStatus(
+        Guid guid,
+        bool status)
+    {
+        var result = await unidadeService.AlterarStatus(guid, status);
+
+        return Ok(result);
+    }
+
     [HttpDelete("{codigo}/deletar/")]
     [Produces("application/json")]
     public async Task<IActionResult> Deletar(int? codigo)

@@ -25,7 +25,6 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
     public async Task<object?> GetByGuid(Guid guid)
     {
         return await DbSet
-                        // .Include(x => x.IdTipoClienteNavigation)
                         .Include(x => x.Imovel)
                             .ThenInclude(y => y.Unidade)
                         .Include(x => x.Imovel)
@@ -48,24 +47,20 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                             bairro                  = x.Bairro,
                             cidade                  = x.Cidade,
                             estado                  = x.Estado,
-                            // IdTipoClienteNavigation = new
-                            // {
-                            //     Id = x.IdTipoClienteNavigation.Id,
-                            //     Nome = x.IdTipoClienteNavigation.Nome
-                            // },
                             Imovel = x.Imovel.Select(y => new
                             {
                                 Nome                = y.Nome,
                                 guidReferencia      = y.GuidReferencia,
-                                NroUnidades         = y.Unidade.Count,
-                                AreaTotal           = y.Unidade.Sum(x => x.AreaTotal),
-                                AreaUtil            = y.Unidade.Sum(x => x.AreaUtil),
-                                AreaHabitese        = y.Unidade.Sum(x => x.AreaHabitese),
+                                NroUnidades         = y.Unidade.Where(x => x.Status).Count(),
+                                AreaTotal           = y.Unidade.Where(x => x.Status).Sum(x => x.AreaTotal),
+                                AreaUtil            = y.Unidade.Where(x => x.Status).Sum(x => x.AreaUtil),
+                                AreaHabitese        = y.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
                                 NumCentroCusto      = y.NumCentroCusto,
                                 ImgCapa             = "../../../../assets/images/imovel.png",
                                 Imagens             = ImagemListFake,
                                 Anexos              = AnexoListFake,
                                 ImovelEndereco      = y.ImovelEndereco,
+                                Ativo               = y.Status,
                                 IdCategoriaImovelNavigation = y.IdCategoriaImovelNavigation == null ? null : new
                                 {
                                     Id = y.IdCategoriaImovelNavigation.Id,
@@ -77,7 +72,7 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                                     Nome            = x.Nome,
                                     Telefone        = x.Telefone
                                 }
-                            }),
+                            }).Where(y => y.Ativo),
                             Contato = x.Contato.Select(z => new
                             {
                                 Nome = z.Nome,
@@ -110,11 +105,12 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                         && (!string.IsNullOrEmpty(nome)
                             ? x.Nome.Contains(nome)
                             : true)
+                            && (x.Status)
                     )
                 .OrderBy(x => x.Nome)
                 .ToListAsync();
 
-            var totalCount = clientes.Count();
+            var totalCount = clientes.Where(x => x.Status).Count();
 
             var clientesPaging = clientes.Skip(skip).Take(limit);
 
@@ -133,18 +129,17 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
     {
         return await DbSet
             .OrderBy(x => x.Nome)
-            .Where(x => x.IdTipoCliente.Equals(TipoClienteEnum.PROPRIETARIO))
+            .Where(x => x.Status)
             .Select(x => new
             {
                 Id = x.Id,
                 GuidReferencia = x.GuidReferencia,
                 Nome = x.Nome,
-                QtdeImoveis = x.Imovel.Count()
+                QtdeImoveis = x.Imovel.Where(x => x.Status).Count()
             })
             .OrderBy(y => y.Nome)
             .ToListAsync();
     }
-
 
     private static List<object> ImagemListFake => new List<object>
     {

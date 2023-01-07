@@ -96,6 +96,34 @@ public class ClienteService: IClienteService
         }
     }
 
+    public async Task<CommandResult> AlterarStatus(Guid uuid, bool status)
+    {
+        if (uuid.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var cliente = await clienteRepository.GetByReferenceGuid(uuid);
+
+        if (cliente == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+
+        cliente.Status = status;
+
+        try
+        {
+            clienteRepository.Update(cliente);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, cliente);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+    }
+
     public async Task<CommandResult> Delete(int? codigo)
     {
         Cliente _cliente = new Cliente();
@@ -141,6 +169,8 @@ public class ClienteService: IClienteService
             case null:
                 cliente.GuidReferencia = Guid.NewGuid();
                 cliente.DataCriacao = DateTime.Now;
+                cliente.DataUltimaModificacao = DateTime.Now;
+                cliente.Status = true;
                 break;
             default:
                 cliente.GuidReferencia = cliente.GuidReferencia;

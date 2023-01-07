@@ -160,4 +160,18 @@ export class ImovelService {
 				})
 			);
 	}
+
+	inactiveUnit(uid: string, status: boolean) {
+		return this.http.put<ApiResponse>(
+			`${env.config.apiUrl}Unidade/${uid}/${status}/alterar-status`,
+			httpOptions
+		);
+	}
+	
+	inactiveImovel(uid: string, status: boolean) {
+		return this.http.put<ApiResponse>(
+			`${env.config.apiUrl}Imovel/${uid}/${status}/alterar-status`,
+			httpOptions
+		);
+	}
 }

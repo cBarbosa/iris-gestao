@@ -50,6 +50,17 @@ public class ImovelController : Controller
         return Ok(result);
     }
 
+    [HttpPut("{guid}/{status}/alterar-status")]
+    [Produces("application/json")]
+    public async Task<IActionResult> AlterarStatus(
+    Guid guid,
+    bool status)
+    {
+        var result = await imovelService.AlterarStatus(guid, status);
+
+        return Ok(result);
+    }
+
     [HttpDelete("{codigo}/deletar")]
     [Produces("application/json")]
     public async Task<IActionResult> Deletar(int? codigo)

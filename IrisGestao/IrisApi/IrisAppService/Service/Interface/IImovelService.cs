@@ -11,4 +11,5 @@ public interface IImovelService
     Task<CommandResult> Update(Guid guid, CriarImovelCommand cmd);
     Task<CommandResult> Delete(int? codigo);
     Task<CommandResult> GetByGuid(Guid uuid);
+    Task<CommandResult> AlterarStatus(Guid uuid, bool status);
 }

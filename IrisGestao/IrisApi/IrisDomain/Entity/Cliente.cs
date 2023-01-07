@@ -51,7 +51,7 @@ public partial class Cliente: BaseEntity<Cliente>
 
     public int Nps { get; set; }
 
-    public bool? Status { get; set; }
+    public bool Status { get; set; }
 
     public int? IdTipoCliente { get; set; }
 
