@@ -141,6 +141,12 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
             .ToListAsync();
     }
 
+    public async Task<Cliente?> GetByCpfCnpj(string cpfCnpj)
+    {
+        return await DbSet
+            .FirstOrDefaultAsync(x => x.CpfCnpj.Equals(cpfCnpj));
+    }
+
     private static List<object> ImagemListFake => new List<object>
     {
         new

@@ -111,30 +111,6 @@
 					</ng-container>
 				</div>
 
-				<!-- <div class="field">
-					<label for="category" class="block">Categoria do imóvel</label>
-					<p-dropdown
-						id="category"
-						[options]="propertyCategories"
-						formControlName="category"
-						aria-describedby="category-help"
-					></p-dropdown>
-					<ng-container *ngIf="checkHasError(f['category'])">
-						<small
-							id="category-help"
-							*ngIf="f['category'].hasError('required'); else error2"
-							class="p-error block"
-						>
-							Informe o tipo de unidade
-						</small>
-						<ng-template #error2>
-							<small id="category-help" class="p-error block">
-								Tipo de unidade inválido
-							</small>
-						</ng-template>
-					</ng-container>
-				</div> -->
-
 				<div class="field">
 					<label for="cost-centre" class="block">N° do centro de custo</label>
 					<input
@@ -291,140 +267,9 @@
 						</ng-template>
 					</ng-container>
 				</div>
+
 			</div>
 
-			<ng-container
-				*ngIf="
-					f['unitType'].value === 1 ||
-					f['unitType'].value === 2 ||
-					f['unitType'].value === 3
-				"
-			>
-				<div formGroupName="edCorpSalaPavInfo">
-					<div class="field">
-						<label for="area-total" class="block">Área total</label>
-						<input
-							id="area-total"
-							type="text"
-							formControlName="areaTotal"
-							aria-describedby="area-total-help"
-							suffix=" m²"
-							mask="separator.2"
-							maxlength="14"
-							pInputText
-						/>
-						<ng-container
-							*ngIf="
-								checkHasError(
-									this.propertyTypeEdCorpSalaPavForm.controls['areaTotal']
-								)
-							"
-						>
-							<small
-								id="area-total-help"
-								*ngIf="
-									this.propertyTypeEdCorpSalaPavForm.controls[
-										'areaTotal'
-									].hasError('required');
-									else error2
-								"
-								class="p-error block"
-							>
-								Informe a área total
-							</small>
-							<ng-template #error2>
-								<small id="area-total-help" class="p-error block">
-									Área total inválida
-								</small>
-							</ng-template>
-						</ng-container>
-					</div>
-				</div>
-			</ng-container>
-
-			<ng-container
-				*ngIf="f['unitType'].value === 2 || f['unitType'].value === 3"
-			>
-				<div formGroupName="salaPavInfo">
-					<div class="field">
-						<label for="area-usable" class="block">Área útil</label>
-						<input
-							id="area-usable"
-							type="text"
-							formControlName="areaUsable"
-							aria-describedby="area-usable-help"
-							suffix=" m²"
-							mask="separator.2"
-							maxlength="14"
-							pInputText
-						/>
-						<ng-container
-							*ngIf="
-								checkHasError(
-									this.propertyTypeSalaPavForm.controls['areaUsable']
-								)
-							"
-						>
-							<small
-								id="area-usable-help"
-								*ngIf="
-									this.propertyTypeSalaPavForm.controls['areaUsable'].hasError(
-										'required'
-									);
-									else error2
-								"
-								class="p-error block"
-							>
-								Informe a área útil
-							</small>
-							<ng-template #error2>
-								<small id="area-usable-help" class="p-error block">
-									Área útil inválida
-								</small>
-							</ng-template>
-						</ng-container>
-					</div>
-
-					<div class="field">
-						<label for="area-occupancy" class="block">Área Habite-se</label>
-						<input
-							id="area-occupancy"
-							type="text"
-							formControlName="areaOccupancy"
-							aria-describedby="area-occupancy-help"
-							suffix=" m²"
-							mask="separator.2"
-							maxlength="14"
-							pInputText
-						/>
-						<ng-container
-							*ngIf="
-								checkHasError(
-									this.propertyTypeSalaPavForm.controls['areaOccupancy']
-								)
-							"
-						>
-							<small
-								id="area-occupancy-help"
-								*ngIf="
-									this.propertyTypeSalaPavForm.controls[
-										'areaOccupancy'
-									].hasError('required');
-									else error2
-								"
-								class="p-error block"
-							>
-								Informe a área Habite-se
-							</small>
-							<ng-template #error2>
-								<small id="area-occupancy-help" class="p-error block">
-									Área Habite-se inválida
-								</small>
-							</ng-template>
-						</ng-container>
-					</div>
-				</div>
-			</ng-container>
 		</section>
 
 		<!-- ------------------------------------------------------------------------ -->
@@ -628,6 +473,139 @@
 					</ng-container>
 				</div>
 			</div>
+
+			<ng-container
+				*ngIf="
+					this.propertyTypeForm.controls['unitType'].value === 1 ||
+					this.propertyTypeForm.controls['unitType'].value === 2 ||
+					this.propertyTypeForm.controls['unitType'].value === 3
+				"
+				>
+					<div formGroupName="edCorpSalaPavInfo">
+						<div class="field mt-6">
+							<label for="area-total" class="block">Área total - edCorpSalaPavInfo</label>
+							<input
+								id="area-total"
+								type="text"
+								formControlName="areaTotal"
+								aria-describedby="area-total-help"
+								suffix=" m²"
+								mask="separator.2"
+								maxlength="14"
+								pInputText
+							/>
+							<ng-container
+								*ngIf="
+									checkHasError(
+										this.propertyTypeEdCorpSalaPavForm.controls['areaTotal']
+									)
+								"
+							>
+								<small
+									id="area-total-help"
+									*ngIf="
+										this.propertyTypeEdCorpSalaPavForm.controls[
+											'areaTotal'
+										].hasError('required');
+										else error2
+									"
+									class="p-error block"
+								>
+									Informe a área total
+								</small>
+								<ng-template #error2>
+									<small id="area-total-help" class="p-error block">
+										Área total inválida
+									</small>
+								</ng-template>
+							</ng-container>
+						</div>
+					</div>
+				</ng-container>
+
+			<ng-container
+				*ngIf="this.propertyTypeForm.controls['unitType'].value === 2 || this.propertyTypeForm.controls['unitType'].value === 3"
+			>
+				<div formGroupName="salaPavInfo">
+					<div class="field mt-6">
+						<label for="area-usable" class="block">Área útil - salaPavInfo</label>
+						<input
+							id="area-usable"
+							type="text"
+							formControlName="areaUsable"
+							aria-describedby="area-usable-help"
+							suffix=" m²"
+							mask="separator.2"
+							maxlength="14"
+							pInputText
+						/>
+						<ng-container
+							*ngIf="
+								checkHasError(
+									this.propertyTypeSalaPavForm.controls['areaUsable']
+								)
+							"
+						>
+							<small
+								id="area-usable-help"
+								*ngIf="
+									this.propertyTypeSalaPavForm.controls['areaUsable'].hasError(
+										'required'
+									);
+									else error2
+								"
+								class="p-error block"
+							>
+								Informe a área útil
+							</small>
+							<ng-template #error2>
+								<small id="area-usable-help" class="p-error block">
+									Área útil inválida
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="area-occupancy" class="block">Área Habite-se</label>
+						<input
+							id="area-occupancy"
+							type="text"
+							formControlName="areaOccupancy"
+							aria-describedby="area-occupancy-help"
+							suffix=" m²"
+							mask="separator.2"
+							maxlength="14"
+							pInputText
+						/>
+						<ng-container
+							*ngIf="
+								checkHasError(
+									this.propertyTypeSalaPavForm.controls['areaOccupancy']
+								)
+							"
+						>
+							<small
+								id="area-occupancy-help"
+								*ngIf="
+									this.propertyTypeSalaPavForm.controls[
+										'areaOccupancy'
+									].hasError('required');
+									else error2
+								"
+								class="p-error block"
+							>
+								Informe a área Habite-se
+							</small>
+							<ng-template #error2>
+								<small id="area-occupancy-help" class="p-error block">
+									Área Habite-se inválida
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+				</div>
+			</ng-container>
 
 			<ng-container
 				*ngIf="

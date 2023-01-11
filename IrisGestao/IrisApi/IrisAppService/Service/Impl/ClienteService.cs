@@ -51,13 +51,21 @@ public class ClienteService: IClienteService
 
         try
         {
+            var customer = await clienteRepository.GetByCpfCnpj(cmd.CpfCnpj);
+
+            if (customer != null)
+            {
+                return new CommandResult(false, ErrorResponseEnums.Error_1007, customer);
+            }
+
             clienteRepository.Insert(cliente);
+            
             if(cmd.Contato != null)
             {
-                var contato = new Contato();
                 cmd.Contato.GuidClienteReferencia = cliente.GuidReferencia.Value;
                 await contatoService.Insert(cmd.Contato);
             }
+
             return new CommandResult(true, SuccessResponseEnums.Success_1000, cliente);
         }
         catch (Exception e)

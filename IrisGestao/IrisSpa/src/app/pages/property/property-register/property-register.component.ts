@@ -387,30 +387,41 @@ export class PropertyRegisterComponent {
 				this.propertyTypeForm.markAllAsTouched();
 				return;
 			}
+			// if (this.propertyTypeForm.controls['unitType'].value === 1) {
+			// 	if (this.propertyTypeEdCorpSalaPavForm.invalid) {
+			// 		this.propertyTypeEdCorpSalaPavForm.markAllAsTouched();
+			// 		return;
+			// 	}
+			// } else if (
+			// 	this.propertyTypeForm.controls['unitType'].value === 2 ||
+			// 	this.propertyTypeForm.controls['unitType'].value === 3
+			// ) {
+			// 	if (this.propertyTypeSalaPavForm.invalid) {
+			// 		this.propertyTypeEdCorpSalaPavForm.markAllAsTouched();
+			// 		this.propertyTypeSalaPavForm.markAllAsTouched();
+			// 		return;
+			// 	}
+			// }
+		}
+		if (currStep === 2) {
+
 			if (this.propertyTypeForm.controls['unitType'].value === 1) {
 				if (this.propertyTypeEdCorpSalaPavForm.invalid) {
 					this.propertyTypeEdCorpSalaPavForm.markAllAsTouched();
 					return;
 				}
-			} else if (
-				this.propertyTypeForm.controls['unitType'].value === 2 ||
-				this.propertyTypeForm.controls['unitType'].value === 3
-			) {
-				if (this.propertyTypeSalaPavForm.invalid) {
-					this.propertyTypeEdCorpSalaPavForm.markAllAsTouched();
-					this.propertyTypeSalaPavForm.markAllAsTouched();
-					return;
-				}
 			}
-		}
-		if (currStep === 2) {
-			if (
+			else if (
 				this.propertyTypeForm.controls['unitType'].value === 2 ||
 				this.propertyTypeForm.controls['unitType'].value === 3
 			) {
 				if (this.legalInfoForm.invalid || this.legalInfoSalaPavForm.invalid) {
 					this.legalInfoForm.markAllAsTouched();
 					this.legalInfoSalaPavForm.markAllAsTouched();
+
+					this.propertyTypeEdCorpSalaPavForm.markAllAsTouched();
+					this.propertyTypeSalaPavForm.markAllAsTouched();
+
 					return;
 				}
 			} else {
