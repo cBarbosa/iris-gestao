@@ -460,6 +460,13 @@
 					&:focus {
 						border-color: #641b1e;
 					}
+
+					&.white-theme {
+						&:enabled:hover,
+						&:enabled:focus {
+							border-color: #ffffff;
+						}
+					}
 				}
 			}
 
@@ -467,6 +474,10 @@
 			&.ng-pristine:hover {
 				.p-dropdown {
 					border-color: #641b1e;
+
+					&.white-theme {
+						border-color: #ffffff;
+					}
 				}
 			}
 
@@ -478,6 +489,13 @@
 					&:enabled:focus,
 					&:hover {
 						border-color: #641b1e;
+					}
+
+					&.white-theme {
+						&:enabled:hover,
+						&:enabled:focus {
+							border-color: #ffffff;
+						}
 					}
 				}
 			}
@@ -575,6 +593,55 @@
 				}
 
 				.p-dialog-content {
+				}
+			}
+		}
+
+		.p-accordion {
+			padding: 0 1.5rem;
+
+			.p-accordion-tab {
+				border-bottom: solid 1px #eaeaea;
+
+				.p-accordion-header:not(.p-disabled) {
+					.p-accordion-header-link {
+						display: flex;
+						flex-direction: row-reverse;
+						justify-content: space-between;
+						background-color: #ffffff;
+						color: #641b1e;
+						margin: 0.8rem 0;
+						border: 0;
+
+						.p-accordion-toggle-icon {
+						}
+
+						.p-accordion-header-text {
+							@apply text-xl;
+						}
+
+						&:focus {
+							box-shadow: none;
+						}
+						&:focus-visible {
+							box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+						}
+					}
+				}
+
+				.p-toggleable-content {
+					.p-accordion-content {
+						padding: 0;
+						border: 0;
+						border-radius: 0;
+						background-color: #f8f9fa;
+					}
+				}
+			}
+
+			.p-element:last-child {
+				.p-accordion-tab {
+					border-bottom: none;
 				}
 			}
 		}

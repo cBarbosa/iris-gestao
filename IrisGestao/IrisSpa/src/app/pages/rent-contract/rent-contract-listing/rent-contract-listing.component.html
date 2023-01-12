@@ -1,0 +1,123 @@
+<div class="header-background"></div>
+<div class="content-wrapper">
+	<div class="content">
+		<header class="flex justify-between py-9">
+			<h3 class="text-2xl font-bold">
+				Contratos
+				<span class="ml-2 text-sm text-slate-600">{{
+					totalContractCount
+				}}</span>
+			</h3>
+
+			<div class="options">
+				<span class="p-input-icon-left mx-2">
+					<i class="pi pi-search"></i>
+					<input
+						pInputText
+						class="white-theme"
+						[(ngModel)]="filterText"
+						(ngModelChange)="filterContractsDebounce($event)"
+						type="text"
+						placeholder="Buscar contrato"
+					/>
+				</span>
+
+				<p-dropdown
+					class="mx-2"
+					styleClass="w-44 white-theme"
+					placeholder="Base de reajuste"
+					[options]="basesReajuste"
+					[(ngModel)]="filterBase"
+					(ngModelChange)="filterContractsDebounce($event)"
+				></p-dropdown>
+
+				<p-dropdown
+					class="mx-2"
+					styleClass="w-48 white-theme"
+					placeholder="Tipo de contrato"
+					[options]="tiposImovel"
+					aria-describedby="contract-type-help"
+					[(ngModel)]="filterType"
+					(ngModelChange)="filterContractsDebounce($event)"
+				></p-dropdown>
+
+				<p-dropdown
+					class="mx-2"
+					styleClass="w-36 white-theme"
+					placeholder="Vencimento"
+					[options]="vencimentos"
+					[(ngModel)]="filterDue"
+					(ngModelChange)="filterContractsDebounce($event)"
+				></p-dropdown>
+
+				<button
+					pButton
+					type="button"
+					class="p-button-outlined h-9 white-theme"
+					(click)="navigateTo('contract/register/new')"
+				>
+					<i class="pi pi-plus mr-3"></i>
+					Novo Contrato
+				</button>
+			</div>
+		</header>
+		<ng-container>
+			<ng-container *ngIf="isLoadingContracts">
+				<app-spinner styleClass="mt-11"></app-spinner>
+			</ng-container>
+			<ng-container *ngIf="!isLoadingContracts && noRestults">
+				<div class="no-results-warn">
+					<span>Nenhum resultado</span>
+				</div>
+			</ng-container>
+
+			<p-table
+				[value]="contractEntries"
+				styleClass="p-datatable-striped"
+				[tableStyle]="{ 'min-width': '50rem' }"
+				[paginator]="!noRestults && !isLoadingContracts"
+				[rows]="rows"
+				[(first)]="first"
+				responsiveLayout="scroll"
+				[totalRecords]="totalContractCount"
+				[lazy]="true"
+				(onLazyLoad)="loadContractsPage($event)"
+			>
+				<ng-template pTemplate="header">
+					<tr *ngIf="!isLoadingContracts && !noRestults">
+						<th>Nome do locatário</th>
+						<th>Unidade locada</th>
+						<th>Início do contrato</th>
+						<th>Próximo reajuste</th>
+						<th>Vencimento do contrato</th>
+						<th>Base de reajuste</th>
+						<th></th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-contract>
+					<tr>
+						<td class="font-bold">{{ contract.name }}</td>
+						<td>{{ contract.unit }}</td>
+						<td>{{ contract.contractStart }}</td>
+						<td>{{ contract.nextReadjustment }}</td>
+						<td>{{ contract.contractDue }}</td>
+						<td>{{ contract.readjustmentBase }}</td>
+						<td class="action w-16">
+							<button
+								type="button"
+								pButton
+								icon="pi pi-ellipsis-v"
+								class="p-button-rounded"
+								(click)="
+									actionMenu.toggle($event); setCurrentContract(contract)
+								"
+							></button>
+						</td>
+					</tr>
+				</ng-template>
+			</p-table>
+		</ng-container>
+	</div>
+</div>
+
+<p-menu #actionMenu [popup]="true" [model]="tableMenu"></p-menu>
