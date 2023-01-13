@@ -209,7 +209,8 @@ public class UnidadeService: IUnidadeService
                 MatriculaAgua = _unidade.MatriculaAgua,
                 TaxaAdministracao = _unidade.TaxaAdministracao,
                 ValorPotencial = _unidade.ValorPotencial,
-                UnidadeLocada = _unidade.UnidadeLocada
+                UnidadeLocada = _unidade.UnidadeLocada,
+                Status = true
             };
 
             unidadeRepository.Insert(unidade);
