@@ -553,6 +553,12 @@
 						border-color: #641b1e;
 					}
 				}
+
+				&.no-popup {
+					.p-datepicker {
+						display: none;
+					}
+				}
 			}
 
 			&.ng-touched.ng-invalid {
