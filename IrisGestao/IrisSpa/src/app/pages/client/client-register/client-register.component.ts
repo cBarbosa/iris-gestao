@@ -213,6 +213,9 @@ export class ClientRegisterComponent implements OnInit {
 					},
 				});
 
+				this.registerForm.markAllAsTouched();
+				this.clientTypeChange();
+
 				this.stepList = [
 					{
 						label: 'Informações do cliente',

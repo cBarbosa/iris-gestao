@@ -21,9 +21,11 @@ export class ClientViewComponent implements OnInit {
 	cliente: any;
 	totalClientCount: number;
 	isLoadingView = false;
+	isInativar = false;
 
 	displayModal = false;
 	displayConfirmationModal = false;
+	displayConfirmationInactiveModal = false;
 	modalContent: {
 		isError?: boolean;
 		header?: string;
@@ -67,7 +69,7 @@ export class ClientViewComponent implements OnInit {
 			},
 			{
 				label: 'Excluir',
-				icon: 'ph-copy-simple',
+				icon: 'ph-trash',
 				command: () => this.confirmDelete(),
 			},
 		];
@@ -152,6 +154,14 @@ export class ClientViewComponent implements OnInit {
 		this.displayModal = false;
 	}
 
+	confirmInativar() {
+		this.displayConfirmationInactiveModal = true;
+	}
+
+	closeConfirmationInativarModal() {
+		this.displayConfirmationInactiveModal = false;
+	}
+
 	setCurrentContact(item: Contato): void {
 		this.selectedContact = { ...item, guidClienteReferencia: this.uid };
 	}
@@ -216,6 +226,39 @@ export class ClientViewComponent implements OnInit {
 					},
 				});
 		}
+	}
+
+	inativarCliente() {
+		this.closeConfirmationModal();
+		this.clienteService
+			.inativarCliente(this.uid, false)
+			.subscribe({
+				next: (response) => {
+					console.log('InativarCliente >> retorno '+ JSON.stringify(response));
+					if (response.success) {
+						this.closeConfirmationInativarModal();
+						this.isInativar = true;
+						this.onUpdateContactList({
+							header: 'Cliente Inativado',
+							message: response.message ?? 'Cliente inativado com sucesso',
+						});
+					} else {
+						this.onUpdateContactList({
+							header: 'Cliente não inativado',
+							message: response.message ?? 'Erro na inativação de contato',
+							isError: true,
+						});
+					}
+				},
+				error: (err) => {
+					console.error(err);
+					this.onUpdateContactList({
+						header: 'Contato não inativado',
+						message: 'Erro no envio de dados',
+						isError: true,
+					});
+				},
+			});
 	}
 
 	navigateTo(route: string) {

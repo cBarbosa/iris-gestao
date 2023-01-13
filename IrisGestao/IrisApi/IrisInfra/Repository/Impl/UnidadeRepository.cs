@@ -28,7 +28,8 @@ public class UnidadeRepository : Repository<Unidade>, IUnidadeRepository
     public IEnumerable<Unidade> GetAll()
     {
         var lstUnidades = DbSet.Include(x => x.IdImovelNavigation)
-                                .Include(x => x.IdTipoUnidadeNavigation).ToList();
+                                .Include(x => x.IdTipoUnidadeNavigation).ToList()
+                                .Where(x => x.Status);
 
         return lstUnidades.AsEnumerable();
     }
@@ -36,7 +37,8 @@ public class UnidadeRepository : Repository<Unidade>, IUnidadeRepository
     {
         var lstUnidades = DbSet.Include(x => x.IdImovelNavigation)
                                 .Include(x => x.IdTipoUnidadeNavigation)
-                                .Where(x => x.IdImovel == codigoImovel).ToList();
+                                .Where(x => x.IdImovel == codigoImovel
+                                       && x.Status).ToList();
 
         return lstUnidades.AsEnumerable();
     }
@@ -66,6 +68,7 @@ public class UnidadeRepository : Repository<Unidade>, IUnidadeRepository
                     Tipo = y.Tipo,
                     DataCriacao = y.DataCriacao,
                     DataUltimaModificacao = y.DataUltimaModificacao,
+                    Ativo = y.Status,
                     IdTipoUnidadeNavigation = new
                     {
                         Id = y.IdTipoUnidadeNavigation.Id,

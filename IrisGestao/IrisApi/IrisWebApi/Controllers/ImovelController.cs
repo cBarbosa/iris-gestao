@@ -19,10 +19,11 @@ public class ImovelController : Controller
     [Produces("application/json")]
    public async Task<IActionResult> GetAll(
        [FromQuery] int? idCategoria
+       , [FromQuery] int? idProprietario
        , [FromQuery] string? nome
        , [FromQuery] int? limit = 10
        , [FromQuery] int? page = 1) =>
-        Ok(await imovelService.GetAllPaging(idCategoria, nome, limit ?? 10, page ?? 1));
+        Ok(await imovelService.GetAllPaging(idCategoria, idProprietario, nome, limit ?? 10, page ?? 1));
 
     [HttpGet("{guid}/guid/")]
     [Produces("application/json")]
@@ -45,6 +46,17 @@ public class ImovelController : Controller
         [FromBody] CriarImovelCommand cmd)
     {
         var result = await imovelService.Update(guid, cmd);
+
+        return Ok(result);
+    }
+
+    [HttpPut("{guid}/{status}/alterar-status")]
+    [Produces("application/json")]
+    public async Task<IActionResult> AlterarStatus(
+    Guid guid,
+    bool status)
+    {
+        var result = await imovelService.AlterarStatus(guid, status);
 
         return Ok(result);
     }

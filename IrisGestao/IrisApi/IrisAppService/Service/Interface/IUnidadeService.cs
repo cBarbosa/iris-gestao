@@ -13,4 +13,5 @@ public interface IUnidadeService
     Task<CommandResult> BuscarBuscarUnidadePorImovel(int codigoImovel);
     Task<CommandResult> GetByUid(Guid guid);
     Task<CommandResult> Clone(Guid guid);
+    Task<CommandResult> AlterarStatus(Guid guid, bool status);
 }
