@@ -129,8 +129,6 @@ export class PropertyRegisterComponent {
 			propertyType: this.fb.group({
 				name: ['', Validators.required],
 				proprietary: [null, [Validators.required]],
-				// category: [null, [Validators.required]],
-				unitType: [null, [Validators.required]],
 				costCentre: [null, [Validators.required]],
 				zipcode: [null, [Validators.required]],
 				street: [null, [Validators.required]],
@@ -146,6 +144,7 @@ export class PropertyRegisterComponent {
 				areaOccupancy: ['', [Validators.required]],
 			}),
 			legalInfo: this.fb.group({
+				unitType: [null, [Validators.required]],
 				description: ['', [Validators.required]],
 				registration: ['', [Validators.required]],
 				iptu: ['', [Validators.required]],
@@ -293,7 +292,7 @@ export class PropertyRegisterComponent {
 
 				if (stepData.isValid) {
 					const unitTypeValue =
-						this.propertyTypeForm.controls['unitType'].value;
+						this.legalInfoForm.controls['unitType'].value;
 
 					if (unitTypeValue === 1) {
 						stepData.isValid = this.propertyTypeEdCorpSalaPavForm.valid
@@ -312,7 +311,7 @@ export class PropertyRegisterComponent {
 
 				if (stepData.isValid) {
 					const unitTypeValue =
-						this.propertyTypeForm.controls['unitType'].value;
+						this.legalInfoForm.controls['unitType'].value;
 
 					if (unitTypeValue === 2 || unitTypeValue === 3) {
 						stepData.isValid = this.legalInfoSalaPavForm.valid;
@@ -387,33 +386,18 @@ export class PropertyRegisterComponent {
 				this.propertyTypeForm.markAllAsTouched();
 				return;
 			}
-			// if (this.propertyTypeForm.controls['unitType'].value === 1) {
-			// 	if (this.propertyTypeEdCorpSalaPavForm.invalid) {
-			// 		this.propertyTypeEdCorpSalaPavForm.markAllAsTouched();
-			// 		return;
-			// 	}
-			// } else if (
-			// 	this.propertyTypeForm.controls['unitType'].value === 2 ||
-			// 	this.propertyTypeForm.controls['unitType'].value === 3
-			// ) {
-			// 	if (this.propertyTypeSalaPavForm.invalid) {
-			// 		this.propertyTypeEdCorpSalaPavForm.markAllAsTouched();
-			// 		this.propertyTypeSalaPavForm.markAllAsTouched();
-			// 		return;
-			// 	}
-			// }
 		}
 		if (currStep === 2) {
 
-			if (this.propertyTypeForm.controls['unitType'].value === 1) {
+			if (this.legalInfoForm.controls['unitType'].value === 1) {
 				if (this.propertyTypeEdCorpSalaPavForm.invalid) {
 					this.propertyTypeEdCorpSalaPavForm.markAllAsTouched();
 					return;
 				}
 			}
 			else if (
-				this.propertyTypeForm.controls['unitType'].value === 2 ||
-				this.propertyTypeForm.controls['unitType'].value === 3
+				this.legalInfoForm.controls['unitType'].value === 2 ||
+				this.legalInfoForm.controls['unitType'].value === 3
 			) {
 				if (this.legalInfoForm.invalid || this.legalInfoSalaPavForm.invalid) {
 					this.legalInfoForm.markAllAsTouched();
@@ -471,10 +455,10 @@ export class PropertyRegisterComponent {
 			this.propertyTypeForm.invalid ||
 			this.legalInfoForm.invalid ||
 			this.documentsForm.invalid ||
-			(this.propertyTypeForm.controls['unitType'].value === 1 &&
+			(this.legalInfoForm.controls['unitType'].value === 1 &&
 				this.propertyTypeEdCorpSalaPavForm.invalid) ||
-			((this.propertyTypeForm.controls['unitType'].value === 2 ||
-				this.propertyTypeForm.controls['unitType'].value === 3) &&
+			((this.legalInfoForm.controls['unitType'].value === 2 ||
+				this.legalInfoForm.controls['unitType'].value === 3) &&
 				(this.propertyTypeSalaPavForm.invalid ||
 					this.legalInfoSalaPavForm.invalid))
 		) {
@@ -484,14 +468,14 @@ export class PropertyRegisterComponent {
 
 		let propertyTypeFormData = this.propertyTypeForm.getRawValue();
 
-		if (this.propertyTypeForm.controls['unitType'].value === 1) {
+		if (this.legalInfoForm.controls['unitType'].value === 1) {
 			propertyTypeFormData = {
 				...propertyTypeFormData,
 				...this.propertyTypeEdCorpSalaPavForm.getRawValue(),
 			};
 		} else if (
-			this.propertyTypeForm.controls['unitType'].value === 2 ||
-			this.propertyTypeForm.controls['unitType'].value === 3
+			this.legalInfoForm.controls['unitType'].value === 2 ||
+			this.legalInfoForm.controls['unitType'].value === 3
 		) {
 			propertyTypeFormData = {
 				...propertyTypeFormData,
@@ -503,8 +487,8 @@ export class PropertyRegisterComponent {
 		let legalInfoFormData = this.legalInfoForm.getRawValue();
 
 		if (
-			this.propertyTypeForm.controls['unitType'].value === 2 ||
-			this.propertyTypeForm.controls['unitType'].value === 3
+			this.legalInfoForm.controls['unitType'].value === 2 ||
+			this.legalInfoForm.controls['unitType'].value === 3
 		) {
 			legalInfoFormData = {
 				...legalInfoFormData,
@@ -527,7 +511,7 @@ export class PropertyRegisterComponent {
 
 		const unitObj = {
 			Tipo: legalInfoFormData.description,
-			IdTipoUnidade: +propertyTypeFormData.unitType,
+			IdTipoUnidade: +legalInfoFormData.unitType,
 			AreaUtil: propertyTypeFormData.areaUsable ?? 0,
 			AreaTotal: +propertyTypeFormData.areaTotal,
 			AreaHabitese: propertyTypeFormData.areaOccupancy ?? 0,
@@ -624,6 +608,7 @@ export class PropertyRegisterComponent {
 			email: proprietaryFormData.email,
 			telefone: proprietaryFormData.telephone.toString(),
 			idTipoCliente: 1,
+			status: true,
 			bairro: '',
 			cidade: '',
 			estado: '',

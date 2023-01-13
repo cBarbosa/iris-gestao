@@ -25,7 +25,7 @@ public class ContatoController : Controller
     public async Task<IActionResult> Get() =>
         Ok(await contatoService.GetAll());
 
-    [HttpGet("{guid}/cliente/")]
+    [HttpGet("{guid}/cliente")]
     [Produces("application/json")]
     public async Task<IActionResult> GetByGuidCliente([FromRoute] Guid guid) =>
     Ok(await contatoService.GetByGuidCliente(guid));

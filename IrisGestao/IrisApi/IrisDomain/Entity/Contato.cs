@@ -47,4 +47,6 @@ public partial class Contato: BaseEntity<Contato>
     [ForeignKey("IdFornecedor")]
     [InverseProperty("Contato")]
     public virtual Fornecedor? IdFornecedorNavigation { get; set; }
+
+    public bool Status { get; set; }
 }

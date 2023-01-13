@@ -24,7 +24,7 @@ public class ClienteController : Controller
        , [FromQuery] int? page = 1) =>  
         Ok(await clienteService.GetAllPaging(idTipo,nome, limit ?? 10, page ?? 1));
 
-    [HttpGet("{guid}/guid/")]
+    [HttpGet("{guid}/guid")]
     [Produces("application/json")]
     public async Task<IActionResult> GetByGuid([FromRoute] Guid guid) =>
         Ok(await clienteService.GetByGuid(guid));

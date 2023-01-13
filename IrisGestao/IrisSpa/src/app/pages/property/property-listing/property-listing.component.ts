@@ -178,7 +178,7 @@ export class PropertyListingComponent implements OnInit {
 				} else {
 					this.showPaginator = true;
 					this.pageCount = 1;
-					this.totalListCount = 1;
+					this.totalListCount = 0;
 					this.properties = [];
 					this.noRestults = true;
 				}
