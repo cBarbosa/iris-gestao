@@ -22,6 +22,16 @@ const routes: Routes = [
 			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 		},
 	},
+	{
+		path: 'register',
+		loadChildren: () =>
+			import('./rent-contract-register/rent-contract-register.module').then(
+				(m) => m.RentContractRegisterModule
+			),
+		data: {
+			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+		},
+	},
 ];
 
 @NgModule({
