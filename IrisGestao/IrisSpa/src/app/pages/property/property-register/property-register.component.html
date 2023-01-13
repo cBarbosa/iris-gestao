@@ -1,5 +1,5 @@
 <form
-	class="edit-form"
+	class="register-form"
 	[formGroup]="registerForm"
 	(ngSubmit)="onSubmit($event)"
 >
@@ -84,31 +84,6 @@
 						styleClass="p-button-text text-sm"
 						(click)="registerProprietaryVisible = true"
 					></p-button>
-				</div>
-
-				<div class="field">
-					<label for="unitType" class="block">Tipo de imóvel</label>
-					<p-dropdown
-						id="unit-type"
-						[options]="unitTypes"
-						formControlName="unitType"
-						aria-describedby="unit-type-help"
-						(ngModelChange)="updateStepValidity()"
-					></p-dropdown>
-					<ng-container *ngIf="checkHasError(f['unitType'])">
-						<small
-							id="unit-type-help"
-							*ngIf="f['unitType'].hasError('required'); else error2"
-							class="p-error block"
-						>
-							Informe o tipo de unidade
-						</small>
-						<ng-template #error2>
-							<small id="unit-type-help" class="p-error block">
-								Tipo de unidade inválido
-							</small>
-						</ng-template>
-					</ng-container>
 				</div>
 
 				<div class="field">
@@ -284,6 +259,31 @@
 					Agora adicione as informações necessárias para começar o cadastro do
 					imóvel.
 				</p>
+
+				<div class="field">
+					<label for="unitType" class="block">Tipo de imóvel</label>
+					<p-dropdown
+						id="unit-type"
+						[options]="unitTypes"
+						formControlName="unitType"
+						aria-describedby="unit-type-help"
+						(ngModelChange)="updateStepValidity()"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['unitType'])">
+						<small
+							id="unit-type-help"
+							*ngIf="f['unitType'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o tipo de unidade
+						</small>
+						<ng-template #error2>
+							<small id="unit-type-help" class="p-error block">
+								Tipo de unidade inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
 
 				<div class="field">
 					<label for="description" class="block">Descrição da unidade</label>
@@ -476,9 +476,9 @@
 
 			<ng-container
 				*ngIf="
-					this.propertyTypeForm.controls['unitType'].value === 1 ||
-					this.propertyTypeForm.controls['unitType'].value === 2 ||
-					this.propertyTypeForm.controls['unitType'].value === 3
+					this.legalInfoForm.controls['unitType'].value === 1 ||
+					this.legalInfoForm.controls['unitType'].value === 2 ||
+					this.legalInfoForm.controls['unitType'].value === 3
 				"
 				>
 					<div formGroupName="edCorpSalaPavInfo">
@@ -524,7 +524,7 @@
 				</ng-container>
 
 			<ng-container
-				*ngIf="this.propertyTypeForm.controls['unitType'].value === 2 || this.propertyTypeForm.controls['unitType'].value === 3"
+				*ngIf="this.legalInfoForm.controls['unitType'].value === 2 || this.legalInfoForm.controls['unitType'].value === 3"
 			>
 				<div formGroupName="salaPavInfo">
 					<div class="field mt-6">
@@ -609,8 +609,8 @@
 
 			<ng-container
 				*ngIf="
-					this.propertyTypeForm.controls['unitType'].value === 2 ||
-					this.propertyTypeForm.controls['unitType'].value === 3
+					this.legalInfoForm.controls['unitType'].value === 2 ||
+					this.legalInfoForm.controls['unitType'].value === 3
 				"
 			>
 				<div formGroupName="legalInfoSalaPav">

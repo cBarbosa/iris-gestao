@@ -39,6 +39,56 @@
 				// background-color: #f8f9fa;
 			}
 		}
+
+		.add-property-alert {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			font-weight: 700;
+			width: 100%;
+			padding: 1rem;
+			margin-bottom: 1.5rem;
+			background-color: #f8f8f8;
+
+			span {
+			}
+
+			button {
+				@apply text-sm h-9;
+			}
+		}
+
+		.contract-data {
+			background-color: #f8f8f8;
+			max-height: 190px;
+			padding: 1rem;
+			margin-bottom: 0.5rem;
+
+			h4 {
+				@apply text-base mb-1;
+			}
+
+			> .top-data {
+				border-bottom: solid 1px #eaeaea;
+				@apply flex justify-between py-2 mb-3;
+				color: #262626;
+			}
+			> :last-child {
+				color: #646464;
+			}
+
+			::ng-deep {
+				.p-button {
+					@apply h-9;
+					margin-top: -0.4rem;
+				}
+			}
+		}
+
+		.add-property-button {
+			margin: 1rem 0 1rem -1rem;
+			padding: 0;
+		}
 	}
 
 	.form-actions {
@@ -94,6 +144,10 @@
 		.p-inputtext {
 			width: 100%;
 		}
+	}
+
+	.p-multiselect {
+		width: 100%;
 	}
 
 	.p-button {

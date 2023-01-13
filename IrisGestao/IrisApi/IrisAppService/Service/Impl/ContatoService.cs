@@ -171,5 +171,6 @@ public class ContatoService: IContatoService
         contato.DataNascimento  = cmd.DataNascimento.HasValue ? cmd.DataNascimento : null;
         contato.Cargo           = cmd.Cargo;
         contato.DataCriacao     = contato.DataCriacao;
+        contato.Status          = true;
     }
 }
