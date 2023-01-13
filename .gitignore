@@ -1,11 +1,12 @@
-/IrisGestao/IrisApi/.idea/
-/.vs/
+.vs/
+.vscode/
 
 /IrisGestao/IrisApi/IrisAppService/bin/
 /IrisGestao/IrisApi/IrisAppService/obj/
 
 /IrisGestao/IrisApi/IrisConsole/bin/
 /IrisGestao/IrisApi/IrisConsole/obj/
+/IrisGestao/IrisApi/IrisConsole/Model/
 
 /IrisGestao/IrisApi/IrisDomain/bin/
 /IrisGestao/IrisApi/IrisDomain/obj/
@@ -15,3 +16,11 @@
 
 /IrisGestao/IrisApi/IrisWebApi/bin/
 /IrisGestao/IrisApi/IrisWebApi/obj/
+
+
+/IrisGestao/IrisSpa/.idea/
+/IrisGestao/IrisApi/.vs/
+
+# System files
+.DS_Store
+Thumbs.db

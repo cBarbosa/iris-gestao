@@ -25,6 +25,12 @@ public partial class Evento: BaseEntity<Evento>
 
     public int IdCliente { get; set; }
 
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataUltimaModificacao { get; set; }
+
     [ForeignKey("IdCliente")]
     [InverseProperty("Evento")]
     public virtual Cliente IdClienteNavigation { get; set; } = null!;

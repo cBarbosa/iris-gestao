@@ -12,21 +12,26 @@ public partial class Imovel: BaseEntity<Imovel>
 
     public int IdClienteProprietario { get; set; }
 
+    public Guid? GuidReferencia { get; set; }
+
+    [StringLength(100)]
+    [Unicode(false)]
+    public string Nome { get; set; } = null!;
+
     public int NumCentroCusto { get; set; }
 
-    public byte MonoUsuario { get; set; }
-
-    [StringLength(10)]
-    [Unicode(false)]
-    public string? MineType { get; set; }
+    public bool? MonoUsuario { get; set; }
+    public bool Status { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]
     public string? Classificacao { get; set; }
 
-    [StringLength(50)]
-    [Unicode(false)]
-    public string GuidReferencia { get; set; } = null!;
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataUltimaModificacao { get; set; }
 
     [InverseProperty("IdImovelNavigation")]
     public virtual ICollection<ContratoAluguel> ContratoAluguel { get; } = new List<ContratoAluguel>();

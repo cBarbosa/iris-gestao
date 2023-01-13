@@ -1,0 +1,144 @@
+<form
+	[formGroup]="registerForm"
+	class="flex flex-col justify-between h-full"
+	(ngSubmit)="onSubmit($event)"
+>
+	<div>
+		<div class="field">
+			<label for="name" class="block">Nome</label>
+			<input
+				id="name"
+				type="text"
+				formControlName="name"
+				aria-describedby="name-help"
+				pInputText
+			/>
+			<ng-container *ngIf="checkHasError(f['name'])">
+				<small
+					id="name-help"
+					*ngIf="f['name'].hasError('required'); else error2"
+					class="p-error block"
+				>
+					Informe o nome do contato
+				</small>
+				<ng-template #error2>
+					<small id="name-help" class="p-error block"> Nome inválido </small>
+				</ng-template>
+			</ng-container>
+		</div>
+		<div class="field">
+			<label for="role" class="block">Cargo</label>
+			<input
+				id="role"
+				type="text"
+				formControlName="role"
+				aria-describedby="role-help"
+				pInputText
+			/>
+			<ng-container *ngIf="checkHasError(f['role'])">
+				<small
+					id="role-help"
+					*ngIf="f['role'].hasError('required'); else error2"
+					class="p-error block"
+				>
+					Informe o cargo do contato
+				</small>
+				<ng-template #error2>
+					<small id="role-help" class="p-error block"> Cargo inválido </small>
+				</ng-template>
+			</ng-container>
+		</div>
+		<div class="field">
+			<label for="birthday" class="block">Nascimento</label>
+			<p-calendar
+				id="birthday"
+				formControlName="birthday"
+				dateFormat="dd/mm/yy"
+				(onInput)="onInputDate($event)"
+				(onBlur)="onBlurDate()"
+				placeholder="dd/mm/aaaa"
+				aria-describedby="birthday-help"
+			></p-calendar>
+			<ng-container *ngIf="checkHasError(f['birthday'])">
+				<small
+					id="birthday-help"
+					*ngIf="f['birthday'].hasError('required'); else error2"
+					class="p-error block"
+				>
+					Informe a data de nascimento do contato
+				</small>
+				<ng-template #error2>
+					<small id="birthday-help" class="p-error block">
+						Data de nascimento inválido
+					</small>
+				</ng-template>
+			</ng-container>
+		</div>
+		<div class="field">
+			<label for="email" class="block">Email</label>
+			<input
+				id="email"
+				type="text"
+				formControlName="email"
+				aria-describedby="email-help"
+				pInputText
+			/>
+			<ng-container *ngIf="checkHasError(f['email'])">
+				<small
+					id="email-help"
+					*ngIf="f['email'].hasError('required'); else error2"
+					class="p-error block"
+				>
+					Informe o email do contato
+				</small>
+				<ng-template #error2>
+					<small id="email-help" class="p-error block"> Email inválido </small>
+				</ng-template>
+			</ng-container>
+		</div>
+		<div class="field">
+			<label for="telephone" class="block">Telefone</label>
+			<input
+				id="telephone"
+				type="text"
+				formControlName="telephone"
+				aria-describedby="telephone-help"
+				pInputText
+				mask="(00) 0000-0000 || (00) 0 0000-0000"
+			/>
+			<ng-container *ngIf="checkHasError(f['telephone'])">
+				<small
+					id="telephone-help"
+					*ngIf="f['telephone'].hasError('required'); else error2"
+					class="p-error block"
+				>
+					Informe o telefone do contato
+				</small>
+				<ng-template #error2>
+					<small id="telephone-help" class="p-error block">
+						Telefone inválido
+					</small>
+				</ng-template>
+			</ng-container>
+		</div>
+	</div>
+
+	<div class="flex justify-between gap-4">
+		<button
+			pButton
+			pRipple
+			type="button"
+			label="Cancelar"
+			class="p-button-outlined h-11 w-full"
+			(click)="cancelEdit()"
+		></button>
+
+		<button
+			pButton
+			pRipple
+			type="submit"
+			label="Continuar"
+			class="h-11 w-full"
+		></button>
+	</div>
+</form>

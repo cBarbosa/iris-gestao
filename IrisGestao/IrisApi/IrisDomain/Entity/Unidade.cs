@@ -29,10 +29,9 @@ public partial class Unidade: BaseEntity<Unidade>
     [Unicode(false)]
     public string? Matricula { get; set; }
 
-    [Column("InscricaoIPTU")]
     [StringLength(60)]
     [Unicode(false)]
-    public string? InscricaoIptu { get; set; }
+    public string? InscricaoIPTU { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]
@@ -48,11 +47,22 @@ public partial class Unidade: BaseEntity<Unidade>
     [Column(TypeName = "decimal(18, 0)")]
     public decimal? ValorPotencial { get; set; }
 
-    public byte UnidadeLocada { get; set; }
+    public bool? UnidadeLocada { get; set; }
+    public bool Status { get; set; }
 
+    // TODO alterar o tipo para GUID
     [StringLength(50)]
     [Unicode(false)]
     public string GuidReferencia { get; set; } = null!;
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataUltimaModificacao { get; set; }
+
+    [InverseProperty("IdUnidadeNavigation")]
+    public virtual ICollection<ContratoAluguel> ContratoAluguel { get; } = new List<ContratoAluguel>();
 
     [InverseProperty("IdUnidadeNavigation")]
     public virtual ICollection<DespesaLocatario> DespesaLocatario { get; } = new List<DespesaLocatario>();
