@@ -44,6 +44,17 @@ const routes: Routes = [
 				},
 			},
 			{
+				path: 'rent-contract',
+				loadChildren: () =>
+					import('./pages/rent-contract/rent-contract.module').then(
+						(m) => m.RentContractModule
+					),
+				canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
 				path: '',
 				redirectTo: 'home',
 				pathMatch: 'full',

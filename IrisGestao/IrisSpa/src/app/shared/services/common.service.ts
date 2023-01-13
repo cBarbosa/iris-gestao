@@ -45,4 +45,16 @@ export class CommonService {
 				})
 			);
 	}
+
+	getReadjustment() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/indice-reajuste`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getReadjustment: ${response.message}`);
+					return response;
+				})
+			);
+	}
 }
