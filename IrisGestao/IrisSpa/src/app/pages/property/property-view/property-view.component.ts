@@ -29,6 +29,7 @@ export class PropertyViewComponent implements OnInit {
 	isCorporativeBuilding = false;
 	displayConfirmationInactiveUnitModal = false;
 	displayConfirmationInactiveImovelModal = false;
+	displayConfirmationCloneUnit = false;
 	displayModal = false;
 	modalContent: {
 		isError?: boolean;
@@ -64,7 +65,7 @@ export class PropertyViewComponent implements OnInit {
 			{
 				label: 'Duplicar',
 				icon: 'ph-copy-simple',
-				command: () => this.cloneUnit(this.unit!.guidReferencia!),
+				command: () => this.confirmClone(),
 			},
 			{
 				label: 'Inativar',
@@ -103,6 +104,10 @@ export class PropertyViewComponent implements OnInit {
 		this.displayConfirmationInactiveUnitModal = true;
 	}
 
+	confirmClone(): void {
+		this.displayConfirmationCloneUnit = true;
+	};
+
 	closeConfirmationInativarModal() {
 		this.displayConfirmationInactiveUnitModal = false;
 	}
@@ -113,6 +118,10 @@ export class PropertyViewComponent implements OnInit {
 
 	closeConfirmationInativarImovelModal() {
 		this.displayConfirmationInactiveImovelModal = false;
+	}
+
+	closeConfirmationCloneUnit() {
+		this.displayConfirmationCloneUnit  = false;
 	}
 
 	getData(): void {
@@ -134,6 +143,11 @@ export class PropertyViewComponent implements OnInit {
 	setCurrentUnit(item: ImovelUnidade): void {
 		this.unit = item;
 	}
+
+	cloneUnitModal():void {
+		this.cloneUnit(this.unit?.guidReferencia || '');
+		this.closeConfirmationCloneUnit();
+	};
 
 	cloneUnit(uid: string): void {
 		this.isLoadingView = true;
