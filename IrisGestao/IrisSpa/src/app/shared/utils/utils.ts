@@ -19,25 +19,26 @@ export class Utils {
 		let calendarDate: Date | null;
 
 		function onInputDate(event: any): void {
-			let cursorPosition = event.path[0].selectionEnd;
+			console.log('event', event);
+			let cursorPosition = event.target.selectionEnd;
 
 			if (
 				event.inputType === 'deleteContentBackward' &&
 				(cursorPosition === 2 || cursorPosition === 5)
 			) {
-				event.path[0].value =
-					event.path[0].value.substring(0, cursorPosition - 1) +
-					event.path[0].value.substring(cursorPosition);
+				event.target.value =
+					event.target.value.substring(0, cursorPosition - 1) +
+					event.target.value.substring(cursorPosition);
 				cursorPosition--;
 			}
-			if (event.inputType === 'insertText' && event.path[0].value.length > 10) {
-				event.path[0].value = event.path[0].value.substring(
+			if (event.inputType === 'insertText' && event.target.value.length > 10) {
+				event.target.value = event.target.value.substring(
 					0,
-					event.path[0].value.length - 1
+					event.target.value.length - 1
 				);
 			}
 
-			calendarDateMask = event.path[0].value.toString();
+			calendarDateMask = event.target.value.toString();
 			calendarDateMask = calendarDateMask.replace(/\D/g, '');
 
 			let mask = '';
@@ -50,12 +51,12 @@ export class Utils {
 					}
 				}
 			}
-			event.path[0].value = mask.toString();
-			event.path[0].selectionStart = cursorPosition;
-			event.path[0].selectionEnd = cursorPosition;
+			event.target.value = mask.toString();
+			event.target.selectionStart = cursorPosition;
+			event.target.selectionEnd = cursorPosition;
 
-			if (event.path[0].value.length === 10) {
-				const dt = stringToDate(event.path[0].value);
+			if (event.target.value.length === 10) {
+				const dt = stringToDate(event.target.value);
 				if (isValidDate(dt)) {
 					calendarDate = dt;
 				}
