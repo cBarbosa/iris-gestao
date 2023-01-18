@@ -28,7 +28,10 @@ public class IoCRegisterServices
         services.AddScoped<IUnidadeService, UnidadeService>();
         services.AddScoped<IImovelEnderecoService, ImovelEnderecoService>();
         services.AddScoped<IEventoService, EventoService>();
-        
+        services.AddScoped<IFornecedorService, FornecedorService>();
+        services.AddScoped<IDadoBancarioService, DadoBancarioService>();
+        services.AddScoped<IContratoAluguelService, ContratoAluguelService>();
+
         //External Services
         services.AddScoped<IRepublicaVirtualService, RepublicaVirtualService>();
 
@@ -50,5 +53,8 @@ public class IoCRegisterServices
         services.AddScoped<IUnidadeRepository, Repository.Impl.UnidadeRepository>();
         services.AddScoped<IImovelEnderecoRepository, Repository.Impl.ImovelEnderecoRepository>();
         services.AddScoped<IEventoRepository, Repository.Impl.EventoRepository>();
+        services.AddScoped<IFornecedorRepository, Repository.Impl.FornecedorRepository>();
+        services.AddScoped<IDadoBancarioRepository, Repository.Impl.DadoBancarioRepository>();
+        services.AddScoped<IContratoAluguelRepository, Repository.Impl.ContratoAluguelRepository>();
     }
 }
