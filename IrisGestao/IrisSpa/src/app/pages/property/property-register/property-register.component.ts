@@ -155,7 +155,7 @@ export class PropertyRegisterComponent {
 			}),
 			legalInfoSalaPav: this.fb.group({
 				hasCopies: [false],
-				copies: [''],
+				copies: [1],
 			}),
 			documents: this.fb.group({
 				occupancy: [''],
@@ -521,7 +521,7 @@ export class PropertyRegisterComponent {
 			MatriculaAgua: legalInfoFormData.caesb,
 			TaxaAdministracao: +legalInfoFormData.administration,
 			ValorPotencial: +legalInfoFormData.potential,
-			QtdeCopias: legalInfoFormData.copies ?? null,
+			QtdeCopias: legalInfoFormData.copies ?? 1,
 			UnidadeLocada: false,
 		};
 

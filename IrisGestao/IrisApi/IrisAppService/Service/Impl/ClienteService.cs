@@ -187,7 +187,7 @@ public class ClienteService: IClienteService
         }
         
         cliente.Nome = cmd.Nome;
-        cliente.RazaoSocial = string.Empty.Equals(cmd.RazaoSocial)
+        cliente.RazaoSocial = string.IsNullOrEmpty(cmd.RazaoSocial)
             ? cmd.Nome
             : cmd.RazaoSocial;
         cliente.CpfCnpj = cmd.CpfCnpj;
