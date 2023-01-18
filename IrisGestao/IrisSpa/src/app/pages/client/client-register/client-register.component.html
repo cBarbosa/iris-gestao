@@ -33,7 +33,34 @@
 				</p>
 
 				<div class="field">
-					<label for="Nome" class="block">Nome</label>
+					<label for="client-type" class="block">Tipo de cliente</label>
+					<p-dropdown
+						id="client-type"
+						[options]="dropDownClientTypeList"
+						formControlName="tipoCliente"
+						aria-describedby="client-type-help"
+						(onChange)="clientTypeChange()"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['tipoCliente'])">
+						<small
+							id="client-type-help"
+							*ngIf="f['tipoCliente'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o tipo de cliente
+						</small>
+						<ng-template #error2>
+							<small id="client-type-help" class="p-error block">
+								Tipo de cliente inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="Nome" class="block">
+						{{!isCnpj ? "Nome" : "Razão Social"}}
+					</label>
 					<input
 						id="Nome"
 						type="text"
@@ -48,17 +75,17 @@
 							*ngIf="f['Nome'].hasError('required'); else error2"
 							class="p-error block"
 						>
-							Informe o nome do cliente
+						{{!isCnpj? "Informe o nome do cliente" : "Informe a ração social"}}
 						</small>
 						<ng-template #error2>
 							<small id="name-help" class="p-error block">
-								Nome inválido
+								Nome/Razao social inválida inválido
 							</small>
 						</ng-template>
 					</ng-container>
 				</div>
 
-				<div class="field">
+				<div class="field" *ngIf="!isCnpj">
 					<label for="DataNascimento" class="block">Nascimento</label>
 					<p-calendar
 						id="DataNascimento"
@@ -81,31 +108,6 @@
 						<ng-template #error2>
 							<small id="birthday-help" class="p-error block">
 								Data de nascimento inválido
-							</small>
-						</ng-template>
-					</ng-container>
-				</div>
-
-				<div class="field">
-					<label for="client-type" class="block">Tipo de cliente</label>
-					<p-dropdown
-						id="client-type"
-						[options]="dropDownClientTypeList"
-						formControlName="tipoCliente"
-						aria-describedby="client-type-help"
-						(onChange)="clientTypeChange()"
-					></p-dropdown>
-					<ng-container *ngIf="checkHasError(f['tipoCliente'])">
-						<small
-							id="client-type-help"
-							*ngIf="f['tipoCliente'].hasError('required'); else error2"
-							class="p-error block"
-						>
-							Informe o tipo de cliente
-						</small>
-						<ng-template #error2>
-							<small id="client-type-help" class="p-error block">
-								Tipo de cliente inválido
 							</small>
 						</ng-template>
 					</ng-container>

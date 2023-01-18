@@ -51,7 +51,15 @@ public class ClienteService: IClienteService
 
         try
         {
+            var customer = await clienteRepository.GetByCpfCnpj(cmd.CpfCnpj);
+
+            if (customer != null)
+            {
+                return new CommandResult(false, ErrorResponseEnums.Error_1007, customer);
+            }
+
             clienteRepository.Insert(cliente);
+            
             if(cmd.Contato != null)
             {
                 var contato = new Contato();
@@ -59,6 +67,7 @@ public class ClienteService: IClienteService
                 cmd.Contato.idCliente = cliente.Id;
                 await contatoService.Insert(cmd.Contato);
             }
+
             return new CommandResult(true, SuccessResponseEnums.Success_1000, cliente);
         }
         catch (Exception e)
@@ -181,7 +190,7 @@ public class ClienteService: IClienteService
         }
         
         cliente.Nome = cmd.Nome;
-        cliente.RazaoSocial = string.Empty.Equals(cmd.RazaoSocial)
+        cliente.RazaoSocial = string.IsNullOrEmpty(cmd.RazaoSocial)
             ? cmd.Nome
             : cmd.RazaoSocial;
         cliente.CpfCnpj = cmd.CpfCnpj;

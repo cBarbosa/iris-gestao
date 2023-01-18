@@ -25,7 +25,7 @@ public class ContatoController : Controller
     public async Task<IActionResult> Get() =>
         Ok(await contatoService.GetAll());
 
-    [HttpGet("{guid}/cliente/")]
+    [HttpGet("{guid}/cliente")]
     [Produces("application/json")]
     public async Task<IActionResult> GetByGuidCliente([FromRoute] Guid guid) =>
     Ok(await contatoService.GetByGuidCliente(guid));
@@ -44,9 +44,6 @@ public class ContatoController : Controller
     {
         var result = await contatoService.Update(guid, cmd);
 
-        if (result == null)
-            return BadRequest("Operação não realizada");
-
         return Ok(result);
     }
 
@@ -56,10 +53,6 @@ public class ContatoController : Controller
     {
         var result = await contatoService.Delete(guid);
 
-        if (result == null)
-            return BadRequest("Operação não realizada");
-
         return Ok(result);
     }
-
 }

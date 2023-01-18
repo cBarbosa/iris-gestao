@@ -213,6 +213,9 @@ export class ClientRegisterComponent implements OnInit {
 					},
 				});
 
+				this.registerForm.markAllAsTouched();
+				this.clientTypeChange();
+
 				this.stepList = [
 					{
 						label: 'Informações do cliente',
@@ -260,10 +263,13 @@ export class ClientRegisterComponent implements OnInit {
 	clientTypeChange() {
 		if (this.f['tipoCliente'].value === 'cpf') {
 			this.f['CpfCnpj'].setValidators([Validators.required, CpfValidator]);
+			this.f['DataNascimento'].setValidators([Validators.required, PastDateValidator]);
 		} else {
 			this.f['CpfCnpj'].setValidators([Validators.required, CnpjValidator]);
+			this.f['DataNascimento'].removeValidators([Validators.required, PastDateValidator]);
 		}
 		this.f['CpfCnpj'].updateValueAndValidity();
+		this.f['DataNascimento'].updateValueAndValidity();
 	}
 
 	changeStep(step: number) {

@@ -65,7 +65,7 @@
 				(onLazyLoad)="loadClientsPage($event)"
 			>
 				<ng-template pTemplate="header">
-					<tr>
+					<tr *ngIf="!isLoadingClients && !noRestults">
 						<th>Nome/Razão social</th>
 						<th>CPF/CNPJ</th>
 						<th>Aniversário</th>

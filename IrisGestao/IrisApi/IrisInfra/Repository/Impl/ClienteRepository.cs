@@ -1,6 +1,5 @@
 ﻿using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Command.Result;
-using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -139,6 +138,12 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
             })
             .OrderBy(y => y.Nome)
             .ToListAsync();
+    }
+
+    public async Task<Cliente?> GetByCpfCnpj(string cpfCnpj)
+    {
+        return await DbSet
+            .FirstOrDefaultAsync(x => x.CpfCnpj.Equals(cpfCnpj));
     }
 
     private static List<object> ImagemListFake => new List<object>

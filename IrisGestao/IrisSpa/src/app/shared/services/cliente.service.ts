@@ -77,8 +77,8 @@ export class ClienteService {
 			.pipe(
 				map((response) => {
 					console.log('client response', response);
-					if (response.success) return response;
-					else return console.error(`getClients: ${response.message}`);
+					if (response) return response;
+					else return console.error(`getClients: ${response}`);
 				})
 			);
 	}

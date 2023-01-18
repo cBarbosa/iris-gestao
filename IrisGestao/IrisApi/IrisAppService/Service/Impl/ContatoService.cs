@@ -116,25 +116,23 @@ public class ContatoService: IContatoService
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
-        else
+        
+        var contato = await contatoRepository.GetByGuid(uuid);
+
+        if (contato == null)
         {
-            var contato = await contatoRepository.GetByGuid(uuid);
+            return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
+        }
 
-            if (contato == null)
-            {
-                return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
-            }
-
-            try
-            {
-                contatoRepository.Delete(contato.Id);
-                return new CommandResult(true, SuccessResponseEnums.Success_1002, null);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e.Message);
-                return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
-            }
+        try
+        {
+            contatoRepository.Delete(contato.Id);
+            return new CommandResult(true, SuccessResponseEnums.Success_1002, null);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
         }
     }
 
@@ -161,5 +159,6 @@ public class ContatoService: IContatoService
         contato.DataNascimento  = cmd.DataNascimento.HasValue ? cmd.DataNascimento : null;
         contato.Cargo           = cmd.Cargo;
         contato.DataCriacao     = contato.DataCriacao;
+        contato.Status          = true;
     }
 }
