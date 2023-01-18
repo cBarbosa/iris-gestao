@@ -62,7 +62,9 @@ public class ClienteService: IClienteService
             
             if(cmd.Contato != null)
             {
-                cmd.Contato.GuidClienteReferencia = cliente.GuidReferencia.Value;
+                var contato = new Contato();
+                cmd.Contato.GuidClienteReferencia = Guid.NewGuid();
+                cmd.Contato.idCliente = cliente.Id;
                 await contatoService.Insert(cmd.Contato);
             }
 
@@ -90,6 +92,7 @@ public class ClienteService: IClienteService
         }
 
         cmd.GuidReferencia = uuid;
+        cmd.Status = cliente.Status;
         BindClienteData(cmd, cliente);
 
         try

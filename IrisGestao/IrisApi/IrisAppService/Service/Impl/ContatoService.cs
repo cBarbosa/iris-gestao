@@ -64,19 +64,8 @@ public class ContatoService: IContatoService
 
     public async Task<CommandResult> Insert(CriarContatoCommand cmd)
     {
-        if (cmd.GuidClienteReferencia.Equals(Guid.Empty))
-        {
-            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
-        }
-
-        var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidClienteReferencia);
-        if (cliente == null)
-        {
-            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
-        }
-
         var contato = new Contato();
-        contato.IdCliente = cliente.Id;
+
         BindContatoData(cmd, contato);
 
         try
@@ -106,8 +95,9 @@ public class ContatoService: IContatoService
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
 
+        cmd.idCliente = contato.IdCliente.Value;
         BindContatoData(cmd, contato);
-
+        
         try
         {
             contatoRepository.Update(contato);
@@ -162,7 +152,7 @@ public class ContatoService: IContatoService
         }
 
         contato.IdFornecedor    = contato.IdFornecedor;
-        contato.IdCliente       = contato.IdCliente;
+        contato.IdCliente       = cmd.idCliente;
         contato.Nome            = cmd.Nome;
         contato.Telefone        = cmd.Telefone;
         contato.Email           = cmd.Email;

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace IrisGestao.Domain.Command.Request
 {
-    public class CriarContatoCommand
+    public class CriarContratoAluguelCommand
     {
-        public int idCliente { get; set; }
         public Guid GuidClienteReferencia { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }

@@ -11,7 +11,7 @@ namespace IrisGestao.Domain.Command.Request
         public string Nome { get; set; }
         public int IdCategoriaImovel { get; set; }
         public int IdClienteProprietario { get; set; }
-        public int NumCentroCusto { get; set; }
+        public long NumCentroCusto { get; set; }
         public bool MonoUsuario { get; set; }
         public string? Classificacao { get; set; }
         public Guid? GuidReferencia { get; set; }
@@ -21,5 +21,6 @@ namespace IrisGestao.Domain.Command.Request
         public string? Cidade { get; set; }
         public string? UF { get; set; }
         public string? Complemento { get; set; }
+        public bool Status { get; set; }
     }
 }
