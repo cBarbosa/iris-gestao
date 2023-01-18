@@ -52,9 +52,8 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
 
     public int PeriodicidadeReajuste { get; set; }
 
-    [StringLength(50)]
     [Unicode(false)]
-    public string GuidReferencia { get; set; } = null!;
+    public Guid? GuidReferencia { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime? DataCriacao { get; set; }

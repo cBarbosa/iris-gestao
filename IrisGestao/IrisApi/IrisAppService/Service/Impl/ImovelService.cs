@@ -78,12 +78,13 @@ public class ImovelService: IImovelService
         }
 
         var imovel = await imovelRepository.GetByReferenceGuid(uuid);
-
+        
         if (imovel == null)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
         cmd.GuidReferencia = uuid;
+        cmd.Status = imovel.Status;
 
         var endereco = await imovelEnderecoRepository.GetByImovelReferenceGuid(uuid);
 
@@ -226,6 +227,7 @@ public class ImovelService: IImovelService
         else
         {
             endereco.DataCriacao = DateTime.Now;
+            endereco.DataUltimaModificacao = DateTime.Now;
         }
 
         endereco.Cep = cmd.CEP ?? int.MinValue;

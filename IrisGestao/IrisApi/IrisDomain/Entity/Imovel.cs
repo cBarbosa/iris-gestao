@@ -18,9 +18,10 @@ public partial class Imovel: BaseEntity<Imovel>
     [Unicode(false)]
     public string Nome { get; set; } = null!;
 
-    public int NumCentroCusto { get; set; }
+    public long NumCentroCusto { get; set; }
 
     public bool? MonoUsuario { get; set; }
+
     public bool Status { get; set; }
 
     [StringLength(50)]
