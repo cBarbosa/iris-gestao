@@ -449,7 +449,7 @@ export class ClientRegisterComponent implements OnInit {
 			return;
 		}
 		let dataNascimento = null;
-		if (this.registerForm.value.clientInfo.tipoCliente === 'cnpj')
+		if (this.registerForm.value.clientInfo.tipoCliente === 'cpf')
 		{
 			dataNascimento: new Date(
 				this.registerForm.value.clientInfo.DataNascimento?.getTime() -
