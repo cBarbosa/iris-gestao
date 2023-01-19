@@ -25,7 +25,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                             .ThenInclude(y=> y.IdTipoClienteNavigation)
                         .Include(imb => imb.IdImovelNavigation)
                             .ThenInclude(imb => imb.IdCategoriaImovelNavigation)
-                        .Where(x => x.GuidReferencia.Equals(guid))
+                        .Where(x => x.GuidReferencia.Equals(guid) && x.Status)
                         .Select(x => new
                         {
                             NumeroContrato                  = x.NumeroContrato,
@@ -43,12 +43,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                             PeriodicidadeReajuste           = x.PeriodicidadeReajuste,
                             DataCriacao                     = x.DataCriacao,
                             DataAtualização                 = x.DataUltimaModificacao,
-                            //GuidReferencia                  = x.GuidReferencia.HasValue ? x.GuidReferencia.Value : Guid.Empty,
-                            /*Telefone                = x.Telefone,
-                            DataNascimento          = x.DataNascimento,
-                            DataCriacao             = x.DataCriacao,
-                            DataAtualização         = x.DataUltimaModificacao,
-                            GuidReferencia          = x.GuidReferencia.HasValue ? x.GuidReferencia.Value : Guid.Empty,
+                            GuidReferencia                  = x.GuidReferencia,
                             IdClienteNavigation     = x.IdClienteNavigation == null ? null : new
                             {
                                 CpfCnpj                 = x.IdClienteNavigation.CpfCnpj,
@@ -72,7 +67,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                         Id = x.IdClienteNavigation.IdTipoClienteNavigation.Id,
                                         Nome = x.IdClienteNavigation.IdTipoClienteNavigation.Nome,
                                     }
-                            }*/
+                            }
                         }).ToListAsync();
     }
 }

@@ -51,6 +51,7 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
     public int DiaVencimentoAluguel { get; set; }
 
     public int PeriodicidadeReajuste { get; set; }
+    public bool Status { get; set; }
 
     [Unicode(false)]
     public Guid? GuidReferencia { get; set; }
