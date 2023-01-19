@@ -94,7 +94,7 @@ export class ClientListingComponent {
 								cpf_cnpj: cliente.cpfCnpj,
 								birthday: cliente.dataNascimento
 									? new Date(cliente.dataNascimento)
-									: new Date(),
+									: null,
 								// client_type: cliente.idTipoClienteNavigation.nome,
 								status: 'ativo',
 								action: '',
