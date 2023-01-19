@@ -48,6 +48,7 @@ public partial class Unidade: BaseEntity<Unidade>
     public decimal? ValorPotencial { get; set; }
 
     public bool? UnidadeLocada { get; set; }
+    public bool Status { get; set; }
 
     // TODO alterar o tipo para GUID
     [StringLength(50)]

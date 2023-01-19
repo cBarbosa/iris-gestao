@@ -21,6 +21,7 @@ public partial class Imovel: BaseEntity<Imovel>
     public int NumCentroCusto { get; set; }
 
     public bool? MonoUsuario { get; set; }
+    public bool Status { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]

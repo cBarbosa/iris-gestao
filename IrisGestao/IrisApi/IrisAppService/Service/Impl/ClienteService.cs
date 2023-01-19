@@ -13,19 +13,22 @@ public class ClienteService: IClienteService
     private readonly IClienteRepository clienteRepository;
     private readonly IImovelRepository imovelRepository;
     private readonly ILogger<IClienteService> logger;
+    private readonly IContatoService contatoService;
 
     public ClienteService(IClienteRepository clienteRepository
                          ,IImovelRepository imovelRepository
+                         , IContatoService contatoService
                          , ILogger<IClienteService> logger)
     {
         this.clienteRepository = clienteRepository;
         this.imovelRepository = imovelRepository;
+        this.contatoService = contatoService;
         this.logger = logger;
     }
 
-    public async Task<CommandResult> GetAllPaging(int limit, int page)
+    public async Task<CommandResult> GetAllPaging(int? idTipo, string? nome, int limit, int page)
     {
-        var Clientes = await clienteRepository.GetAllPaging(limit, page);
+        var Clientes = await clienteRepository.GetAllPaging(idTipo ,nome, limit, page);
 
         return Clientes == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
@@ -48,7 +51,21 @@ public class ClienteService: IClienteService
 
         try
         {
+            var customer = await clienteRepository.GetByCpfCnpj(cmd.CpfCnpj);
+
+            if (customer != null)
+            {
+                return new CommandResult(false, ErrorResponseEnums.Error_1007, customer);
+            }
+
             clienteRepository.Insert(cliente);
+            
+            if(cmd.Contato != null)
+            {
+                cmd.Contato.GuidClienteReferencia = cliente.GuidReferencia.Value;
+                await contatoService.Insert(cmd.Contato);
+            }
+
             return new CommandResult(true, SuccessResponseEnums.Success_1000, cliente);
         }
         catch (Exception e)
@@ -60,7 +77,6 @@ public class ClienteService: IClienteService
 
     public async Task<CommandResult> Update(Guid uuid, CriarClienteCommand cmd)
     {
-
         if (cmd == null || uuid.Equals(Guid.Empty))
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
@@ -75,6 +91,34 @@ public class ClienteService: IClienteService
 
         cmd.GuidReferencia = uuid;
         BindClienteData(cmd, cliente);
+
+        try
+        {
+            clienteRepository.Update(cliente);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, cliente);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+    }
+
+    public async Task<CommandResult> AlterarStatus(Guid uuid, bool status)
+    {
+        if (uuid.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var cliente = await clienteRepository.GetByReferenceGuid(uuid);
+
+        if (cliente == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+
+        cliente.Status = status;
 
         try
         {
@@ -133,6 +177,8 @@ public class ClienteService: IClienteService
             case null:
                 cliente.GuidReferencia = Guid.NewGuid();
                 cliente.DataCriacao = DateTime.Now;
+                cliente.DataUltimaModificacao = DateTime.Now;
+                cliente.Status = true;
                 break;
             default:
                 cliente.GuidReferencia = cliente.GuidReferencia;

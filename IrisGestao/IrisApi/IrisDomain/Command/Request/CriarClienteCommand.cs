@@ -13,7 +13,7 @@ namespace IrisGestao.Domain.Command.Request
         public string CpfCnpj { get; set; }
         public string Nome { get; set; }
         public string RazaoSocial { get; set; }
-        public Boolean Status { get; set; }
+        public bool Status { get; set; }
         public string Endereco { get; set; }
         public string Bairro { get; set; }
         public string Cidade { get; set; }
@@ -26,5 +26,6 @@ namespace IrisGestao.Domain.Command.Request
         public DateTime DataCriacao { get; set; }
         public DateTime DataUltimaModificacao { get; set; }
         public Guid GuidReferencia { get; set; }
+        public CriarContatoCommand? Contato { get; set; }
     }
 }

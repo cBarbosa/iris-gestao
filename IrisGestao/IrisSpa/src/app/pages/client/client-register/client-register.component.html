@@ -58,7 +58,7 @@
 					</ng-container>
 				</div>
 
-				<div class="field">
+				<div class="field" *ngIf="!isCnpj">
 					<label for="DataNascimento" class="block">Nascimento</label>
 					<p-calendar
 						id="DataNascimento"

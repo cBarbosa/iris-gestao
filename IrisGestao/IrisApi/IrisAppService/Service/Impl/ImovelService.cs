@@ -24,9 +24,9 @@ public class ImovelService: IImovelService
         this.logger = logger;
     }
 
-    public async Task<CommandResult> GetAllPaging(int? idCategoria, string? nome, int limit, int page)
+    public async Task<CommandResult> GetAllPaging(int? idCategoria, int? idProprietario, string? nome, int limit, int page)
     {
-        var result = await imovelRepository.GetAllPaging(idCategoria, nome, limit, page);
+        var result = await imovelRepository.GetAllPaging(idCategoria, idProprietario, nome, limit, page);
 
         return result == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
@@ -120,6 +120,33 @@ public class ImovelService: IImovelService
         }
     }
 
+    public async Task<CommandResult> AlterarStatus(Guid uuid, bool status)
+    {
+        if (uuid.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var imovel = await imovelRepository.GetByReferenceGuid(uuid);
+
+        if (imovel == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+        imovel.Status = status;
+
+        try
+        {
+            imovelRepository.Update(imovel);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, imovel);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+    }
+
     public async Task<CommandResult> Delete(int? codigo)
     {
         if (!codigo.HasValue)
@@ -164,6 +191,8 @@ public class ImovelService: IImovelService
             case null:
                 imovel.GuidReferencia = Guid.NewGuid();
                 imovel.DataCriacao = DateTime.Now;
+                imovel.DataUltimaModificacao = DateTime.Now;
+                imovel.Status = true;
                 break;
             default:
                 imovel.DataUltimaModificacao = DateTime.Now;

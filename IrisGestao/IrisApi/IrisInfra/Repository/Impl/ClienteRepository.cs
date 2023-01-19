@@ -1,6 +1,5 @@
 ﻿using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Command.Result;
-using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,11 +24,11 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
     public async Task<object?> GetByGuid(Guid guid)
     {
         return await DbSet
-                        // .Include(x => x.IdTipoClienteNavigation)
                         .Include(x => x.Imovel)
                             .ThenInclude(y => y.Unidade)
                         .Include(x => x.Imovel)
                             .ThenInclude(y => y.ImovelEndereco)
+                        .Include(z=> z.Contato)
                         .Where(x => x.GuidReferencia.Equals(guid))
                         .Select(x => new
                         {
@@ -47,23 +46,20 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                             bairro                  = x.Bairro,
                             cidade                  = x.Cidade,
                             estado                  = x.Estado,
-                            // IdTipoClienteNavigation = new
-                            // {
-                            //     Id = x.IdTipoClienteNavigation.Id,
-                            //     Nome = x.IdTipoClienteNavigation.Nome
-                            // },
                             Imovel = x.Imovel.Select(y => new
                             {
                                 Nome                = y.Nome,
                                 guidReferencia      = y.GuidReferencia,
-                                NroUnidades         = y.Unidade.Count,
-                                AreaTotal           = y.Unidade.Sum(x => x.AreaTotal),
-                                AreaUtil            = y.Unidade.Sum(x => x.AreaUtil),
-                                AreaHabitese        = y.Unidade.Sum(x => x.AreaHabitese),
+                                NroUnidades         = y.Unidade.Where(x => x.Status).Count(),
+                                AreaTotal           = y.Unidade.Where(x => x.Status).Sum(x => x.AreaTotal),
+                                AreaUtil            = y.Unidade.Where(x => x.Status).Sum(x => x.AreaUtil),
+                                AreaHabitese        = y.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
+                                NumCentroCusto      = y.NumCentroCusto,
                                 ImgCapa             = "../../../../assets/images/imovel.png",
                                 Imagens             = ImagemListFake,
                                 Anexos              = AnexoListFake,
                                 ImovelEndereco      = y.ImovelEndereco,
+                                Ativo               = y.Status,
                                 IdCategoriaImovelNavigation = y.IdCategoriaImovelNavigation == null ? null : new
                                 {
                                     Id = y.IdCategoriaImovelNavigation.Id,
@@ -75,12 +71,23 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                                     Nome            = x.Nome,
                                     Telefone        = x.Telefone
                                 }
+                            }).Where(y => y.Ativo),
+                            Contato = x.Contato.Select(z => new
+                            {
+                                Nome = z.Nome,
+                                Cargo = z.Cargo,
+                                Email = z.Email,
+                                Telefone = z.Telefone,
+                                DataNascimento = z.DataNascimento,
+                                DataCriacao = z.DataCriacao,
+                                DataAtualização = z.DataUltimaModificacao,
+                                guidReferenciaContato  = z.GuidReferencia,
                             })
                         })
                         .FirstOrDefaultAsync();
     }
 
-    public async Task<CommandPagingResult?> GetAllPaging(int limit, int page)
+    public async Task<CommandPagingResult?> GetAllPaging(int? idTipo, string? nome, int limit, int page)
     {
         var skip = (page - 1) * limit;
 
@@ -90,9 +97,19 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                 .Include(x => x.IdTipoClienteNavigation)
                 .Include(x => x.Imovel)
                     .ThenInclude(y => y.ImovelEndereco)
+                .Where(x =>
+                        (idTipo.HasValue
+                            ? x.IdTipoCliente.Equals(idTipo.Value)
+                            : true)
+                        && (!string.IsNullOrEmpty(nome)
+                            ? x.Nome.Contains(nome)
+                            : true)
+                            && (x.Status)
+                    )
+                .OrderBy(x => x.Nome)
                 .ToListAsync();
 
-            var totalCount = clientes.Count();
+            var totalCount = clientes.Where(x => x.Status).Count();
 
             var clientesPaging = clientes.Skip(skip).Take(limit);
 
@@ -111,17 +128,23 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
     {
         return await DbSet
             .OrderBy(x => x.Nome)
-            .Where(x => x.IdTipoCliente.Equals(TipoClienteEnum.PROPRIETARIO))
+            .Where(x => x.Status)
             .Select(x => new
             {
                 Id = x.Id,
                 GuidReferencia = x.GuidReferencia,
                 Nome = x.Nome,
-                QtdeImoveis = x.Imovel.Count()
+                QtdeImoveis = x.Imovel.Where(x => x.Status).Count()
             })
+            .OrderBy(y => y.Nome)
             .ToListAsync();
     }
 
+    public async Task<Cliente?> GetByCpfCnpj(string cpfCnpj)
+    {
+        return await DbSet
+            .FirstOrDefaultAsync(x => x.CpfCnpj.Equals(cpfCnpj));
+    }
 
     private static List<object> ImagemListFake => new List<object>
     {

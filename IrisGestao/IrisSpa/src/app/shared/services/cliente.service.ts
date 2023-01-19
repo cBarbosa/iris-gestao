@@ -77,8 +77,8 @@ export class ClienteService {
 			.pipe(
 				map((response) => {
 					console.log('client response', response);
-					if (response.success) return response;
-					else return console.error(`getClients: ${response.message}`);
+					if (response) return response;
+					else return console.error(`getClients: ${response}`);
 				})
 			);
 	}
@@ -97,6 +97,13 @@ export class ClienteService {
 					else return console.error(`getClients: ${response.message}`);
 				})
 			);
+	}
+
+	inativarCliente(uid: string, status: boolean) {
+		return this.http.put<ApiResponse>(
+			`${env.config.apiUrl}Cliente/${uid}/${status}/alterar-status`,
+			httpOptions
+		);
 	}
 
 	getListaProprietarios() {

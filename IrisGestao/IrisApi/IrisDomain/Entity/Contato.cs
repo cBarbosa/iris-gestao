@@ -20,15 +20,25 @@ public partial class Contato: BaseEntity<Contato>
     [Unicode(false)]
     public string Email { get; set; } = null!;
 
+    [StringLength(100)]
+    [Unicode(false)]
+    public string Cargo { get; set; } = null!;
+
     [StringLength(11)]
     [Unicode(false)]
     public string Telefone { get; set; } = null!;
+
+    [Column(TypeName = "date")]
+    public DateTime? DataNascimento { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime? DataCriacao { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime? DataUltimaModificacao { get; set; }
+
+    [Unicode(false)]
+    public Guid? GuidReferencia { get; set; }
 
     [ForeignKey("IdCliente")]
     [InverseProperty("Contato")]
@@ -37,4 +47,6 @@ public partial class Contato: BaseEntity<Contato>
     [ForeignKey("IdFornecedor")]
     [InverseProperty("Contato")]
     public virtual Fornecedor? IdFornecedorNavigation { get; set; }
+
+    public bool Status { get; set; }
 }

@@ -392,3 +392,27 @@
 		margin: 5rem;
 	}
 }
+
+::ng-deep {
+	.p-sidebar.p-sidebar-right {
+		width: 26rem;
+	}
+
+	.p-dialog {
+		&.confirmation-modal {
+			@apply w-[25rem];
+
+			.p-dialog-content {
+				text-align: center;
+
+				h2 {
+					@apply text-3xl font-bold mb-4;
+				}
+
+				p {
+					@apply text-lg mb-10;
+				}
+			}
+		}
+	}
+}

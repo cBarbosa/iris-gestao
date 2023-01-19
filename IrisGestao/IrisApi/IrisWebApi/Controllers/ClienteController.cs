@@ -18,11 +18,13 @@ public class ClienteController : Controller
     [HttpGet]
     [Produces("application/json")]
    public async Task<IActionResult> GetAllPaging(
-       [FromQuery] int? limit = 10
-       , [FromQuery] int? page = 1) =>
-        Ok(await clienteService.GetAllPaging(limit ?? 10, page ?? 1));
+       [FromQuery] int? idTipo
+       , [FromQuery] string? nome
+       , [FromQuery] int? limit = 10
+       , [FromQuery] int? page = 1) =>  
+        Ok(await clienteService.GetAllPaging(idTipo,nome, limit ?? 10, page ?? 1));
 
-    [HttpGet("{guid}/guid/")]
+    [HttpGet("{guid}/guid")]
     [Produces("application/json")]
     public async Task<IActionResult> GetByGuid([FromRoute] Guid guid) =>
         Ok(await clienteService.GetByGuid(guid));
@@ -32,7 +34,7 @@ public class ClienteController : Controller
     public async Task<IActionResult> Cadatrar([FromBody] CriarClienteCommand cmd) =>
         Ok(await clienteService.Insert(cmd));
 
-        [HttpPut("{guid}/atualizar")]
+    [HttpPut("{guid}/atualizar")]
     [Produces("application/json")]
     public async Task<IActionResult> Atualizar(
         Guid guid,
@@ -42,6 +44,17 @@ public class ClienteController : Controller
 
         if (result == null)
             return BadRequest("Operação não realizada");
+
+        return Ok(result);
+    }
+
+    [HttpPut("{guid}/{status}/alterar-status")]
+    [Produces("application/json")]
+    public async Task<IActionResult> AlterarStatus(
+    Guid guid,
+    bool status)
+    {
+        var result = await clienteService.AlterarStatus(guid, status);
 
         return Ok(result);
     }
