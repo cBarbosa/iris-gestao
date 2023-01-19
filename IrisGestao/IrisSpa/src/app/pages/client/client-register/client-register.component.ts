@@ -448,18 +448,21 @@ export class ClientRegisterComponent implements OnInit {
 			this.registerForm.markAllAsTouched();
 			return;
 		}
-
-		const data: any = {
-			CpfCnpj: this.registerForm.value.clientInfo.CpfCnpj,
-			Nome: this.registerForm.value.clientInfo.Nome,
-			DataNascimento: new Date(
+		let dataNascimento = null;
+		if (this.registerForm.value.clientInfo.tipoCliente === 'cnpj')
+		{
+			dataNascimento: new Date(
 				this.registerForm.value.clientInfo.DataNascimento?.getTime() -
 					this.registerForm.value.clientInfo.DataNascimento?.getTimezoneOffset() *
 						60 *
 						1000
 			)
-				.toISOString()
-				.split('T')[0],
+		}
+
+		const data: any = {
+			CpfCnpj: this.registerForm.value.clientInfo.CpfCnpj,
+			Nome: this.registerForm.value.clientInfo.Nome,
+			DataNascimento: dataNascimento,
 			Telefone: this.registerForm.value.clientInfo.Telefone,
 			Email: this.registerForm.value.clientInfo.Email,
 			Cep: this.registerForm.value.addressInfo.Cep,
