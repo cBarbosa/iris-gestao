@@ -453,8 +453,8 @@ export class ClientRegisterComponent implements OnInit {
 			CpfCnpj: this.registerForm.value.clientInfo.CpfCnpj,
 			Nome: this.registerForm.value.clientInfo.Nome,
 			DataNascimento: new Date(
-				this.registerForm.value.clientInfo.DataNascimento.getTime() -
-					this.registerForm.value.clientInfo.DataNascimento.getTimezoneOffset() *
+				this.registerForm.value.clientInfo.DataNascimento?.getTime() -
+					this.registerForm.value.clientInfo.DataNascimento?.getTimezoneOffset() *
 						60 *
 						1000
 			)
@@ -484,8 +484,8 @@ export class ClientRegisterComponent implements OnInit {
 				telefone: this.linkedContact.telefone,
 				cargo: this.linkedContact.cargo,
 				dataNascimento: new Date(
-					this.linkedContact.dataNascimento.getTime() -
-						this.linkedContact.dataNascimento.getTimezoneOffset() * 60 * 1000
+					this.linkedContact.dataNascimento?.getTime() -
+						this.linkedContact.dataNascimento?.getTimezoneOffset() * 60 * 1000
 				)
 					.toISOString()
 					.split('T')[0],
