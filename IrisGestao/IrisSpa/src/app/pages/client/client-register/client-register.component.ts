@@ -261,7 +261,8 @@ export class ClientRegisterComponent implements OnInit {
 	}
 
 	clientTypeChange() {
-		if (this.f['tipoCliente'].value === 'cpf') {
+		console.debug('clientTypeChange', this.f);
+		if (!this.isCnpj) {
 			this.f['CpfCnpj'].setValidators([Validators.required, CpfValidator]);
 			this.f['DataNascimento'].setValidators([Validators.required, PastDateValidator]);
 		} else {
