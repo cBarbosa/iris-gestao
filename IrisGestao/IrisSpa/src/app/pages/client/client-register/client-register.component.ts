@@ -261,16 +261,16 @@ export class ClientRegisterComponent implements OnInit {
 	}
 
 	clientTypeChange() {
-		console.debug('clientTypeChange', this.f);
+		console.debug('clientTypeChange', this.clientInfoForm.getRawValue());
 		if (!this.isCnpj) {
-			this.f['CpfCnpj'].setValidators([Validators.required, CpfValidator]);
-			this.f['DataNascimento'].setValidators([Validators.required, PastDateValidator]);
+			this.clientInfoForm.controls['CpfCnpj'].setValidators([Validators.required, CpfValidator]);
+			this.clientInfoForm.controls['DataNascimento'].setValidators([Validators.required, PastDateValidator]);
 		} else {
-			this.f['CpfCnpj'].setValidators([Validators.required, CnpjValidator]);
-			this.f['DataNascimento'].removeValidators([Validators.required, PastDateValidator]);
+			this.clientInfoForm.controls['CpfCnpj'].setValidators([Validators.required, CnpjValidator]);
+			this.clientInfoForm.controls['DataNascimento'].removeValidators([Validators.required, PastDateValidator]);
 		}
-		this.f['CpfCnpj'].updateValueAndValidity();
-		this.f['DataNascimento'].updateValueAndValidity();
+		this.clientInfoForm.controls['CpfCnpj'].updateValueAndValidity();
+		this.clientInfoForm.controls['DataNascimento'].updateValueAndValidity();
 	}
 
 	changeStep(step: number) {
