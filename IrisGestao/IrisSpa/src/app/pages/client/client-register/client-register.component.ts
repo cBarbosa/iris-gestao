@@ -271,7 +271,7 @@ export class ClientRegisterComponent implements OnInit {
 		}
 		this.clientInfoForm.controls['CpfCnpj'].updateValueAndValidity();
 		this.clientInfoForm.controls['DataNascimento'].updateValueAndValidity();
-	}
+	};
 
 	changeStep(step: number) {
 		this.stepList = this.stepList.map((entry: Step, i: number) => {
