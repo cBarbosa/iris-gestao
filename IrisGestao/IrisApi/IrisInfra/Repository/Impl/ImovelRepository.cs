@@ -57,6 +57,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                             Nome = x.Nome,
                             NumCentroCusto = x.NumCentroCusto,
                             ImovelEndereco = x.ImovelEndereco,
+                            Status          = x.Status,
                             Unidade = x.Unidade.Select(y => new
                                 {
                                     GuidReferencia = y.GuidReferencia,
