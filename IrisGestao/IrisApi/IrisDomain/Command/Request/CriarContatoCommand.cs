@@ -8,7 +8,8 @@ namespace IrisGestao.Domain.Command.Request
 {
     public class CriarContatoCommand
     {
-        public int idCliente { get; set; }
+        public int? idCliente { get; set; }
+        public int? idFornecedor { get; set; }
         public Guid GuidClienteReferencia { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }

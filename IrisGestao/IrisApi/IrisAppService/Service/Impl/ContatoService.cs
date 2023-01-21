@@ -65,7 +65,13 @@ public class ContatoService: IContatoService
     public async Task<CommandResult> Insert(CriarContatoCommand cmd)
     {
         var contato = new Contato();
+        var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidClienteReferencia);
 
+        if (cliente == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+        cmd.idCliente = cliente.Id;
         BindContatoData(cmd, contato);
 
         try
