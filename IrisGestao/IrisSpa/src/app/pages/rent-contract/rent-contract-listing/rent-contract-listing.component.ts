@@ -83,15 +83,12 @@ export class RentContractListingComponent {
 			{
 				label: 'Detalhes',
 				icon: 'ph-eye',
-				// command: () => this.showDetails(),
+				command: () => this.navigateTo('rent-contract/details'),
 			},
 			{
 				label: 'Editar',
 				icon: 'ph-note-pencil',
-				command: () =>
-					this.navigateTo(
-						'property/edit/unit/' + this.focusedContract!.guidReferencia
-					),
+				command: () => this.navigateTo('rent-contract/edit/'),
 			},
 			{
 				label: 'Duplicar',
@@ -153,10 +150,23 @@ export class RentContractListingComponent {
 
 	getContractPage(page = 1, filter?: string, typeId?: number): void {
 		this.isLoadingContracts = true;
-		this.contractEntries = [];
+		this.contractEntries = [
+			{
+				name: 'SICOOB',
+				unit: 'Sala comercial',
+				contractStart: new Date('2021-01-21').toLocaleDateString(),
+				nextReadjustment: new Date('2023-01-21').toLocaleDateString(),
+				contractDue: new Date('2018-09-06').toLocaleDateString(),
+				readjustmentBase: 'IGPM',
+				action: '',
+				guidReferencia: 'id',
+			},
+		];
 
+		this.isLoadingContracts = false;
+		/*
 		const contracts = this.contractService
-			.getContracts(this.rows, page, filter, typeId)
+			.getContracts(this.rows, page, undefined, filter, typeId)
 			?.pipe(first())
 			.subscribe({
 				next: (event: any) => {
@@ -192,6 +202,7 @@ export class RentContractListingComponent {
 					this.isLoadingContracts = false;
 				},
 			});
+			*/
 	}
 
 	filterContracts = (e: Event) => {

@@ -1,6 +1,7 @@
 :host ::ng-deep {
 	.field {
 		margin-bottom: 1.7rem;
+		position: relative;
 
 		label {
 			@apply text-sm mb-2;
@@ -17,6 +18,17 @@
 
 		&:last-child {
 			margin-bottom: 0.7rem;
+		}
+	}
+
+	.share-line {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+
+		.field {
+			flex-basis: 0;
+			flex-grow: 1;
 		}
 	}
 
@@ -616,6 +628,7 @@
 			padding: 0 1.5rem;
 
 			.p-accordion-tab {
+				background-color: #ffffff;
 				border-bottom: solid 1px #eaeaea;
 
 				.p-accordion-header:not(.p-disabled) {
@@ -625,7 +638,7 @@
 						justify-content: space-between;
 						background-color: #ffffff;
 						color: #641b1e;
-						margin: 0.8rem 0;
+						padding: 2.05rem 0;
 						border: 0;
 
 						.p-accordion-toggle-icon {
@@ -644,7 +657,19 @@
 					}
 				}
 
+				> .error {
+					.p-accordion-tab {
+						.p-accordion-header:not(.p-disabled) {
+							.p-accordion-header-link {
+								@apply text-red-700;
+							}
+						}
+					}
+				}
+
 				.p-toggleable-content {
+					overflow: hidden;
+
 					.p-accordion-content {
 						padding: 0;
 						border: 0;
