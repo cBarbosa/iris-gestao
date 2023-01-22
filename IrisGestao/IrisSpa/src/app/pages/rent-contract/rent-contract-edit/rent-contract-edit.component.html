@@ -1,0 +1,719 @@
+<div class="alert-message" *ngIf="invalidGuid || isLoading; else content">
+	<div class="loading" *ngIf="isLoading">
+		<app-spinner></app-spinner>
+	</div>
+	<div
+		class="invalid flex justify-center items-center h-full"
+		*ngIf="invalidGuid"
+	>
+		<div class="bg-white rounded border border-slate-200">
+			<div class="text-center w-full text-xl font-bold p-20 text-red-600">
+				Não foi possível carregar dados do imóvel
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #content>
+	<div class="edit-form">
+		<h1 class="text-2xl font-bold mb-6">Editar contrato</h1>
+
+		<div class="input-wrapper">
+			<section class="contract-data">
+				<h4>Edifício do contrato</h4>
+
+				<div class="field">
+					<label for="name" class="block">Tipo do imóvel</label>
+					<input
+						id="name"
+						type="text"
+						value="Edifício corporativo"
+						aria-describedby="name-help"
+						maxlength="100"
+						pInputText
+						[disabled]="true"
+					/>
+				</div>
+
+				<div class="field">
+					<label for="name" class="block">Edifício</label>
+					<input
+						id="name"
+						type="text"
+						value="Edi. José Maria Lopes"
+						aria-describedby="name-help"
+						maxlength="100"
+						pInputText
+						[disabled]="true"
+					/>
+				</div>
+
+				<div class="photo-input">
+					<img src="../../../../assets/images/imovel.png" alt="edit-photo" />
+				</div>
+
+				<h4>Ed. José Maria Lopes</h4>
+				<span>SQS 415 Bloco C</span>
+				<span>Edifício corporativo</span>
+
+				<h5>Unidade</h5>
+				<div class="unit-list">
+					<div class="mt-1.5">
+						<p-checkbox
+							name="units"
+							value="unidade1"
+							[(ngModel)]="selectedUnits"
+						></p-checkbox>
+						<span class="ml-2">Unidade 000</span>
+					</div>
+					<div class="mt-1.5">
+						<p-checkbox
+							name="units"
+							value="unidade2"
+							[(ngModel)]="selectedUnits"
+						></p-checkbox>
+						<span class="ml-2">Unidade 000</span>
+					</div>
+					<div class="mt-1.5">
+						<p-checkbox
+							name="units"
+							value="unidade3"
+							[(ngModel)]="selectedUnits"
+						></p-checkbox>
+						<span class="ml-2">Unidade 000</span>
+					</div>
+				</div>
+
+				<button
+					pButton
+					type="button"
+					label="Adicionar unidade"
+					icon="pi pi-plus"
+					iconPos="left"
+					class="p-button-text"
+				></button>
+			</section>
+
+			<form [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
+				<section class="aditional-data">
+					<p-accordion
+						[multiple]="false"
+						expandIcon="pi pi-fw pi-chevron-down"
+						collapseIcon="pi pi-fw pi-chevron-up"
+					>
+						<p-accordionTab
+							header="Detalhes do Imóvel"
+							[selected]="true"
+							styleClass="teste_nome"
+						>
+							<section formGroupName="contractInfo">
+								<div class="field">
+									<label for="name" class="block">Nome do contrato</label>
+									<input
+										id="name"
+										type="text"
+										formControlName="name"
+										aria-describedby="name-help"
+										maxlength="100"
+										pInputText
+									/>
+									<ng-container *ngIf="checkHasError(contractInfo['name'])">
+										<small
+											id="name-help"
+											*ngIf="
+												contractInfo['name'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o nome do contrato
+										</small>
+										<ng-template #error2>
+											<small id="name-help" class="p-error block">
+												Nome inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="contract-types" class="block"
+										>Tipo de contrato</label
+									>
+									<p-dropdown
+										id="contract-types"
+										[options]="contractTypes"
+										[filter]="true"
+										filterBy="label"
+										formControlName="contractType"
+										aria-describedby="contract-types-help"
+									></p-dropdown>
+									<ng-container
+										*ngIf="checkHasError(contractInfo['contractType'])"
+									>
+										<small
+											id="contract-types-help"
+											*ngIf="
+												contractInfo['contractType'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o tipo de contrato
+										</small>
+										<ng-template #error2>
+											<small id="contract-types-help" class="p-error block">
+												Tipo de contrato inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="share-line">
+									<div class="field">
+										<label for="start-date" class="block">
+											Data de início do contrato
+										</label>
+										<p-calendar
+											id="start-date"
+											formControlName="startDate"
+											dateFormat="dd/mm/yy"
+											(onInput)="onInputDate($event)"
+											(onBlur)="onBlurDate()"
+											placeholder="dd/mm/aaaa"
+											aria-describedby="start-date-help"
+											panelStyleClass="hidden"
+										></p-calendar>
+										<ng-container
+											*ngIf="checkHasError(contractInfo['startDate'])"
+										>
+											<small
+												id="start-date-help"
+												*ngIf="
+													contractInfo['startDate'].hasError('required');
+													else error2
+												"
+												class="p-error block"
+											>
+												Informe a data de início
+											</small>
+											<ng-template #error2>
+												<small id="start-date-help" class="p-error block">
+													Data de início inválida
+												</small>
+											</ng-template>
+										</ng-container>
+									</div>
+
+									<div class="field">
+										<label for="end-date" class="block">
+											Data de fim do contrato
+										</label>
+										<p-calendar
+											id="end-date"
+											formControlName="endDate"
+											dateFormat="dd/mm/yy"
+											(onInput)="onInputDate($event)"
+											(onBlur)="onBlurDate()"
+											placeholder="dd/mm/aaaa"
+											aria-describedby="end-date-help"
+											panelStyleClass="hidden"
+										></p-calendar>
+										<ng-container
+											*ngIf="checkHasError(contractInfo['endDate'])"
+										>
+											<small
+												id="end-date-help"
+												*ngIf="
+													contractInfo['endDate'].hasError('required');
+													else error2
+												"
+												class="p-error block"
+											>
+												Informe a data de fim
+											</small>
+											<ng-template #error2>
+												<small id="end-date-help" class="p-error block">
+													Data de fim inválida
+												</small>
+											</ng-template>
+										</ng-container>
+									</div>
+								</div>
+
+								<div class="field">
+									<label for="due-date" class="block">
+										Data do vencimento da parcela
+									</label>
+									<p-dropdown
+										id="due-date"
+										[options]="dueDates"
+										formControlName="dueDate"
+										aria-describedby="due-date-help"
+									></p-dropdown>
+									<ng-container *ngIf="checkHasError(contractInfo['dueDate'])">
+										<small
+											id="due-date-help"
+											*ngIf="
+												contractInfo['dueDate'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe a data do vencimento
+										</small>
+										<ng-template #error2>
+											<small id="due-date-help" class="p-error block">
+												Data do vencimento inválida
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="rent-value" class="block">Valor do aluguel</label>
+									<input
+										id="rent-value"
+										type="text"
+										formControlName="rentValue"
+										aria-describedby="rent-value-help"
+										currencyMask
+										pInputText
+									/>
+									<ng-container
+										*ngIf="checkHasError(contractInfo['rentValue'])"
+									>
+										<small
+											id="rent-value-help"
+											*ngIf="
+												contractInfo['rentValue'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o valor do aluguel
+										</small>
+										<ng-template #error2>
+											<small id="rent-value-help" class="p-error block">
+												Valor do aluguel inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+							</section>
+						</p-accordionTab>
+
+						<p-accordionTab header="Locatário">
+							<section formGroupName="renterInfo">
+								<div class="field">
+									<label for="renter-name" class="block"
+										>Nome do locatário</label
+									>
+									<input
+										id="renter-name"
+										type="text"
+										formControlName="renterName"
+										aria-describedby="renter-name-help"
+										pInputText
+									/>
+									<ng-container *ngIf="checkHasError(renterInfo['renterName'])">
+										<small
+											id="renter-name-help"
+											*ngIf="
+												renterInfo['renterName'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o nome do locatário
+										</small>
+										<ng-template #error2>
+											<small id="renter-name-help" class="p-error block">
+												Nome do locatário inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="renter-type" class="block">
+										Tipo de locatário
+									</label>
+									<p-dropdown
+										id="renter-type"
+										[options]="renterTypes"
+										formControlName="renterType"
+										aria-describedby="renter-type-help"
+									></p-dropdown>
+									<ng-container
+										*ngIf="checkHasError(contractInfo['renterType'])"
+									>
+										<small
+											id="renter-type-help"
+											*ngIf="
+												contractInfo['renterType'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o tipo de locatário
+										</small>
+										<ng-template #error2>
+											<small id="renter-type-help" class="p-error block">
+												Tipo de locatário inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="cpf-cnpj" class="block">CPF</label>
+									<input
+										id="cpf-cnpj"
+										type="text"
+										formControlName="cpfCnpj"
+										aria-describedby="cpf-cnpj-help"
+										pInputText
+									/>
+									<ng-container *ngIf="checkHasError(renterInfo['cpfCnpj'])">
+										<small
+											id="cpf-cnpj-help"
+											*ngIf="
+												renterInfo['cpfCnpj'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o CPF
+										</small>
+										<ng-template #error2>
+											<small id="cpf-cnpj-help" class="p-error block">
+												CPF inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="email" class="block">Email</label>
+									<input
+										id="email"
+										type="text"
+										formControlName="email"
+										aria-describedby="email-help"
+										pInputText
+									/>
+									<ng-container *ngIf="checkHasError(renterInfo['email'])">
+										<small
+											id="email-help"
+											*ngIf="
+												renterInfo['email'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o email
+										</small>
+										<ng-template #error2>
+											<small id="email-help" class="p-error block">
+												Email inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="telephone" class="block">Telefone</label>
+									<input
+										id="telephone"
+										type="text"
+										formControlName="telephone"
+										aria-describedby="telephone-help"
+										mask="(00) 0 0000-0000 | (00) 0000-0000"
+										pInputText
+									/>
+									<ng-container *ngIf="checkHasError(renterInfo['telephone'])">
+										<small
+											id="telephone-help"
+											*ngIf="
+												renterInfo['telephone'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o telefone
+										</small>
+										<ng-template #error2>
+											<small id="telephone-help" class="p-error block">
+												Telefone inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+							</section>
+						</p-accordionTab>
+
+						<p-accordionTab header="Taxas e valores">
+							<section formGroupName="valueInfo">
+								<div class="field">
+									<label for="net-value" class="block">Valor líquido</label>
+									<input
+										id="net-value"
+										type="text"
+										formControlName="netValue"
+										aria-describedby="net-value-help"
+										currencyMask
+										pInputText
+									/>
+									<ng-container *ngIf="checkHasError(valueInfo['netValue'])">
+										<small
+											id="net-value-help"
+											*ngIf="
+												valueInfo['netValue'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o valor líquido
+										</small>
+										<ng-template #error2>
+											<small id="net-value-help" class="p-error block">
+												Valor líquido inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="tax-retention" class="block">
+										% de retenção de impostos
+									</label>
+									<input
+										id="tax-retention"
+										type="text"
+										formControlName="taxRetention"
+										aria-describedby="tax-retention-help"
+										mask="percent"
+										suffix="%"
+										pInputText
+									/>
+									<ng-container
+										*ngIf="checkHasError(valueInfo['taxRetention'])"
+									>
+										<small
+											id="tax-retention-help"
+											*ngIf="
+												valueInfo['taxRetention'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe a % de retenção de impostos
+										</small>
+										<ng-template #error2>
+											<small id="tax-retention-help" class="p-error block">
+												% de retenção de impostos inválida
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="discount" class="block"> Desconto </label>
+									<p-dropdown
+										id="discount"
+										[options]="renterTypes"
+										formControlName="discount"
+										aria-describedby="discount-help"
+									></p-dropdown>
+									<ng-container *ngIf="checkHasError(valueInfo['discount'])">
+										<small
+											id="discount-help"
+											*ngIf="
+												valueInfo['discount'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o desconto
+										</small>
+										<ng-template #error2>
+											<small id="discount-help" class="p-error block">
+												Desconto inválida
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="discount" class="block">
+										Índice de reajuste
+									</label>
+									<p-dropdown
+										id="readjust"
+										[options]="renterTypes"
+										formControlName="readjust"
+										aria-describedby="readjust-help"
+									></p-dropdown>
+									<ng-container *ngIf="checkHasError(valueInfo['readjust'])">
+										<small
+											id="readjust-help"
+											*ngIf="
+												valueInfo['readjust'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o índice de reajuste
+										</small>
+										<ng-template #error2>
+											<small id="readjust-help" class="p-error block">
+												Índice de reajuste inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="rent-grace" class="block">
+										Carência do aluguel
+									</label>
+									<p-dropdown
+										id="rent-grace"
+										[options]="renterTypes"
+										formControlName="rentGrace"
+										aria-describedby="rent-grace-help"
+									></p-dropdown>
+									<ng-container *ngIf="checkHasError(valueInfo['rentGrace'])">
+										<small
+											id="rent-grace-help"
+											*ngIf="
+												valueInfo['rentGrace'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe a carência de aluguel
+										</small>
+										<ng-template #error2>
+											<small id="rent-grace-help" class="p-error block">
+												Carência de aluguel inválida
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label gracer="rent-period" class="block">
+										Prazo de carência
+									</label>
+									<p-dropdown
+										id="grace-period"
+										[options]="renterTypes"
+										formControlName="gracePeriod"
+										aria-describedby="grace-period-help"
+									></p-dropdown>
+									<ng-container *ngIf="checkHasError(valueInfo['gracePeriod'])">
+										<small
+											id="grace-period-help"
+											*ngIf="
+												valueInfo['gracePeriod'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o prazo de carência
+										</small>
+										<ng-template #error2>
+											<small id="grace-period-help" class="p-error block">
+												Prazo de carência inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="credit-to" class="block"> Creditar para </label>
+									<p-dropdown
+										id="credit-to"
+										[options]="renterTypes"
+										formControlName="creditTo"
+										aria-describedby="credit-to-help"
+									></p-dropdown>
+									<ng-container *ngIf="checkHasError(valueInfo['creditTo'])">
+										<small
+											id="credit-to-help"
+											*ngIf="
+												valueInfo['creditTo'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe para quem creditar
+										</small>
+										<ng-template #error2>
+											<small id="credit-to-help" class="p-error block">
+												Crédito inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+							</section>
+						</p-accordionTab>
+					</p-accordion>
+				</section>
+			</form>
+		</div>
+		<div class="form-actions">
+			<button
+				pButton
+				type="button"
+				label="Voltar"
+				class="p-button-text h-11"
+				(click)="goBack()"
+			></button>
+
+			<button
+				pButton
+				pRipple
+				type="button"
+				label="Cancelar"
+				class="p-button-outlined h-11"
+				(click)="navigateTo('contract/details/' + contractGuid)"
+			></button>
+
+			<button pButton type="submit" label="Continuar" class="h-11"></button>
+		</div>
+	</div>
+</ng-template>
+
+<p-dialog
+	[(visible)]="displayModal"
+	[modal]="true"
+	[draggable]="false"
+	[resizable]="false"
+	styleClass="form-modal"
+>
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+		<button
+			pButton
+			label="Continuar"
+			(click)="closeModal(navigateTo, 'property/details/' + contractGuid)"
+		></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</p-dialog>

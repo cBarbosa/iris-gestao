@@ -94,7 +94,7 @@
 						formControlName="costCentre"
 						aria-describedby="cost-centre-help"
 						mask="0*"
-						maxlength="20"
+						maxlength="18"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['costCentre'])">
@@ -318,7 +318,7 @@
 						type="text"
 						formControlName="registration"
 						aria-describedby="registration-help"
-						mask="000000000.0000/000"
+						maxlength=16
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['registration'])">
@@ -344,7 +344,7 @@
 						type="text"
 						formControlName="iptu"
 						aria-describedby="iptu-help"
-						mask="000000000.0000/000"
+						maxlength=16
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['iptu'])">
@@ -372,7 +372,7 @@
 						type="text"
 						formControlName="neoenergia"
 						aria-describedby="neoenergia-help"
-						mask="000000000.0000/000"
+						maxlength=16
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['neoenergia'])">
@@ -398,7 +398,7 @@
 						type="text"
 						formControlName="caesb"
 						aria-describedby="caesb-help"
-						mask="000000000.0000/000"
+						maxlength=16
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['caesb'])">
