@@ -5,10 +5,9 @@ namespace IrisGestao.ApplicationService.Services.Interface;
 
 public interface IContratoAluguelService
 {
-    //Task<CommandResult> GetAllPaging(int? idTipo, string? nome, int limit, int page);
     Task<CommandResult> GetByGuid(Guid guidReferencia);
     Task<CommandResult> Insert(CriarContratoAluguelCommand cmd);
     Task<CommandResult> Update(Guid uuid, CriarContratoAluguelCommand cmd);
     Task<CommandResult> Delete(Guid uuid);
-    //Task<CommandResult> AlterarStatus(Guid uuid, bool status);
+    Task<CommandResult> GetAllPaging(int? idTipoImovel, int? idBaseReajuste, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? numeroContrato, int limit, int page);
 }

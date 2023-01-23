@@ -19,22 +19,26 @@ public class ContratoAluguelController : Controller
     [Produces("application/json")]
     public async Task<IActionResult> GetByGuid([FromRoute] Guid guid) =>
         Ok(await contratoAluguelService.GetByGuid(guid));
-    /*
-    // GET
+
     [HttpGet]
-    public async Task<IActionResult> Get() =>
-        Ok(await contratoAluguelService.GetAll());
-    */
-    [HttpGet("{guid}/cliente/")]
     [Produces("application/json")]
-    public async Task<IActionResult> GetByGuidCliente([FromRoute] Guid guid) =>
-    Ok(await contratoAluguelService.GetByGuid(guid));
-    /*
+    public async Task<IActionResult> GetAll(
+       [FromQuery] int? idTipoImovel
+       , [FromQuery] int? idBaseReajuste
+       , [FromQuery] DateTime? dthInicioVigencia
+       , [FromQuery] DateTime? dthFimVigencia
+       , [FromQuery] string? numeroContrato
+       , [FromQuery] int? limit = 10
+       , [FromQuery] int? page = 1) =>
+        Ok(await contratoAluguelService.GetAllPaging(idTipoImovel, idBaseReajuste, dthInicioVigencia, dthFimVigencia, numeroContrato, limit ?? 10, page ?? 1));
 
     [HttpPost("criar")]
     [Produces("application/json")]
     public async Task<IActionResult> Cadatrar([FromBody] CriarContratoAluguelCommand cmd) =>
         Ok(await contratoAluguelService.Insert(cmd));
+
+
+    /*
 
     [HttpPut("{guid}/atualizar")]
     [Produces("application/json")]

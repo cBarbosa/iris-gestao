@@ -10,28 +10,48 @@ namespace IrisGestao.ApplicationService.Service.Impl;
 
 public class ContratoAluguelService: IContratoAluguelService
 {
-    private readonly IContratoAluguelRepository ContratoAluguelRepository;
     private readonly IContratoAluguelRepository contratoAluguelRepository;
+    private readonly IImovelRepository imovelRepository;
+    private readonly IUnidadeRepository unidadeRepository;
+    private readonly IClienteRepository clienteRepository;
+    private readonly IContratoAluguelImovelRepository contratoAluguelImovelRepository;
+    private readonly IContratoAluguelUnidadeRepository contratoAluguelUnidadeRepository;
     private readonly ILogger<IContratoAluguelService> logger;
 
     public ContratoAluguelService(IContratoAluguelRepository ContratoAluguelRepository
-                        , IContratoAluguelRepository contratoAluguelRepository
+                        , IImovelRepository ImovelRepository
+                        , IUnidadeRepository UnidadeRepository
+                        , IClienteRepository ClienteRepository
+                        , IContratoAluguelImovelRepository ContratoAluguelImovelRepository
+                        , IContratoAluguelUnidadeRepository ContratoAluguelUnidadeRepository
                         , ILogger<IContratoAluguelService> logger)
     {
-        this.ContratoAluguelRepository = ContratoAluguelRepository;
-        this.contratoAluguelRepository = contratoAluguelRepository;
+        this.contratoAluguelRepository = ContratoAluguelRepository;
+        this.imovelRepository = ImovelRepository;
+        this.unidadeRepository = UnidadeRepository;
+        this.clienteRepository = ClienteRepository;
+        this.contratoAluguelImovelRepository = ContratoAluguelImovelRepository;
+        this.contratoAluguelUnidadeRepository = ContratoAluguelUnidadeRepository;
         this.logger = logger;
     }
-    /*
-    public async Task<CommandResult> GetByGuid(Guid guid)
+
+    public async Task<CommandResult> GetAllPaging(int? idTipoImovel, int? idBaseReajuste, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? numeroContrato, int limit, int page)
     {
-        var contratoAluguel = await ContratoAluguelRepository.GetByGuid(guid);
+        if(dthInicioVigencia.HasValue && dthFimVigencia.HasValue)
+        {
+            var diffDatas = dthFimVigencia.Value - dthInicioVigencia.Value;
+            if(diffDatas.Days < 1 || diffDatas.Days > 30)
+            {
+                return new CommandResult(false, String.Format(ErrorResponseEnums.Error_1008,30), null!);
+            }
+        }
+        
+        var result = await contratoAluguelRepository.GetAllPaging(idTipoImovel, idBaseReajuste, dthInicioVigencia, dthFimVigencia, numeroContrato, limit, page);
 
-        return contratoAluguel == null
+        return result == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
-            : new CommandResult(true, SuccessResponseEnums.Success_1005, contratoAluguel);
-    }*/
-
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, result);
+    }
 
     public async Task<CommandResult> GetByGuid(Guid guid)
     {
@@ -40,31 +60,34 @@ public class ContratoAluguelService: IContratoAluguelService
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
-        var ContratoAluguel = await ContratoAluguelRepository.GetByContratoAluguelGuid(guid);
+        var ContratoAluguel = await contratoAluguelRepository.GetByContratoAluguelGuid(guid);
 
         return ContratoAluguel == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
             : new CommandResult(true, SuccessResponseEnums.Success_1005, ContratoAluguel);
     }
 
-    public async Task<CommandResult> GetAll()
-    {
-        var ContratoAluguels = await Task.FromResult(ContratoAluguelRepository.GetAll());
-
-        return !ContratoAluguels.Any()
-            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
-            : new CommandResult(true, SuccessResponseEnums.Success_1005, ContratoAluguels);
-    }
-
     public async Task<CommandResult> Insert(CriarContratoAluguelCommand cmd)
     {
         var ContratoAluguel = new ContratoAluguel();
+        if (cmd.GuidCliente.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
 
+        var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidCliente);
+        if (cliente == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
+        }
         BindContratoAluguelData(cmd, ContratoAluguel);
+        ContratoAluguel.IdCliente = cliente.Id;
 
         try
         {
-            ContratoAluguelRepository.Insert(ContratoAluguel);
+            contratoAluguelRepository.Insert(ContratoAluguel);
+            await CriaContratoAluguelImovel(ContratoAluguel.Id, cmd.lstImoveis);
+
             return new CommandResult(true, SuccessResponseEnums.Success_1000, ContratoAluguel);
         }
         catch (Exception e)
@@ -82,7 +105,7 @@ public class ContratoAluguelService: IContratoAluguelService
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
-        var ContratoAluguel = await ContratoAluguelRepository.GetByGuid(uuid);
+        var ContratoAluguel = await contratoAluguelRepository.GetByGuid(uuid);
 
         if (ContratoAluguel == null)
         {
@@ -93,7 +116,7 @@ public class ContratoAluguelService: IContratoAluguelService
 
         try
         {
-            ContratoAluguelRepository.Update(ContratoAluguel);
+            contratoAluguelRepository.Update(ContratoAluguel);
             return new CommandResult(true, SuccessResponseEnums.Success_1001, ContratoAluguel);
         }
         catch (Exception e)
@@ -111,7 +134,7 @@ public class ContratoAluguelService: IContratoAluguelService
         }
         else
         {
-            var ContratoAluguel = await ContratoAluguelRepository.GetByGuid(uuid);
+            var ContratoAluguel = await contratoAluguelRepository.GetByGuid(uuid);
 
             if (ContratoAluguel == null)
             {
@@ -120,7 +143,7 @@ public class ContratoAluguelService: IContratoAluguelService
 
             try
             {
-                ContratoAluguelRepository.Delete(ContratoAluguel.Id);
+                contratoAluguelRepository.Delete(ContratoAluguel.Id);
                 return new CommandResult(true, SuccessResponseEnums.Success_1002, null);
             }
             catch (Exception e)
@@ -128,6 +151,41 @@ public class ContratoAluguelService: IContratoAluguelService
                 logger.LogError(e.Message);
                 return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
             }
+        }
+    }
+
+    private async Task CriaContratoAluguelImovel(int idContratoAluguel, List<ContratoAluguelImovelCommand> lstContratoImovel)
+    {
+        foreach (ContratoAluguelImovelCommand contratoImovel in lstContratoImovel)
+        { 
+            var contratoAluguelImovel = new ContratoAluguelImovel();
+            contratoAluguelImovel.IdContratoAluguel = idContratoAluguel;
+
+            var imovel = await imovelRepository.GetByReferenceGuid(contratoImovel.guidImovel);
+
+            if (imovel != null)
+            {
+                contratoAluguelImovel.IdImovel = imovel.Id;
+            }
+            contratoAluguelImovelRepository.Insert(contratoAluguelImovel);
+            await CriaContratoAluguelUnidades(contratoAluguelImovel.Id, contratoImovel.lstUnidades);
+        }
+    }
+
+    private async Task CriaContratoAluguelUnidades(int idContratoImovel, List<Guid> lstContratoUnidades)
+    {
+        foreach (Guid unidadeContrato in lstContratoUnidades)
+        {
+            var contratoAluguelUnidade = new ContratoAluguelUnidade();
+            contratoAluguelUnidade.IdContratoAluguelImovel = idContratoImovel;
+
+            Unidade unidade = await unidadeRepository.GetByReferenceGuid(unidadeContrato);
+
+            if (unidade != null)
+            {
+                contratoAluguelUnidade.IdUnidade = unidade.Id;
+            }
+            contratoAluguelUnidadeRepository.Insert(contratoAluguelUnidade);
         }
     }
 
@@ -145,15 +203,23 @@ public class ContratoAluguelService: IContratoAluguelService
                 ContratoAluguel.DataUltimaModificacao = DateTime.Now;
                 break;
         }
-        /*
-        ContratoAluguel.NumeroContrato    = ContratoAluguel.IdFornecedor;
-        ContratoAluguel.IdcontratoAluguel       = ContratoAluguel.IdcontratoAluguel;
-        ContratoAluguel.Nome            = cmd.Nome;
-        ContratoAluguel.Telefone        = cmd.Telefone;
-        ContratoAluguel.Email           = cmd.Email;
-        ContratoAluguel.DataNascimento  = cmd.DataNascimento.HasValue ? cmd.DataNascimento : null;
-        ContratoAluguel.Cargo           = cmd.Cargo;
-        ContratoAluguel.DataCriacao     = ContratoAluguel.DataCriacao;
-        */
+        ContratoAluguel.IdCliente                   = ContratoAluguel.Id;
+        ContratoAluguel.IdTipoCreditoAluguel        = cmd.IdTipoCreditoAluguel;
+        ContratoAluguel.IdIndiceReajuste            = cmd.IdIndiceReajuste;
+        ContratoAluguel.IdTipoContrato              = cmd.IdTipoContrato;
+        ContratoAluguel.NumeroContrato              = cmd.NumeroContrato;
+        ContratoAluguel.ValorAluguel                = cmd.ValorAluguel;
+        ContratoAluguel.PercentualRetencaoImpostos  = cmd.PercentualRetencaoImpostos;
+        ContratoAluguel.ValorAluguelLiquido         = cmd.ValorAluguelLiquido;
+        ContratoAluguel.PercentualDescontoAluguel   = cmd.PercentualDescontoAluguel;
+        ContratoAluguel.CarenciaAluguel             = cmd.CarenciaAluguel;
+        ContratoAluguel.PrazoCarencia               = cmd.PrazoCarencia;
+        ContratoAluguel.DataInicioContrato          = cmd.DataInicioContrato;
+        ContratoAluguel.PrazoTotalContrato          = cmd.PrazoTotalContrato;
+        ContratoAluguel.DataFimContrato             = cmd.DataInicioContrato.AddMonths(cmd.PrazoTotalContrato);
+        ContratoAluguel.DataOcupacao                = cmd.DataOcupacao;
+        ContratoAluguel.DiaVencimentoAluguel        = cmd.DiaVencimentoAluguel;
+        ContratoAluguel.PeriodicidadeReajuste       = cmd.PeriodicidadeReajuste;
+        ContratoAluguel.Status                      = true;
     }
 }
