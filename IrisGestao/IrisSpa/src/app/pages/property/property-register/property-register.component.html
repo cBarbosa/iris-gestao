@@ -242,9 +242,7 @@
 						</ng-template>
 					</ng-container>
 				</div>
-
 			</div>
-
 		</section>
 
 		<!-- ------------------------------------------------------------------------ -->
@@ -480,51 +478,54 @@
 					this.legalInfoForm.controls['unitType'].value === 2 ||
 					this.legalInfoForm.controls['unitType'].value === 3
 				"
-				>
-					<div formGroupName="edCorpSalaPavInfo">
-						<div class="field mt-6">
-							<label for="area-total" class="block">Área total</label>
-							<input
-								id="area-total"
-								type="text"
-								formControlName="areaTotal"
-								aria-describedby="area-total-help"
-								suffix=" m²"
-								mask="separator.2"
-								maxlength="14"
-								pInputText
-							/>
-							<ng-container
+			>
+				<div formGroupName="edCorpSalaPavInfo">
+					<div class="field mt-6">
+						<label for="area-total" class="block">Área total</label>
+						<input
+							id="area-total"
+							type="text"
+							formControlName="areaTotal"
+							aria-describedby="area-total-help"
+							suffix=" m²"
+							mask="separator.2"
+							maxlength="14"
+							pInputText
+						/>
+						<ng-container
+							*ngIf="
+								checkHasError(
+									this.propertyTypeEdCorpSalaPavForm.controls['areaTotal']
+								)
+							"
+						>
+							<small
+								id="area-total-help"
 								*ngIf="
-									checkHasError(
-										this.propertyTypeEdCorpSalaPavForm.controls['areaTotal']
-									)
+									this.propertyTypeEdCorpSalaPavForm.controls[
+										'areaTotal'
+									].hasError('required');
+									else error2
 								"
+								class="p-error block"
 							>
-								<small
-									id="area-total-help"
-									*ngIf="
-										this.propertyTypeEdCorpSalaPavForm.controls[
-											'areaTotal'
-										].hasError('required');
-										else error2
-									"
-									class="p-error block"
-								>
-									Informe a área total
+								Informe a área total
+							</small>
+							<ng-template #error2>
+								<small id="area-total-help" class="p-error block">
+									Área total inválida
 								</small>
-								<ng-template #error2>
-									<small id="area-total-help" class="p-error block">
-										Área total inválida
-									</small>
-								</ng-template>
-							</ng-container>
-						</div>
+							</ng-template>
+						</ng-container>
 					</div>
-				</ng-container>
+				</div>
+			</ng-container>
 
 			<ng-container
-				*ngIf="this.legalInfoForm.controls['unitType'].value === 2 || this.legalInfoForm.controls['unitType'].value === 3"
+				*ngIf="
+					this.legalInfoForm.controls['unitType'].value === 2 ||
+					this.legalInfoForm.controls['unitType'].value === 3
+				"
 			>
 				<div formGroupName="salaPavInfo">
 					<div class="field mt-6">
