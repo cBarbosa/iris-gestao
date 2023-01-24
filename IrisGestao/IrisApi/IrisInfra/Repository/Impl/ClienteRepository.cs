@@ -133,6 +133,7 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
             {
                 Id = x.Id,
                 GuidReferencia = x.GuidReferencia,
+                x.CpfCnpj,
                 Nome = x.Nome,
                 QtdeImoveis = x.Imovel.Where(x => x.Status).Count()
             })
