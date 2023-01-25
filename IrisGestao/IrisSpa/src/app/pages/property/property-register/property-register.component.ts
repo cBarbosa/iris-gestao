@@ -31,6 +31,7 @@ type Step = {
 type DropdownItem = {
 	label: string;
 	value: any;
+	cpfCnpj?: string;
 	disabled?: boolean;
 };
 
@@ -276,7 +277,7 @@ export class PropertyRegisterComponent {
 						this.proprietaries.push({
 							label: item.nome,
 							value: item.id,
-							// document: item.cpfCnpj
+							cpfCnpj: item.cpfCnpj,
 						});
 					});
 				}
