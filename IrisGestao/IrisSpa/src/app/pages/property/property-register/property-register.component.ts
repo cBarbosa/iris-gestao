@@ -15,7 +15,11 @@ import {
 } from 'src/app/shared/services';
 import { first } from 'rxjs';
 import { Router } from '@angular/router';
-import { EmailValidator } from 'src/app/shared/validators/custom-validators';
+import {
+	EmailValidator,
+	CpfCnpjValidator,
+	PastDateValidator,
+} from 'src/app/shared/validators/custom-validators';
 
 type Step = {
 	label: string;
@@ -171,11 +175,21 @@ export class PropertyRegisterComponent {
 
 		this.registerProprietaryForm = this.fb.group({
 			name: ['', [Validators.required]],
-			cpfCnpj: ['', [Validators.required]],
-			birthday: ['', [Validators.required]],
+			cpfCnpj: ['', [Validators.required, CpfCnpjValidator]],
+			birthday: ['', [Validators.required, PastDateValidator]],
 			email: ['', [Validators.required, EmailValidator]],
 			telephone: ['', [Validators.required]],
 		});
+
+		this?.registerProprietaryForm
+			?.get('cpfCnpj')
+			?.valueChanges.subscribe((cpfCnpjValue) => {
+				if (cpfCnpjValue?.length > 11) {
+					this?.registerProprietaryForm?.get('birthday')?.disable();
+				} else {
+					this?.registerProprietaryForm?.get('birthday')?.enable();
+				}
+			});
 
 		this.dominiosService.getTipoUnidade().subscribe((event) => {
 			if (event) {
@@ -249,6 +263,7 @@ export class PropertyRegisterComponent {
 			.getListaProprietarios()
 			.pipe(first())
 			.subscribe((event) => {
+				console.log('props: ', event);
 				if (event) {
 					this.proprietaries = [
 						{
@@ -261,6 +276,7 @@ export class PropertyRegisterComponent {
 						this.proprietaries.push({
 							label: item.nome,
 							value: item.id,
+							// document: item.cpfCnpj
 						});
 					});
 				}
@@ -291,8 +307,7 @@ export class PropertyRegisterComponent {
 				stepData.isValid = this.propertyTypeForm.valid ? true : false;
 
 				if (stepData.isValid) {
-					const unitTypeValue =
-						this.legalInfoForm.controls['unitType'].value;
+					const unitTypeValue = this.legalInfoForm.controls['unitType'].value;
 
 					if (unitTypeValue === 1) {
 						stepData.isValid = this.propertyTypeEdCorpSalaPavForm.valid
@@ -310,8 +325,7 @@ export class PropertyRegisterComponent {
 				stepData.isValid = this.legalInfoForm.valid ? true : false;
 
 				if (stepData.isValid) {
-					const unitTypeValue =
-						this.legalInfoForm.controls['unitType'].value;
+					const unitTypeValue = this.legalInfoForm.controls['unitType'].value;
 
 					if (unitTypeValue === 2 || unitTypeValue === 3) {
 						stepData.isValid = this.legalInfoSalaPavForm.valid;
@@ -388,14 +402,12 @@ export class PropertyRegisterComponent {
 			}
 		}
 		if (currStep === 2) {
-
 			if (this.legalInfoForm.controls['unitType'].value === 1) {
 				if (this.propertyTypeEdCorpSalaPavForm.invalid) {
 					this.propertyTypeEdCorpSalaPavForm.markAllAsTouched();
 					return;
 				}
-			}
-			else if (
+			} else if (
 				this.legalInfoForm.controls['unitType'].value === 2 ||
 				this.legalInfoForm.controls['unitType'].value === 3
 			) {
@@ -604,7 +616,7 @@ export class PropertyRegisterComponent {
 		const proprietaryObj = {
 			nome: proprietaryFormData.name,
 			cpfCnpj: proprietaryFormData.cpfCnpj.toString(),
-			dataNascimento: (proprietaryFormData.birthday as Date).toISOString(),
+			dataNascimento: (proprietaryFormData?.birthday as Date)?.toISOString?.(),
 			email: proprietaryFormData.email,
 			telefone: proprietaryFormData.telephone.toString(),
 			idTipoCliente: 1,
