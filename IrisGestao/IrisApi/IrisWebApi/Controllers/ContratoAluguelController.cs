@@ -37,34 +37,14 @@ public class ContratoAluguelController : Controller
     public async Task<IActionResult> Cadatrar([FromBody] CriarContratoAluguelCommand cmd) =>
         Ok(await contratoAluguelService.Insert(cmd));
 
-
-    /*
-
-    [HttpPut("{guid}/atualizar")]
+    [HttpPut("{guid}/{status}/alterar-status")]
     [Produces("application/json")]
-    public async Task<IActionResult> Atualizar(
+    public async Task<IActionResult> AlterarStatus(
     Guid guid,
-    [FromBody] CriarContratoAluguelCommand cmd)
+    bool status)
     {
-        var result = await contratoAluguelService.Update(guid, cmd);
-
-        if (result == null)
-            return BadRequest("Operação não realizada");
+        var result = await contratoAluguelService.AlterarStatus(guid, status);
 
         return Ok(result);
     }
-
-    [HttpDelete("{guid}/deletar")]
-    [Produces("application/json")]
-    public async Task<IActionResult> Deletar(Guid guid)
-    {
-        var result = await contratoAluguelService.Delete(guid);
-
-        if (result == null)
-            return BadRequest("Operação não realizada");
-
-        return Ok(result);
-    }
-    */
-
 }

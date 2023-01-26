@@ -29,7 +29,8 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
     [Column(TypeName = "decimal(18, 0)")]
     public decimal ValorAluguelLiquido { get; set; }
 
-    public int? PercentualDescontoAluguel { get; set; }
+    [Column(TypeName = "decimal(3, 0)")]
+    public decimal? PercentualDescontoAluguel { get; set; }
 
     public bool CarenciaAluguel { get; set; }
 

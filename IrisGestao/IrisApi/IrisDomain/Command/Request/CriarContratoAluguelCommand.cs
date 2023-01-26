@@ -17,7 +17,7 @@ namespace IrisGestao.Domain.Command.Request
         public decimal ValorAluguel { get; set; }
         public decimal PercentualRetencaoImpostos { get; set; }
         public decimal ValorAluguelLiquido { get; set; }
-        public int? PercentualDescontoAluguel { get; set; }
+        public decimal? PercentualDescontoAluguel { get; set; }
         public bool CarenciaAluguel { get; set; }
         public int? PrazoCarencia { get; set; }
         public DateTime DataInicioContrato { get; set; }

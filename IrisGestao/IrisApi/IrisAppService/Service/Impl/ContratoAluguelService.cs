@@ -97,60 +97,30 @@ public class ContratoAluguelService: IContratoAluguelService
         }
     }
 
-    public async Task<CommandResult> Update(Guid uuid, CriarContratoAluguelCommand cmd)
+    public async Task<CommandResult> AlterarStatus(Guid uuid, bool status)
     {
-
-        if (cmd == null || uuid.Equals(Guid.Empty))
-        {
+        if (uuid.Equals(Guid.Empty)){
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
         var ContratoAluguel = await contratoAluguelRepository.GetByGuid(uuid);
 
-        if (ContratoAluguel == null)
-        {
+        if (ContratoAluguel == null){
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
-
-        BindContratoAluguelData(cmd, ContratoAluguel);
+        if (!status){
+            ContratoAluguel.DataFimContrato = DateTime.Now; 
+        }
+        ContratoAluguel.Status = status;
 
         try
         {
             contratoAluguelRepository.Update(ContratoAluguel);
             return new CommandResult(true, SuccessResponseEnums.Success_1001, ContratoAluguel);
         }
-        catch (Exception e)
-        {
+        catch (Exception e){
             logger.LogError(e.Message);
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
-        }
-    }
-
-    public async Task<CommandResult> Delete(Guid uuid)
-    {
-        if (uuid.Equals(Guid.Empty))
-        {
-            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
-        }
-        else
-        {
-            var ContratoAluguel = await contratoAluguelRepository.GetByGuid(uuid);
-
-            if (ContratoAluguel == null)
-            {
-                return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
-            }
-
-            try
-            {
-                contratoAluguelRepository.Delete(ContratoAluguel.Id);
-                return new CommandResult(true, SuccessResponseEnums.Success_1002, null);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e.Message);
-                return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
-            }
         }
     }
 
@@ -191,6 +161,16 @@ public class ContratoAluguelService: IContratoAluguelService
 
     private static void BindContratoAluguelData(CriarContratoAluguelCommand cmd, ContratoAluguel ContratoAluguel)
     {
+        decimal valorLiquido;
+        decimal valorImpostos;
+        decimal valorDescontos = 0;
+        valorImpostos = cmd.ValorAluguel;
+        //valorImpostos = Math.Round((cmd.PercentualRetencaoImpostos / 100) * cmd.ValorAluguel);
+        //if (cmd.PercentualDescontoAluguel.HasValue){
+        //    valorDescontos = cmd.ValorAluguel * (cmd.PercentualDescontoAluguel.Value / 100);
+        //}
+        //valorLiquido = (cmd.ValorAluguel + valorImpostos) - valorDescontos;
+
         switch (ContratoAluguel.GuidReferencia)
         {
             case null:
@@ -210,7 +190,7 @@ public class ContratoAluguelService: IContratoAluguelService
         ContratoAluguel.NumeroContrato              = cmd.NumeroContrato;
         ContratoAluguel.ValorAluguel                = cmd.ValorAluguel;
         ContratoAluguel.PercentualRetencaoImpostos  = cmd.PercentualRetencaoImpostos;
-        ContratoAluguel.ValorAluguelLiquido         = cmd.ValorAluguelLiquido;
+        ContratoAluguel.ValorAluguelLiquido         = valorLiquido;
         ContratoAluguel.PercentualDescontoAluguel   = cmd.PercentualDescontoAluguel;
         ContratoAluguel.CarenciaAluguel             = cmd.CarenciaAluguel;
         ContratoAluguel.PrazoCarencia               = cmd.PrazoCarencia;
