@@ -35,7 +35,7 @@ public partial class Imovel: BaseEntity<Imovel>
     public DateTime? DataUltimaModificacao { get; set; }
 
     [InverseProperty("IdImovelNavigation")]
-    public virtual ICollection<ContratoAluguel> ContratoAluguel { get; } = new List<ContratoAluguel>();
+    public virtual ICollection<ContratoAluguelImovel> ContratoAluguelImovel { get; } = new List<ContratoAluguelImovel>();
 
     [InverseProperty("IdImovelNavigation")]
     public virtual ICollection<ContratoFornecedor> ContratoFornecedor { get; } = new List<ContratoFornecedor>();

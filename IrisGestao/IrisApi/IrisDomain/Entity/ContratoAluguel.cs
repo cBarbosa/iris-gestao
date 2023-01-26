@@ -10,8 +10,6 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
 {
     public int IdCliente { get; set; }
 
-    public int IdImovel { get; set; }
-
     public int IdTipoCreditoAluguel { get; set; }
 
     public int IdIndiceReajuste { get; set; }
@@ -31,9 +29,10 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
     [Column(TypeName = "decimal(18, 0)")]
     public decimal ValorAluguelLiquido { get; set; }
 
-    public int? PercentualDescontoAluguel { get; set; }
+    [Column(TypeName = "decimal(3, 0)")]
+    public decimal? PercentualDescontoAluguel { get; set; }
 
-    public byte CarenciaAluguel { get; set; }
+    public bool CarenciaAluguel { get; set; }
 
     public int? PrazoCarencia { get; set; }
 
@@ -61,16 +60,13 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
 
     [Column(TypeName = "datetime")]
     public DateTime? DataUltimaModificacao { get; set; }
-
-    public int IdUnidade { get; set; }
+    
+    [InverseProperty("IdContratoAluguelNavigation")]
+    public virtual ICollection<ContratoAluguelImovel> ContratoAluguelImovel { get; } = new List<ContratoAluguelImovel>();
 
     [ForeignKey("IdCliente")]
     [InverseProperty("ContratoAluguel")]
     public virtual Cliente IdClienteNavigation { get; set; } = null!;
-
-    [ForeignKey("IdImovel")]
-    [InverseProperty("ContratoAluguel")]
-    public virtual Imovel IdImovelNavigation { get; set; } = null!;
 
     [ForeignKey("IdIndiceReajuste")]
     [InverseProperty("ContratoAluguel")]
@@ -83,8 +79,4 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
     [ForeignKey("IdTipoCreditoAluguel")]
     [InverseProperty("ContratoAluguel")]
     public virtual TipoCreditoAluguel IdTipoCreditoAluguelNavigation { get; set; } = null!;
-
-    [ForeignKey("IdUnidade")]
-    [InverseProperty("ContratoAluguel")]
-    public virtual Unidade IdUnidadeNavigation { get; set; } = null!;
 }
