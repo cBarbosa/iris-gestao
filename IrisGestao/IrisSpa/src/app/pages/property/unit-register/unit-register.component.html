@@ -320,6 +320,7 @@
 					type="text"
 					formControlName="occupancy"
 					aria-describedby="occupancy-help"
+					maxlength="16"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['occupancy'])">
@@ -345,6 +346,7 @@
 					type="text"
 					formControlName="iptu"
 					aria-describedby="iptu-help"
+					maxlength="16"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['iptu'])">
@@ -370,6 +372,7 @@
 					type="text"
 					formControlName="neoenergia"
 					aria-describedby="neoenergia-help"
+					maxlength="16"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['neoenergia'])">
@@ -395,6 +398,7 @@
 					type="text"
 					formControlName="caesb"
 					aria-describedby="caesb-help"
+					maxlength="16"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['caesb'])">
@@ -417,9 +421,11 @@
 				<label for="administration" class="block">Taxa de administração</label>
 				<input
 					id="administration"
-					type="number"
+					type="text"
 					formControlName="administration"
 					aria-describedby="administration-help"
+					mask="percent"
+					suffix="%"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['administration'])">
@@ -442,9 +448,10 @@
 				<label for="potential" class="block">Valor potencial</label>
 				<input
 					id="potential"
-					type="number"
+					type="text"
 					formControlName="potential"
 					aria-describedby="potential-help"
+					currencyMask
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['potential'])">

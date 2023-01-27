@@ -140,7 +140,7 @@ export class ClientRegisterComponent implements OnInit {
 				tipoCliente: ['cpf', [Validators.required]],
 				Nome: ['', Validators.required],
 				razaoSocial: [''],
-				DataNascimento: [null, [Validators.required, PastDateValidator]],
+				DataNascimento: [null, [PastDateValidator]],
 				Email: ['', [Validators.required, EmailValidator]],
 				Telefone: ['', [Validators.required]],
 			}),
@@ -187,10 +187,8 @@ export class ClientRegisterComponent implements OnInit {
 			.subscribe((cliente) => {
 				this.cliente = cliente;
 
-				const formattedDate = new Date(cliente?.dataNascimento);
-				// this.registerForm.controls['DataNascimento'].setValue(
-				// 	datePipe.transform(cliente?.dataNascimento)
-				// );
+				const isDate = cliente?.dataNascimento instanceof Date;
+				const formattedDate = isDate ? new Date(cliente?.dataNascimento) : null;
 
 				this.prevCepInputValue = cliente?.cep;
 
@@ -261,13 +259,12 @@ export class ClientRegisterComponent implements OnInit {
 	}
 
 	clientTypeChange() {
-		console.debug('clientTypeChange', this.clientInfoForm.getRawValue());
 		if (!this.isCnpj) {
 			this.clientInfoForm.controls['CpfCnpj'].setValidators([Validators.required, CpfValidator]);
-			this.clientInfoForm.controls['DataNascimento'].setValidators([Validators.required, PastDateValidator]);
+			this.clientInfoForm.controls['DataNascimento'].setValidators([PastDateValidator]);
 		} else {
 			this.clientInfoForm.controls['CpfCnpj'].setValidators([Validators.required, CnpjValidator]);
-			this.clientInfoForm.controls['DataNascimento'].removeValidators([Validators.required, PastDateValidator]);
+			this.clientInfoForm.controls['DataNascimento'].removeValidators([PastDateValidator]);
 		}
 		this.clientInfoForm.controls['CpfCnpj'].updateValueAndValidity();
 		this.clientInfoForm.controls['DataNascimento'].updateValueAndValidity();
@@ -452,12 +449,13 @@ export class ClientRegisterComponent implements OnInit {
 		let dataNascimento = null;
 		if (this.registerForm.value.clientInfo.tipoCliente === 'cpf')
 		{
-			dataNascimento: new Date(
-				this.registerForm.value.clientInfo.DataNascimento?.getTime() -
-					this.registerForm.value.clientInfo.DataNascimento?.getTimezoneOffset() *
-						60 *
-						1000
-			)
+			dataNascimento: this.registerForm.value.clientInfo.DataNascimento != ''
+				? new Date(
+					this.registerForm.value.clientInfo.DataNascimento?.getTime() -
+						this.registerForm.value.clientInfo.DataNascimento?.getTimezoneOffset() *
+							60 *
+							1000)
+				: null;
 		}
 
 		const data: any = {
@@ -495,8 +493,6 @@ export class ClientRegisterComponent implements OnInit {
 					.split('T')[0],
 			};
 		}
-
-		console.log('sending', data);
 
 		if (this.operacaoClonar) {
 			this.clienteService.criarCliente(data).subscribe({
