@@ -839,6 +839,32 @@
 		</ng-template>
 		<ng-template pTemplate="content">
 			<div class="register-proprietary-form">
+
+				<div class="field">
+					<label for="client-type" class="block">Tipo de cliente</label>
+					<p-dropdown
+						id="client-type"
+						[options]="proprietaryTypes"
+						formControlName="tipoCliente"
+						aria-describedby="client-type-help"
+						(onChange)="proprietaryTypeChange()"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['tipoCliente'])">
+						<small
+							id="client-type-help"
+							*ngIf="f['tipoCliente'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o tipo de cliente
+						</small>
+						<ng-template #error2>
+							<small id="client-type-help" class="p-error block">
+								Tipo de cliente inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
 				<div class="field">
 					<label for="name" class="block">Nome</label>
 					<input
@@ -865,31 +891,6 @@
 						<ng-template #error2>
 							<small id="name-help" class="p-error block">
 								Nome inválido
-							</small>
-						</ng-template>
-					</ng-container>
-				</div>
-
-				<div class="field">
-					<label for="client-type" class="block">Tipo de cliente</label>
-					<p-dropdown
-						id="client-type"
-						[options]="proprietaryTypes"
-						formControlName="tipoCliente"
-						aria-describedby="client-type-help"
-						(onChange)="proprietaryTypeChange()"
-					></p-dropdown>
-					<ng-container *ngIf="checkHasError(f['tipoCliente'])">
-						<small
-							id="client-type-help"
-							*ngIf="f['tipoCliente'].hasError('required'); else error2"
-							class="p-error block"
-						>
-							Informe o tipo de cliente
-						</small>
-						<ng-template #error2>
-							<small id="client-type-help" class="p-error block">
-								Tipo de cliente inválido
 							</small>
 						</ng-template>
 					</ng-container>

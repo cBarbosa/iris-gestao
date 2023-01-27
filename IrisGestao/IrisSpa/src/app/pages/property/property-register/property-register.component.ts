@@ -185,7 +185,7 @@ export class PropertyRegisterComponent {
 			name: ['', [Validators.required]],
 			tipoCliente: ['cpf', [Validators.required]],
 			cpfCnpj: ['', [Validators.required, CpfCnpjValidator]],
-			birthday: ['', [Validators.required, PastDateValidator]],
+			birthday: ['', [PastDateValidator]],
 			email: ['', [Validators.required, EmailValidator]],
 			telephone: ['', [Validators.required]],
 		});
@@ -308,9 +308,7 @@ export class PropertyRegisterComponent {
 				Validators.required,
 				CpfValidator,
 			]);
-			this.registerProprietaryForm.controls['birthday'].setValidators([
-				Validators.required,
-			]);
+			this.registerProprietaryForm.controls['birthday'].setValidators(null);
 		} else {
 			this.registerProprietaryForm.controls['cpfCnpj'].setValidators([
 				Validators.required,
@@ -653,7 +651,9 @@ export class PropertyRegisterComponent {
 		const proprietaryObj = {
 			nome: proprietaryFormData.name,
 			cpfCnpj: proprietaryFormData.cpfCnpj.toString(),
-			dataNascimento: (proprietaryFormData?.birthday as Date)?.toISOString?.(),
+			dataNascimento: proprietaryFormData?.birthday != ''
+				? (proprietaryFormData?.birthday as Date)?.toISOString?.()
+				: null,
 			email: proprietaryFormData.email,
 			telefone: proprietaryFormData.telephone.toString(),
 			idTipoCliente: 1,
@@ -759,7 +759,6 @@ export class PropertyRegisterComponent {
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
-					console.debug('cep', event);
 					if (event.success) {
 						if (event.data.resultado === '1') {
 							this.registerForm.patchValue({
@@ -775,8 +774,6 @@ export class PropertyRegisterComponent {
 							// this.propertyTypeForm.controls['city'].setValue(event.data.cidade);
 							// this.propertyTypeForm.controls['neighborhood'].setValue(event.data.bairro);
 							// this.propertyTypeForm.controls['state'].setValue(event.data.uf);
-
-							console.debug('formData', this.propertyTypeForm);
 						}
 					}
 

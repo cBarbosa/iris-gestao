@@ -82,7 +82,6 @@ export class ClientViewComponent implements OnInit {
 		this.clienteService.getClienteById(this.uid).subscribe((event) => {
 			this.cliente = event;
 			this.isCnpj = event.cpfCnpj.length > 11;
-			console.log('>>>>>>>>>', this.isCnpj);
 
 			this.properties = [...event.imovel];
 			this.contacts = event.contato.map((contato: Contato) => {
@@ -92,9 +91,10 @@ export class ClientViewComponent implements OnInit {
 					cargo: contato.cargo,
 					email: contato.email,
 					telefone: contato.telefone,
-					dataNascimento: new Date(
-						contato.dataNascimento as string
-					).toLocaleDateString(),
+						dataNascimento: contato.dataNascimento != null ? new Date(
+							contato.dataNascimento as string
+						).toLocaleDateString()
+						: null,
 				};
 			});
 			this.isLoadingView = false;
@@ -116,9 +116,10 @@ export class ClientViewComponent implements OnInit {
 							cargo: contato.cargo,
 							email: contato.email,
 							telefone: contato.telefone,
-							dataNascimento: new Date(
-								contato.dataNascimento as string
-							).toLocaleDateString(),
+								dataNascimento: contato.dataNascimento != null ? new Date(
+									contato.dataNascimento as string
+								).toLocaleDateString()
+								: null,
 						};
 					});
 				},

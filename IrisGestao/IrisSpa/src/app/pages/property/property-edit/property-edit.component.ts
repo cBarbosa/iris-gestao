@@ -297,7 +297,6 @@ export class PropertyEditComponent {
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
-					console.debug('cep', event);
 					if (event.success) {
 						if (event.data.resultado === '1') {
 							this.editForm.patchValue({
@@ -306,8 +305,6 @@ export class PropertyEditComponent {
 								neighborhood: event.data.bairro,
 								state: event.data.uf,
 							});
-
-							console.debug('formData', this.editForm);
 						}
 					}
 
