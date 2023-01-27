@@ -871,13 +871,38 @@
 				</div>
 
 				<div class="field">
-					<label for="cpf-cnpj" class="block">CPF/CNPJ</label>
+					<label for="client-type" class="block">Tipo de cliente</label>
+					<p-dropdown
+						id="client-type"
+						[options]="proprietaryTypes"
+						formControlName="tipoCliente"
+						aria-describedby="client-type-help"
+						(onChange)="proprietaryTypeChange()"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['tipoCliente'])">
+						<small
+							id="client-type-help"
+							*ngIf="f['tipoCliente'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o tipo de cliente
+						</small>
+						<ng-template #error2>
+							<small id="client-type-help" class="p-error block">
+								Tipo de cliente inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="cpf-cnpj" class="block">{{ currCpfCnpj }}</label>
 					<input
 						id="cpf-cnpj"
 						type="text"
 						formControlName="cpfCnpj"
 						aria-describedby="cpf-cnpj-help"
-						mask="CPF_CNPJ"
+						[mask]="CpfCnpjMask"
 						pInputText
 					/>
 					<ng-container
@@ -903,7 +928,7 @@
 					</ng-container>
 				</div>
 
-				<div class="field">
+				<div class="field" *ngIf="!isCnpj">
 					<label for="birthday" class="block">Nascimento</label>
 					<p-calendar
 						id="birthday"
