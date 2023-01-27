@@ -68,7 +68,6 @@ export class PropertyListingComponent implements OnInit {
 			this.activatedRoute.snapshot.paramMap.get('pageIndex') ?? 1;
 		this.pageIndex = +routePageIndex;
 
-		console.log('pageIndex', this.pageIndex);
 		this.getPagingData(this.pageIndex);
 
 		this.router.events.subscribe((event: Event) => {
@@ -83,7 +82,6 @@ export class PropertyListingComponent implements OnInit {
 					this.activatedRoute.snapshot.paramMap.get('pageIndex') ?? 1;
 				this.pageIndex = +routePageIndex;
 
-				console.log('pageIndex', this.pageIndex);
 				this.getPagingData(this.pageIndex);
 			}
 
@@ -104,7 +102,7 @@ export class PropertyListingComponent implements OnInit {
 						this.proprietaryOptions.push(
 							...e.data.map((item: any) => {
 								return {
-									label: item.nome,
+									label: this.truncateChar(item.nome),
 									value: item.id,
 								};
 							})
@@ -125,7 +123,7 @@ export class PropertyListingComponent implements OnInit {
 						this.categoryOptions.push(
 							...e.data.map((item: any) => {
 								return {
-									label: item.nome,
+									label: this.truncateChar(item.nome),
 									value: item.id,
 								};
 							})
@@ -163,7 +161,6 @@ export class PropertyListingComponent implements OnInit {
 					this.pageCount = Math.floor(event.data.totalCount / this.rows);
 					this.showPaginator =
 						this.pageCount > 1 || this.pageIndex > this.pageCount;
-					console.log('pageCount', this.pageCount);
 
 					if (event.data.items.length > 0) {
 						event.data.items.forEach((imovel: Imovel) => {
@@ -223,5 +220,16 @@ export class PropertyListingComponent implements OnInit {
 
 	navigateTo(route: string) {
 		this.router.navigate([route]);
+	}
+
+	truncateChar(text: string): string {
+		const charlimit = 48;
+		if(!text || text.length <= charlimit ) {
+			return text;
+		}
+	
+	  	const without_html = text.replace(/<(?:.|\n)*?>/gm, '');
+	  	const shortened = without_html.substring(0, charlimit) + "...";
+	  	return shortened;
 	}
 }
