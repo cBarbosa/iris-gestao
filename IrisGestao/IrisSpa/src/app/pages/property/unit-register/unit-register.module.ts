@@ -12,6 +12,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
+import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
 	declarations: [UnitRegisterComponent],
@@ -27,6 +28,7 @@ import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/sp
 		DialogModule,
 		NgxCurrencyModule,
 		SpinnerComponent,
+		NgxMaskModule
 	],
 })
 export class UnitRegisterModule {}
