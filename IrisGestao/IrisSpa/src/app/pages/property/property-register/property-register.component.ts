@@ -19,6 +19,8 @@ import {
 	EmailValidator,
 	CpfCnpjValidator,
 	PastDateValidator,
+	CpfValidator,
+	CnpjValidator,
 } from 'src/app/shared/validators/custom-validators';
 
 type Step = {
@@ -66,6 +68,11 @@ export class PropertyRegisterComponent {
 			value: null,
 			disabled: true,
 		},
+	];
+
+	proprietaryTypes: DropdownItem[] = [
+		{ label: 'Pessoa física', value: 'cpf' },
+		{ label: 'Pessoa jurídica', value: 'cnpj' },
 	];
 
 	onInputDate: Function;
@@ -176,21 +183,12 @@ export class PropertyRegisterComponent {
 
 		this.registerProprietaryForm = this.fb.group({
 			name: ['', [Validators.required]],
+			tipoCliente: ['cpf', [Validators.required]],
 			cpfCnpj: ['', [Validators.required, CpfCnpjValidator]],
 			birthday: ['', [Validators.required, PastDateValidator]],
 			email: ['', [Validators.required, EmailValidator]],
 			telephone: ['', [Validators.required]],
 		});
-
-		this?.registerProprietaryForm
-			?.get('cpfCnpj')
-			?.valueChanges.subscribe((cpfCnpjValue) => {
-				if (cpfCnpjValue?.length > 11) {
-					this?.registerProprietaryForm?.get('birthday')?.disable();
-				} else {
-					this?.registerProprietaryForm?.get('birthday')?.enable();
-				}
-			});
 
 		this.dominiosService.getTipoUnidade().subscribe((event) => {
 			if (event) {
@@ -285,6 +283,44 @@ export class PropertyRegisterComponent {
 	}
 
 	setNewProprietary: () => void = () => {};
+
+	get CpfCnpjMask() {
+		if (this.registerProprietaryForm.controls['tipoCliente'].value === 'cpf')
+			return '000.000.000-00';
+		return '00.000.000/0000-00';
+	}
+
+	get currCpfCnpj() {
+		if (this.registerProprietaryForm.controls['tipoCliente'].value === 'cpf')
+			return 'CPF';
+		return 'CNPJ';
+	}
+
+	get isCnpj() {
+		if (this.registerProprietaryForm.controls['tipoCliente'].value === 'cpf')
+			return false;
+		return true;
+	}
+
+	proprietaryTypeChange() {
+		if (this.registerProprietaryForm.controls['tipoCliente'].value === 'cpf') {
+			this.registerProprietaryForm.controls['cpfCnpj'].setValidators([
+				Validators.required,
+				CpfValidator,
+			]);
+			this.registerProprietaryForm.controls['birthday'].setValidators([
+				Validators.required,
+			]);
+		} else {
+			this.registerProprietaryForm.controls['cpfCnpj'].setValidators([
+				Validators.required,
+				CnpjValidator,
+			]);
+			this.registerProprietaryForm.controls['birthday'].setValidators(null);
+		}
+		this.registerProprietaryForm.controls['cpfCnpj'].updateValueAndValidity();
+		this.registerProprietaryForm.controls['birthday'].updateValueAndValidity();
+	}
 
 	changeStep(step: number) {
 		// if (step === 2) this.propertyTypeForm.markAllAsTouched();
