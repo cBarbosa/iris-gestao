@@ -60,7 +60,7 @@
 								| cpfcnpj
 						}}
 					</li>
-					<li>{{ propertyData.idClienteProprietarioNavigation?.telefone }}</li>
+					<li>{{ propertyData.idClienteProprietarioNavigation?.telefone ?? '' | telefone }}</li>
 				</ul>
 			</div>
 			<button
