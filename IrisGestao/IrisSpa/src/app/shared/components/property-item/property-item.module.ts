@@ -7,7 +7,7 @@ import { CstmDropdownModule } from 'src/app/shared/components/custom-ui/dropdown
 import { IconModule } from 'src/app/shared/components/custom-ui/icon/icon.module';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
-import { AreaPipeModule, CpfCnpjPipeModule } from '../../pipes';
+import { AreaPipeModule, CpfCnpjPipeModule, TelefonePipeModule } from '../../pipes';
 import { RouterModule } from '@angular/router';
 
 @NgModule({
@@ -21,6 +21,7 @@ import { RouterModule } from '@angular/router';
 		ButtonModule,
 		AreaPipeModule,
 		CpfCnpjPipeModule,
+		TelefonePipeModule
 	],
 	exports: [PropertyItemComponent],
 })
