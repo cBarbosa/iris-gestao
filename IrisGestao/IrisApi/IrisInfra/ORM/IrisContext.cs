@@ -29,6 +29,10 @@ public partial class IrisContext : DbContext
 
     public virtual DbSet<ContratoAluguel> ContratoAluguel { get; set; } = null!;
 
+    public virtual DbSet<ContratoAluguelImovel> ContratoAluguelImovel { get; set; }
+
+    public virtual DbSet<ContratoAluguelUnidade> ContratoAluguelUnidade { get; set; }
+
     public virtual DbSet<ContratoFornecedor> ContratoFornecedor { get; set; } = null!;
 
     public virtual DbSet<DadoBancario> DadoBancario { get; set; } = null!;
@@ -124,10 +128,6 @@ public partial class IrisContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Cliente_ContratoAluguel");
 
-            entity.HasOne(d => d.IdImovelNavigation).WithMany(p => p.ContratoAluguel)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_Imovel_ContratoAluguel");
-
             entity.HasOne(d => d.IdIndiceReajusteNavigation).WithMany(p => p.ContratoAluguel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_IndiceReajuste_ContratoAluguel");
@@ -139,10 +139,32 @@ public partial class IrisContext : DbContext
             entity.HasOne(d => d.IdTipoCreditoAluguelNavigation).WithMany(p => p.ContratoAluguel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_TipoCreditoAluguel_ContratoAluguel");
+        });
 
-            entity.HasOne(d => d.IdUnidadeNavigation).WithMany(p => p.ContratoAluguel)
+        modelBuilder.Entity<ContratoAluguelImovel>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC071E103FF9");
+
+            entity.HasOne(d => d.IdContratoAluguelNavigation).WithMany(p => p.ContratoAluguelImovel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_ContratoAluguel_Unidade");
+                .HasConstraintName("fk_ContratoAluguelImovel_ContratoAluguel");
+
+            entity.HasOne(d => d.IdImovelNavigation).WithMany(p => p.ContratoAluguelImovel)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_ContratoAluguelImovel_Imovel");
+        });
+
+        modelBuilder.Entity<ContratoAluguelUnidade>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC07C8AD6C60");
+
+            entity.HasOne(d => d.IdContratoAluguelImovelNavigation).WithMany(p => p.ContratoAluguelUnidade)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_ContratoAluguelUnidade_ContratoAluguelImovel");
+
+            entity.HasOne(d => d.IdUnidadeNavigation).WithMany(p => p.ContratoAluguelUnidade)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_ContratoAluguelUnidade_Unidade");
         });
 
         modelBuilder.Entity<ContratoFornecedor>(entity =>

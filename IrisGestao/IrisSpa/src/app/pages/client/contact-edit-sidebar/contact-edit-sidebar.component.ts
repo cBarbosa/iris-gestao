@@ -65,7 +65,6 @@ export class ContactEditSidebarComponent implements OnInit, OnChanges {
 			email: [this.data.email, EmailValidator],
 			telephone: [this.data.telefone],
 		});
-
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
@@ -89,7 +88,7 @@ export class ContactEditSidebarComponent implements OnInit, OnChanges {
 		this.editForm?.patchValue({
 			name: this.data.nome,
 			role: this.data.cargo,
-			birthday: this.data.dataNascimento,
+			birthday: this.data.dataNascimento ?? null,
 			email: this.data.email,
 			telephone: this.data.telefone,
 		});
@@ -113,7 +112,9 @@ export class ContactEditSidebarComponent implements OnInit, OnChanges {
 
 		const editFormData = this.editForm.getRawValue();
 
-		const birthday = editFormData.birthday.split('/');
+		const birthday = editFormData.birthday != null
+			? editFormData.birthday.toLocaleDateString().split('/')
+			: null;
 
 		const contactObj: ContatoUpdate = {
 			guidClienteReferencia: this.data.guidClienteReferencia,
@@ -122,7 +123,7 @@ export class ContactEditSidebarComponent implements OnInit, OnChanges {
 			email: editFormData.email,
 			telefone: editFormData.telephone,
 			cargo: editFormData.role,
-			dataNascimento: `${birthday[2]}-${birthday[1]}-${birthday[0]}`,
+			dataNascimento: birthday != null ? `${birthday[2]}-${birthday[1]}-${birthday[0]}` : null,
 		};
 
 		this.contatoService

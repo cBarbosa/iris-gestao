@@ -34,7 +34,8 @@
 								(click)="confirmInativar()"
 								class="p-element p-button-outlined h-11 p-button p-component"
 							>
-							Inativar</button>
+								Inativar
+							</button>
 							<!--button pButton type="button" class="p-button-outlined h-7"
 						(click)="navigateTo('client/register/'+ cliente.guidReferencia + '/Clone')">
 							Duplicar
@@ -46,7 +47,7 @@
 							<div class="data-label">CPF/CNPJ</div>
 							<div class="data-value">{{ cliente?.cpfCnpj | cpfcnpj }}</div>
 						</div>
-						<div class="client-data">
+						<div class="client-data" *ngIf="!isCnpj">
 							<div class="data-label">Aniversário</div>
 							<div class="data-value">
 								{{ cliente?.dataNascimento | date : "shortDate" }}
@@ -224,8 +225,18 @@
 			{{ modalContent.message }}
 		</p>
 
-		<button *ngIf="!isInativar" pButton label="Continuar" (click)="closeModal()"></button>
-		<button *ngIf="isInativar" pButton label="Continuar" (click)="navigateTo('/client/listing')"></button>
+		<button
+			*ngIf="!isInativar"
+			pButton
+			label="Continuar"
+			(click)="closeModal()"
+		></button>
+		<button
+			*ngIf="isInativar"
+			pButton
+			label="Continuar"
+			(click)="navigateTo('/client/listing')"
+		></button>
 	</div>
 	<ng-template #error>
 		<div class="modal-error">
@@ -278,8 +289,8 @@
 >
 	<h2>Deseja realmente inativar o cliente?</h2>
 	<p>
-		Ao inativar não será possível visualizá-la novamente. Caso
-		queira continuar, clique em confirmar.
+		Ao inativar não será possível visualizá-la novamente. Caso queira continuar,
+		clique em confirmar.
 	</p>
 
 	<div class="flex justify-between gap-5">

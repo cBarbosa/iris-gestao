@@ -21,6 +21,7 @@ public class IoCRegisterServices
         services.AddScoped<ITipoDespesaService, TipoDespesaService>();
         services.AddScoped<ITipoEventoService, TipoEventoService>();
         services.AddScoped<ITipoClienteService, TipoClienteService>();
+        services.AddScoped<ITipoCreditoAluguelService, TipoCreditoAluguelService>();
         services.AddScoped<IAnexoService, AnexoService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IClienteService, ClienteService>();
@@ -31,6 +32,8 @@ public class IoCRegisterServices
         services.AddScoped<IFornecedorService, FornecedorService>();
         services.AddScoped<IDadoBancarioService, DadoBancarioService>();
         services.AddScoped<IContratoAluguelService, ContratoAluguelService>();
+        services.AddScoped<IContratoAluguelImovelService, ContratoAluguelImovelService>();
+        services.AddScoped<IContratoAluguelUnidadeService, ContratoAluguelUnidadeService>();
 
         //External Services
         services.AddScoped<IRepublicaVirtualService, RepublicaVirtualService>();
@@ -47,6 +50,7 @@ public class IoCRegisterServices
         services.AddScoped<ITipoDespesaRepository, Repository.Impl.TipoDespesaRepository>();
         services.AddScoped<ITipoEventoRepository, Repository.Impl.TipoEventoRepository>();
         services.AddScoped<ITipoClienteRepository, Repository.Impl.TipoClienteRepository>();
+        services.AddScoped<ITipoCreditoAluguelRepository, Repository.Impl.TipoCreditoAluguelRepository>();
         services.AddScoped<IAnexoRepository, Repository.Impl.AnexoRepository>();
         services.AddScoped<IClienteRepository, Repository.Impl.ClienteRepository>();
         services.AddScoped<IImovelRepository, Repository.Impl.ImovelRepository>();
@@ -56,5 +60,7 @@ public class IoCRegisterServices
         services.AddScoped<IFornecedorRepository, Repository.Impl.FornecedorRepository>();
         services.AddScoped<IDadoBancarioRepository, Repository.Impl.DadoBancarioRepository>();
         services.AddScoped<IContratoAluguelRepository, Repository.Impl.ContratoAluguelRepository>();
+        services.AddScoped<IContratoAluguelImovelRepository, Repository.Impl.ContratoAluguelImovelRepository>();
+        services.AddScoped<IContratoAluguelUnidadeRepository, Repository.Impl.ContratoAluguelUnidadeRepository>();
     }
 }

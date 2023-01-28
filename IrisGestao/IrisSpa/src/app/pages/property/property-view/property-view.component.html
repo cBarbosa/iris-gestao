@@ -212,7 +212,7 @@
 <p-sidebar [(visible)]="detailsVisible" position="right" *ngIf="unit">
 	<ng-template pTemplate="header">
 		<h4>
-			Unidade nome
+			{{ unit.tipo }}
 			<p-tag value="Unidade locada" [rounded]="true" severity="danger"></p-tag>
 		</h4>
 	</ng-template>
@@ -255,7 +255,7 @@
 
 					<div class="data small">
 						<span class="label">Número de matrícula:</span>
-						<span class="value">{{ unit.matricula ?? "" | matricula }}</span>
+						<span class="value">{{ unit.matricula ?? "" }}</span>
 					</div>
 					<!-- <div class="data small">
 						<span class="label">Mat. IPTU:</span>
@@ -264,19 +264,19 @@
 					<div class="data small">
 						<span class="label">Ins. IPTU:</span>
 						<span class="value">{{
-							unit.inscricaoIPTU ?? "" | matricula
+							unit.inscricaoIPTU ?? ""
 						}}</span>
 					</div>
 					<div class="data small">
 						<span class="label">N° Neoenergia:</span>
 						<span class="value">{{
-							unit.matriculaEnergia ?? "" | matricula
+							unit.matriculaEnergia ?? ""
 						}}</span>
 					</div>
 					<div class="data small">
 						<span class="label">N° CAESB:</span>
 						<span class="value">{{
-							unit.matriculaAgua ?? "" | matricula
+							unit.matriculaAgua ?? ""
 						}}</span>
 					</div>
 				</div>
