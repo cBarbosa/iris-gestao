@@ -125,7 +125,7 @@ public class ContatoService: IContatoService
         }
 
         cmd.idCliente = contato.IdCliente.Value;
-        cmd.idFornecedor = contato.IdFornecedor.Value;
+        cmd.idFornecedor = contato.IdFornecedor;
         BindContatoData(cmd, contato);
         
         try
