@@ -16,4 +16,9 @@ public class DadoBancarioRepository : Repository<DadoBancario>, IDadoBancarioRep
     {
         
     }
+
+    public async Task<DadoBancario?> GetByGuid(Guid guid)
+    {
+        return await DbSet.FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
+    }
 }

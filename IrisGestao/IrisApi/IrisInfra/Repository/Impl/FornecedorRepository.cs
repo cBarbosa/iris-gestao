@@ -44,6 +44,7 @@ public class FornecedorRepository : Repository<Fornecedor>, IFornecedorRepositor
                             {
                                 Agencia               = x.IdDadoBancarioNavigation.Agencia,
                                 Operacao              = x.IdDadoBancarioNavigation.Operacao,
+                                DadoBancario          = x.IdDadoBancarioNavigation.Banco,
                                 Conta                 = x.IdDadoBancarioNavigation.Conta,
                                 ChavePix              = x.IdDadoBancarioNavigation.ChavePix,
                                 DataCriacao           = x.IdDadoBancarioNavigation.DataCriacao,
