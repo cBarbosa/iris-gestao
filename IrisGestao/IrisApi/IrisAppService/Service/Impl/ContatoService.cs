@@ -12,14 +12,17 @@ public class ContatoService: IContatoService
 {
     private readonly IContatoRepository contatoRepository;
     private readonly IClienteRepository clienteRepository;
+    private readonly IFornecedorRepository fornecedorRepository;
     private readonly ILogger<IContatoService> logger;
 
     public ContatoService(IContatoRepository contatoRepository
                         , IClienteRepository clienteRepository
+                        , IFornecedorRepository fornecedorRepository
                         , ILogger<IContatoService> logger)
     {
         this.contatoRepository = contatoRepository;
         this.clienteRepository = clienteRepository;
+        this.fornecedorRepository = fornecedorRepository;
         this.logger = logger;
     }
 
@@ -65,13 +68,33 @@ public class ContatoService: IContatoService
     public async Task<CommandResult> Insert(CriarContatoCommand cmd)
     {
         var contato = new Contato();
-        var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidClienteReferencia);
-
-        if (cliente == null)
+        if(!cmd.GuidClienteReferencia.HasValue && !cmd.GuidFornecedorReferencia.HasValue)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
-        cmd.idCliente = cliente.Id;
+
+        if (cmd.GuidClienteReferencia.HasValue)
+        {
+            var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidClienteReferencia.Value);
+
+            if (cliente == null)
+            {
+                return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+            }
+            cmd.idCliente = cliente.Id;
+        }
+        
+        if (cmd.GuidFornecedorReferencia.HasValue)
+        {
+            var fornecedor = await fornecedorRepository.GetByReferenceGuid(cmd.GuidFornecedorReferencia.Value);
+
+            if (fornecedor == null)
+            {
+                return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+            }
+            cmd.idFornecedor = fornecedor.Id;
+        }
+
         BindContatoData(cmd, contato);
 
         try
@@ -102,6 +125,7 @@ public class ContatoService: IContatoService
         }
 
         cmd.idCliente = contato.IdCliente.Value;
+        cmd.idFornecedor = contato.IdFornecedor.Value;
         BindContatoData(cmd, contato);
         
         try
@@ -157,7 +181,7 @@ public class ContatoService: IContatoService
                 break;
         }
 
-        contato.IdFornecedor    = contato.IdFornecedor;
+        contato.IdFornecedor    = cmd.idFornecedor;
         contato.IdCliente       = cmd.idCliente;
         contato.Nome            = cmd.Nome;
         contato.Telefone        = cmd.Telefone;

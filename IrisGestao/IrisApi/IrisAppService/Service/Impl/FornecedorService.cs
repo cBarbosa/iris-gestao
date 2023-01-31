@@ -66,6 +66,7 @@ public class FornecedorService: IFornecedorService
             if (cmd.Contato != null)
             {
                 contato.IdFornecedor = fornecedor.Id;
+                cmd.Contato.GuidFornecedorReferencia = fornecedor.GuidReferencia;
                 var contatoFornecedor = await contatoService.Insert(cmd.Contato);
             }
 
@@ -80,26 +81,31 @@ public class FornecedorService: IFornecedorService
 
     public async Task<CommandResult> Update(Guid uuid, CriarFornecedorCommand cmd)
     {
-        var fornecedor = new Fornecedor();
         if (cmd == null || uuid.Equals(Guid.Empty))
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
-        var Fornecedor = await FornecedorRepository.GetByReferenceGuid(uuid);
+        var fornecedor = await FornecedorRepository.GetByReferenceGuid(uuid);
 
-        if (Fornecedor == null)
+        if (fornecedor == null)
         {
-            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
         cmd.GuidReferencia = uuid;
+        fornecedor.GuidReferencia = uuid;
         BindFornecedorData(cmd, ref fornecedor);
 
         try
         {
-            FornecedorRepository.Update(Fornecedor);
-            return new CommandResult(true, SuccessResponseEnums.Success_1001, Fornecedor);
+            FornecedorRepository.Update(fornecedor);
+            if(cmd.DadosBancarios != null)
+            {
+                var dadoBancario = await DadoBancarioService.Update(cmd.DadosBancarios);
+            }
+
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, fornecedor);
         }
         catch (Exception e)
         {
@@ -115,19 +121,19 @@ public class FornecedorService: IFornecedorService
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
-        var Fornecedor = await FornecedorRepository.GetByReferenceGuid(uuid);
+        var fornecedor = await FornecedorRepository.GetByReferenceGuid(uuid);
 
-        if (Fornecedor == null)
+        if (fornecedor == null)
         {
-            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
-        Fornecedor.Status = status;
+        fornecedor.Status = status;
 
         try
         {
-            FornecedorRepository.Update(Fornecedor);
-            return new CommandResult(true, SuccessResponseEnums.Success_1001, Fornecedor);
+            FornecedorRepository.Update(fornecedor);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, fornecedor);
         }
         catch (Exception e)
         {
@@ -173,10 +179,12 @@ public class FornecedorService: IFornecedorService
                 Fornecedor.DataCriacao = DateTime.Now;
                 Fornecedor.DataUltimaModificacao = DateTime.Now;
                 Fornecedor.Status = true;
+                cmd.Status = true;
                 break;
             default:
                 Fornecedor.GuidReferencia = Fornecedor.GuidReferencia;
                 Fornecedor.DataUltimaModificacao = DateTime.Now;
+                Fornecedor.Status = true;
                 break;
         }
         
@@ -191,6 +199,5 @@ public class FornecedorService: IFornecedorService
         Fornecedor.Cidade = cmd.Cidade;
         Fornecedor.Estado = cmd.Estado;
         Fornecedor.Cep = cmd.Cep.HasValue ? cmd.Cep.Value : 0; 
-        Fornecedor.Status = cmd.Status;
     }
 }

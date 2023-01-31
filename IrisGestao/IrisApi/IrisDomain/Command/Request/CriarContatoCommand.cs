@@ -10,7 +10,8 @@ namespace IrisGestao.Domain.Command.Request
     {
         public int? idCliente { get; set; }
         public int? idFornecedor { get; set; }
-        public Guid GuidClienteReferencia { get; set; }
+        public Guid? GuidClienteReferencia { get; set; }
+        public Guid? GuidFornecedorReferencia { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }
         public string Telefone { get; set; }

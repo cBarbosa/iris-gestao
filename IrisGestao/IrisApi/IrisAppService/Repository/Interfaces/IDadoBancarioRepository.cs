@@ -5,5 +5,5 @@ namespace IrisGestao.ApplicationService.Repository.Interfaces;
 
 public interface IDadoBancarioRepository : IRepository<DadoBancario>, IDisposable
 {
-    
+    Task<DadoBancario?> GetByGuid(Guid guid);
 }
