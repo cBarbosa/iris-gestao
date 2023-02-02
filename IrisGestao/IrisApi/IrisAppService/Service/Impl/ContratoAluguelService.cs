@@ -161,15 +161,9 @@ public class ContratoAluguelService: IContratoAluguelService
 
     private static void BindContratoAluguelData(CriarContratoAluguelCommand cmd, ContratoAluguel ContratoAluguel)
     {
-        decimal valorLiquido;
-        decimal valorImpostos;
-        decimal valorDescontos = 0;
-        valorImpostos = cmd.ValorAluguel;
-        //valorImpostos = Math.Round((cmd.PercentualRetencaoImpostos / 100) * cmd.ValorAluguel);
-        //if (cmd.PercentualDescontoAluguel.HasValue){
-        //    valorDescontos = cmd.ValorAluguel * (cmd.PercentualDescontoAluguel.Value / 100);
-        //}
-        //valorLiquido = (cmd.ValorAluguel + valorImpostos) - valorDescontos;
+        double valorLiquido;
+
+        valorLiquido = calculaValorLiquido(cmd.ValorAluguel, cmd.PercentualDescontoAluguel, cmd.PercentualRetencaoImpostos);
 
         switch (ContratoAluguel.GuidReferencia)
         {
@@ -201,5 +195,28 @@ public class ContratoAluguelService: IContratoAluguelService
         ContratoAluguel.DiaVencimentoAluguel        = cmd.DiaVencimentoAluguel;
         ContratoAluguel.PeriodicidadeReajuste       = cmd.PeriodicidadeReajuste;
         ContratoAluguel.Status                      = true;
+    }
+
+    private static double calculaValorLiquido(double valorAluguel, double? percentualDesconto, double percentualImpostos)
+    {
+        double valorComDesconto = valorAluguel;
+        double valorImpostos;
+        double valorComImpostos;
+        double valorDescontos = 0;
+
+        if (percentualDesconto.HasValue)
+        {
+            valorDescontos = calcularPorcentagem(valorAluguel, percentualDesconto.Value);
+            valorComDesconto = valorAluguel - valorDescontos;
+        }
+
+        valorImpostos = calcularPorcentagem(valorAluguel, percentualImpostos);
+
+        return valorComDesconto + valorImpostos;
+    }
+
+    private static double calcularPorcentagem(double valor, double percentual)
+    {
+        return (percentual / 100.0) * valor;
     }
 }
