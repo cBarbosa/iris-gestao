@@ -3,6 +3,13 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
 import { environment as env } from '../../../environments/environment';
+import { ContratoAluguel } from '../models/contrato-aluguel.model';
+
+const httpOptions = {
+	headers: new HttpHeaders({
+		'Content-Type': 'application/json',
+	}),
+};
 
 @Injectable({
 	providedIn: 'root',
@@ -13,17 +20,21 @@ export class RentContractService {
 	getContracts(
 		limit: number = 50,
 		page: number = 1,
-		idTipo: number = 1,
-		filter?: string,
-		typeId?: number
+		idTipoImovel?: number,
+		idBaseReajuste?: number,
+		dthInicioVigencia?: string,
+		dthFimVigencia?: string,
+		numeroContrato?: number
 	) {
 		return this.http
 			.get<ApiResponse>(
-				`${
-					env.config.apiUrl
-				}ContratoAluguel?limit=${limit}&page=${page}&idTipo=${idTipo}${
-					filter ? `&nome=${filter}` : ''
-				}${typeId ? `&idTipo=${typeId}` : ''}`
+				`${env.config.apiUrl}ContratoAluguel?limit=${limit}&page=${page}${
+					idTipoImovel ? `&idTipoImovel=${idTipoImovel}` : ''
+				}${idBaseReajuste ? `&idBaseReajuste=${idBaseReajuste}` : ''}${
+					dthInicioVigencia ? `&dthInicioVigencia=${dthInicioVigencia}` : ''
+				}${dthFimVigencia ? `&dthFimVigencia=${dthFimVigencia}` : ''}${
+					numeroContrato ? `&numeroContrato=${numeroContrato}` : ''
+				}`
 			)
 			.pipe(
 				map((response) => {
@@ -34,15 +45,25 @@ export class RentContractService {
 			);
 	}
 
-	getContractByGuid(guid: string) {
+	getContractByGuid(contractGuid: string) {
 		return this.http
-			.get<ApiResponse>(`${env.config.apiUrl}ContratoAluguel/${guid}/guid`)
+			.get<ApiResponse>(
+				`${env.config.apiUrl}ContratoAluguel/${contractGuid}/guid`
+			)
 			.pipe(
 				map((response) => {
-					console.log('response', response);
-					if (response.success) return response.data;
-					else return console.error(`getContractByGuid: ${response.message}`);
+					if (!response.success)
+						console.error(`getContractByGuid: ${response.message}`);
+					return response;
 				})
 			);
+	}
+
+	registerContract(contractObj: ContratoAluguel) {
+		return this.http.post<ApiResponse>(
+			`${env.config.apiUrl}ContratoAluguel/Criar`,
+			JSON.stringify(contractObj, null, 2),
+			httpOptions
+		);
 	}
 }

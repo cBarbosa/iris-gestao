@@ -26,26 +26,27 @@
 
 			<div formGroupName="contractInfo">
 				<div class="field">
-					<label for="nome" class="block">Nome do contrato</label>
+					<label for="numero" class="block">Número do contrato</label>
 					<input
-						id="nome"
+						id="numero"
 						type="text"
-						formControlName="nome"
-						aria-describedby="nome-help"
+						formControlName="numero"
+						aria-describedby="numero-help"
 						maxlength="100"
+						mask="0*"
 						pInputText
 					/>
-					<ng-container *ngIf="checkHasError(f['nome'])">
+					<ng-container *ngIf="checkHasError(f['numero'])">
 						<small
-							id="nome-help"
-							*ngIf="f['nome'].hasError('required'); else error2"
+							id="numero-help"
+							*ngIf="f['numero'].hasError('required'); else error2"
 							class="p-error block"
 						>
-							Informe o nome do contrato
+							Informe o numero do contrato
 						</small>
 						<ng-template #error2>
-							<small id="nome-help" class="p-error block">
-								Nome do contrato inválido
+							<small id="numero-help" class="p-error block">
+								numero do contrato inválido
 							</small>
 						</ng-template>
 					</ng-container>
@@ -79,47 +80,56 @@
 
 				<div
 					class="add-property-alert"
-					*ngIf="linkedContracts.length === 0; else contract"
+					[class.invalid]="linkedPropertiesInvalid"
+					*ngIf="linkedProperties.length === 0; else properties"
 				>
 					<span>
 						Você precisa atribuir pelo menos um imóvel ao seu contrato
 					</span>
-					<button pButton>Adicionar</button>
+					<button type="button" (click)="showAddProperty()" pButton>
+						Adicionar
+					</button>
 				</div>
 
-				<ng-template #contract>
+				<ng-template #properties>
 					<div
-						class="contract-data"
-						*ngFor="let contract of linkedContracts; let i = index"
+						class="properties-data"
+						*ngFor="let property of linkedProperties; let i = index"
 					>
 						<h4>Imóvel {{ i + 1 }}</h4>
 						<div class="top-data">
-							<span>{{ contract.nome }}</span>
+							<span>{{ property.nome }}</span>
 							<span class="flex-inline justify-between gap-3">
 								<button
 									pButton
 									type="button"
 									class="p-button-text"
 									label="Editar"
-									(click)="showAddProperty()"
+									(click)="editLinkedProperty(property)"
 								></button>
 								<button
 									pButton
 									type="button"
 									class="p-button-text"
 									label="Excluir"
-									(click)="resetLinkedContracts()"
+									(click)="removeLinkedProperty(property.guid)"
 								></button>
 							</span>
 						</div>
 						<div
 							class="text-sm flex flex-wrap flex-col gap-4 max-h-24 justify-center"
 						>
-							<div *ngIf="contract.tipo" class="basis-0 max-w-[50%]">
-								{{ contract.tipo }}
+							<div *ngIf="property.tipo" class="basis-0 max-w-[50%]">
+								{{ property.tipo }}
 							</div>
-							<div *ngIf="contract.numUnidade" class="basis-0 max-w-[50%]">
-								Unidade(s): {{ contract.numUnidade }}
+							<div *ngIf="property.unidades.length > 0" class="basis-0">
+								Unidade(s):
+								<ng-container
+									*ngFor="let unit of property.unidades; index as i"
+								>
+									<ng-container *ngIf="i !== 0">, </ng-container>
+									{{ unit.name }}
+								</ng-container>
 							</div>
 						</div>
 					</div>
@@ -129,7 +139,7 @@
 							pButton
 							type="button"
 							class="p-button-text text-sm"
-							label="Vincular um contato"
+							label="Vincular um imóvel"
 							icon="pi pi-plus"
 							iconPos="left"
 							(click)="showAddProperty()"
@@ -138,28 +148,57 @@
 				</ng-template>
 
 				<div class="field">
-					<label for="dataVencimento" class="block">Nome do locatário</label>
+					<label for="locatario" class="block">Nome do locatário</label>
 					<p-dropdown
-						id="dataVencimento"
+						id="locatario"
 						[options]="renters"
-						formControlName="dataVencimento"
-						aria-describedby="dataVencimento-help"
+						[filter]="true"
+						filterBy="label"
+						optionValue="value"
+						formControlName="locatario"
+						aria-describedby="locatario-help"
 					></p-dropdown>
-					<ng-container *ngIf="checkHasError(f['dataVencimento'])">
+					<ng-container *ngIf="checkHasError(f['locatario'])">
 						<small
-							id="dataVencimento-help"
-							*ngIf="f['dataVencimento'].hasError('required'); else error2"
+							id="locatario-help"
+							*ngIf="f['locatario'].hasError('required'); else error2"
 							class="p-error block"
 						>
 							Informe o nome do locatário
 						</small>
 						<ng-template #error2>
-							<small id="dataVencimento-help" class="p-error block">
+							<small id="locatario-help" class="p-error block">
 								Nome do locatário inválido
 							</small>
 						</ng-template>
 					</ng-container>
 				</div>
+
+				<!-- <div class="field">
+					<label for="locatario" class="block">Nome do locatário</label>
+					<input
+						id="locatario"
+						type="text"
+						formControlName="locatario"
+						aria-describedby="locatario-help"
+						maxlength="100"
+						pInputText
+					/>
+					<ng-container *ngIf="checkHasError(f['locatario'])">
+						<small
+							id="locatario-help"
+							*ngIf="f['locatario'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o nome do locatário
+						</small>
+						<ng-template #error2>
+							<small id="locatario-help" class="p-error block">
+								Nome do locatário inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div> -->
 
 				<div class="field">
 					<label for="dataInicio" class="block">
@@ -190,7 +229,7 @@
 					</ng-container>
 				</div>
 
-				<div class="field">
+				<!-- <div class="field">
 					<label for="dataFim" class="block"> Data de fim do contrato </label>
 					<p-calendar
 						id="dataFim"
@@ -215,7 +254,7 @@
 							</small>
 						</ng-template>
 					</ng-container>
-				</div>
+				</div> -->
 
 				<div class="field">
 					<label for="dataOcupacao" class="block"> Data da ocupação </label>
@@ -245,25 +284,25 @@
 				</div>
 
 				<div class="field">
-					<label for="locatario" class="block"
+					<label for="dataVencimento" class="block"
 						>Data do vencimento da parcela</label
 					>
 					<p-dropdown
-						id="locatario"
+						id="dataVencimento"
 						[options]="dueDates"
-						formControlName="locatario"
-						aria-describedby="locatario-help"
+						formControlName="dataVencimento"
+						aria-describedby="dataVencimento-help"
 					></p-dropdown>
-					<ng-container *ngIf="checkHasError(f['locatario'])">
+					<ng-container *ngIf="checkHasError(f['dataVencimento'])">
 						<small
-							id="locatario-help"
-							*ngIf="f['locatario'].hasError('required'); else error2"
+							id="dataVencimento-help"
+							*ngIf="f['dataVencimento'].hasError('required'); else error2"
 							class="p-error block"
 						>
 							Informe a data de vencimento
 						</small>
 						<ng-template #error2>
-							<small id="locatario-help" class="p-error block">
+							<small id="dataVencimento-help" class="p-error block">
 								Data de vencimento inválida
 							</small>
 						</ng-template>
@@ -308,7 +347,7 @@
 					</ng-container>
 				</div>
 
-				<div class="field">
+				<!-- <div class="field">
 					<label for="valorLiquido" class="block">Valor líquido</label>
 					<input
 						id="valorLiquido"
@@ -333,7 +372,7 @@
 							</small>
 						</ng-template>
 					</ng-container>
-				</div>
+				</div> -->
 
 				<div class="field">
 					<label for="retencao" class="block">% de retenção de impostos</label>
@@ -364,12 +403,15 @@
 
 				<div class="field">
 					<label for="desconto" class="block">Desconto</label>
-					<p-dropdown
+					<input
 						id="desconto"
-						[options]="discounts"
+						type="text"
 						formControlName="desconto"
 						aria-describedby="desconto-help"
-					></p-dropdown>
+						mask="percent"
+						suffix="%"
+						pInputText
+					/>
 					<ng-container *ngIf="checkHasError(f['desconto'])">
 						<small
 							id="desconto-help"
@@ -388,12 +430,16 @@
 
 				<div class="field">
 					<label for="descontoPrazo" class="block">Prazo de desconto</label>
-					<p-dropdown
+					<input
 						id="descontoPrazo"
-						[options]="discountDeadlines"
+						type="text"
 						formControlName="descontoPrazo"
 						aria-describedby="descontoPrazo-help"
-					></p-dropdown>
+						mask="0*"
+						suffix=" Meses"
+						maxlength="9"
+						pInputText
+					/>
 					<ng-container *ngIf="checkHasError(f['descontoPrazo'])">
 						<small
 							id="descontoPrazo-help"
@@ -438,12 +484,16 @@
 					<label for="periodicidade" class="block">
 						Periodicidade de reajuste
 					</label>
-					<p-dropdown
+					<input
 						id="periodicidade"
-						[options]="readjustmentPeriods"
+						type="text"
 						formControlName="periodicidade"
 						aria-describedby="periodicidade-help"
-					></p-dropdown>
+						mask="0*"
+						suffix=" Meses"
+						maxlength="9"
+						pInputText
+					/>
 					<ng-container *ngIf="checkHasError(f['periodicidade'])">
 						<small
 							id="periodicidade-help"
@@ -467,6 +517,7 @@
 						[options]="hasGracePeriod"
 						formControlName="carencia"
 						aria-describedby="carencia-help"
+						(ngModelChange)="onHasGracePeriodChange()"
 					></p-dropdown>
 					<ng-container *ngIf="checkHasError(f['carencia'])">
 						<small
@@ -484,14 +535,18 @@
 					</ng-container>
 				</div>
 
-				<div class="field">
+				<div class="field" *ngIf="valuesInfoForm.controls['carencia'].value">
 					<label for="carenciaPrazo" class="block"> Prazo da carência </label>
-					<p-dropdown
+					<input
 						id="carenciaPrazo"
-						[options]="gracePeriods"
+						type="text"
 						formControlName="carenciaPrazo"
 						aria-describedby="carenciaPrazo-help"
-					></p-dropdown>
+						mask="0*"
+						suffix=" Meses"
+						maxlength="9"
+						pInputText
+					/>
 					<ng-container *ngIf="checkHasError(f['carenciaPrazo'])">
 						<small
 							id="carenciaPrazo-help"
@@ -594,7 +649,7 @@
 			pRipple
 			type="button"
 			label="Cancelar"
-			(click)="navigateTo('property/listing')"
+			(click)="navigateTo('rent-contract/listing')"
 			class="p-button-outlined h-11"
 		></button>
 
@@ -617,41 +672,23 @@
 <form [formGroup]="propertyAddForm" *ngIf="propertyAddVisible">
 	<p-sidebar [(visible)]="propertyAddVisible" position="right">
 		<ng-template pTemplate="header">
-			<h4>Adicionar novo proprietário</h4>
+			<h4 *ngIf="editingLinkedProperty === null; else editingHeader">
+				Adicionar novo Edifício
+			</h4>
+			<ng-template #editingHeader
+				><h4>Editar Edifício vinculado</h4></ng-template
+			>
 		</ng-template>
 		<ng-template pTemplate="content">
-			<div class="register-proprietary-form">
+			<div class="register-property-form">
 				<div class="field">
-					<label for="tipo"> Tipo do imóvel </label>
-					<p-dropdown
-						id="tipo"
-						[options]="buildingTypes"
-						formControlName="tipo"
-						aria-describedby="tipo-help"
-					></p-dropdown>
-					<ng-container *ngIf="checkHasError(f['tipo'])">
-						<small
-							id="tipo-help"
-							*ngIf="f['tipo'].hasError('required'); else error2"
-							class="p-error block"
-						>
-							Informe o tipo do imóvel
-						</small>
-						<ng-template #error2>
-							<small id="tipo-help" class="p-error block">
-								Tipo do imóvel inválido
-							</small>
-						</ng-template>
-					</ng-container>
-				</div>
-
-				<div class="field">
-					<label for="edificio"> Edifício </label>
+					<label for="edificio">Edifício</label>
 					<p-dropdown
 						id="edificio"
 						[options]="buildings"
 						formControlName="edificio"
 						aria-describedby="edificio-help"
+						(ngModelChange)="onChangeBuilding($event)"
 					></p-dropdown>
 					<ng-container *ngIf="checkHasError(f['edificio'])">
 						<small
@@ -709,7 +746,7 @@
 					type="button"
 					label="Cancelar"
 					class="p-button-outlined h-9 w-full"
-					(click)="propertyAddVisible = false"
+					(click)="hideAddProperty()"
 				></button>
 
 				<button
@@ -742,15 +779,7 @@
 		<button
 			pButton
 			label="Continuar"
-			(click)="closeModal(addProperty); propertyAddVisible = false"
-			*ngIf="propertyAddVisible"
-		></button>
-
-		<button
-			pButton
-			label="Continuar"
-			(click)="closeModal(navigateTo, 'property/listing')"
-			*ngIf="!propertyAddVisible"
+			(click)="closeModal(navigateTo, 'rent-contract/listing')"
 		></button>
 	</div>
 	<ng-template #error>
