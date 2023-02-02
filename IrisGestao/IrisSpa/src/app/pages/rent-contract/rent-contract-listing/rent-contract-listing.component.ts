@@ -23,6 +23,9 @@ export class RentContractListingComponent {
 	tableMenu: MenuItem[];
 	focusedContract: any;
 
+	onInputDate: Function;
+	onBlurDate: Function;
+
 	basesReajuste = [
 		{
 			label: 'Base de reajuste',
@@ -35,37 +38,39 @@ export class RentContractListingComponent {
 			value: null,
 		},
 	];
-	vencimentos = [
-		{
-			label: 'Vencimento',
-			value: null,
-		},
-		{
-			label: 'Hoje',
-			value: null,
-		},
-		{
-			label: 'Esta semana',
-			value: null,
-		},
-		{
-			label: 'Este mês',
-			value: null,
-		},
-		{
-			label: 'Este ano',
-			value: null,
-		},
-		{
-			label: 'Próximo ano',
-			value: null,
-		},
-	];
 
-	filterText: string;
+	// vencimentos = [
+	// 	{
+	// 		label: 'Vencimento',
+	// 		value: null,
+	// 	},
+	// 	{
+	// 		label: 'Hoje',
+	// 		value: null,
+	// 	},
+	// 	{
+	// 		label: 'Esta semana',
+	// 		value: null,
+	// 	},
+	// 	{
+	// 		label: 'Este mês',
+	// 		value: null,
+	// 	},
+	// 	{
+	// 		label: 'Este ano',
+	// 		value: null,
+	// 	},
+	// 	{
+	// 		label: 'Próximo ano',
+	// 		value: null,
+	// 	},
+	// ];
+
+	filterText: string = '';
 	filterBase: number;
 	filterType: number;
-	filterDue: number;
+	filterStart: string | null = null;
+	filterEnd: string | null = null;
 
 	constructor(
 		private router: Router,
@@ -83,14 +88,17 @@ export class RentContractListingComponent {
 			{
 				label: 'Detalhes',
 				icon: 'ph-eye',
-				// command: () => this.showDetails(),
+				command: () =>
+					this.navigateTo(
+						'rent-contract/details/' + this.focusedContract!.guidReferencia
+					),
 			},
 			{
 				label: 'Editar',
 				icon: 'ph-note-pencil',
 				command: () =>
 					this.navigateTo(
-						'property/edit/unit/' + this.focusedContract!.guidReferencia
+						'rent-contract/edit/' + this.focusedContract!.guidReferencia
 					),
 			},
 			{
@@ -99,6 +107,10 @@ export class RentContractListingComponent {
 				// command: () => this.cloneUnit(this.unit!.guidReferencia!),
 			},
 		];
+
+		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
+		this.onInputDate = onInputDate;
+		this.onBlurDate = onBlurDate;
 
 		this.commonService
 			.getUnitType()
@@ -146,17 +158,33 @@ export class RentContractListingComponent {
 	loadContractsPage(event: LazyLoadEvent) {
 		if (event.first != null) {
 			const page = Math.floor(event.first / this.rows) + 1;
-			this.getContractPage(page, this.filterText);
+			// this.getContractPage(page, this.filterText);
+			this.filterContracts();
 			this.scrollTop();
 		}
 	}
 
-	getContractPage(page = 1, filter?: string, typeId?: number): void {
+	getContractPage(
+		page = 1,
+		numeroContrato?: number,
+		idBaseReajuste?: number,
+		idTipoImovel?: number,
+		dthInicioVigencia?: string,
+		dthFimVigencia?: string
+	): void {
 		this.isLoadingContracts = true;
 		this.contractEntries = [];
 
 		const contracts = this.contractService
-			.getContracts(this.rows, page, filter, typeId)
+			.getContracts(
+				this.rows,
+				page,
+				idTipoImovel,
+				idBaseReajuste,
+				dthInicioVigencia,
+				dthFimVigencia,
+				numeroContrato
+			)
 			?.pipe(first())
 			.subscribe({
 				next: (event: any) => {
@@ -165,15 +193,20 @@ export class RentContractListingComponent {
 						if (this.totalContractCount <= 0) this.noRestults = true;
 						else this.noRestults = false;
 
+						console.log(event.data);
+
 						this.contractEntries = event.data.items.map((contrato: any) => {
 							return {
-								name: contrato.nome,
-								cpf_cnpj: contrato.cpfCnpj,
-								birthday: contrato.dataNascimento
-									? new Date(contrato.dataNascimento)
-									: new Date(),
-								// client_type: cliente.idTipoClienteNavigation.nome,
-								status: 'ativo',
+								locatario: contrato.cliente.nome,
+								unidade: 'UNIDADE',
+								dataInicioContrato: contrato.dataInicioContrato
+									? new Date(contrato.dataInicioContrato)
+									: null,
+								proxAjuste: contrato.periodicidadeReajuste,
+								dataFimContrato: contrato.dataFimContrato
+									? new Date(contrato.dataFimContrato)
+									: null,
+								baseReajuste: contrato.indiceReajuste?.nome,
 								action: '',
 								guidReferencia: contrato.guidReferencia,
 							};
@@ -194,10 +227,25 @@ export class RentContractListingComponent {
 			});
 	}
 
-	filterContracts = (e: Event) => {
-		console.log(e);
+	filterContracts = (e?: Event) => {
+		const startDate = this.filterStart && new Date(this.filterStart);
+		const endDate = this.filterEnd && new Date(this.filterEnd);
 
-		this.getContractPage(1, this.filterText, this.filterType);
+		const startISODate = !isNaN(Date.parse(startDate + ''))
+			? (startDate as Date).toISOString()
+			: undefined;
+		const endISODate = !isNaN(Date.parse(endDate + ''))
+			? (endDate as Date).toISOString()
+			: undefined;
+
+		this.getContractPage(
+			1,
+			+this.filterText,
+			this.filterBase,
+			this.filterType,
+			startISODate,
+			endISODate
+		);
 	};
 
 	filterContractsDebounce: Function = Utils.debounce(

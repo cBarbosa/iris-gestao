@@ -42,4 +42,27 @@ export class DominiosService {
 				})
 			);
 	}
+
+	getTiposContrato() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/tipo-contrato`)
+			.pipe(
+				map((response) => {
+					if (response.success) return response;
+					else return console.error(`getTiposContrato: ${response.message}`);
+				})
+			);
+	}
+
+	getTiposCreditoAluguel() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/tipo-credito-aluguel`)
+			.pipe(
+				map((response) => {
+					if (response.success) return response;
+					else
+						return console.error(`getTiposCreditoAluguel: ${response.message}`);
+				})
+			);
+	}
 }

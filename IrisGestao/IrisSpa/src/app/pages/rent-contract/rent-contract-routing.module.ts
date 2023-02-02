@@ -13,7 +13,7 @@ const routes: Routes = [
 		},
 	},
 	{
-		path: 'details',
+		path: 'details/:guid',
 		loadChildren: () =>
 			import('./rent-contract-view/rent-contract-view.module').then(
 				(m) => m.RentContractViewModule

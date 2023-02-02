@@ -10,29 +10,41 @@
 		<div class="content-wrapper">
 			<div class="flex justify-between items-center py-6 h-[7.5rem]">
 				<h2 class="text-2xl font-bold">Detalhe do contrato</h2>
-				<div class="ending-contract-alert">
+				<div
+					class="ending-contract-alert"
+					*ngIf="contract.exibirAlertaVencimento"
+				>
 					<span>O contrato está próximo do fim.</span>
 					<button type="button" pButton class="h-9">Comunicar locatário</button>
 				</div>
 			</div>
 			<div class="content">
 				<header>
-					<h2>Francisco Regis Claring Ferreira <span>3214201</span></h2>
+					<!-- \/ ?? -->
+					<h2>
+						{{ contract.cliente?.nome }}
+						<span>{{ contract.numeroContrato }}</span>
+					</h2>
 
 					<div class="info-cluster">
-						<div class="data">
+						<!-- \/ ?? X -->
+						<!-- <div class="data">
 							<div class="data-label">Tipo de contrato</div>
 							<div class="data-value">Residencial</div>
 						</div>
-						<div class="data-divider">&nbsp;</div>
+						<div class="data-divider">&nbsp;</div> -->
 						<div class="data">
 							<div class="data-label">Valor de aluguel</div>
-							<div class="data-value">R$ 3.400,00</div>
+							<div class="data-value">
+								{{ contract.valorAluguel | currency }}
+							</div>
 						</div>
 						<div class="data-divider">&nbsp;</div>
 						<div class="data">
 							<div class="data-label">Data final</div>
-							<div class="data-value">22/01/2023</div>
+							<div class="data-value">
+								{{ contract.dataFimContrato | date : "shortDate" }}
+							</div>
 						</div>
 						<div class="data-divider">&nbsp;</div>
 						<div class="data">
@@ -41,6 +53,7 @@
 								type="button"
 								class="p-button-outlined h-7"
 								(click)="navigateTo('contract/edit/' + contract.guidReferencia)"
+								disabled
 							>
 								Editar contrato
 							</button>
@@ -55,22 +68,37 @@
 						collapseIcon="pi pi-fw pi-chevron-up"
 					>
 						<p-accordionTab header="Detalhes do Imóvel" [selected]="true">
-							<div class="info-cluster extended">
+							<div
+								class="info-cluster extended"
+								*ngFor="let imovel of contract.imovelAlugado; index as i"
+							>
 								<div class="data">
-									<div class="data-label">Nome imóvel 1</div>
-									<div class="data-value">Ed. José Maria</div>
+									<div class="data-label">Nome imóvel {{ i + 1 }}</div>
+									<div class="data-value">{{ imovel.nome }}</div>
 								</div>
+								<!-- \/ ?? X -->
 								<div class="data">
 									<div class="data-label">Unidade(s)</div>
-									<div class="data-value">308</div>
+									<div class="data-value">
+										{{ imovel.nroUnidadesContrato }}
+									</div>
 								</div>
+								<!-- \/ ?? X -->
 								<div class="data">
 									<div class="data-label">Endereço</div>
-									<div class="data-value">SQS 415</div>
+									<div class="data-value">
+										{{
+											imovel.imovelEndereco[0].rua +
+												", " +
+												imovel.imovelEndereco[0].cidade +
+												" - " +
+												imovel.imovelEndereco[0].uf
+										}}
+									</div>
 								</div>
 								<div class="data">
 									<div class="data-label">Centro de custo</div>
-									<div class="data-value">212121222</div>
+									<div class="data-value">{{ imovel.numCentroCusto }}</div>
 								</div>
 								<div class="data">
 									<button
@@ -78,38 +106,7 @@
 										type="button"
 										class="p-button-outlined h-9"
 										(click)="
-											navigateTo('contract/edit/' + contract.guidReferencia)
-										"
-									>
-										Detalhes do imóvel
-									</button>
-								</div>
-							</div>
-
-							<div class="info-cluster extended">
-								<div class="data">
-									<div class="data-label">Nome imóvel 2</div>
-									<div class="data-value">Ed. José Maria</div>
-								</div>
-								<div class="data">
-									<div class="data-label">Unidade(s)</div>
-									<div class="data-value">308</div>
-								</div>
-								<div class="data">
-									<div class="data-label">Endereço</div>
-									<div class="data-value">SQS 415</div>
-								</div>
-								<div class="data">
-									<div class="data-label">Centro de custo</div>
-									<div class="data-value">212121222</div>
-								</div>
-								<div class="data">
-									<button
-										pButton
-										type="button"
-										class="p-button-outlined h-9"
-										(click)="
-											navigateTo('contract/edit/' + contract.guidReferencia)
+											navigateTo('property/details/' + imovel.guidReferencia)
 										"
 									>
 										Detalhes do imóvel
@@ -122,19 +119,27 @@
 							<div class="info-cluster">
 								<div class="data">
 									<div class="data-label">Data do início do contrato</div>
-									<div class="data-value">22/01/2019</div>
+									<div class="data-value">
+										{{ contract.dataInicioContrato | date : "shortDate" }}
+									</div>
 								</div>
 								<div class="data">
 									<div class="data-label">Prazo total</div>
-									<div class="data-value">320 meses</div>
+									<div class="data-value">
+										{{ contract.prazoTotalContrato }} meses
+									</div>
 								</div>
 								<div class="data">
 									<div class="data-label">Data de ocupação</div>
-									<div class="data-value">22/01/2023</div>
+									<div class="data-value">
+										{{ contract.dataOcupacao | date : "shortDate" }}
+									</div>
 								</div>
 								<div class="data">
 									<div class="data-label">Dia do vencimento da parcela</div>
-									<div class="data-value">Todo dia 10</div>
+									<div class="data-value">
+										Todo dia {{ contract.diaVencimentoAluguel }}
+									</div>
 								</div>
 							</div>
 						</p-accordionTab>
@@ -143,20 +148,29 @@
 						<p-accordionTab header="Locatário">
 							<div class="info-cluster extended">
 								<div class="data">
+									<!-- \/ ?? X -->
 									<div class="data-label">Locatário</div>
-									<div class="data-value">José Luiz</div>
+									<div class="data-value">
+										{{ contract.cliente.nome }}
+									</div>
 								</div>
 								<div class="data">
-									<div class="data-label">CNPJ</div>
-									<div class="data-value">{{ "72165630000127" | cpfcnpj }}</div>
+									<div class="data-label">
+										{{ contract.cliente.cpfCnpj.length > 11 ? "CNPJ" : "CPF" }}
+									</div>
+									<div class="data-value">
+										{{ contract.cliente.cpfCnpj | cpfcnpj }}
+									</div>
 								</div>
 								<div class="data">
 									<div class="data-label">Telefone</div>
-									<div class="data-value">{{ "61993331092" | telefone }}</div>
+									<div class="data-value">
+										{{ contract.cliente.telefone | telefone }}
+									</div>
 								</div>
 								<div class="data">
 									<div class="data-label">Email</div>
-									<div class="data-value">jose@mail.com</div>
+									<div class="data-value">{{ contract.cliente.email }}</div>
 								</div>
 								<div class="data text-right">
 									<button
@@ -164,7 +178,9 @@
 										type="button"
 										class="p-button-outlined h-8"
 										(click)="
-											navigateTo('contract/edit/' + contract.guidReferencia)
+											navigateTo(
+												'client/details/' + contract.cliente.guidReferencia
+											)
 										"
 									>
 										Ver perfil
@@ -178,60 +194,92 @@
 							<div class="info-cluster">
 								<div class="data">
 									<div class="data-label">Valor líquido</div>
-									<div class="data-value">R$ 3.400,00</div>
+									<div class="data-value">
+										{{ contract.valorAluguelLiquido }}
+									</div>
 								</div>
 								<div class="data">
 									<div class="data-label">% de retenção de impostos</div>
-									<div class="data-value">10%</div>
+									<div class="data-value">
+										{{ contract.percentualRetencaoImpostos }}%
+									</div>
 								</div>
 								<div class="data">
 									<div class="data-label">Desconto</div>
-									<div class="data-value">5% válido até 30/06/2023</div>
+									<!-- \/ ?? X 5% válido até 30/06/2023 -->
+									<div class="data-value">
+										{{ contract.percentualDescontoAluguel }}%
+									</div>
 								</div>
 								<div class="data">
+									<!-- \/ ?? X -->
 									<div class="data-label">Índice de reajuste do contrato</div>
-									<div class="data-value">IPCA</div>
+									<div class="data-value">
+										{{ contract.indiceReajuste?.nome }}
+									</div>
 								</div>
 								<div class="data">
 									<div class="data-label">Carência do aluguel</div>
-									<div class="data-value">Sim</div>
+									<div class="data-value">
+										{{ contract.carenciaAluguel ? "Sim" : "Não" }}
+									</div>
 								</div>
-								<div class="data">
+								<div class="data" *ngIf="contract.carenciaAluguel">
 									<div class="data-label">Prazo da carência</div>
-									<div class="data-value">12 meses</div>
+									<div class="data-value">
+										{{ contract.prazoCarencia }} meses
+									</div>
 								</div>
 								<div class="data">
+									<!-- \/ ?? X -->
 									<div class="data-label">Creditar para</div>
-									<div class="data-value">Locadora</div>
+									<div class="data-value">
+										{{ contract.creditoAluguel?.nome }}
+									</div>
 								</div>
 								<div class="data">
 									<div class="data-label">Periodicidade de reajuste</div>
-									<div class="data-value">X meses</div>
+									<div class="data-value">
+										{{ contract.periodicidadeReajuste }} meses
+									</div>
 								</div>
 							</div>
 						</p-accordionTab>
 
 						<!-- Anexos -->
 						<p-accordionTab header="Taxas e valores a pagar">
+							<!-- \/ ?? cada imovel tem seus anexos -->
 							<div class="attachments">
-								<button type="button" class="attachment">
+								<a
+									[href]="contract.anexos?.[0]?.uri"
+									target="_blank"
+									class="attachment"
+								>
 									<span class="icon">
 										<app-icon name="att-proj" size="1.5rem"></app-icon>
 									</span>
 									<span class="label">Projeto</span>
-								</button>
-								<button type="button" class="attachment">
+								</a>
+								<a
+									[href]="contract.anexos?.[1]?.uri"
+									target="_blank"
+									class="attachment"
+								>
 									<span class="icon">
 										<app-icon name="att-mat" size="1.5rem"></app-icon>
 									</span>
 									<span class="label">Matrícula</span>
-								</button>
-								<button type="button" class="attachment">
+								</a>
+								<a
+									[href]="contract.anexos?.[2]?.uri"
+									target="_blank"
+									class="attachment"
+								>
 									<span class="icon">
 										<app-icon name="att-hab" size="1.5rem"></app-icon>
 									</span>
 									<span class="label">Habite-se</span>
-								</button>
+								</a>
 							</div>
 						</p-accordionTab>
 					</p-accordion>
