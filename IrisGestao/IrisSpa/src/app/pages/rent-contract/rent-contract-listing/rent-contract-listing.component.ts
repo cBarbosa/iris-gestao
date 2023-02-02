@@ -149,8 +149,21 @@ export class RentContractListingComponent {
 		dthFimVigencia?: string
 	): void {
 		this.isLoadingContracts = true;
-		this.contractEntries = [];
+		this.contractEntries = [
+			{
+				name: 'SICOOB',
+				unit: 'Sala comercial',
+				contractStart: new Date('2021-01-21').toLocaleDateString(),
+				nextReadjustment: new Date('2023-01-21').toLocaleDateString(),
+				contractDue: new Date('2018-09-06').toLocaleDateString(),
+				readjustmentBase: 'IGPM',
+				action: '',
+				guidReferencia: 'id',
+			},
+		];
 
+		this.isLoadingContracts = false;
+		/*
 		const contracts = this.contractService
 			.getContracts(
 				this.rows,
@@ -201,6 +214,7 @@ export class RentContractListingComponent {
 					this.isLoadingContracts = false;
 				},
 			});
+			*/
 	}
 
 	filterContracts = (e?: Event) => {

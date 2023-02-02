@@ -160,6 +160,8 @@ export function PastDateValidator(control: AbstractControl) {
 	} else {
 		let msDate = Date.parse(control.value);
 		if (isNaN(msDate)) {
+			if(!control.value)
+				return null;
 			return { pastDateValidator: true };
 		}
 		checkingDate = new Date(msDate);

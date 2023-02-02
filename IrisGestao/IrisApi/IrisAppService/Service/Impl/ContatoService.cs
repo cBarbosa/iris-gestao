@@ -12,14 +12,17 @@ public class ContatoService: IContatoService
 {
     private readonly IContatoRepository contatoRepository;
     private readonly IClienteRepository clienteRepository;
+    private readonly IFornecedorRepository fornecedorRepository;
     private readonly ILogger<IContatoService> logger;
 
     public ContatoService(IContatoRepository contatoRepository
                         , IClienteRepository clienteRepository
+                        , IFornecedorRepository fornecedorRepository
                         , ILogger<IContatoService> logger)
     {
         this.contatoRepository = contatoRepository;
         this.clienteRepository = clienteRepository;
+        this.fornecedorRepository = fornecedorRepository;
         this.logger = logger;
     }
 
@@ -64,19 +67,34 @@ public class ContatoService: IContatoService
 
     public async Task<CommandResult> Insert(CriarContatoCommand cmd)
     {
-        if (cmd.GuidClienteReferencia.Equals(Guid.Empty))
-        {
-            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
-        }
-
-        var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidClienteReferencia);
-        if (cliente == null)
+        var contato = new Contato();
+        if(!cmd.GuidClienteReferencia.HasValue && !cmd.GuidFornecedorReferencia.HasValue)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
 
-        var contato = new Contato();
-        contato.IdCliente = cliente.Id;
+        if (cmd.GuidClienteReferencia.HasValue)
+        {
+            var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidClienteReferencia.Value);
+
+            if (cliente == null)
+            {
+                return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+            }
+            cmd.idCliente = cliente.Id;
+        }
+        
+        if (cmd.GuidFornecedorReferencia.HasValue)
+        {
+            var fornecedor = await fornecedorRepository.GetByReferenceGuid(cmd.GuidFornecedorReferencia.Value);
+
+            if (fornecedor == null)
+            {
+                return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+            }
+            cmd.idFornecedor = fornecedor.Id;
+        }
+
         BindContatoData(cmd, contato);
 
         try
@@ -106,8 +124,10 @@ public class ContatoService: IContatoService
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
 
+        cmd.idCliente = contato.IdCliente.HasValue ? contato.IdCliente.Value : null;
+        cmd.idFornecedor = contato.IdFornecedor.HasValue ? contato.IdFornecedor.Value : null;
         BindContatoData(cmd, contato);
-
+        
         try
         {
             contatoRepository.Update(contato);
@@ -126,25 +146,23 @@ public class ContatoService: IContatoService
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
-        else
+        
+        var contato = await contatoRepository.GetByGuid(uuid);
+
+        if (contato == null)
         {
-            var contato = await contatoRepository.GetByGuid(uuid);
+            return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
+        }
 
-            if (contato == null)
-            {
-                return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
-            }
-
-            try
-            {
-                contatoRepository.Delete(contato.Id);
-                return new CommandResult(true, SuccessResponseEnums.Success_1002, null);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e.Message);
-                return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
-            }
+        try
+        {
+            contatoRepository.Delete(contato.Id);
+            return new CommandResult(true, SuccessResponseEnums.Success_1002, null);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
         }
     }
 
@@ -163,14 +181,13 @@ public class ContatoService: IContatoService
                 break;
         }
 
-        contato.IdFornecedor    = contato.IdFornecedor;
-        contato.IdCliente       = contato.IdCliente;
+        contato.IdFornecedor    = cmd.idFornecedor;
+        contato.IdCliente       = cmd.idCliente;
         contato.Nome            = cmd.Nome;
         contato.Telefone        = cmd.Telefone;
         contato.Email           = cmd.Email;
         contato.DataNascimento  = cmd.DataNascimento.HasValue ? cmd.DataNascimento : null;
         contato.Cargo           = cmd.Cargo;
         contato.DataCriacao     = contato.DataCriacao;
-        contato.Status          = true;
     }
 }

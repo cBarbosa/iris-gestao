@@ -18,9 +18,10 @@ public partial class Imovel: BaseEntity<Imovel>
     [Unicode(false)]
     public string Nome { get; set; } = null!;
 
-    public int NumCentroCusto { get; set; }
+    public long NumCentroCusto { get; set; }
 
     public bool? MonoUsuario { get; set; }
+
     public bool Status { get; set; }
 
     [StringLength(50)]
@@ -34,7 +35,7 @@ public partial class Imovel: BaseEntity<Imovel>
     public DateTime? DataUltimaModificacao { get; set; }
 
     [InverseProperty("IdImovelNavigation")]
-    public virtual ICollection<ContratoAluguel> ContratoAluguel { get; } = new List<ContratoAluguel>();
+    public virtual ICollection<ContratoAluguelImovel> ContratoAluguelImovel { get; } = new List<ContratoAluguelImovel>();
 
     [InverseProperty("IdImovelNavigation")]
     public virtual ICollection<ContratoFornecedor> ContratoFornecedor { get; } = new List<ContratoFornecedor>();

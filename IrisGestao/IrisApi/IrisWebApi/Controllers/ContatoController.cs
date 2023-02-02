@@ -44,9 +44,6 @@ public class ContatoController : Controller
     {
         var result = await contatoService.Update(guid, cmd);
 
-        if (result == null)
-            return BadRequest("Operação não realizada");
-
         return Ok(result);
     }
 
@@ -56,10 +53,6 @@ public class ContatoController : Controller
     {
         var result = await contatoService.Delete(guid);
 
-        if (result == null)
-            return BadRequest("Operação não realizada");
-
         return Ok(result);
     }
-
 }
