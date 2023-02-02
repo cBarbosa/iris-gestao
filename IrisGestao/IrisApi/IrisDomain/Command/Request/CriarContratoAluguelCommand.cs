@@ -14,10 +14,10 @@ namespace IrisGestao.Domain.Command.Request
         public int IdIndiceReajuste { get; set; }
         public int IdTipoContrato { get; set; }
         public string NumeroContrato { get; set; } = null!;
-        public decimal ValorAluguel { get; set; }
-        public decimal PercentualRetencaoImpostos { get; set; }
-        public decimal ValorAluguelLiquido { get; set; }
-        public decimal? PercentualDescontoAluguel { get; set; }
+        public double ValorAluguel { get; set; }
+        public double PercentualRetencaoImpostos { get; set; }
+        public double ValorAluguelLiquido { get; set; }
+        public double? PercentualDescontoAluguel { get; set; }
         public bool CarenciaAluguel { get; set; }
         public int? PrazoCarencia { get; set; }
         public DateTime DataInicioContrato { get; set; }
