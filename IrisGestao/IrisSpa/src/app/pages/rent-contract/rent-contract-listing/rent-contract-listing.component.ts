@@ -84,30 +84,6 @@ export class RentContractListingComponent {
 			this.activatedRoute.snapshot.paramMap.get('pageIndex') ?? 1;
 		this.pageIndex = +routePageIndex;
 
-		this.tableMenu = [
-			{
-				label: 'Detalhes',
-				icon: 'ph-eye',
-				command: () =>
-					this.navigateTo(
-						'rent-contract/details/' + this.focusedContract!.guidReferencia
-					),
-			},
-			{
-				label: 'Editar',
-				icon: 'ph-note-pencil',
-				command: () =>
-					this.navigateTo(
-						'rent-contract/edit/' + this.focusedContract!.guidReferencia
-					),
-			},
-			{
-				label: 'Duplicar',
-				icon: 'ph-copy-simple',
-				// command: () => this.cloneUnit(this.unit!.guidReferencia!),
-			},
-		];
-
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
