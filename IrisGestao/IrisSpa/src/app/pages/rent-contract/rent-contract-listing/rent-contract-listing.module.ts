@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 import { MenuModule } from 'primeng/menu';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
 	declarations: [RentContractListingComponent],
@@ -24,6 +25,7 @@ import { MenuModule } from 'primeng/menu';
 		ButtonModule,
 		SpinnerComponent,
 		MenuModule,
+		CalendarModule,
 	],
 })
 export class RentContractListingModule {}
