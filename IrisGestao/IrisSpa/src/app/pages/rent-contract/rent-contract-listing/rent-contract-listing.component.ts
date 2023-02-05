@@ -149,7 +149,7 @@ export class RentContractListingComponent {
 		dthFimVigencia?: string
 	): void {
 		this.isLoadingContracts = true;
-		this.contractEntries = [
+		/*this.contractEntries = [
 			{
 				name: 'SICOOB',
 				unit: 'Sala comercial',
@@ -163,7 +163,7 @@ export class RentContractListingComponent {
 		];
 
 		this.isLoadingContracts = false;
-		/*
+		*/
 		const contracts = this.contractService
 			.getContracts(
 				this.rows,
@@ -186,6 +186,7 @@ export class RentContractListingComponent {
 
 						this.contractEntries = event.data.items.map((contrato: any) => {
 							return {
+								numeroContrato: contrato.numeroContrato,
 								locatario: contrato.cliente.nome,
 								unidade: 'UNIDADE',
 								dataInicioContrato: contrato.dataInicioContrato
@@ -214,7 +215,7 @@ export class RentContractListingComponent {
 					this.isLoadingContracts = false;
 				},
 			});
-			*/
+			
 	}
 
 	filterContracts = (e?: Event) => {

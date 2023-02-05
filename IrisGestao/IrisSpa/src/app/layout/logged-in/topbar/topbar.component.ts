@@ -42,11 +42,11 @@ export class TopbarComponent {
 				id: route.startsWith('/client') ? 'current' : '',
 				command: () => this.navigateTo('client/listing'),
 			},
-			// {
-			// 	label: 'Contratos',
-			// 	id: route.startsWith('/rent-contract') ? 'current' : '',
-			// 	command: () => this.navigateTo('rent-contract/listing'),
-			// },
+			{
+				label: 'Contratos',
+					id: route.startsWith('/rent-contract') ? 'current' : '',
+			command: () => this.navigateTo('rent-contract/listing'),
+			},
 			// {
 			// 	label: 'Prestador de serviços',
 			// },

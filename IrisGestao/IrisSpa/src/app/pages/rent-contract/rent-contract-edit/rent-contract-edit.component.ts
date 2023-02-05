@@ -119,12 +119,12 @@ export class RentContractEditComponent {
 			.getContractByGuid(this.contractGuid)
 			.subscribe((event) => {
 				if (event) {
-					const cep = event?.imovelEndereco[0]?.cep.toString() ?? '';
+/*					const cep = event?.imovelEndereco[0]?.cep.toString() ?? '';
 					const formatedCep = `${cep.slice(0, 2)}.${cep.slice(
 						2,
 						5
 					)}-${cep.slice(5)}`;
-
+*/
 					const data = event.data;
 
 					this.editForm.controls['contractInfo'].patchValue({
