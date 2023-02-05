@@ -184,7 +184,7 @@ public class ContratoAluguelService: IContratoAluguelService
         ContratoAluguel.NumeroContrato              = cmd.NumeroContrato;
         ContratoAluguel.ValorAluguel                = cmd.ValorAluguel;
         ContratoAluguel.PercentualRetencaoImpostos  = cmd.PercentualRetencaoImpostos;
-        ContratoAluguel.ValorAluguelLiquido         = cmd.ValorAluguelLiquido;
+        ContratoAluguel.ValorAluguelLiquido         = valorLiquido;
         ContratoAluguel.PercentualDescontoAluguel   = cmd.PercentualDescontoAluguel;
         ContratoAluguel.CarenciaAluguel             = cmd.CarenciaAluguel;
         ContratoAluguel.PrazoCarencia               = cmd.PrazoCarencia;
