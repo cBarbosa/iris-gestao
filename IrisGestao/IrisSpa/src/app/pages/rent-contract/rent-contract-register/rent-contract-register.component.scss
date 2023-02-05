@@ -56,9 +56,13 @@
 			button {
 				@apply text-sm h-9;
 			}
+
+			&.invalid {
+				background-color: #fae5e5;
+			}
 		}
 
-		.contract-data {
+		.properties-data {
 			background-color: #f8f8f8;
 			max-height: 190px;
 			padding: 1rem;
@@ -204,14 +208,16 @@
 		.p-sidebar-content {
 			height: 100%;
 
-			.register-proprietary-form {
+			.register-property-form {
 				@apply mx-2;
 				height: 100%;
 
-				.p-calendar {
-					.p-datepicker {
-						margin-left: -40px;
-						transform: scale(0.9);
+				.p-dropdown {
+					position: relative;
+					max-width: 100%;
+
+					.p-dropdown-panel {
+						max-width: 21.5rem;
 					}
 				}
 			}

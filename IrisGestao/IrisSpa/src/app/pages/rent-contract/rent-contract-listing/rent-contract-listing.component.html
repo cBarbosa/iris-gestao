@@ -1,7 +1,7 @@
 <div class="header-background"></div>
 <div class="content-wrapper">
 	<div class="content">
-		<header class="flex justify-between py-9">
+		<header>
 			<h3 class="text-2xl font-bold">
 				Contratos
 				<span class="ml-2 text-sm text-slate-600">{{
@@ -10,11 +10,11 @@
 			</h3>
 
 			<div class="options">
-				<span class="p-input-icon-left mx-2">
+				<span class="p-input-icon-left">
 					<i class="pi pi-search"></i>
 					<input
 						pInputText
-						class="white-theme"
+						class="w-44 white-theme"
 						[(ngModel)]="filterText"
 						(ngModelChange)="filterContractsDebounce($event)"
 						type="text"
@@ -23,8 +23,8 @@
 				</span>
 
 				<p-dropdown
-					class="mx-2"
-					styleClass="w-44 white-theme"
+					class=""
+					styleClass="w-[10.8rem] white-theme small"
 					placeholder="Base de reajuste"
 					[options]="basesReajuste"
 					[(ngModel)]="filterBase"
@@ -32,8 +32,8 @@
 				></p-dropdown>
 
 				<p-dropdown
-					class="mx-2"
-					styleClass="w-48 white-theme"
+					class=""
+					styleClass="w-44 white-theme small"
 					placeholder="Tipo de contrato"
 					[options]="tiposImovel"
 					aria-describedby="contract-type-help"
@@ -41,14 +41,38 @@
 					(ngModelChange)="filterContractsDebounce($event)"
 				></p-dropdown>
 
-				<p-dropdown
+				<p-calendar
+					dateFormat="dd/mm/yy"
+					class=""
+					styleClass="w-32"
+					(onInput)="onInputDate($event)"
+					(onBlur)="onBlurDate()"
+					placeholder="Data de início"
+					panelStyleClass="hidden"
+					[(ngModel)]="filterStart"
+					(ngModelChange)="filterContractsDebounce($event)"
+				></p-calendar>
+
+				<p-calendar
+					dateFormat="dd/mm/yy"
+					class=""
+					styleClass="w-32"
+					(onInput)="onInputDate($event)"
+					(onBlur)="onBlurDate()"
+					placeholder="Data de fim"
+					panelStyleClass="hidden"
+					[(ngModel)]="filterEnd"
+					(ngModelChange)="filterContractsDebounce($event)"
+				></p-calendar>
+
+				<!-- <p-dropdown
 					class="mx-2"
 					styleClass="w-36 white-theme"
 					placeholder="Vencimento"
 					[options]="vencimentos"
 					[(ngModel)]="filterDue"
 					(ngModelChange)="filterContractsDebounce($event)"
-				></p-dropdown>
+				></p-dropdown> -->
 
 				<button
 					pButton
@@ -56,7 +80,7 @@
 					class="p-button-outlined h-9 white-theme"
 					(click)="navigateTo('rent-contract/register')"
 				>
-					<i class="pi pi-plus mr-3"></i>
+					<i class="pi pi-plus"></i>
 					Novo Contrato
 				</button>
 			</div>
@@ -85,8 +109,9 @@
 			>
 				<ng-template pTemplate="header">
 					<tr *ngIf="!isLoadingContracts && !noRestults">
+						<th>Número do Contrato</th>
 						<th>Nome do locatário</th>
-						<th>Unidade locada</th>
+						<!-- <th>Unidade locada</th> -->
 						<th>Início do contrato</th>
 						<th>Próximo reajuste</th>
 						<th>Vencimento do contrato</th>
@@ -96,14 +121,19 @@
 				</ng-template>
 				<ng-template pTemplate="body" let-contract>
 					<tr>
-						<td class="font-bold">{{ contract.name }}</td>
-						<td>{{ contract.unit }}</td>
-						<td>{{ contract.contractStart }}</td>
-						<td>{{ contract.nextReadjustment }}</td>
-						<td>{{ contract.contractDue }}</td>
-						<td>{{ contract.readjustmentBase }}</td>
-						<td class="action w-16">
-							<button
+
+						<td class="font-bold">{{ contract.numeroContrato }}</td>						<!-- \/ ?? -->
+						<td class="font-bold">{{ contract.locatario }}</td>
+						<!-- \/ ?? multiplos imoveis com multiplas unidades-->
+						<!-- <td>{{ contract.unidade }}</td> -->
+						<td>{{ contract.dataInicioContrato | date : "shortDate" }}</td>
+						<!-- \/ ?? -->
+						<td>{{ contract.proxAjuste }}</td>
+						<td>{{ contract.dataFimContrato | date : "shortDate" }}</td>
+						<!-- \/ ?? -->
+						<td>{{ contract.baseReajuste }}</td>
+						<td class="action w-40">
+							<!-- <button
 								type="button"
 								pButton
 								icon="pi pi-ellipsis-v"
@@ -111,7 +141,18 @@
 								(click)="
 									actionMenu.toggle($event); setCurrentContract(contract)
 								"
-							></button>
+							></button> -->
+
+							<button
+								pButton
+								type="button"
+								class="p-button-text h-7"
+								(click)="
+									navigateTo('rent-contract/details/' + contract.guidReferencia)
+								"
+							>
+								Ver detalhes
+							</button>
 						</td>
 					</tr>
 				</ng-template>
@@ -119,5 +160,3 @@
 		</ng-container>
 	</div>
 </div>
-
-<p-menu #actionMenu [popup]="true" [model]="tableMenu"></p-menu>

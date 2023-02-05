@@ -26,6 +26,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                             .ThenInclude(y=> y.IdTipoClienteNavigation)
                         .Include(x => x.ContratoAluguelImovel )
                             .ThenInclude(x=> x.ContratoAluguelUnidade)
+                        .Include(x => x.IdIndiceReajusteNavigation)
                         .Where(x => x.GuidReferencia.Equals(guid) && x.Status)
                         .Select(x => new
                         {
@@ -46,6 +47,20 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                             DataAtualização                 = x.DataUltimaModificacao,
                             GuidReferencia                  = x.GuidReferencia,
                             ExibirAlertaVencimento          = (x.DataFimContrato - DateTime.Now).Days <= 90 ? true : false,
+                            Imagens = ImagemListFake,
+                            Anexos = AnexoListFake,
+                            IndiceReajuste = x.IdIndiceReajusteNavigation == null ? null : new
+                            {
+                                Id                          = x.IdIndiceReajusteNavigation.Id,
+                                Nome                        = x.IdIndiceReajusteNavigation.Nome,
+                                Percentual                  = x.IdIndiceReajusteNavigation.Percentual,
+                                DataAtualizacao             = x.IdIndiceReajusteNavigation.DataAtualizacao
+                            },
+                            CreditoAluguel = x.IdTipoCreditoAluguelNavigation == null ? null : new
+                            {
+                                Id = x.IdTipoCreditoAluguelNavigation.Id,
+                                Nome = x.IdTipoCreditoAluguelNavigation.Nome
+                            },
                             Cliente                         = x.IdClienteNavigation == null ? null : new
                             {
                                 CpfCnpj                     = x.IdClienteNavigation.CpfCnpj,
@@ -81,8 +96,6 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 NroUnidadesTotal            = x.IdImovelNavigation.Unidade.Where(x => x.Status).Count(),
                                 NroUnidadesContrato         = x.ContratoAluguelUnidade.Where(y => y.IdUnidadeNavigation.Status).Count(),
                                 ImgCapa                     = "../../../../assets/images/imovel.png",
-                                Imagens                     = ImagemListFake,
-                                Anexos                      = AnexoListFake,
                                 IdCategoriaImovelNavigation = x.IdImovelNavigation.IdCategoriaImovelNavigation == null ? null : new
                                 {
                                     Id                      = x.IdImovelNavigation.IdCategoriaImovelNavigation.Id,
@@ -127,6 +140,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                             .ThenInclude(y => y.IdTipoClienteNavigation)
                         .Include(x => x.ContratoAluguelImovel)
                             .ThenInclude(x => x.ContratoAluguelUnidade)
+                        .Include(x => x.IdIndiceReajusteNavigation)
                         .Where(x => (idBaseReajuste.HasValue
                                         ? x.IdIndiceReajuste.Equals(idBaseReajuste.Value)
                                         : true)
@@ -155,6 +169,18 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                             DataAtualização = x.DataUltimaModificacao,
                             GuidReferencia = x.GuidReferencia,
                             ExibirAlertaVencimento = (x.DataFimContrato - DateTime.Now).Days <= 90 ? true : false,
+                            IndiceReajuste = x.IdIndiceReajusteNavigation == null ? null : new
+                            {
+                                Id = x.IdIndiceReajusteNavigation.Id,
+                                Nome = x.IdIndiceReajusteNavigation.Nome,
+                                Percentual = x.IdIndiceReajusteNavigation.Percentual,
+                                DataAtualizacao = x.IdIndiceReajusteNavigation.DataAtualizacao,
+                            },
+                            CreditoAluguel = x.IdTipoCreditoAluguelNavigation == null ? null : new
+                            {
+                                Id = x.IdTipoCreditoAluguelNavigation.Id,
+                                Nome = x.IdTipoCreditoAluguelNavigation.Nome
+                            },
                             Cliente = x.IdClienteNavigation == null ? null : new
                             {
                                 CpfCnpj = x.IdClienteNavigation.CpfCnpj,

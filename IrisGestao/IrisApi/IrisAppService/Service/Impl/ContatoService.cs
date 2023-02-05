@@ -124,8 +124,8 @@ public class ContatoService: IContatoService
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
 
-        cmd.idCliente = contato.IdCliente.Value;
-        cmd.idFornecedor = contato.IdFornecedor;
+        cmd.idCliente = contato.IdCliente.HasValue ? contato.IdCliente.Value : null;
+        cmd.idFornecedor = contato.IdFornecedor.HasValue ? contato.IdFornecedor.Value : null;
         BindContatoData(cmd, contato);
         
         try
