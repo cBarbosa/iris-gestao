@@ -9,6 +9,7 @@ namespace IrisGestao.Domain.Command.Request
     public class CriarFornecedorCommand
     {
         public int? IdDadosBancarios { get; set; }
+        public string CpfCnpj { get; set; }
         public string Nome { get; set; }
         public string RazaoSocial { get; set; }
         public Boolean Status { get; set; }
