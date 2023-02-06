@@ -177,6 +177,10 @@ public partial class IrisContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Cliente_ContratoFornecedor");
 
+            entity.HasOne(d => d.IdFornecedorNavigation).WithMany(p => p.ContratoFornecedor)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("[fk_ContratoFornecedor_Fornecedor]");
+
             entity.HasOne(d => d.IdFormaPagamentoNavigation).WithMany(p => p.ContratoFornecedor)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_FormaPagamento_ContratoFornecedor");
@@ -184,6 +188,10 @@ public partial class IrisContext : DbContext
             entity.HasOne(d => d.IdImovelNavigation).WithMany(p => p.ContratoFornecedor)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Imovel_ContratoFornecedor");
+
+            entity.HasOne(d => d.IdUnidadeNavigation).WithMany(p => p.ContratoFornecedor)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_ContratoFornecedor_Unidade");
 
             entity.HasOne(d => d.IdIndiceReajusteNavigation).WithMany(p => p.ContratoFornecedor)
                 .OnDelete(DeleteBehavior.ClientSetNull)

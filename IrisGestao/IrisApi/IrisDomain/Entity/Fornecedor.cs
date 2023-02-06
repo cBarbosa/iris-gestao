@@ -10,6 +10,10 @@ public partial class Fornecedor: BaseEntity<Fornecedor>
 {
     public int IdDadoBancario { get; set; }
 
+    [StringLength(14)]
+    [Unicode(false)]
+    public string? CpfCnpj { get; set; }
+
     [StringLength(100)]
     [Unicode(false)]
     public string Nome { get; set; } = null!;
@@ -53,4 +57,7 @@ public partial class Fornecedor: BaseEntity<Fornecedor>
     [ForeignKey("IdDadoBancario")]
     [InverseProperty("Fornecedor")]
     public virtual DadoBancario IdDadoBancarioNavigation { get; set; } = null!;
+
+    [InverseProperty("IdFornecedorNavigation")]
+    public virtual ICollection<ContratoFornecedor> ContratoFornecedor { get; } = new List<ContratoFornecedor>();
 }

@@ -32,6 +32,7 @@ public class FornecedorRepository : Repository<Fornecedor>, IFornecedorRepositor
                         {
                             GuidReferencia          = x.GuidReferencia,
                             Nome                    = x.Nome,
+                            CpfCnpj                 = x.CpfCnpj,
                             RazaoSocial             = x.RazaoSocial,
                             DataUltimaModificacao   = x.DataUltimaModificacao,
                             DataCriacao             = x.DataCriacao,

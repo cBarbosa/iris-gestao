@@ -141,7 +141,8 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                         .Include(x => x.ContratoAluguelImovel)
                             .ThenInclude(x => x.ContratoAluguelUnidade)
                         .Include(x => x.IdIndiceReajusteNavigation)
-                        .Where(x => (idBaseReajuste.HasValue
+                        .Where(x =>  x.Status
+                                    && (idBaseReajuste.HasValue
                                         ? x.IdIndiceReajuste.Equals(idBaseReajuste.Value)
                                         : true)
                                     && (!string.IsNullOrEmpty(numeroContrato)

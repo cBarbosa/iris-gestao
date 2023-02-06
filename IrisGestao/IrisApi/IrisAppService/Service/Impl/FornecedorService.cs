@@ -189,15 +189,16 @@ public class FornecedorService: IFornecedorService
         }
         
         Fornecedor.Nome = cmd.Nome;
-        Fornecedor.RazaoSocial = string.Empty.Equals(cmd.RazaoSocial)
+        Fornecedor.RazaoSocial  = string.Empty.Equals(cmd.RazaoSocial)
             ? cmd.Nome
             : cmd.RazaoSocial;
-        Fornecedor.Nome = cmd.Nome;
-        Fornecedor.RazaoSocial = cmd.RazaoSocial;
-        Fornecedor.Endereco = cmd.Endereco;
-        Fornecedor.Bairro = cmd.Bairro;
-        Fornecedor.Cidade = cmd.Cidade;
-        Fornecedor.Estado = cmd.Estado;
-        Fornecedor.Cep = cmd.Cep.HasValue ? cmd.Cep.Value : 0; 
+        Fornecedor.Nome         = cmd.Nome;
+        Fornecedor.CpfCnpj      = cmd.CpfCnpj;
+        Fornecedor.RazaoSocial  = cmd.RazaoSocial;
+        Fornecedor.Endereco     = cmd.Endereco;
+        Fornecedor.Bairro       = cmd.Bairro;
+        Fornecedor.Cidade       = cmd.Cidade;
+        Fornecedor.Estado       = cmd.Estado;
+        Fornecedor.Cep          = cmd.Cep.HasValue ? cmd.Cep.Value : 0; 
     }
 }

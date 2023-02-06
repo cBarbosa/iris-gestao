@@ -10,7 +10,9 @@ public partial class ContratoFornecedor: BaseEntity<ContratoFornecedor>
 {
     public int IdCliente { get; set; }
 
+    public int IdFornecedor { get; set; }
     public int IdImovel { get; set; }
+    public int IdUnidade { get; set; }
 
     public int IdFormaPagamento { get; set; }
 
@@ -46,6 +48,8 @@ public partial class ContratoFornecedor: BaseEntity<ContratoFornecedor>
     [Unicode(false)]
     public string GuidReferencia { get; set; } = null!;
 
+    public bool Status { get; set; }
+
     [Column(TypeName = "datetime")]
     public DateTime? DataCriacao { get; set; }
 
@@ -54,6 +58,10 @@ public partial class ContratoFornecedor: BaseEntity<ContratoFornecedor>
 
     [InverseProperty("IdContratoFornecedorNavigation")]
     public virtual ICollection<DespesaProprietario> DespesaProprietario { get; } = new List<DespesaProprietario>();
+
+    [ForeignKey("IdFornecedor")]
+    [InverseProperty("ContratoFornecedor")]
+    public virtual Fornecedor IdFornecedorNavigation { get; set; } = null!;
 
     [ForeignKey("IdCliente")]
     [InverseProperty("ContratoFornecedor")]
@@ -66,6 +74,10 @@ public partial class ContratoFornecedor: BaseEntity<ContratoFornecedor>
     [ForeignKey("IdImovel")]
     [InverseProperty("ContratoFornecedor")]
     public virtual Imovel IdImovelNavigation { get; set; } = null!;
+
+    [ForeignKey("IdUnidade")]
+    [InverseProperty("ContratoFornecedor")]
+    public virtual Unidade IdUnidadeNavigation { get; set; } = null!;
 
     [ForeignKey("IdIndiceReajuste")]
     [InverseProperty("ContratoFornecedor")]
