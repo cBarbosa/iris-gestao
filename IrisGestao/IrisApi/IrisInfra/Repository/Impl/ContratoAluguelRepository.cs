@@ -81,7 +81,18 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 {
                                     Id                      = x.IdClienteNavigation.IdTipoClienteNavigation.Id,
                                     Nome                    = x.IdClienteNavigation.IdTipoClienteNavigation.Nome,
-                                }
+                                },
+                                Contato = x.IdClienteNavigation.Contato.Select(x => new
+                                {
+                                    Nome                    = x.Nome,
+                                    Cargo                   = x.Cargo,
+                                    Email                   = x.Email,
+                                    Telefone                = x.Telefone,
+                                    DataNascimento          = x.DataNascimento,
+                                    DataCriacao             = x.DataCriacao,
+                                    DataAtualização         = x.DataUltimaModificacao,
+                                    guidReferenciaContato   = x.GuidReferencia,
+                                })
                             },
                             ImovelAlugado                   = x.ContratoAluguelImovel.Select(x => new
                             {
