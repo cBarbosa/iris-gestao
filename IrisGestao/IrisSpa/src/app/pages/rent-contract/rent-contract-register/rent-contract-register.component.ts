@@ -17,6 +17,7 @@ import {
 	DominiosService,
 	ImovelService,
 } from 'src/app/shared/services';
+import { EmailValidator } from 'src/app/shared/validators/custom-validators';
 
 type Step = {
 	label: string;
@@ -40,6 +41,9 @@ type DropdownItem = {
 export class RentContractRegisterComponent {
 	registerForm: FormGroup;
 	propertyAddForm: FormGroup;
+	registerRenterForm: FormGroup;
+
+	registerRenterVisible = false;
 
 	stepList: Step[];
 	currentStep: number;
@@ -85,7 +89,6 @@ export class RentContractRegisterComponent {
 		},
 	];
 
-	//??? QUAIS DIAS
 	dueDates: DropdownItem[] = Array.from({ length: 31 }, (v, k) => {
 		return { label: 'Todo dia ' + (k + 1), value: k + 1, disabled: false };
 	});
@@ -203,6 +206,14 @@ export class RentContractRegisterComponent {
 			unidade: [null, [Validators.required]],
 		});
 
+		this.registerRenterForm = this.fb.group({
+			name: ['', [Validators.required]],
+			cpfCnpj: ['', [Validators.required]],
+			birthday: ['', [Validators.required]],
+			email: ['', [Validators.required, EmailValidator]],
+			telephone: ['', [Validators.required]],
+		});
+
 		this.propertyAddForm.controls['unidade'].disable();
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
@@ -231,16 +242,7 @@ export class RentContractRegisterComponent {
 			}
 		});
 
-		this.clienteService.getListaProprietarios().subscribe((event) => {
-			if (event) {
-				event.data.forEach((item: any) => {
-					this.renters.push({
-						label: item.nome,
-						value: item.guidReferencia,
-					});
-				});
-			}
-		});
+		this.getListaProprietarios();
 
 		this.dominiosService.getTiposCreditoAluguel().subscribe((event) => {
 			if (event) {
@@ -290,6 +292,31 @@ export class RentContractRegisterComponent {
 	checkHasError(c: AbstractControl) {
 		return Utils.checkHasError(c);
 	}
+
+	getListaProprietarios() {
+		this.clienteService
+			.getListaProprietarios()
+			.pipe(first())
+			.subscribe((event) => {
+				if (event) {
+					this.renters = [
+						{
+							label: 'Selecione',
+							value: null,
+							disabled: true,
+						},
+					];
+					event.data.forEach((item: any) => {
+						this.renters.push({
+							label: item.nome,
+							value: item.id,
+						});
+					});
+				}
+			});
+	}
+
+	setNewRenter: () => void = () => {};
 
 	changeStep(step: number) {
 		this.stepList = this.stepList.map((entry: Step, i: number) => {
@@ -581,6 +608,82 @@ export class RentContractRegisterComponent {
 		this.propertyAddForm.reset();
 
 		this.hideAddProperty();
+	}
+
+	onRenterSubmit() {
+		if (this.registerRenterForm.invalid) {
+			this.registerRenterForm.markAllAsTouched();
+			return;
+		}
+
+		const renterFormData = this.registerRenterForm.getRawValue();
+		console.log(renterFormData);
+
+		const renterObj = {
+			nome: renterFormData.name,
+			cpfCnpj: renterFormData.cpfCnpj.toString(),
+			dataNascimento: (renterFormData.birthday as Date).toISOString(),
+			email: renterFormData.email,
+			telefone: renterFormData.telephone.toString(),
+			idTipoCliente: 1,
+			status: true,
+			bairro: '',
+			cidade: '',
+			estado: '',
+			endereco: '',
+			razaoSocial: '',
+		};
+
+		this.clienteService
+			.criarCliente(renterObj)
+			.pipe(first())
+			.subscribe({
+				next: (response: any) => {
+					if (response.success) {
+						this.modalContent = {
+							header: 'Cadastro realizado',
+							message:
+								response.message ??
+								'Cadastro de proprietário realizado com sucesso',
+							isError: false,
+						};
+
+						this.registerRenterForm.reset();
+
+						this.getListaProprietarios();
+
+						this.setNewRenter = () => {
+							this.contractInfoForm.controls['locatario'].setValue(
+								response.data.id
+							);
+						};
+
+						// this.registerRenterVisible = false;
+						this.openModal();
+					} else {
+						this.modalContent = {
+							header: 'Cadastro não realizado',
+							message:
+								response.message ?? 'Erro no envio de dados de proprietário',
+							isError: true,
+						};
+
+						this.registerRenterVisible = false;
+						this.openModal();
+					}
+				},
+				error: (error: any) => {
+					console.error(error);
+					this.modalContent = {
+						header: 'Cadastro não realizado',
+						message: 'Erro no envio de dados de proprietário',
+						isError: true,
+					};
+
+					this.registerRenterVisible = false;
+					this.openModal();
+				},
+			});
 	}
 
 	onChangeBuilding(event: any) {

@@ -28,7 +28,7 @@ export class RentContractListingComponent {
 
 	basesReajuste = [
 		{
-			label: 'Base de reajuste',
+			label: 'Índice de reajuste',
 			value: null,
 		},
 	];
