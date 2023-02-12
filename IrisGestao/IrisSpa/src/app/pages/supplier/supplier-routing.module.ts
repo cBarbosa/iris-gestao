@@ -16,28 +16,28 @@ const routes: Routes = [
 			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 		},
 	},
-	// {
-	// 	path: 'details/:uid',
-	// 	// component: PropertyListingComponent,
-	// 	loadChildren: () =>
-	// 		import('./client-view/client-view.module').then(
-	// 			(m) => m.ClientViewModule
-	// 		),
-	// 	data: {
-	// 		role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-	// 	},
-	// },
-	// {
-	// 	path: 'register/:uid',
-	// 	// component: PropertyListingComponent,
-	// 	loadChildren: () =>
-	// 		import('./client-register/client-register.module').then(
-	// 			(m) => m.ClientRegisterModule
-	// 		),
-	// 	data: {
-	// 		role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-	// 	},
-	// }
+	{
+		path: 'details/:uid',
+		// component: PropertyListingComponent,
+		loadChildren: () =>
+			import('./supplier-view/supplier-view.module').then(
+				(m) => m.SupplierViewModule
+			),
+		data: {
+			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+		},
+	},
+	{
+		path: 'register/:uid',
+		// component: PropertyListingComponent,
+		loadChildren: () =>
+			import('./supplier-register/supplier-register.module').then(
+				(m) => m.SupplierRegisterModule
+			),
+		data: {
+			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+		},
+	}
 ];
 
 @NgModule({
