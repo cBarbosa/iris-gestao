@@ -15,5 +15,6 @@ namespace IrisGestao.Domain.Command.Request
         public int Conta { get; set; }
         public int? IdBanco { get; set; }
         public string ChavePix { get; set; }
+        public string Banco => "Transit";
     }
 }
