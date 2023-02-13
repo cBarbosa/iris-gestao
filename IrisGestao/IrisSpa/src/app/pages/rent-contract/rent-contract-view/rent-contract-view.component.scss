@@ -173,3 +173,33 @@
 		}
 	}
 }
+
+::ng-deep {
+	.p-sidebar {
+		&.p-sidebar-right {
+			width: 25rem;
+		}
+
+		.contact-data {
+			background-color: #f8f8f8;
+			// max-height: 190px;
+			width: 100%;
+			padding: 1rem;
+			margin-bottom: 1.5rem;
+
+			> :first-child {
+				border-bottom: solid 1px #eaeaea;
+				@apply py-2 mb-3;
+				color: #262626;
+			}
+			> :last-child {
+				color: #646464;
+			}
+
+			> div > div {
+				max-width: 100%;
+				word-wrap: break-word;
+			}
+		}
+	}
+}

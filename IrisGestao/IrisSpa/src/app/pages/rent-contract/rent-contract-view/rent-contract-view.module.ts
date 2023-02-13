@@ -10,6 +10,7 @@ import { TelefonePipeModule } from 'src/app/shared/pipes/telefone.module';
 import { ButtonModule } from 'primeng/button';
 import { AccordionModule } from 'primeng/accordion';
 import { IconModule } from 'src/app/shared/components/custom-ui/icon/icon.module';
+import { SidebarModule } from 'primeng/sidebar';
 
 @NgModule({
 	declarations: [RentContractViewComponent],
@@ -23,6 +24,7 @@ import { IconModule } from 'src/app/shared/components/custom-ui/icon/icon.module
 		ButtonModule,
 		AccordionModule,
 		IconModule,
+		SidebarModule,
 	],
 })
 export class RentContractViewModule {}

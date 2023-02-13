@@ -24,14 +24,14 @@
 
 				<p-dropdown
 					class=""
-					styleClass="w-[10.8rem] white-theme small"
+					styleClass="w-[11.2rem] white-theme small"
 					placeholder="Base de reajuste"
 					[options]="basesReajuste"
 					[(ngModel)]="filterBase"
 					(ngModelChange)="filterContractsDebounce($event)"
 				></p-dropdown>
 
-				<p-dropdown
+				<!-- <p-dropdown
 					class=""
 					styleClass="w-44 white-theme small"
 					placeholder="Tipo de contrato"
@@ -39,7 +39,7 @@
 					aria-describedby="contract-type-help"
 					[(ngModel)]="filterType"
 					(ngModelChange)="filterContractsDebounce($event)"
-				></p-dropdown>
+				></p-dropdown> -->
 
 				<p-calendar
 					dateFormat="dd/mm/yy"
@@ -81,7 +81,7 @@
 					(click)="navigateTo('rent-contract/register')"
 				>
 					<i class="pi pi-plus"></i>
-					Novo Contrato
+					Adicionar Contrato
 				</button>
 			</div>
 		</header>
@@ -115,7 +115,7 @@
 						<th>Início do contrato</th>
 						<th>Próximo reajuste</th>
 						<th>Vencimento do contrato</th>
-						<th>Base de reajuste</th>
+						<th>Índice de reajuste</th>
 						<th></th>
 					</tr>
 				</ng-template>

@@ -15,6 +15,17 @@ export class RentContractViewComponent {
 	isLoadingView = false;
 	guid: string;
 
+	contactList:
+		| {
+				nome: string;
+				cargo: string;
+				email: string;
+				telefone: string;
+				nascimento: string;
+		  }[]
+		| null = null;
+	contactsVisible = false;
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
@@ -39,6 +50,18 @@ export class RentContractViewComponent {
 			.subscribe((response: ApiResponse) => {
 				this.contract = response.data[0];
 
+				this.contactList = this.contract.cliente?.contato?.map(
+					(contato: any) => {
+						return {
+							nome: contato.nome,
+							cargo: contato.cargo,
+							email: contato.email,
+							telefone: contato.telefone,
+							nascimento: contato.dataNascimento,
+						};
+					}
+				);
+
 				console.log(this.contract);
 				// this.property = imovel;
 				// this.units = imovel.unidade!;
@@ -54,6 +77,14 @@ export class RentContractViewComponent {
 			return acc + u.idUnidae + ', ';
 		}, '');
 		return formatted.slice(0, -2);
+	}
+
+	showContacts() {
+		this.contactsVisible = true;
+	}
+
+	hideContacts() {
+		this.contactsVisible = false;
 	}
 
 	navigateTo(route: string) {

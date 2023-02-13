@@ -32,8 +32,7 @@
 						type="text"
 						formControlName="numero"
 						aria-describedby="numero-help"
-						maxlength="100"
-						mask="0*"
+						maxlength="18"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['numero'])">
@@ -174,6 +173,15 @@
 					</ng-container>
 				</div>
 
+				<div class="flex justify-end text-sm font-medium mb-6">
+					<p-button
+						icon="pi pi-plus"
+						label="Adicionar novo locatário"
+						styleClass="p-button-text text-sm"
+						(click)="registerRenterVisible = true"
+					></p-button>
+				</div>
+
 				<!-- <div class="field">
 					<label for="locatario" class="block">Nome do locatário</label>
 					<input
@@ -257,7 +265,9 @@
 				</div> -->
 
 				<div class="field">
-					<label for="dataOcupacao" class="block"> Data da ocupação </label>
+					<label for="dataOcupacao" class="block">
+						Data de entrega do imóvel
+					</label>
 					<p-calendar
 						id="dataOcupacao"
 						formControlName="dataOcupacao"
@@ -762,6 +772,201 @@
 	</p-sidebar>
 </form>
 
+<!-- ------------------------------------------------------------------------ -->
+<!-- ------------------------------------------------------------------------ -->
+<!-- REGISTRO DE LOCATARIO (SIDEBAR) -->
+<!-- ------------------------------------------------------------------------ -->
+<!-- ------------------------------------------------------------------------ -->
+
+<form [formGroup]="registerRenterForm" *ngIf="registerRenterVisible">
+	<p-sidebar [(visible)]="registerRenterVisible" position="right">
+		<ng-template pTemplate="header">
+			<h4>Adicionar novo locatário</h4>
+		</ng-template>
+		<ng-template pTemplate="content">
+			<div class="register-proprietary-form">
+				<div class="field">
+					<label for="name" class="block">Nome</label>
+					<input
+						id="name"
+						type="text"
+						formControlName="name"
+						aria-describedby="name-help"
+						maxlength="100"
+						pInputText
+					/>
+					<ng-container
+						*ngIf="checkHasError(registerRenterForm.controls['name'])"
+					>
+						<small
+							id="name-help"
+							*ngIf="
+								registerRenterForm.controls['name'].hasError('required');
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe o nome do locatário
+						</small>
+						<ng-template #error2>
+							<small id="name-help" class="p-error block">
+								Nome inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="cpf-cnpj" class="block">CPF/CNPJ</label>
+					<input
+						id="cpf-cnpj"
+						type="text"
+						formControlName="cpfCnpj"
+						aria-describedby="cpf-cnpj-help"
+						mask="CPF_CNPJ"
+						pInputText
+					/>
+					<ng-container
+						*ngIf="checkHasError(registerRenterForm.controls['cpfCnpj'])"
+					>
+						<small
+							id="cpf-cnpj-help"
+							*ngIf="
+								registerRenterForm.controls['cpfCnpj'].hasError('required');
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe o CPF/CNPJ
+						</small>
+						<ng-template #error2>
+							<small id="cpf-cnpj-help" class="p-error block">
+								CPF/CNPJ inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="birthday" class="block">Nascimento</label>
+					<p-calendar
+						id="birthday"
+						formControlName="birthday"
+						styleClass="no-popup"
+						dateFormat="dd/mm/yy"
+						(onInput)="onInputDate($event)"
+						(onBlur)="onBlurDate()"
+						placeholder="dd/mm/aaaa"
+						aria-describedby="birthday-help"
+					></p-calendar>
+					<ng-container
+						*ngIf="checkHasError(registerRenterForm.controls['birthday'])"
+					>
+						<small
+							id="birthday-help"
+							*ngIf="
+								registerRenterForm.controls['birthday'].hasError('required');
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe a data de nascimento
+						</small>
+						<ng-template #error2>
+							<small id="birthday-help" class="p-error block">
+								Data de nascimento inválida
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="email" class="block">Email</label>
+					<input
+						id="email"
+						type="text"
+						formControlName="email"
+						aria-describedby="email-help"
+						maxlength="150"
+						pInputText
+					/>
+					<ng-container
+						*ngIf="checkHasError(registerRenterForm.controls['email'])"
+					>
+						<small
+							id="email-help"
+							*ngIf="
+								registerRenterForm.controls['email'].hasError('required');
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe o Email
+						</small>
+						<ng-template #error2>
+							<small id="email-help" class="p-error block">
+								Email inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="telephone" class="block">Telefone</label>
+					<input
+						id="telephone"
+						type="text"
+						formControlName="telephone"
+						aria-describedby="telephone-help"
+						mask="(00) 0000-0000 || (00) 0 0000-0000"
+						pInputText
+					/>
+					<ng-container
+						*ngIf="checkHasError(registerRenterForm.controls['telephone'])"
+					>
+						<small
+							id="telephone-help"
+							*ngIf="
+								registerRenterForm.controls['telephone'].hasError('required');
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe o telefone
+						</small>
+						<ng-template #error2>
+							<small id="telephone-help" class="p-error block">
+								Telefone inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="footer">
+			<div class="flex justify-between gap-4">
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Cancelar"
+					class="p-button-outlined h-9 w-full"
+					(click)="registerRenterVisible = false"
+				></button>
+
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Continuar"
+					class="h-9 w-full"
+					(click)="onRenterSubmit()"
+				></button>
+			</div>
+		</ng-template>
+	</p-sidebar>
+</form>
+
 <p-dialog
 	[(visible)]="displayModal"
 	[modal]="true"
@@ -779,6 +984,14 @@
 		<button
 			pButton
 			label="Continuar"
+			(click)="closeModal(setNewRenter); registerRenterVisible = false"
+			*ngIf="registerRenterVisible"
+		></button>
+
+		<button
+			pButton
+			label="Continuar 2"
+			*ngIf="!registerRenterVisible"
 			(click)="closeModal(navigateTo, 'rent-contract/listing')"
 		></button>
 	</div>
