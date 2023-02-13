@@ -65,4 +65,16 @@ export class DominiosService {
 				})
 			);
 	}
+
+	getBanks() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/bancos`)
+			.pipe(
+				map((response) => {
+					if (response.success) return response;
+					else
+						return console.error(`getBanks: ${response.message}`);
+				})
+			);
+	};
 }

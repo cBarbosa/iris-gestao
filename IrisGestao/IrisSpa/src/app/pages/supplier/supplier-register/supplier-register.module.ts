@@ -13,6 +13,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ContactRegisterSidebarComponent } from '../../client/contact-register-sidebar/contact-register-sidebar.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -22,17 +23,18 @@ import { ContactRegisterSidebarComponent } from '../../client/contact-register-s
   imports: [
     CommonModule,
     SupplierRegisterRoutingModule,
-		ButtonModule,
-		InputTextModule,
-		CalendarModule,
-		DropdownModule,
-		DialogModule,
-		FormStepsComponent,
-		NgxMaskModule.forChild(),
-		SpinnerComponent,
-		SidebarModule,
-		ContactRegisterSidebarComponent,
-		TelefonePipeModule,
+	ReactiveFormsModule,
+	ButtonModule,
+	InputTextModule,
+	CalendarModule,
+	DropdownModule,
+	DialogModule,
+	FormStepsComponent,
+	NgxMaskModule.forChild(),
+	SpinnerComponent,
+	SidebarModule,
+	ContactRegisterSidebarComponent,
+	TelefonePipeModule,
   ]
 })
 export class SupplierRegisterModule { }

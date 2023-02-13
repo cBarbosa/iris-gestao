@@ -100,4 +100,10 @@ public class DominiosController : Controller
     [Produces("application/json")]
     public async Task<IActionResult> GetTipoCreditoAluguel() =>
         Ok(await tipoCreditoAluguelService.GetAll());
+    
+    // GET
+    [HttpGet("bancos")]
+    [Produces("application/json")]
+    public async Task<IActionResult> GetBancos() =>
+        Ok(await formaPagamentoService.GetBancos());
 }

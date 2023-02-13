@@ -17,6 +17,8 @@ namespace IrisGestao.Domain.Command.Request
         public string Bairro { get; set; }
         public string Cidade { get; set; }
         public string Estado { get; set; }
+        public string Telefone { get; set; }
+        public string Email { get; set; }
         public int? Cep { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataUltimaModificacao { get; set; }
