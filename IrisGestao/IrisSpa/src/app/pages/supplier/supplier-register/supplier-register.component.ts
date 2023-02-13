@@ -86,7 +86,12 @@ export class SupplierRegisterComponent implements OnInit{
 		message: '',
 	};
 
-	dropDownBankList : DropdownItem[] = [];
+	dropDownBankList : DropdownItem[] = [
+		{
+			label: 'Escolha o banco',
+			value: null,
+		},
+	];
 
   constructor(
 		private fb: FormBuilder,
