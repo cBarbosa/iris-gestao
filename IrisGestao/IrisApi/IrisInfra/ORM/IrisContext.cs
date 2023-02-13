@@ -20,6 +20,8 @@ public partial class IrisContext : DbContext
     }
 
     public virtual DbSet<Anexo> Anexo { get; set; } = null!;
+    
+    public virtual DbSet<Bancos> Bancos { get; set; }
 
     public virtual DbSet<CategoriaImovel> CategoriaImovel { get; set; } = null!;
 
@@ -91,6 +93,11 @@ public partial class IrisContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__Anexo__3214EC0789E97BE1");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
+        });
+        
+        modelBuilder.Entity<Bancos>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("Bancos_PK");
         });
 
         modelBuilder.Entity<CategoriaImovel>(entity =>
@@ -207,6 +214,8 @@ public partial class IrisContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__DadoBanc__3214EC078DAD5BD6");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
+            
+            entity.HasOne(d => d.IdBancoNavigation).WithMany(p => p.DadoBancario).HasConstraintName("FK_DadoBancario_Bancos");
         });
 
         modelBuilder.Entity<DespesaLocatario>(entity =>
@@ -285,6 +294,8 @@ public partial class IrisContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__Forneced__3214EC0745F417AA");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
+
+            entity.Property(e => e.Status).HasDefaultValueSql("((1))");
 
             entity.HasOne(d => d.IdDadoBancarioNavigation).WithMany(p => p.Fornecedor)
                 .OnDelete(DeleteBehavior.ClientSetNull)

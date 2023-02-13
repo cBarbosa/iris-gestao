@@ -102,6 +102,7 @@ public class FornecedorService: IFornecedorService
             FornecedorRepository.Update(fornecedor);
             if(cmd.DadosBancarios != null)
             {
+                cmd.DadosBancarios.Id = fornecedor.IdDadoBancario;
                 var dadoBancario = await DadoBancarioService.Update(cmd.DadosBancarios);
             }
 
@@ -199,6 +200,8 @@ public class FornecedorService: IFornecedorService
         Fornecedor.Bairro       = cmd.Bairro;
         Fornecedor.Cidade       = cmd.Cidade;
         Fornecedor.Estado       = cmd.Estado;
-        Fornecedor.Cep          = cmd.Cep.HasValue ? cmd.Cep.Value : 0; 
+        Fornecedor.Cep          = cmd.Cep.HasValue ? cmd.Cep.Value : 0;
+        Fornecedor.Telefone     = cmd.Telefone;
+        Fornecedor.Email       = cmd.Email;
     }
 }

@@ -143,35 +143,35 @@ export class ClientViewComponent implements OnInit {
 		this.displayModal = true;
 	};
 
-	confirmDelete() {
+	confirmDelete = ():void => {
 		this.displayConfirmationModal = true;
-	}
+	};
 
-	closeConfirmationModal() {
+	closeConfirmationModal = ():void => {
 		this.displayConfirmationModal = false;
-	}
+	};
 
-	closeModal() {
+	closeModal = ():void => {
 		this.displayModal = false;
-	}
+	};
 
-	confirmInativar() {
+	confirmInativar = ():void => {
 		this.displayConfirmationInactiveModal = true;
-	}
+	};
 
-	closeConfirmationInativarModal() {
+	closeConfirmationInativarModal = ():void => {
 		this.displayConfirmationInactiveModal = false;
-	}
+	};
 
-	setCurrentContact(item: Contato): void {
+	setCurrentContact = (item: Contato): void => {
 		this.selectedContact = { ...item, guidClienteReferencia: this.uid };
-	}
+	};
 
-	showContactDetails() {
+	showContactDetails = ():void => {
 		this.contactDetailsVisible = true;
 		this.contactEditVisible = false;
 		this.contactRegisterVisible = false;
-	}
+	};
 
 	showContactEdit = () => {
 		this.contactDetailsVisible = false;
@@ -197,7 +197,7 @@ export class ClientViewComponent implements OnInit {
 		this.contactRegisterVisible = false;
 	};
 
-	deleteContact() {
+	deleteContact = ():void => {
 		this.closeConfirmationModal();
 		if (this.selectedContact?.guidReferenciaContato) {
 			this.contatoService
@@ -227,9 +227,9 @@ export class ClientViewComponent implements OnInit {
 					},
 				});
 		}
-	}
+	};
 
-	inativarCliente() {
+	inativarCliente = (): void => {
 		this.closeConfirmationModal();
 		this.clienteService
 			.inativarCliente(this.uid, false)
@@ -260,9 +260,9 @@ export class ClientViewComponent implements OnInit {
 					});
 				},
 			});
-	}
+	};
 
-	navigateTo(route: string) {
+	navigateTo = (route: string):void => {
 		this.router.navigate([route]);
 	}
 }

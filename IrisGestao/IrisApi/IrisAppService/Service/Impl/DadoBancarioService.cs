@@ -100,7 +100,7 @@ public class DadoBancarioService : IDadoBancarioService
                 break;
         }
 
-        if (string.IsNullOrEmpty(cmd.Banco))
+        if (!cmd.IdBanco.HasValue)
         {
             dadoBancario = null!;
             return;
@@ -114,7 +114,7 @@ public class DadoBancarioService : IDadoBancarioService
         dadoBancario.Agencia = cmd.Agencia;
         dadoBancario.Operacao = cmd.Operacao;
         dadoBancario.Conta = cmd.Conta;
-        dadoBancario.Banco = cmd.Banco ?? string.Empty;
-        dadoBancario.ChavePix = cmd.ChavePix ?? string.Empty;
+        dadoBancario.IdBanco = cmd.IdBanco;
+        dadoBancario.ChavePix = cmd.ChavePix;
     }
 }

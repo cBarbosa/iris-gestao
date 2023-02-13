@@ -118,7 +118,7 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex.Message);
+            Logger.LogError(ex, ex.Message);
         }
 
         return null!;

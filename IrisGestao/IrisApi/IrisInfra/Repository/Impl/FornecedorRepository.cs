@@ -1,6 +1,5 @@
 ﻿using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Command.Result;
-using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +25,7 @@ public class FornecedorRepository : Repository<Fornecedor>, IFornecedorRepositor
     {
         return await DbSet
                         .Include(x => x.IdDadoBancarioNavigation)
+                        .ThenInclude(x => x.IdBancoNavigation)
                         .Include(z=> z.Contato)
                         .Where(x => x.GuidReferencia.Equals(guid))
                         .Select(x => new
@@ -41,14 +41,21 @@ public class FornecedorRepository : Repository<Fornecedor>, IFornecedorRepositor
                             bairro                  = x.Bairro,
                             cidade                  = x.Cidade,
                             estado                  = x.Estado,
+                            telefone                = x.Telefone,
+                            email                   = x.Email,
                             DadoBancario            = x.IdDadoBancarioNavigation == null ? null : new
                             {
+                                IdBanco               = x.IdDadoBancarioNavigation.IdBanco,
                                 Agencia               = x.IdDadoBancarioNavigation.Agencia,
                                 Operacao              = x.IdDadoBancarioNavigation.Operacao,
-                                DadoBancario          = x.IdDadoBancarioNavigation.Banco,
                                 Conta                 = x.IdDadoBancarioNavigation.Conta,
                                 ChavePix              = x.IdDadoBancarioNavigation.ChavePix,
                                 DataCriacao           = x.IdDadoBancarioNavigation.DataCriacao,
+                                Banco = x.IdDadoBancarioNavigation.IdBancoNavigation == null ? null : new
+                                {
+                                    Codigo = x.IdDadoBancarioNavigation.IdBancoNavigation.Codigo,
+                                    Descricao = x.IdDadoBancarioNavigation.IdBancoNavigation.Descricao,
+                                }
                             },
                             Contato = x.Contato.Select(z => new
                             {
@@ -77,12 +84,12 @@ public class FornecedorRepository : Repository<Fornecedor>, IFornecedorRepositor
                         (!string.IsNullOrEmpty(nome)
                             ? x.Nome.Contains(nome)
                             : true)
-                            && (x.Status)
+                            && (x.Status.Value)
                     )
                 .OrderBy(x => x.Nome)
                 .ToListAsync();
 
-            var totalCount = Fornecedors.Where(x => x.Status).Count();
+            var totalCount = Fornecedors.Where(x => x.Status.Value).Count();
 
             var FornecedorsPaging = Fornecedors.Skip(skip).Take(limit);
 
@@ -91,7 +98,7 @@ public class FornecedorRepository : Repository<Fornecedor>, IFornecedorRepositor
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex.Message);
+            Logger.LogError(ex, ex.Message);
         }
 
         return null!;
