@@ -74,7 +74,7 @@ export class SupplierListingComponent {
 							return {
 								name: supplier.nome,
 								cpf_cnpj: supplier.cpfCnpj,
-                                phone: supplier.phone,
+                                phone: supplier.telefone,
                                 email: supplier.email,
 								//companyName: supplier.razaoSocial,
 								status: 'ativo',

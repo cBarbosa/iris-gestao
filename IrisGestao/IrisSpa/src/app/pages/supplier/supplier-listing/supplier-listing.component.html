@@ -66,8 +66,8 @@
 					<tr>
 						<td class="font-bold">{{ supplier.name }}</td>
 						<td>{{ supplier.cpf_cnpj | cpfcnpj }}</td>
-						<td> - </td>
-                        <td> - </td>
+						<td>{{ supplier.phone | telefone }}</td>
+                        <td>{{ supplier.email }}</td>
 						<td class="action w-40">
 							<button
 								pButton

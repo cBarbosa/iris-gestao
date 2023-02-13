@@ -86,7 +86,12 @@ export class SupplierRegisterComponent implements OnInit{
 		message: '',
 	};
 
-	dropDownBankList : DropdownItem[] = [];
+	dropDownBankList : DropdownItem[] = [
+		{
+			label: 'Escolha o banco',
+			value: null,
+		},
+	];
 
   constructor(
 		private fb: FormBuilder,
@@ -295,6 +300,12 @@ export class SupplierRegisterComponent implements OnInit{
 				: null;
 		}
 
+		const dataContactNascimento = (this.linkedContact?.dataNascimento != null || this.linkedContact?.dataNascimento != undefined)
+			? new Date(
+				this.linkedContact?.dataNascimento?.getTime() -
+				this.linkedContact?.dataNascimento?.getTimezoneOffset() * 60 * 1000)
+			: null;
+
 		const data: any = {
 			CpfCnpj: this.registerForm.value.clientInfo.CpfCnpj,
 			Nome: this.registerForm.value.clientInfo.Nome,
@@ -311,7 +322,7 @@ export class SupplierRegisterComponent implements OnInit{
 			Status: true,
 			nps: 0,
 			DadosBancarios: {
-				GuidReferencia: this.uid,
+				GuidReferencia: this.uid != 'new' ? this.uid : null,
 				IdBanco: this.bankInfoForm.value.IdBanco,
 				Agencia: this.bankInfoForm.value.Agencia,
 				Conta: this.bankInfoForm.value.Conta,
@@ -330,12 +341,7 @@ export class SupplierRegisterComponent implements OnInit{
 				email: this.linkedContact.email,
 				telefone: this.linkedContact.telefone,
 				cargo: this.linkedContact.cargo,
-				dataNascimento: new Date(
-					this.linkedContact.dataNascimento?.getTime() -
-						this.linkedContact.dataNascimento?.getTimezoneOffset() * 60 * 1000
-				)
-					.toISOString()
-					.split('T')[0],
+				dataNascimento: dataContactNascimento,
 			};
 		}
 

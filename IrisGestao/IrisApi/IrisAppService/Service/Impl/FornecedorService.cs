@@ -46,37 +46,45 @@ public class FornecedorService: IFornecedorService
 
     public async Task<CommandResult> Insert(CriarFornecedorCommand cmd)
     {
+        if (cmd.DadosBancarios == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
+        }
+        
         var fornecedor = new Fornecedor();
-        var contato = new Contato();
-        var dadosBancarios = new DadoBancario();
         cmd.GuidReferencia = null;
 
         try
         {
             BindFornecedorData(cmd, ref fornecedor);
-            if (dadosBancarios != null)
+
+            fornecedor.IdDadoBancarioNavigation = new DadoBancario
             {
-                var dadoBancario = await DadoBancarioService.Insert(cmd.DadosBancarios);
-                dadosBancarios = (DadoBancario)dadoBancario.Data;
-                fornecedor.IdDadoBancario = dadosBancarios.Id;
-            }
+                GuidReferencia = fornecedor.GuidReferencia,
+                Banco = cmd.DadosBancarios.Banco,
+                IdBanco = cmd.DadosBancarios.IdBanco,
+                Agencia = cmd.DadosBancarios.Agencia,
+                Conta = cmd.DadosBancarios.Conta,
+                Operacao = cmd.DadosBancarios.Operacao,
+                ChavePix = cmd.DadosBancarios.ChavePix,
+                DataCriacao = DateTime.Now
+            };
 
             FornecedorRepository.Insert(fornecedor);
-
+            
             if (cmd.Contato != null)
             {
-                contato.IdFornecedor = fornecedor.Id;
                 cmd.Contato.GuidFornecedorReferencia = fornecedor.GuidReferencia;
-                var contatoFornecedor = await contatoService.Insert(cmd.Contato);
+                await contatoService.Insert(cmd.Contato);
             }
 
             return new CommandResult(true, SuccessResponseEnums.Success_1000, fornecedor);
         }
         catch (Exception e)
         {
-            logger.LogError(e.Message);
-            return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
+            logger.LogError(e, e.Message);
         }
+        return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
     }
 
     public async Task<CommandResult> Update(Guid uuid, CriarFornecedorCommand cmd)
