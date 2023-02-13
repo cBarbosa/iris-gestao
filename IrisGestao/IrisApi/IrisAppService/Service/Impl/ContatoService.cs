@@ -165,6 +165,26 @@ public class ContatoService: IContatoService
             return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
         }
     }
+    
+    public async Task<CommandResult> GetByGuidFornecedor(Guid guid)
+    {
+        if (guid.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var fornecedor = await fornecedorRepository.GetByReferenceGuid(guid);
+        if (fornecedor == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+
+        var contato = await contatoRepository.GetByFornecedorId(fornecedor.Id);
+
+        return contato == null
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, contato);
+    }
 
     private static void BindContatoData(CriarContatoCommand cmd, Contato contato)
     {

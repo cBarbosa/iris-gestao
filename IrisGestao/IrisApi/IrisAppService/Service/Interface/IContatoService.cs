@@ -11,4 +11,5 @@ public interface IContatoService
     Task<CommandResult> Insert(CriarContatoCommand cmd);
     Task<CommandResult> Update(Guid uuid, CriarContatoCommand cmd);
     Task<CommandResult> Delete(Guid uuid);
+    Task<CommandResult> GetByGuidFornecedor(Guid guid);
 }

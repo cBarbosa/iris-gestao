@@ -113,17 +113,17 @@ export class ContactEditSidebarComponent implements OnInit, OnChanges {
 		const editFormData = this.editForm.getRawValue();
 
 		const birthday = editFormData.birthday != null
-			? editFormData.birthday.toLocaleDateString().split('/')
+			? (editFormData?.birthday as Date)?.toISOString?.()
 			: null;
 
 		const contactObj: ContatoUpdate = {
 			guidClienteReferencia: this.data.guidClienteReferencia,
-			idFornecedor: null,
+			guidFornecedorReferencia: this.data.guidReferenciaContato,
 			nome: editFormData.name,
 			email: editFormData.email,
 			telefone: editFormData.telephone,
 			cargo: editFormData.role,
-			dataNascimento: birthday != null ? `${birthday[2]}-${birthday[1]}-${birthday[0]}` : null,
+			dataNascimento: birthday ?? null,
 		};
 
 		this.contatoService
