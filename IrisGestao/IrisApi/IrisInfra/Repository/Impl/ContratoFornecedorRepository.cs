@@ -14,6 +14,7 @@ public class ContratoFornecedorRepository : Repository<ContratoFornecedor>, ICon
     {
         
     }
+
     public async Task<ContratoFornecedor?> GetByGuid(Guid guid)
     {
         return await DbSet.FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
@@ -29,7 +30,6 @@ public class ContratoFornecedorRepository : Repository<ContratoFornecedor>, ICon
                         .Include(x => x.IdFormaPagamentoNavigation)
                         .Include(x => x.IdIndiceReajusteNavigation)
                         .Include(x => x.IdTipoServicoNavigation)
-                        .Include(x => x.IdUnidadeNavigation)
                         .Where(x => x.GuidReferencia.Equals(guid) && x.Status)
                         .Select(x => new
                         {
@@ -46,6 +46,7 @@ public class ContratoFornecedorRepository : Repository<ContratoFornecedor>, ICon
                             DataCriacao = x.DataCriacao,
                             DataAtualização = x.DataUltimaModificacao,
                             Status = x.Status,
+                            DescricaoServico = x.DescricaoServico,
                             ExibirAlertaVencimento = (x.DataFimContrato - DateTime.Now).Days <= 90 ? true : false,
                             ImgCapa = "../../../../assets/images/imovel.png",
                             Imagens = ImagemListFake,
@@ -67,29 +68,6 @@ public class ContratoFornecedorRepository : Repository<ContratoFornecedor>, ICon
                                     Nome = x.IdImovelNavigation.IdCategoriaImovelNavigation.Nome
                                 },
                             },
-                            Unidade = x.IdUnidadeNavigation == null ? null : new
-                            {
-                                GuidReferencia = x.IdUnidadeNavigation.GuidReferencia,
-                                IdImovel = x.IdUnidadeNavigation.IdImovel,
-                                AreaUtil = x.IdUnidadeNavigation.AreaUtil,
-                                AreaTotal = x.IdUnidadeNavigation.AreaTotal,
-                                AreaHabitese = x.IdUnidadeNavigation.AreaHabitese,
-                                InscricaoIPTU = x.IdUnidadeNavigation.InscricaoIPTU,
-                                Matricula = x.IdUnidadeNavigation.Matricula,
-                                MatriculaEnergia = x.IdUnidadeNavigation.MatriculaEnergia,
-                                MatriculaAgua = x.IdUnidadeNavigation.MatriculaAgua,
-                                TaxaAdministracao = x.IdUnidadeNavigation.TaxaAdministracao,
-                                Tipo = x.IdUnidadeNavigation.Tipo,
-                                ValorPotencial = x.IdUnidadeNavigation.ValorPotencial,
-                                DataCriacao = x.IdUnidadeNavigation.DataCriacao,
-                                DataUltimaModificacao = x.IdUnidadeNavigation.DataUltimaModificacao,
-                                Ativo = x.IdUnidadeNavigation.Status,
-                                IdTipoUnidadeNavigation = new
-                                {
-                                    Id = x.IdUnidadeNavigation.IdTipoUnidadeNavigation.Id,
-                                    Nome = x.IdUnidadeNavigation.IdTipoUnidadeNavigation.Nome
-                                }
-                            },
                             IndiceReajuste = x.IdIndiceReajusteNavigation == null ? null : new
                             {
                                 Id = x.IdIndiceReajusteNavigation.Id,
@@ -104,10 +82,26 @@ public class ContratoFornecedorRepository : Repository<ContratoFornecedor>, ICon
                             },
                             Fornecedor = x.IdFornecedorNavigation == null ? null : new
                             {
-                                CpfCnpj = x.IdFornecedorNavigation.CpfCnpj,
                                 GuidReferencia = x.IdFornecedorNavigation.GuidReferencia,
                                 Nome = x.IdFornecedorNavigation.Nome,
+                                CpfCnpj = x.IdFornecedorNavigation.CpfCnpj,
                                 RazaoSocial = x.IdFornecedorNavigation.RazaoSocial,
+                                DataUltimaModificacao = x.IdFornecedorNavigation.DataUltimaModificacao,
+                                DataCriacao = x.IdFornecedorNavigation.DataCriacao,
+                                cep = x.IdFornecedorNavigation.Cep,
+                                endereco = x.IdFornecedorNavigation.Endereco,
+                                bairro = x.IdFornecedorNavigation.Bairro,
+                                cidade = x.IdFornecedorNavigation.Cidade,
+                                estado = x.IdFornecedorNavigation.Estado,
+                                DadoBancario = x.IdFornecedorNavigation.IdDadoBancarioNavigation == null ? null : new
+                                {
+                                    Agencia = x.IdFornecedorNavigation.IdDadoBancarioNavigation.Agencia,
+                                    Operacao = x.IdFornecedorNavigation.IdDadoBancarioNavigation.Operacao,
+                                    DadoBancario = x.IdFornecedorNavigation.IdDadoBancarioNavigation.Banco,
+                                    Conta = x.IdFornecedorNavigation.IdDadoBancarioNavigation.Conta,
+                                    ChavePix = x.IdFornecedorNavigation.IdDadoBancarioNavigation.ChavePix,
+                                    DataCriacao = x.IdFornecedorNavigation.IdDadoBancarioNavigation.DataCriacao,
+                                },
                                 Contato = x.IdFornecedorNavigation.Contato.Select(z => new
                                 {
                                     Nome = z.Nome,
@@ -135,20 +129,11 @@ public class ContratoFornecedorRepository : Repository<ContratoFornecedor>, ICon
         try
         {
             var contratos = await DbSet
-                        .Include(y => y.IdClienteNavigation)
-                            .ThenInclude(y => y.IdTipoClienteNavigation)
                         .Include(x => x.IdFornecedorNavigation)
-                            .ThenInclude(x => x.Contato)
-                        .Include(x => x.IdFormaPagamentoNavigation)
-                        .Include(x => x.IdImovelNavigation)
-                            .ThenInclude(x => x.ImovelEndereco)
-                        .Include(x => x.IdIndiceReajusteNavigation)
-                        .Include(x => x.IdTipoServicoNavigation)
-                        .Include(x => x.IdUnidadeNavigation)
-                        .Where(x => (!string.IsNullOrEmpty(numeroContrato)
+                        .Where(x => x.Status
+                                    && (!string.IsNullOrEmpty(numeroContrato)
                                         ? x.NumeroContrato.Contains(numeroContrato!)
-                                        : true)
-                        )
+                                        : true))
                         .Select(x => new
                         {
                             NumeroContrato                  = x.NumeroContrato,
@@ -164,80 +149,8 @@ public class ContratoFornecedorRepository : Repository<ContratoFornecedor>, ICon
                             DataCriacao                     = x.DataCriacao,
                             DataAtualização                 = x.DataUltimaModificacao,
                             Status                          = x.Status,
+                            DescricaoServico                = x.DescricaoServico,
                             ExibirAlertaVencimento          = (x.DataFimContrato - DateTime.Now).Days <= 90 ? true : false,
-                            ImgCapa                         = "../../../../assets/images/imovel.png",
-                            Imagens                         = ImagemListFake,
-                            Anexos                          = AnexoListFake,
-                            Imovel = x.IdImovelNavigation == null ? null : new
-                            {
-                                GuidReferencia              = x.IdImovelNavigation.GuidReferencia,
-                                Nome                        = x.IdImovelNavigation.Nome,
-                                NumCentroCusto              = x.IdImovelNavigation.NumCentroCusto,
-                                Status                      = x.IdImovelNavigation.Status,
-                                AreaTotal                   = x.IdImovelNavigation.Unidade.Where(x => x.Status).Sum(x => x.AreaTotal),
-                                AreaUtil                    = x.IdImovelNavigation.Unidade.Where(x => x.Status).Sum(x => x.AreaUtil),
-                                AreaHabitese                = x.IdImovelNavigation.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
-                                NroUnidades                 = x.IdImovelNavigation.Unidade.Where(x => x.Status).Count(),
-                                ImovelEndereco = x.IdImovelNavigation.ImovelEndereco,
-                                IdCategoriaImovelNavigation = x.IdImovelNavigation.IdCategoriaImovelNavigation == null ? null : new
-                                {
-                                    Id                      = x.IdImovelNavigation.IdCategoriaImovelNavigation.Id,
-                                    Nome                    = x.IdImovelNavigation.IdCategoriaImovelNavigation.Nome
-                                },
-                            },
-                            Unidade = x.IdUnidadeNavigation == null ? null : new
-                            {
-                                GuidReferencia              = x.IdUnidadeNavigation.GuidReferencia,
-                                IdImovel                    = x.IdUnidadeNavigation.IdImovel,
-                                AreaUtil                    = x.IdUnidadeNavigation.AreaUtil,
-                                AreaTotal                   = x.IdUnidadeNavigation.AreaTotal,
-                                AreaHabitese                = x.IdUnidadeNavigation.AreaHabitese,
-                                InscricaoIPTU               = x.IdUnidadeNavigation.InscricaoIPTU,
-                                Matricula                   = x.IdUnidadeNavigation.Matricula,
-                                MatriculaEnergia            = x.IdUnidadeNavigation.MatriculaEnergia,
-                                MatriculaAgua               = x.IdUnidadeNavigation.MatriculaAgua,
-                                TaxaAdministracao           = x.IdUnidadeNavigation.TaxaAdministracao,
-                                Tipo                        = x.IdUnidadeNavigation.Tipo,
-                                ValorPotencial              = x.IdUnidadeNavigation.ValorPotencial,
-                                DataCriacao                 = x.IdUnidadeNavigation.DataCriacao,
-                                DataUltimaModificacao       = x.IdUnidadeNavigation.DataUltimaModificacao,
-                                Ativo                       = x.IdUnidadeNavigation.Status,
-                                IdTipoUnidadeNavigation = new
-                                {
-                                    Id                      = x.IdUnidadeNavigation.IdTipoUnidadeNavigation.Id,
-                                    Nome                    = x.IdUnidadeNavigation.IdTipoUnidadeNavigation.Nome
-                                }
-                            },
-                            IndiceReajuste = x.IdIndiceReajusteNavigation == null ? null : new
-                            {
-                                Id                          = x.IdIndiceReajusteNavigation.Id,
-                                Nome                        = x.IdIndiceReajusteNavigation.Nome,
-                                Percentual                  = x.IdIndiceReajusteNavigation.Percentual,
-                                DataAtualizacao             = x.IdIndiceReajusteNavigation.DataAtualizacao,
-                            },
-                            FormaPagamento = x.IdFormaPagamentoNavigation == null ? null : new
-                            {
-                                Id                          = x.IdFormaPagamentoNavigation.Id,
-                                Nome                        = x.IdFormaPagamentoNavigation.Nome
-                            },
-                            Cliente = x.IdClienteNavigation == null ? null : new
-                            {
-                                CpfCnpj                     = x.IdClienteNavigation.CpfCnpj,
-                                GuidReferencia              = x.IdClienteNavigation.GuidReferencia,
-                                Nome                        = x.IdClienteNavigation.Nome,
-                                RazaoSocial                 = x.IdClienteNavigation.RazaoSocial,
-                                Contato = x.IdClienteNavigation.Contato.Select(z => new
-                                {
-                                    Nome                    = z.Nome,
-                                    Cargo                   = z.Cargo,
-                                    Email                   = z.Email,
-                                    Telefone                = z.Telefone,
-                                    DataNascimento          = z.DataNascimento,
-                                    DataCriacao             = z.DataCriacao,
-                                    DataAtualização         = z.DataUltimaModificacao,
-                                    guidReferenciaContato   = z.GuidReferencia,
-                                })
-                            },
                             Fornecedor = x.IdFornecedorNavigation == null ? null : new
                             {
                                 CpfCnpj                     = x.IdFornecedorNavigation.CpfCnpj,
@@ -255,12 +168,7 @@ public class ContratoFornecedorRepository : Repository<ContratoFornecedor>, ICon
                                     DataAtualização         = z.DataUltimaModificacao,
                                     guidReferenciaContato   = z.GuidReferencia,
                                 })
-                            },
-                            TipodeServico = x.IdTipoServicoNavigation == null ? null : new
-                            {
-                                Id                          = x.IdTipoServicoNavigation.Id,
-                                Nome                        = x.IdTipoServicoNavigation.Nome
-                            },
+                            }
                         }).ToListAsync();
 
             var totalCount = contratos.Count();

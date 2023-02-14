@@ -26,10 +26,10 @@ public class ContratoFornecedorController : Controller
        , [FromQuery] int? limit = 10
        , [FromQuery] int? page = 1) =>
         Ok(await contratoFornecedorService.GetAllPaging(numeroContrato, limit ?? 10, page ?? 1));
-    /*
+    
     [HttpPost("criar")]
     [Produces("application/json")]
-    public async Task<IActionResult> Cadatrar([FromBody] CriarContratoAluguelCommand cmd) =>
+    public async Task<IActionResult> Cadatrar([FromBody] CriarContratoFornecedorCommand cmd) =>
         Ok(await contratoFornecedorService.Insert(cmd));
 
     [HttpPut("{guid}/{status}/alterar-status")]
@@ -42,5 +42,5 @@ public class ContratoFornecedorController : Controller
 
         return Ok(result);
     }
-    */
+    
 }
