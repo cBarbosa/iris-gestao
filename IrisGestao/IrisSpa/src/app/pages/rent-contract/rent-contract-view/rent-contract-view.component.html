@@ -313,7 +313,7 @@
 					{{ contato.nascimento | date : "shortDate" }}
 				</div>
 				<div *ngIf="contato.telefone">
-					Telefone: {{ contato.telefone ?? "" | telefone }}
+					Telefone: {{ contato.telefone | telefone }}
 				</div>
 			</div>
 		</div>
