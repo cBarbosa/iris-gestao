@@ -6,7 +6,7 @@ namespace IrisGestao.ApplicationService.Services.Interface;
 public interface IContratoFornecedorService
 {
     Task<CommandResult> GetByGuid(Guid guidReferencia);
-    /*Task<CommandResult> Insert(CriarContratoAluguelCommand cmd);
-    Task<CommandResult> AlterarStatus(Guid uuid, bool status);*/
+    Task<CommandResult> Insert(CriarContratoFornecedorCommand cmd);
+    Task<CommandResult> AlterarStatus(Guid uuid, bool status);
     Task<CommandResult> GetAllPaging(string? numeroContrato, int limit, int page);
 }
