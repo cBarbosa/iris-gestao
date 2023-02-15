@@ -17,7 +17,11 @@ import {
 	DominiosService,
 	ImovelService,
 } from 'src/app/shared/services';
-import { EmailValidator } from 'src/app/shared/validators/custom-validators';
+import {
+	CnpjValidator,
+	CpfValidator,
+	EmailValidator,
+} from 'src/app/shared/validators/custom-validators';
 
 type Step = {
 	label: string;
@@ -87,6 +91,11 @@ export class RentContractRegisterComponent {
 			value: null,
 			disabled: true,
 		},
+	];
+
+	renterTypes: DropdownItem[] = [
+		{ label: 'Pessoa física', value: 'cpf' },
+		{ label: 'Pessoa jurídica', value: 'cnpj' },
 	];
 
 	dueDates: DropdownItem[] = Array.from({ length: 31 }, (v, k) => {
@@ -208,6 +217,7 @@ export class RentContractRegisterComponent {
 
 		this.registerRenterForm = this.fb.group({
 			name: ['', [Validators.required]],
+			tipoCliente: ['cpf', [Validators.required]],
 			cpfCnpj: ['', [Validators.required]],
 			birthday: ['', [Validators.required]],
 			email: ['', [Validators.required, EmailValidator]],
@@ -309,7 +319,7 @@ export class RentContractRegisterComponent {
 					event.data.forEach((item: any) => {
 						this.renters.push({
 							label: item.nome,
-							value: item.id,
+							value: item.guidReferencia,
 						});
 					});
 				}
@@ -317,6 +327,42 @@ export class RentContractRegisterComponent {
 	}
 
 	setNewRenter: () => void = () => {};
+
+	get CpfCnpjMask() {
+		if (this.registerRenterForm.controls['tipoCliente'].value === 'cpf')
+			return '000.000.000-00';
+		return '00.000.000/0000-00';
+	}
+
+	get currCpfCnpj() {
+		if (this.registerRenterForm.controls['tipoCliente'].value === 'cpf')
+			return 'CPF';
+		return 'CNPJ';
+	}
+
+	get isCnpj() {
+		if (this.registerRenterForm.controls['tipoCliente'].value === 'cpf')
+			return false;
+		return true;
+	}
+
+	renterTypeChange() {
+		if (this.registerRenterForm.controls['tipoCliente'].value === 'cpf') {
+			this.registerRenterForm.controls['cpfCnpj'].setValidators([
+				Validators.required,
+				CpfValidator,
+			]);
+			this.registerRenterForm.controls['birthday'].setValidators(null);
+		} else {
+			this.registerRenterForm.controls['cpfCnpj'].setValidators([
+				Validators.required,
+				CnpjValidator,
+			]);
+			this.registerRenterForm.controls['birthday'].setValidators(null);
+		}
+		this.registerRenterForm.controls['cpfCnpj'].updateValueAndValidity();
+		this.registerRenterForm.controls['birthday'].updateValueAndValidity();
+	}
 
 	changeStep(step: number) {
 		this.stepList = this.stepList.map((entry: Step, i: number) => {
@@ -652,9 +698,11 @@ export class RentContractRegisterComponent {
 
 						this.getListaProprietarios();
 
+						console.log('resp', response.data);
+
 						this.setNewRenter = () => {
 							this.contractInfoForm.controls['locatario'].setValue(
-								response.data.id
+								response.data.guidReferencia
 							);
 						};
 

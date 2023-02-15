@@ -784,7 +784,32 @@
 			<h4>Adicionar novo locatário</h4>
 		</ng-template>
 		<ng-template pTemplate="content">
-			<div class="register-proprietary-form">
+			<div class="register-renter-form">
+				<div class="field">
+					<label for="client-type" class="block">Tipo de cliente</label>
+					<p-dropdown
+						id="client-type"
+						[options]="renterTypes"
+						formControlName="tipoCliente"
+						aria-describedby="client-type-help"
+						(onChange)="renterTypeChange()"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['tipoCliente'])">
+						<small
+							id="client-type-help"
+							*ngIf="f['tipoCliente'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o tipo de cliente
+						</small>
+						<ng-template #error2>
+							<small id="client-type-help" class="p-error block">
+								Tipo de cliente inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
 				<div class="field">
 					<label for="name" class="block">Nome</label>
 					<input
@@ -817,13 +842,13 @@
 				</div>
 
 				<div class="field">
-					<label for="cpf-cnpj" class="block">CPF/CNPJ</label>
+					<label for="cpf-cnpj" class="block">{{ currCpfCnpj }}</label>
 					<input
 						id="cpf-cnpj"
 						type="text"
 						formControlName="cpfCnpj"
 						aria-describedby="cpf-cnpj-help"
-						mask="CPF_CNPJ"
+						[mask]="CpfCnpjMask"
 						pInputText
 					/>
 					<ng-container
