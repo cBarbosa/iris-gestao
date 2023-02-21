@@ -35,6 +35,7 @@ export class ClientViewComponent implements OnInit {
 	};
 
 	tableMenu: MenuItem[];
+	tableMenuContract: MenuItem[];
 
 	isCnpj: boolean = false;
 	contacts: Contato[];
@@ -43,6 +44,8 @@ export class ClientViewComponent implements OnInit {
 	contactDetailsVisible = false;
 	contactRegisterVisible = false;
 	contactEditVisible = false;
+
+	contractidSelected: string;
 
 	constructor(
 		private router: Router,
@@ -74,6 +77,13 @@ export class ClientViewComponent implements OnInit {
 			},
 		];
 
+		this.tableMenuContract = [
+			{
+				label: 'Detalhes',
+				icon: 'ph-eye',
+				command: () => this.showContract(),
+			},
+		];
 		this.getByIdCliente();
 	}
 
@@ -82,7 +92,7 @@ export class ClientViewComponent implements OnInit {
 		this.clienteService.getClienteById(this.uid).subscribe((event) => {
 			this.cliente = event;
 			this.isCnpj = event.cpfCnpj.length > 11;
-
+			//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
 			this.properties = [...event.imovel];
 			this.contacts = event.contato.map((contato: Contato) => {
 				return {
@@ -97,6 +107,7 @@ export class ClientViewComponent implements OnInit {
 						: null,
 				};
 			});
+			
 			this.isLoadingView = false;
 		});
 	}
@@ -165,6 +176,15 @@ export class ClientViewComponent implements OnInit {
 
 	setCurrentContact = (item: Contato): void => {
 		this.selectedContact = { ...item, guidClienteReferencia: this.uid };
+	};
+
+	setCurrentContract= (item: any): void => {
+		console.log('Contrato Selecionado >> ' + JSON.stringify(item));
+		this.contractidSelected = item.guidReferencia;
+	};
+
+	showContract = ():void => {
+		this.navigateTo('rent-contract/details/' +this.contractidSelected);
 	};
 
 	showContactDetails = ():void => {

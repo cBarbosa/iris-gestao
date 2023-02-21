@@ -88,7 +88,7 @@ export class ClientListingComponent {
 						else this.noRestults = false;
 
 						this.clientEntries = event.data.items.map((cliente: any) => {
-							// console.log('Cliente >> ', cliente);
+							 // console.log('Cliente >> ', cliente);
 							return {
 								name: cliente.nome,
 								cpf_cnpj: cliente.cpfCnpj,
@@ -96,7 +96,9 @@ export class ClientListingComponent {
 									? new Date(cliente.dataNascimento)
 									: null,
 								// client_type: cliente.idTipoClienteNavigation.nome,
-								status: 'ativo',
+								status: 'ativo', 
+								hasImovel: cliente.totalImoveis > 0 ? true : false, 
+								hasContrato: cliente.totalContratosAluguel > 0 ? true : false, 
 								action: '',
 								guidReferencia: cliente.guidReferencia,
 							};
