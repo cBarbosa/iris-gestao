@@ -82,7 +82,33 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                                 DataCriacao = z.DataCriacao,
                                 DataAtualização = z.DataUltimaModificacao,
                                 guidReferenciaContato  = z.GuidReferencia,
-                            })
+                            }),
+                            ContratoAluguel = x.ContratoAluguel.Select(x => new
+                            {
+                                NumeroContrato = x.NumeroContrato,
+                                ValorAluguel = x.ValorAluguel,
+                                PercentualRetencaoImpostos = x.PercentualRetencaoImpostos,
+                                ValorAluguelLiquido = x.ValorAluguelLiquido,
+                                PercentualDescontoAluguel = x.PercentualDescontoAluguel,
+                                CarenciaAluguel = x.CarenciaAluguel,
+                                PrazoCarencia = x.PrazoCarencia,
+                                DataInicioContrato = x.DataInicioContrato,
+                                PrazoTotalContrato = x.PrazoTotalContrato,
+                                DataFimContrato = x.DataFimContrato,
+                                DataOcupacao = x.DataOcupacao,
+                                DiaVencimentoAluguel = x.DiaVencimentoAluguel,
+                                PeriodicidadeReajuste = x.PeriodicidadeReajuste,
+                                DataCriacao = x.DataCriacao,
+                                DataAtualização = x.DataUltimaModificacao,
+                                GuidReferencia = x.GuidReferencia,
+                                IndiceReajuste = x.IdIndiceReajusteNavigation == null ? null : new
+                                {
+                                    Id = x.IdIndiceReajusteNavigation.Id,
+                                    Nome = x.IdIndiceReajusteNavigation.Nome,
+                                    Percentual = x.IdIndiceReajusteNavigation.Percentual,
+                                    DataAtualizacao = x.IdIndiceReajusteNavigation.DataAtualizacao
+                                },
+                            }),
                         })
                         .FirstOrDefaultAsync();
     }
@@ -97,6 +123,8 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                 .Include(x => x.IdTipoClienteNavigation)
                 .Include(x => x.Imovel)
                     .ThenInclude(y => y.ImovelEndereco)
+                .Include(x => x.ContratoAluguel)
+                    .ThenInclude(y => y.IdIndiceReajusteNavigation)
                 .Where(x =>
                         (idTipo.HasValue
                             ? x.IdTipoCliente.Equals(idTipo.Value)
@@ -106,6 +134,26 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                             : true)
                             && (x.Status)
                     )
+                    .Select(x => new
+                    {
+                        CpfCnpj = x.CpfCnpj,
+                        GuidReferencia = x.GuidReferencia,
+                        Nome = x.Nome,
+                        RazaoSocial = x.RazaoSocial,
+                        Email = x.Email,
+                        Telefone = x.Telefone,
+                        dataNascimento = x.DataNascimento,
+                        IdTipoCliente = x.IdTipoCliente,
+                        DataUltimaModificacao = x.DataUltimaModificacao,
+                        cep = x.Cep,
+                        endereco = x.Endereco,
+                        bairro = x.Bairro,
+                        cidade = x.Cidade,
+                        estado = x.Estado,
+                        Status = x.Status,
+                        TotalImoveis = x.Imovel.Count(),
+                        TotalContratosAluguel = x.ContratoAluguel.Count(),
+                    })
                 .OrderBy(x => x.Nome)
                 .ToListAsync();
 

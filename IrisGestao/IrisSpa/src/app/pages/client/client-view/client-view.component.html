@@ -15,8 +15,17 @@
 					<header>
 						<h3>
 							{{ cliente?.nome }}
+							<ng-container *ngIf="cliente?.imovel?.length > 0;">
+								<span>Proprietário</span>
+							</ng-container>
+							<ng-container *ngIf="cliente?.contratoAluguel?.length > 0;">
+								<span>Locatário</span>
+							</ng-container>
 							<!-- <span>{{ cliente?.idTipoClienteNavigation?.nome }}</span> -->
 						</h3>
+						<div>
+
+						</div>
 						<div class="actions">
 							<button
 								pButton
@@ -162,11 +171,51 @@
 					<app-property-list [properties]="properties"></app-property-list>
 				</div>
 			</section>
+
+			<section class="contacts" *ngIf="cliente?.contratoAluguel?.length > 0;">
+				<header class="flex justify-between items-start">
+					<h2>Contratos de Aluguel</h2>
+				</header>
+
+				<p-table
+					[value]="cliente?.contratoAluguel"
+					styleClass="p-datatable-striped"
+					[tableStyle]="{ 'min-width': '50rem' }"
+				>
+					<ng-template pTemplate="header">
+						<tr>
+							<th>Número do Contrato</th>
+							<th>Início do contrato</th>
+							<th>Próximo reajuste</th>
+							<th></th>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="body" let-contracts>
+						<tr>
+							<td>{{ contracts.numeroContrato }}</td>
+							<td>{{ contracts.dataInicioContrato | date }}</td>
+							<td>{{ contracts.periodicidadeReajuste }}</td>
+							<td class="action w-16">
+								<button
+									type="button"
+									pButton
+									icon="pi pi-ellipsis-v"
+									class="p-button-rounded"
+									(click)="
+										actionMenuContract.toggle($event); setCurrentContract(contracts)"
+								></button>
+							</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			</section>
+
 		</div>
 	</div>
 </ng-template>
 
 <p-menu #actionMenu [popup]="true" [model]="tableMenu"></p-menu>
+<p-menu #actionMenuContract [popup]="true" [model]="tableMenuContract"></p-menu>
 
 <p-sidebar [(visible)]="contactRegisterVisible" position="right">
 	<ng-template pTemplate="header">
