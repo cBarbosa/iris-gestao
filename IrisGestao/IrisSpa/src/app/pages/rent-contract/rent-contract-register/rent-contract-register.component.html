@@ -737,11 +737,11 @@
 							"
 							class="p-error block"
 						>
-							Informe a data de nascimento
+							Informe a unidade
 						</small>
 						<ng-template #error2>
 							<small id="unidade-help" class="p-error block">
-								Data de nascimento inválida
+								Unidade inválida
 							</small>
 						</ng-template>
 					</ng-container>
@@ -872,7 +872,10 @@
 					</ng-container>
 				</div>
 
-				<div class="field">
+				<div
+					class="field"
+					*ngIf="registerRenterForm.controls['tipoCliente'].value === 'cpf'"
+				>
 					<label for="birthday" class="block">Nascimento</label>
 					<p-calendar
 						id="birthday"
