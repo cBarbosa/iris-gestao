@@ -109,6 +109,7 @@
 			>
 				<ng-template pTemplate="header">
 					<tr *ngIf="!isLoadingContracts && !noRestults">
+						<th>Número do Contrato</th>
 						<th>Nome do locatário</th>
 						<!-- <th>Unidade locada</th> -->
 						<th>Início do contrato</th>
@@ -120,7 +121,8 @@
 				</ng-template>
 				<ng-template pTemplate="body" let-contract>
 					<tr>
-						<!-- \/ ?? -->
+
+						<td class="font-bold">{{ contract.numeroContrato }}</td>						<!-- \/ ?? -->
 						<td class="font-bold">{{ contract.locatario }}</td>
 						<!-- \/ ?? multiplos imoveis com multiplas unidades-->
 						<!-- <td>{{ contract.unidade }}</td> -->
@@ -158,5 +160,3 @@
 		</ng-container>
 	</div>
 </div>
-
-<p-menu #actionMenu [popup]="true" [model]="tableMenu"></p-menu>

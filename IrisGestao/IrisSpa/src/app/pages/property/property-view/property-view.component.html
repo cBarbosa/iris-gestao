@@ -212,7 +212,7 @@
 <p-sidebar [(visible)]="detailsVisible" position="right" *ngIf="unit">
 	<ng-template pTemplate="header">
 		<h4>
-			Unidade nome
+			{{ unit.tipo }}
 			<p-tag value="Unidade locada" [rounded]="true" severity="danger"></p-tag>
 		</h4>
 	</ng-template>
@@ -255,7 +255,7 @@
 
 					<div class="data small">
 						<span class="label">Número de matrícula:</span>
-						<span class="value">{{ unit.matricula ?? "" | matricula }}</span>
+						<span class="value">{{ unit.matricula ?? "" }}</span>
 					</div>
 					<!-- <div class="data small">
 						<span class="label">Mat. IPTU:</span>
@@ -264,19 +264,19 @@
 					<div class="data small">
 						<span class="label">Ins. IPTU:</span>
 						<span class="value">{{
-							unit.inscricaoIPTU ?? "" | matricula
+							unit.inscricaoIPTU ?? ""
 						}}</span>
 					</div>
 					<div class="data small">
 						<span class="label">N° Neoenergia:</span>
 						<span class="value">{{
-							unit.matriculaEnergia ?? "" | matricula
+							unit.matriculaEnergia ?? ""
 						}}</span>
 					</div>
 					<div class="data small">
 						<span class="label">N° CAESB:</span>
 						<span class="value">{{
-							unit.matriculaAgua ?? "" | matricula
+							unit.matriculaAgua ?? ""
 						}}</span>
 					</div>
 				</div>
@@ -320,11 +320,12 @@
 			
 			<button
 				pButton
+				pRipple
 				type="button"
 				(click)="confirmImovelInativar()"
-				class="p-element p-button-outlined h-11 p-button p-component"
-			>
-			Inativar</button>
+				label="Inativar"
+				class="p-button-outlined h-9 w-full"
+			></button>
 
 			<button
 				pButton
@@ -332,8 +333,9 @@
 				type="button"
 				label="Duplicar"
 				class="p-button-outlined h-9 w-full"
+				(click)="displayConfirmationCloneUnit = true"
 			></button>
-			
+
 		</div>
 	</ng-template>
 </p-sidebar>
@@ -421,6 +423,35 @@
 			pButton
 			label="Continuar"
 			(click)="inativarImovel()"
+			class="w-full"
+		></button>
+	</div>
+</p-dialog>
+<p-dialog
+	[(visible)]="displayConfirmationCloneUnit"
+	[modal]="true"
+	[draggable]="false"
+	[resizable]="false"
+	styleClass="confirmation-modal"
+>
+	<h2>Deseja realmente duplicar essa unidade?</h2>
+	<p>
+		Ao duplicar esta unidade será criado outro registro com os mesmo dados. Caso
+		queira continuar, clique em confirmar.
+	</p>
+
+	<div class="flex justify-between gap-5">
+		<button
+			pButton
+			label="Cancelar"
+			class="p-button-outlined w-full"
+			(click)="closeConfirmationCloneUnit()"
+		></button>
+
+		<button
+			pButton
+			label="Continuar"
+			(click)="cloneUnitModal()"
 			class="w-full"
 		></button>
 	</div>

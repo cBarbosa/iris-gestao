@@ -57,7 +57,7 @@
 						id="proprietary"
 						[options]="proprietaries"
 						[filter]="true"
-						filterBy="label"
+						filterBy="cpfCnpj"
 						formControlName="proprietary"
 						aria-describedby="proprietary-help"
 					></p-dropdown>
@@ -94,7 +94,7 @@
 						formControlName="costCentre"
 						aria-describedby="cost-centre-help"
 						mask="0*"
-						maxlength="20"
+						maxlength="18"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['costCentre'])">
@@ -242,9 +242,7 @@
 						</ng-template>
 					</ng-container>
 				</div>
-
 			</div>
-
 		</section>
 
 		<!-- ------------------------------------------------------------------------ -->
@@ -261,7 +259,7 @@
 				</p>
 
 				<div class="field">
-					<label for="unitType" class="block">Tipo de imóvel</label>
+					<label for="unitType" class="block">Tipo da unidade</label>
 					<p-dropdown
 						id="unit-type"
 						[options]="unitTypes"
@@ -318,7 +316,7 @@
 						type="text"
 						formControlName="registration"
 						aria-describedby="registration-help"
-						mask="000000000.0000/000"
+						maxlength=16
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['registration'])">
@@ -344,7 +342,7 @@
 						type="text"
 						formControlName="iptu"
 						aria-describedby="iptu-help"
-						mask="000000000.0000/000"
+						maxlength=16
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['iptu'])">
@@ -372,7 +370,7 @@
 						type="text"
 						formControlName="neoenergia"
 						aria-describedby="neoenergia-help"
-						mask="000000000.0000/000"
+						maxlength=16
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['neoenergia'])">
@@ -398,7 +396,7 @@
 						type="text"
 						formControlName="caesb"
 						aria-describedby="caesb-help"
-						mask="000000000.0000/000"
+						maxlength=16
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['caesb'])">
@@ -480,51 +478,54 @@
 					this.legalInfoForm.controls['unitType'].value === 2 ||
 					this.legalInfoForm.controls['unitType'].value === 3
 				"
-				>
-					<div formGroupName="edCorpSalaPavInfo">
-						<div class="field mt-6">
-							<label for="area-total" class="block">Área total</label>
-							<input
-								id="area-total"
-								type="text"
-								formControlName="areaTotal"
-								aria-describedby="area-total-help"
-								suffix=" m²"
-								mask="separator.2"
-								maxlength="14"
-								pInputText
-							/>
-							<ng-container
+			>
+				<div formGroupName="edCorpSalaPavInfo">
+					<div class="field mt-6">
+						<label for="area-total" class="block">Área total</label>
+						<input
+							id="area-total"
+							type="text"
+							formControlName="areaTotal"
+							aria-describedby="area-total-help"
+							suffix=" m²"
+							mask="separator.2"
+							maxlength="14"
+							pInputText
+						/>
+						<ng-container
+							*ngIf="
+								checkHasError(
+									this.propertyTypeEdCorpSalaPavForm.controls['areaTotal']
+								)
+							"
+						>
+							<small
+								id="area-total-help"
 								*ngIf="
-									checkHasError(
-										this.propertyTypeEdCorpSalaPavForm.controls['areaTotal']
-									)
+									this.propertyTypeEdCorpSalaPavForm.controls[
+										'areaTotal'
+									].hasError('required');
+									else error2
 								"
+								class="p-error block"
 							>
-								<small
-									id="area-total-help"
-									*ngIf="
-										this.propertyTypeEdCorpSalaPavForm.controls[
-											'areaTotal'
-										].hasError('required');
-										else error2
-									"
-									class="p-error block"
-								>
-									Informe a área total
+								Informe a área total
+							</small>
+							<ng-template #error2>
+								<small id="area-total-help" class="p-error block">
+									Área total inválida
 								</small>
-								<ng-template #error2>
-									<small id="area-total-help" class="p-error block">
-										Área total inválida
-									</small>
-								</ng-template>
-							</ng-container>
-						</div>
+							</ng-template>
+						</ng-container>
 					</div>
-				</ng-container>
+				</div>
+			</ng-container>
 
 			<ng-container
-				*ngIf="this.legalInfoForm.controls['unitType'].value === 2 || this.legalInfoForm.controls['unitType'].value === 3"
+				*ngIf="
+					this.legalInfoForm.controls['unitType'].value === 2 ||
+					this.legalInfoForm.controls['unitType'].value === 3
+				"
 			>
 				<div formGroupName="salaPavInfo">
 					<div class="field mt-6">
@@ -838,6 +839,32 @@
 		</ng-template>
 		<ng-template pTemplate="content">
 			<div class="register-proprietary-form">
+
+				<div class="field">
+					<label for="client-type" class="block">Tipo de cliente</label>
+					<p-dropdown
+						id="client-type"
+						[options]="proprietaryTypes"
+						formControlName="tipoCliente"
+						aria-describedby="client-type-help"
+						(onChange)="proprietaryTypeChange()"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['tipoCliente'])">
+						<small
+							id="client-type-help"
+							*ngIf="f['tipoCliente'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o tipo de cliente
+						</small>
+						<ng-template #error2>
+							<small id="client-type-help" class="p-error block">
+								Tipo de cliente inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
 				<div class="field">
 					<label for="name" class="block">Nome</label>
 					<input
@@ -870,13 +897,13 @@
 				</div>
 
 				<div class="field">
-					<label for="cpf-cnpj" class="block">CPF/CNPJ</label>
+					<label for="cpf-cnpj" class="block">{{ currCpfCnpj }}</label>
 					<input
 						id="cpf-cnpj"
 						type="text"
 						formControlName="cpfCnpj"
 						aria-describedby="cpf-cnpj-help"
-						mask="CPF_CNPJ"
+						[mask]="CpfCnpjMask"
 						pInputText
 					/>
 					<ng-container
@@ -902,7 +929,7 @@
 					</ng-container>
 				</div>
 
-				<div class="field">
+				<div class="field" *ngIf="!isCnpj">
 					<label for="birthday" class="block">Nascimento</label>
 					<p-calendar
 						id="birthday"

@@ -41,6 +41,11 @@ public partial class Fornecedor: BaseEntity<Fornecedor>
 
     [Column(TypeName = "datetime")]
     public DateTime? DataUltimaModificacao { get; set; }
+    
+    [Unicode(false)]
+    public Guid? GuidReferencia { get; set; }
+
+    public bool Status { get; set; }
 
     [InverseProperty("IdFornecedorNavigation")]
     public virtual ICollection<Contato> Contato { get; } = new List<Contato>();

@@ -32,6 +32,16 @@ const routes: Routes = [
 			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 		},
 	},
+	{
+		path: 'edit',
+		loadChildren: () =>
+			import('./rent-contract-edit/rent-contract-edit.module').then(
+				(m) => m.RentContractEditModule
+			),
+		data: {
+			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+		},
+	},
 ];
 
 @NgModule({

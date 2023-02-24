@@ -62,7 +62,7 @@ public partial class Unidade: BaseEntity<Unidade>
     public DateTime? DataUltimaModificacao { get; set; }
 
     [InverseProperty("IdUnidadeNavigation")]
-    public virtual ICollection<ContratoAluguel> ContratoAluguel { get; } = new List<ContratoAluguel>();
+    public virtual ICollection<ContratoAluguelUnidade> ContratoAluguelUnidade { get; } = new List<ContratoAluguelUnidade>();
 
     [InverseProperty("IdUnidadeNavigation")]
     public virtual ICollection<DespesaLocatario> DespesaLocatario { get; } = new List<DespesaLocatario>();

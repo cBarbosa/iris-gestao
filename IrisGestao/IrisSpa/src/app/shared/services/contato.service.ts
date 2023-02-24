@@ -12,7 +12,7 @@ export type ContatoUpdate = {
 	email: string;
 	telefone: string;
 	cargo: string;
-	dataNascimento: string;
+	dataNascimento: string | null;
 };
 
 const httpOptions = {

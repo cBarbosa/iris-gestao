@@ -144,3 +144,33 @@
 		}
 	}
 }
+
+::ng-deep {
+	.p-datatable {
+		.p-datatable-wrapper {
+			.p-datatable-table {
+				.p-datatable-tbody {
+					tr {
+						td.action {
+							.p-button {
+								height: 2rem;
+								width: 2rem;
+								color: #641b1e;
+								background-color: transparent;
+								border: none;
+
+								&:hover {
+									background-color: #f7ded3;
+								}
+
+								&:focus-visible {
+									box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

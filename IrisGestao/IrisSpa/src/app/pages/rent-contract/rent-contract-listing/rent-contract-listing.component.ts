@@ -84,30 +84,6 @@ export class RentContractListingComponent {
 			this.activatedRoute.snapshot.paramMap.get('pageIndex') ?? 1;
 		this.pageIndex = +routePageIndex;
 
-		this.tableMenu = [
-			{
-				label: 'Detalhes',
-				icon: 'ph-eye',
-				command: () =>
-					this.navigateTo(
-						'rent-contract/details/' + this.focusedContract!.guidReferencia
-					),
-			},
-			{
-				label: 'Editar',
-				icon: 'ph-note-pencil',
-				command: () =>
-					this.navigateTo(
-						'rent-contract/edit/' + this.focusedContract!.guidReferencia
-					),
-			},
-			{
-				label: 'Duplicar',
-				icon: 'ph-copy-simple',
-				// command: () => this.cloneUnit(this.unit!.guidReferencia!),
-			},
-		];
-
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
@@ -173,8 +149,21 @@ export class RentContractListingComponent {
 		dthFimVigencia?: string
 	): void {
 		this.isLoadingContracts = true;
-		this.contractEntries = [];
+		/*this.contractEntries = [
+			{
+				name: 'SICOOB',
+				unit: 'Sala comercial',
+				contractStart: new Date('2021-01-21').toLocaleDateString(),
+				nextReadjustment: new Date('2023-01-21').toLocaleDateString(),
+				contractDue: new Date('2018-09-06').toLocaleDateString(),
+				readjustmentBase: 'IGPM',
+				action: '',
+				guidReferencia: 'id',
+			},
+		];
 
+		this.isLoadingContracts = false;
+		*/
 		const contracts = this.contractService
 			.getContracts(
 				this.rows,
@@ -197,6 +186,7 @@ export class RentContractListingComponent {
 
 						this.contractEntries = event.data.items.map((contrato: any) => {
 							return {
+								numeroContrato: contrato.numeroContrato,
 								locatario: contrato.cliente.nome,
 								unidade: 'UNIDADE',
 								dataInicioContrato: contrato.dataInicioContrato
@@ -225,6 +215,7 @@ export class RentContractListingComponent {
 					this.isLoadingContracts = false;
 				},
 			});
+			
 	}
 
 	filterContracts = (e?: Event) => {
