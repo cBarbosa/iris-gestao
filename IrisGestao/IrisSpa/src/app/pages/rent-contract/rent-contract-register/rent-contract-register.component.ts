@@ -352,7 +352,9 @@ export class RentContractRegisterComponent {
 				Validators.required,
 				CpfValidator,
 			]);
-			this.registerRenterForm.controls['birthday'].setValidators(null);
+			this.registerRenterForm.controls['birthday'].setValidators(
+				Validators.required
+			);
 		} else {
 			this.registerRenterForm.controls['cpfCnpj'].setValidators([
 				Validators.required,
@@ -668,7 +670,9 @@ export class RentContractRegisterComponent {
 		const renterObj = {
 			nome: renterFormData.name,
 			cpfCnpj: renterFormData.cpfCnpj.toString(),
-			dataNascimento: (renterFormData.birthday as Date).toISOString(),
+			dataNascimento: renterFormData.birthday
+				? (renterFormData.birthday as Date).toISOString()
+				: null,
 			email: renterFormData.email,
 			telefone: renterFormData.telephone.toString(),
 			idTipoCliente: 1,
