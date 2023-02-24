@@ -44,8 +44,13 @@ export class TopbarComponent {
 			},
 			{
 				label: 'Contratos',
-					id: route.startsWith('/rent-contract') ? 'current' : '',
-			command: () => this.navigateTo('rent-contract/listing'),
+				id: route.startsWith('/rent-contract') ? 'current' : '',
+				command: () => this.navigateTo('rent-contract/listing'),
+			},
+			{
+				label: 'Fornecedores',
+				id: route.startsWith('/supplier') ? 'current' : '',
+				command: () => this.navigateTo('supplier/listing'),
 			},
 			// {
 			// 	label: 'Prestador de serviços',

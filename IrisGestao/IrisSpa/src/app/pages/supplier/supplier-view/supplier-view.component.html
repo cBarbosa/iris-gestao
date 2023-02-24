@@ -1,0 +1,326 @@
+<ng-container *ngIf="isLoadingView; else details">
+	<div class="flex relative justify-center items-center w-full h-full pt-20">
+		<div class="w-full max-w-3xl">
+			<app-spinner text="Carregando"></app-spinner>
+		</div>
+	</div>
+</ng-container>
+<ng-template #details>
+	<div class="client-view">
+		<div class="content">
+			<section class="client">
+				<h2>Detalhe do prestador de serviço</h2>
+
+				<div class="main-card">
+					<header>
+						<h3>
+							{{ supplier?.nome }}
+							<!-- <span>{{ cliente?.idTipoClienteNavigation?.nome }}</span> -->
+						</h3>
+						<div class="actions">
+							<button
+								pButton
+								type="button"
+								class="p-element h-11 p-button p-component"
+								(click)="
+									navigateTo('supplier/register/' + supplier.guidReferencia)
+								"
+							>
+								Editar prestador
+							</button>
+							<!-- <button
+								pButton
+								type="button"
+								(click)="confirmInativar()"
+								class="p-element p-button-outlined h-11 p-button p-component"
+							>
+								Inativar
+							</button> -->
+							<!--button pButton type="button" class="p-button-outlined h-7"
+						(click)="navigateTo('client/register/'+ cliente.guidReferencia + '/Clone')">
+							Duplicar
+						</button-->
+						</div>
+					</header>
+					<div class="client-info">
+						<div class="client-data">
+							<div class="data-label">CPF/CNPJ</div>
+							<div class="data-value">{{ supplier?.cpfCnpj | cpfcnpj }}</div>
+						</div>
+                        <div class="client-data">
+							<div class="data-label">Cidade</div>
+							<div class="data-value">
+								{{ supplier?.cidade }} - {{ supplier?.estado }}
+							</div>
+						</div>
+						<div class="client-data" *ngIf="!isCnpj">
+							<div class="data-label">Aniversário</div>
+							<div class="data-value">
+								{{ supplier?.dataNascimento | date : "shortDate" }}
+							</div>
+						</div>
+                        <div class="client-data">
+							<div class="data-label">Telefone</div>
+							<div class="data-value">{{ supplier?.telefone | telefone }}</div>
+						</div>
+						<div class="client-data">
+							<div class="data-label">Email</div>
+							<div class="data-value">
+								<a>{{ supplier?.email }}</a>
+							</div>
+						</div>
+
+                        <div class="client-data">
+							<div class="data-label">Banco</div>
+							<div class="data-value">{{ supplier?.dadoBancario?.banco?.descricao }}</div>
+						</div>
+                        <div class="client-data">
+							<div class="data-label">Agência</div>
+							<div class="data-value">{{ supplier?.dadoBancario?.agencia }}</div>
+						</div>
+                        <div class="client-data">
+							<div class="data-label">Conta</div>
+							<div class="data-value">{{ supplier?.dadoBancario?.conta }}</div>
+						</div>
+                        <div class="client-data">
+							<div class="data-label">Chave PIX</div>
+							<div class="data-value">{{ supplier?.dadoBancario?.chavePix }}</div>
+						</div>
+
+						<div class="client-data">
+							<div class="data-label">Endereço</div>
+							<div class="data-value">{{ supplier?.endereco }} - {{ supplier?.cep | cep }}</div>
+						</div>
+						
+					</div>
+				</div>
+			</section>
+
+            <ng-container *ngIf="isCnpj">
+				<section class="contacts" *ngIf="contacts.length > 0; else addContact">
+					<header class="flex justify-between items-start">
+						<h2>Contatos cadastrados</h2>
+						<button
+							pButton
+							type="button"
+							icon="pi pi-plus"
+							iconPos="left"
+							class="p-button-outlined icon-left h-9"
+							(click)="showContactRegister()"
+						>
+							Novo contato
+						</button>
+					</header>
+
+					<p-table
+						[value]="contacts"
+						styleClass="p-datatable-striped"
+						[tableStyle]="{ 'min-width': '50rem' }"
+					>
+						<ng-template pTemplate="header">
+							<tr>
+								<th>Nome/Razão social</th>
+								<th>Cargo</th>
+								<th>Telefone</th>
+								<th>Email</th>
+								<th>Nascimento</th>
+								<th></th>
+							</tr>
+						</ng-template>
+						<!-- <ng-container *ngFor="let unit of property.unidade"></ng-container> -->
+						<ng-template pTemplate="body" let-contact>
+							<tr>
+								<td>{{ contact.nome }}</td>
+								<td>{{ contact.cargo }}</td>
+								<td>{{ contact.telefone | telefone }}</td>
+								<td>{{ contact.email }}</td>
+								<td>{{ contact.dataNascimento }}</td>
+								<td class="action w-16">
+									<button
+										type="button"
+										pButton
+										icon="pi pi-ellipsis-v"
+										class="p-button-rounded"
+										(click)="
+											actionMenu.toggle($event); setCurrentContact(contact)
+										"
+									></button>
+								</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</section>
+
+				<ng-template #addContact>
+					<section class="contacts">
+						<header class="flex justify-between">
+							<h2>Sem contatos cadastrados</h2>
+							<button
+								pButton
+								type="button"
+								icon="pi pi-plus"
+								iconPos="left"
+								class="p-button-outlined icon-left h-9"
+								(click)="showContactRegister()"
+							>
+								Novo contato
+							</button>
+						</header>
+					</section>
+				</ng-template>
+			</ng-container>
+
+			<section class="properties">
+				<h2>Local de prestação do serviço</h2>
+
+				<!-- <div class="flex flex-col gap-6">
+					<app-property-list [properties]="properties"></app-property-list>
+				</div> -->
+			</section>
+		</div>
+	</div>
+</ng-template>
+
+<p-menu #actionMenu [popup]="true" [model]="tableMenu"></p-menu>
+
+<p-sidebar [(visible)]="contactRegisterVisible" position="right">
+	<ng-template pTemplate="header">
+		<span class="text-2xl font-bold">Vincular um contato</span>
+	</ng-template>
+	<app-contact-register-sidebar
+		[cancel]="hideContactRegister"
+		[onRegister]="onUpdateContactList"
+		[registerOnSubmit]="true"
+		[guidSupplier]="uid"
+		*ngIf="contactRegisterVisible"
+	></app-contact-register-sidebar>
+</p-sidebar>
+
+<p-sidebar
+	[(visible)]="contactDetailsVisible"
+	position="right"
+	*ngIf="selectedContact"
+>
+	<ng-template pTemplate="header">
+		<span class="text-2xl font-bold">Detalhe do contato</span>
+	</ng-template>
+	<app-contact-detail-sidebar
+		[data]="selectedContact"
+		[openEditForm]="showContactEdit"
+		[onDelete]="onUpdateContactList"
+	></app-contact-detail-sidebar>
+</p-sidebar>
+
+<p-sidebar
+	[(visible)]="contactEditVisible"
+	position="right"
+	*ngIf="selectedContact"
+>
+	<ng-template pTemplate="header">
+		<span class="text-2xl font-bold">Editar contato</span>
+	</ng-template>
+	<app-contact-edit-sidebar
+		[data]="selectedContact"
+		[cancel]="hideContactEdit"
+		[onEdit]="onUpdateContactList"
+	></app-contact-edit-sidebar>
+</p-sidebar>
+
+<p-dialog
+	[(visible)]="displayModal"
+	[modal]="true"
+	[draggable]="false"
+	[resizable]="false"
+	styleClass="form-modal"
+>
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+
+		<button
+			*ngIf="!isInativar"
+			pButton
+			label="Continuar"
+			(click)="closeModal()"
+		></button>
+		<button
+			*ngIf="isInativar"
+			pButton
+			label="Continuar"
+			(click)="navigateTo('/client/listing')"
+		></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</p-dialog>
+
+<p-dialog
+	[(visible)]="displayConfirmationModal"
+	[modal]="true"
+	[draggable]="false"
+	[resizable]="false"
+	styleClass="confirmation-modal"
+>
+	<h2>Deseja realmente excluir o contato?</h2>
+	<p>
+		Ao excluir as informações elas serão retiradas do CNPJ cadastrado. Caso
+		queira continuar, clique em confirmar.
+	</p>
+
+	<div class="flex justify-between gap-5">
+		<button
+			pButton
+			label="Cancelar"
+			class="p-button-outlined w-full"
+			(click)="closeConfirmationModal()"
+		></button>
+
+		<button
+			pButton
+			label="Continuar"
+			(click)="deleteContact()"
+			class="w-full"
+		></button>
+	</div>
+</p-dialog>
+
+<!-- <p-dialog
+	[(visible)]="displayConfirmationInactiveModal"
+	[modal]="true"
+	[draggable]="false"
+	[resizable]="false"
+	styleClass="confirmation-modal"
+>
+	<h2>Deseja realmente inativar o cliente?</h2>
+	<p>
+		Ao inativar não será possível visualizá-la novamente. Caso queira continuar,
+		clique em confirmar.
+	</p>
+
+	<div class="flex justify-between gap-5">
+		<button
+			pButton
+			label="Cancelar"
+			class="p-button-outlined w-full"
+			(click)="closeConfirmationInativarModal()"
+		></button>
+
+		<button
+			pButton
+			label="Continuar"
+			(click)="inativarCliente()"
+			class="w-full"
+		></button>
+	</div>
+</p-dialog> -->

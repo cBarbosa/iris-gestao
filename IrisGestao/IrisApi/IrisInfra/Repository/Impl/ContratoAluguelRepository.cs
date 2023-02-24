@@ -81,7 +81,18 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 {
                                     Id                      = x.IdClienteNavigation.IdTipoClienteNavigation.Id,
                                     Nome                    = x.IdClienteNavigation.IdTipoClienteNavigation.Nome,
-                                }
+                                },
+                                Contato = x.IdClienteNavigation.Contato.Select(x => new
+                                {
+                                    Nome                    = x.Nome,
+                                    Cargo                   = x.Cargo,
+                                    Email                   = x.Email,
+                                    Telefone                = x.Telefone,
+                                    DataNascimento          = x.DataNascimento,
+                                    DataCriacao             = x.DataCriacao,
+                                    DataAtualização         = x.DataUltimaModificacao,
+                                    guidReferenciaContato   = x.GuidReferencia,
+                                })
                             },
                             ImovelAlugado                   = x.ContratoAluguelImovel.Select(x => new
                             {
@@ -141,7 +152,8 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                         .Include(x => x.ContratoAluguelImovel)
                             .ThenInclude(x => x.ContratoAluguelUnidade)
                         .Include(x => x.IdIndiceReajusteNavigation)
-                        .Where(x => (idBaseReajuste.HasValue
+                        .Where(x =>  x.Status
+                                    && (idBaseReajuste.HasValue
                                         ? x.IdIndiceReajuste.Equals(idBaseReajuste.Value)
                                         : true)
                                     && (!string.IsNullOrEmpty(numeroContrato)

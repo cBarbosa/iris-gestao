@@ -69,36 +69,37 @@
 						<th>Nome/Razão social</th>
 						<th>CPF/CNPJ</th>
 						<th>Aniversário</th>
-						<!-- <th>Tipo de cliente</th> -->
+						<th>Tipo de cliente</th>
 						<th></th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-client>
 					<tr>
-						<td class="font-bold">{{ client.name }}</td>
+						<td class="font-bold">{{ client.name }}
+						</td>
 						<td>{{ client.cpf_cnpj | cpfcnpj }}</td>
 						<td>
 							{{ client.birthday | date : "shortDate" }}
 						</td>
 						<!-- <td>{{ client.client_type }}</td> -->
-						<!--td class="w-24">
-					<ng-container *ngIf="client.status === 'inativo'; else ativo">
-						<p-tag
-							value="Inativo"
-							[rounded]="true"
-							severity="danger"
-							styleClass="w-20"
-						></p-tag>
-					</ng-container>
-					<ng-template #ativo>
-						<p-tag
-							value="Ativo"
-							[rounded]="true"
-							severity="success"
-							styleClass="w-20"
-						></p-tag>
-					</ng-template>
-				</td-->
+						<td>
+							<ng-container *ngIf="client.hasImovel">
+								<p-tag
+									value="Proprietário"
+									[rounded]="true"
+									severity="success"
+									styleClass="w-20"
+								></p-tag>
+							</ng-container>
+							<ng-container *ngIf="client.hasContrato">
+								<p-tag
+									value="Locatário"
+									[rounded]="true"
+									severity="success"
+									styleClass="w-20"
+								></p-tag>
+							</ng-container>
+						</td>
 						<td class="action w-40">
 							<button
 								pButton

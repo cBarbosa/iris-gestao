@@ -55,6 +55,17 @@ const routes: Routes = [
 				},
 			},
 			{
+				path: 'supplier',
+				loadChildren: () =>
+					import('./pages/supplier/supplier.module').then(
+						(m) => m.SupplierModule
+					),
+				canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
 				path: '',
 				redirectTo: 'home',
 				pathMatch: 'full',

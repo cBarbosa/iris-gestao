@@ -122,6 +122,9 @@
             "production": {
               "browserTarget": "IrisSpa:build:production"
             },
+            "staging": {
+              "browserTarget": "IrisSpa:build:staging"
+            },
             "development": {
               "browserTarget": "IrisSpa:build:development"
             }
