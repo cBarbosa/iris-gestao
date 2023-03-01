@@ -55,6 +55,17 @@ const routes: Routes = [
 				},
 			},
 			{
+				path: 'supplier-contract',
+				loadChildren: () =>
+					import('./pages/supplier-contract/supplier-contract.module').then(
+						(m) => m.SupplierContractModule
+					),
+				canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
 				path: 'supplier',
 				loadChildren: () =>
 					import('./pages/supplier/supplier.module').then(

@@ -72,9 +72,20 @@ export class DominiosService {
 			.pipe(
 				map((response) => {
 					if (response.success) return response;
-					else
-						return console.error(`getBanks: ${response.message}`);
+					else return console.error(`getBanks: ${response.message}`);
 				})
 			);
-	};
+	}
+
+	getFormasPagamento() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/forma-pagamento`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getFormasPagamento: ${response.message}`);
+					return response;
+				})
+			);
+	}
 }
