@@ -12,9 +12,16 @@ namespace IrisGestao.Domain.Command.Request
         public string Nome { get; set; }
         public string Local { get; set; }
         public Guid IdReferencia { get; set; }
-        public String MineType { get; set; }
+        public String MimeType { get; set; }
         public int Tamanho { get; set; }
         public string Classificacao { get; set; }
         public byte[] base64 { get; set; }
+        public ICollection<ImageMessage> Images { get; set; }
+    }
+    
+    public class ImageMessage
+    {
+        public byte[]? ImageBinary { get; set; }
+        public string ImageHeaders { get; set; } = string.Empty;
     }
 }

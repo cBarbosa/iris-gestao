@@ -35,6 +35,7 @@ public class IoCRegisterServices
         services.AddScoped<IContratoAluguelImovelService, ContratoAluguelImovelService>();
         services.AddScoped<IContratoAluguelUnidadeService, ContratoAluguelUnidadeService>();
         services.AddScoped<IContratoFornecedorService, ContratoFornecedorService>();
+        services.AddScoped<IAzureStorageService, AzureStorageService>();
 
         //External Services
         services.AddScoped<IRepublicaVirtualService, RepublicaVirtualService>();

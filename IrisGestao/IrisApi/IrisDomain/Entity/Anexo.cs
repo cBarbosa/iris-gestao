@@ -15,11 +15,11 @@ public partial class Anexo : BaseEntity<Anexo>
 
     [StringLength(50)]
     [Unicode(false)]
-    public string GuidReferencia { get; set; } = null!;
+    public Guid GuidReferencia { get; set; }
 
     [StringLength(10)]
     [Unicode(false)]
-    public string? MineType { get; set; }
+    public string? MimeType { get; set; }
 
     public int? Tamanho { get; set; }
 

@@ -17,10 +17,10 @@ public class AnexoRepository: Repository<Anexo>, IAnexoRepository
         
     }
 
-    public IEnumerable<Anexo> BuscarAnexoPorIdReferencia(string codigo)
+    public async Task<IEnumerable<Anexo>> BuscarAnexoPorIdReferencia(Guid uuid)
     {
-        var lstAnexos = DbSet.Where(x => x.GuidReferencia == codigo).ToList();
-
-        return lstAnexos.AsEnumerable();
+        return await DbSet
+            .Where(x => x.GuidReferencia.Equals(uuid))
+            .ToListAsync();
     }
 }

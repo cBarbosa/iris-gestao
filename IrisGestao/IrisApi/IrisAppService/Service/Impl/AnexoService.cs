@@ -4,16 +4,24 @@ using IrisGestao.Domain.Command.Request;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
+using Microsoft.Extensions.Logging;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
 public class AnexoService: IAnexoService
 {
     private readonly IAnexoRepository anexoRepository;
+    private readonly IAzureStorageService azureStorageService;
+    private readonly ILogger<AnexoService> logger;
     
-    public AnexoService(IAnexoRepository AnexoRepository)
+    public AnexoService(
+        IAnexoRepository anexoRepository,
+        IAzureStorageService azureStorageService,
+        ILogger<AnexoService> logger)
     {
-        this.anexoRepository = AnexoRepository;
+        this.anexoRepository = anexoRepository;
+        this.azureStorageService = azureStorageService;
+        this.logger = logger;
     }
 
     public async Task<CommandResult> GetAll()
@@ -35,9 +43,9 @@ public class AnexoService: IAnexoService
             : new CommandResult(true, SuccessResponseEnums.Success_1005, Anexo);
     }
 
-    public async Task<CommandResult> GetByIdReferencia(string idReferencia)
+    public async Task<CommandResult> GetByIdReferencia(Guid idReferencia)
     {
-        var Anexos = await Task.FromResult(anexoRepository.BuscarAnexoPorIdReferencia(idReferencia));
+        var Anexos = await anexoRepository.BuscarAnexoPorIdReferencia(idReferencia);
 
         return !Anexos.Any()
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
@@ -46,26 +54,35 @@ public class AnexoService: IAnexoService
 
     public async Task<CommandResult> Insert(CriarAnexoCommand cmd)
     {
-        var anexo = new Anexo
-        {
-            Nome                = cmd.Nome,
-            DataCriacao         = DateTime.Now,
-            GuidReferencia      = cmd.IdReferencia.ToString().ToUpper(),
-            Local               = cmd.Local,
-            Classificacao       = cmd.Classificacao,
-            MineType            = cmd.MineType,
-            Tamanho             = cmd.Tamanho
-        };
-
         try
         {
-            anexoRepository.Insert(anexo);
-            return new CommandResult(true, SuccessResponseEnums.Success_1000, anexo);
+            IList<string> files = new List<string>();
+            foreach (var file in cmd.Images)
+            {
+                var fileUri = await azureStorageService.UploadBase64data(file.ImageBinary!, cmd.Nome, "", "assets");
+                if (string.IsNullOrEmpty(fileUri))
+                    continue;
+
+                files.Add(fileUri);
+                anexoRepository.Insert(new Anexo
+                {
+                    GuidReferencia      = cmd.IdReferencia,
+                    Local               = fileUri,
+                    Nome                = cmd.Nome,
+                    MimeType            = cmd.MimeType,
+                    Tamanho             = cmd.Tamanho,
+                    DataCriacao         = DateTime.Now
+                });
+            }
+            
+            return files.Count > 0
+                ? new CommandResult(true, SuccessResponseEnums.Success_1000, files)
+                : new CommandResult(false, ErrorResponseEnums.Error_1000, files);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            logger.LogError(ex, ex.Message);
             return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
-            throw;
         }
     }
 
@@ -80,10 +97,10 @@ public class AnexoService: IAnexoService
         {
             Id                  = codigo.Value,
             Nome                = cmd.Nome,
-            GuidReferencia      = cmd.IdReferencia.ToString().ToUpper(),
+            GuidReferencia      = cmd.IdReferencia,
             Local               = cmd.Local,
             Classificacao       = cmd.Classificacao,
-            MineType            = cmd.MineType,
+            MimeType            = cmd.MimeType,
             Tamanho             = cmd.Tamanho
         };
 
