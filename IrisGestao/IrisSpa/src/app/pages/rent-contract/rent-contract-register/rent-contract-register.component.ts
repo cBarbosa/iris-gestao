@@ -625,15 +625,32 @@ export class RentContractRegisterComponent {
 	}
 
 	onProprietarySubmit(e: any = null) {
-		const formData = this.propertyAddForm.getRawValue();
+		const formData: {
+			edificio: {
+				guid: string;
+				name: string;
+			};
+			unidade: {
+				guid: string;
+				name: string;
+			}[];
+		} = this.propertyAddForm.getRawValue();
 
 		if (this.editingLinkedProperty === null) {
-			this.linkedProperties.push({
-				nome: formData.edificio.name,
-				guid: formData.edificio.guid,
-				tipo: 'Edifício Coorporativo',
-				unidades: formData.unidade,
+			const isDuplicate = this.linkedProperties.some(({ unidades }) => {
+				return unidades.some(({ guid: linkedGuid }) => {
+					return formData.unidade.some(({ guid }) => linkedGuid === guid);
+				});
 			});
+
+			if (!isDuplicate) {
+				this.linkedProperties.push({
+					nome: formData.edificio.name,
+					guid: formData.edificio.guid,
+					tipo: 'Edifício Coorporativo',
+					unidades: formData.unidade,
+				});
+			}
 		} else {
 			const index = this.linkedProperties.findIndex(
 				(p) => p.guid === this.editingLinkedProperty
