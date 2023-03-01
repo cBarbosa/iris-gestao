@@ -1,0 +1,61 @@
+.photos-grid {
+	ul {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		grid-template-rows: 1fr 1fr;
+		grid-column-gap: 0px;
+		grid-row-gap: 0px;
+
+		li {
+			display: block;
+			overflow: hidden;
+			cursor: pointer;
+
+			img {
+				min-width: 100%;
+				min-height: 100%;
+				transition: transform 0.3s;
+			}
+
+			&:first-child {
+				grid-column-start: 1;
+				grid-column-end: 3;
+				grid-row-start: 1;
+				grid-row-end: 3;
+			}
+
+			&:hover {
+				img {
+					transform: scale(1.1);
+				}
+			}
+		}
+	}
+}
+
+:host ::ng-deep {
+	.p-element {
+		.p-component-overlay {
+			background-color: rgba(0, 0, 0, 0.7);
+		}
+		.p-dialog {
+			background-color: transparent;
+			box-shadow: none;
+
+			.p-dialog-header,
+			.p-dialog-content {
+				background-color: transparent;
+			}
+
+			.p-dialog-header {
+				.p-dialog-header-icon {
+					color: #ffffff;
+
+					&:hover {
+						color: #6c757d;
+					}
+				}
+			}
+		}
+	}
+}

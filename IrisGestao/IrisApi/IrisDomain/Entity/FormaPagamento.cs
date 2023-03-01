@@ -12,6 +12,9 @@ public partial class FormaPagamento: BaseEntity<FormaPagamento>
     [Unicode(false)]
     public string Nome { get; set; } = null!;
 
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
     [InverseProperty("IdFormaPagamentoNavigation")]
     public virtual ICollection<ContratoFornecedor> ContratoFornecedor { get; } = new List<ContratoFornecedor>();
 }

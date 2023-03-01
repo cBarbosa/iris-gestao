@@ -22,6 +22,12 @@ public partial class Obra: BaseEntity<Obra>
     [Unicode(false)]
     public string? GuidReferencia { get; set; }
 
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataUltimaModificacao { get; set; }
+
     [ForeignKey("IdImovel")]
     [InverseProperty("Obra")]
     public virtual Imovel IdImovelNavigation { get; set; } = null!;

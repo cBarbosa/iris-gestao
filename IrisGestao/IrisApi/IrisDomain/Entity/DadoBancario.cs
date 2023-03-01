@@ -22,6 +22,11 @@ public partial class DadoBancario: BaseEntity<DadoBancario>
     [Unicode(false)]
     public string? ChavePix { get; set; }
 
+    public Guid? GuidReferencia { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
     [InverseProperty("IdDadoBancarioNavigation")]
     public virtual ICollection<Fornecedor> Fornecedor { get; } = new List<Fornecedor>();
 }

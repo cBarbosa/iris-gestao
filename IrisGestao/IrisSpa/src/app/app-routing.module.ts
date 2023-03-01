@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginRoutes } from './auth/auth-routing.module';
 import { HomeComponent } from './home/home.component';
-import { PropertyListingComponent } from './pages/property-listing/property-listing.component';
-import { PropertyItemComponent } from './pages/property-listing/property-item/property-item.component';
+import { PropertyListingComponent } from './pages/property/property-listing/property-listing.component';
+import { PropertyItemComponent } from './shared/components/property-item/property-item.component';
 import { AuthGuard } from './shared/helpers/auth/auth.guard';
 import { LoggedInLayoutComponent } from './layout/logged-in/logged-in-layout.component';
 import { LoggedInLayoutModule } from './layout/logged-in/logged-in-layout.module';
@@ -14,50 +14,52 @@ const routes: Routes = [
 		component: LoggedInLayoutComponent,
 		children: [
 			{
-				path: 'property-listing',
-				// component: PropertyListingComponent,
+				path: 'home',
 				loadChildren: () =>
-					import('./pages/property-listing/property-listing.module').then(
-						(m) => m.PropertyListingModule
-					),
-				// canActivate: [AuthGuard],
+					import('./pages/home/home.module').then((m) => m.HomeModule),
+				canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
 			},
 			{
-				path: 'property-details',
+				path: 'property',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
-					import('./pages/property-view/property-view.module').then(
-						(m) => m.PropertyViewModule
+					import('./pages/property/property.module').then(
+						(m) => m.PropertyModule
 					),
-				// canActivate: [AuthGuard],
+				canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
 			},
 			{
-				path: 'property-edit',
-				// component: PropertyListingComponent,
+				path: 'client',
 				loadChildren: () =>
-					import('./pages/property-edit/property-edit.module').then(
-						(m) => m.PropertyEditModule
-					),
-				// canActivate: [AuthGuard],
+					import('./pages/client/client.module').then((m) => m.ClientModule),
+				canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
+			},
+			{
+				path: 'rent-contract',
+				loadChildren: () =>
+					import('./pages/rent-contract/rent-contract.module').then(
+						(m) => m.RentContractModule
+					),
+				canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
+				path: '',
+				redirectTo: 'home',
+				pathMatch: 'full',
 			},
 		],
-	},
-	{
-		path: 'home',
-		component: HomeComponent,
-		// canActivate: [AuthGuard],
-		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-		},
 	},
 	{
 		path: '',
@@ -68,7 +70,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-	imports: [RouterModule.forRoot(routes)],
+	imports: [
+		RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
+	],
 	exports: [RouterModule],
 })
 export class AppRoutingModule {}

@@ -8,4 +8,6 @@ public interface IUnidadeRepository : IRepository<Unidade>, IDisposable
     IEnumerable<Unidade> BuscarUnidadePorImovel(int codigo);
     IEnumerable<Unidade> GetById(int codigo);
     IEnumerable<Unidade> GetAll();
+    Task<object?> GetByUid(Guid guid);
+    Task<Unidade?> GetByReferenceGuid(Guid uid);
 }

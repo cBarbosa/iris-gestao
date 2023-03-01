@@ -4,16 +4,25 @@ using IrisGestao.Domain.Command.Request;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
+using IrisGestao.Infraestructure.ExternalServices;
+using Microsoft.Extensions.Logging;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
 public class ImovelEnderecoService: IImovelEnderecoService
 {
     private readonly IImovelEnderecoRepository imovelEnderecoRepository;
+    private readonly IRepublicaVirtualService republicaVirtualService;
+    private readonly ILogger<ImovelEnderecoService> logger;
     
-    public ImovelEnderecoService(IImovelEnderecoRepository ImovelEnderecoRepository)
+    public ImovelEnderecoService(
+        IImovelEnderecoRepository imovelEnderecoRepository,
+        IRepublicaVirtualService republicaVirtualService,
+        ILogger<ImovelEnderecoService> logger)
     {
-        this.imovelEnderecoRepository = ImovelEnderecoRepository;
+        this.imovelEnderecoRepository = imovelEnderecoRepository;
+        this.republicaVirtualService = republicaVirtualService;
+        this.logger = logger;
     }
 
     public async Task<CommandResult> GetAll()
@@ -51,7 +60,7 @@ public class ImovelEnderecoService: IImovelEnderecoService
             Complemento                 = cmd.Complemento,
             Bairro                      = cmd.Bairro,
             Cidade                      = cmd.Cidade,
-            Uf                          = cmd.UF,
+            UF                          = cmd.UF,
             Cep                         = cmd.Cep,
             DataUltimaModificacao       = DateTime.Now
         };
@@ -84,7 +93,7 @@ public class ImovelEnderecoService: IImovelEnderecoService
             Complemento                 = cmd.Complemento,
             Bairro                      = cmd.Bairro,
             Cidade                      = cmd.Cidade,
-            Uf                          = cmd.UF,
+            UF                          = cmd.UF,
             Cep                         = cmd.Cep,
             DataUltimaModificacao       = DateTime.Now
         };
@@ -126,6 +135,23 @@ public class ImovelEnderecoService: IImovelEnderecoService
                 return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
                 throw;
             }
+        }
+    }
+    
+    public async Task<CommandResult> BuscarEnderecoPorCEP(string cep)
+    {
+        try
+        {
+            var result = await republicaVirtualService.GetCepData(cep);
+
+            return result == null
+                ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+                : new CommandResult(true, SuccessResponseEnums.Success_1005, result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1005, e.Message);
         }
     }
 }

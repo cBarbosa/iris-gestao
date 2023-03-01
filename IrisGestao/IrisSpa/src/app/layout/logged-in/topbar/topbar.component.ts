@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
 	selector: 'app-topbar',
@@ -10,52 +11,73 @@ import { MenuItem } from 'primeng/api';
 export class TopbarComponent {
 	items: MenuItem[] = [];
 
-	constructor(private router: Router) {}
+	constructor(private router: Router) {
+		router.events
+			.pipe(filter((event) => event instanceof NavigationEnd))
+			.subscribe((event) => {
+				this.updateTopMenu((event as NavigationEnd).url);
+			});
+	}
 
 	ngOnInit() {
+		// Detect current route
+		const currRoute = this.router.routerState.snapshot.url;
+		this.updateTopMenu(currRoute);
+	}
+
+	updateTopMenu(route: string) {
 		this.items = [
 			{
 				label: 'Home',
+				id: route.startsWith('/home') ? 'current' : '',
+				command: () => this.navigateTo('home'),
 			},
 			{
 				label: 'Imóveis',
-				id: 'current',
-				command: () => this.navigateTo('property-listing'),
+				id: route.startsWith('/property') ? 'current' : '',
+				command: () => this.navigateTo('property/listing'),
 			},
 			{
 				label: 'Clientes',
+				id: route.startsWith('/client') ? 'current' : '',
+				command: () => this.navigateTo('client/listing'),
 			},
 			{
-				label: 'Prestador de serviços',
+				label: 'Contratos',
+					id: route.startsWith('/rent-contract') ? 'current' : '',
+			command: () => this.navigateTo('rent-contract/listing'),
 			},
-			{
-				label: 'Fornecedores',
-			},
-			{
-				label: 'Contas',
-				items: [
-					{
-						label: 'Opção 1',
-					},
-					{
-						separator: true,
-					},
-					{
-						label: 'Opção 2',
-					},
-				],
-			},
-			{
-				label: 'Gerenciamento de obras',
-				items: [
-					{
-						label: 'Opção 1',
-					},
-					{
-						label: 'Opção 2',
-					},
-				],
-			},
+			// {
+			// 	label: 'Prestador de serviços',
+			// },
+			// {
+			// 	label: 'Fornecedores',
+			// },
+			// {
+			// 	label: 'Contas',
+			// 	items: [
+			// 		{
+			// 			label: 'Opção 1',
+			// 		},
+			// 		{
+			// 			separator: true,
+			// 		},
+			// 		{
+			// 			label: 'Opção 2',
+			// 		},
+			// 	],
+			// },
+			// {
+			// 	label: 'Gerenciamento de obras',
+			// 	items: [
+			// 		{
+			// 			label: 'Opção 1',
+			// 		},
+			// 		{
+			// 			label: 'Opção 2',
+			// 		},
+			// 	],
+			// },
 		];
 	}
 

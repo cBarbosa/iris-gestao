@@ -1,4 +1,37 @@
 :host ::ng-deep {
+	.field {
+		margin-bottom: 1.7rem;
+		position: relative;
+
+		label {
+			@apply text-sm mb-2;
+			color: #262626;
+		}
+
+		input {
+			width: 100%;
+		}
+
+		.p-error {
+			position: absolute;
+		}
+
+		&:last-child {
+			margin-bottom: 0.7rem;
+		}
+	}
+
+	.share-line {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+
+		.field {
+			flex-basis: 0;
+			flex-grow: 1;
+		}
+	}
+
 	.p-component {
 		font-family: inherit;
 
@@ -96,6 +129,32 @@
 					color: #641b1e;
 					background-color: rgba(100, 27, 30, 0.04);
 				}
+
+				&.white-theme {
+					border-color: #ffffff;
+					color: #ffffff;
+
+					&:not([disabled]):hover {
+						border-color: #ffffff;
+						color: #ffffff;
+						background-color: rgba(255, 255, 255, 0.06);
+					}
+
+					&:not([disabled]):focus-visible,
+					&:not([disabled]):active {
+						box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+						border-color: #ffffff;
+						color: #ffffff;
+					}
+				}
+
+				&.small {
+					.p-dropdown-item {
+						span {
+							font-size: 0.9rem;
+						}
+					}
+				}
 			}
 
 			&.p-button-text {
@@ -142,6 +201,48 @@
 
 					& > tr:nth-child(even) td {
 						background-color: #fbfbfb;
+					}
+				}
+			}
+		}
+
+		&.p-paginator {
+			.p-paginator-element {
+				@apply rounded h-9;
+
+				&.p-paginator-first {
+				}
+
+				&.p-paginator-prev {
+				}
+
+				&.p-paginator-next {
+				}
+
+				&.p-paginator-last {
+				}
+
+				&:hover {
+					background-color: rgba(100, 27, 30, 0.04);
+				}
+
+				&.p-link {
+					&:focus {
+						box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+					}
+				}
+			}
+
+			.p-paginator-pages {
+				.p-paginator-element {
+					&.p-paginator-page {
+						&.p-highlight {
+							color: #641b1e;
+							background-color: rgba(148, 30, 34, 0.07);
+						}
+						&:not(.p-highlight):hover {
+							background-color: rgba(100, 27, 30, 0.04);
+						}
 					}
 				}
 			}
@@ -198,6 +299,7 @@
 			background-color: #ffffff;
 
 			&.ng-pristine,
+			&.ng-dirty,
 			&.ng-valid {
 				border: 1px solid #a8a8a8;
 
@@ -206,8 +308,8 @@
 				}
 			}
 
-			&.ng-touched:not(.ng-invalid):hover,
-			&.ng-pristine:hover {
+			&.ng-touched:not(.ng-invalid):not(:disabled):hover,
+			&.ng-pristine:not(:disabled):hover {
 				border-color: #641b1e;
 			}
 
@@ -217,6 +319,127 @@
 
 			&:focus {
 				box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+			}
+
+			&:enabled:hover,
+			&:enabled:focus {
+				border-color: #641b1e;
+			}
+
+			&:disabled:hover,
+			&:disabled:focus,
+			&:disabled:focus-visible {
+				border: 1px solid #a8a8a8;
+				box-shadow: none;
+			}
+
+			&.white-theme {
+				&.ng-pristine,
+				&.ng-dirty,
+				&.ng-valid {
+					border: 1px solid #ffffff;
+
+					&:focus {
+						box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+					}
+				}
+
+				&.ng-touched:not(.ng-invalid):not(:disabled):hover,
+				&.ng-pristine:not(:disabled):hover {
+					border-color: #ffffff;
+				}
+
+				&:focus {
+					box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+				}
+
+				&:enabled:hover,
+				&:enabled:focus {
+					border-color: #ffffff;
+				}
+
+				&:disabled:hover,
+				&:disabled:focus,
+				&:disabled:focus-visible {
+					border: 1px solid #ffffff;
+				}
+			}
+		}
+
+		&.p-menu {
+			width: 9.5rem;
+
+			.p-menu-list,
+			.p-menubar-root-list {
+				.p-menuitem {
+					.p-menuitem-link {
+						.p-menuitem-icon,
+						.p-menuitem-text {
+							font-weight: 500;
+							color: #641b1e;
+						}
+
+						&:focus {
+							box-shadow: none;
+						}
+
+						&:focus-visible,
+						&:active {
+							box-shadow: inset 0 0 0 3px rgba(100, 27, 30, 0.2);
+						}
+
+						&:active {
+							transition: none;
+						}
+					}
+				}
+			}
+		}
+
+		&.p-fileupload {
+			.p-button.p-fileupload-choose {
+				width: 100%;
+				height: 7rem;
+				color: #641b1e;
+				background-color: transparent;
+				border: dotted 2px #641b1e;
+				justify-content: center;
+
+				.p-button-label {
+					flex: 0 0 auto;
+				}
+
+				&.p-button-outlined {
+					border: solid 1px #641b1e;
+				}
+			}
+		}
+
+		&.p-checkbox {
+			.p-checkbox-box {
+				background-color: #ffffff;
+				border: 2px solid #641b1e;
+				border-radius: 3px;
+
+				&.p-focus {
+					box-shadow: none;
+				}
+			}
+
+			&.p-checkbox-checked {
+				.p-checkbox-box {
+					border: 2px solid #641b1e;
+					background-color: #641b1e;
+				}
+			}
+
+			&:not(.p-checkbox-disabled) {
+				.p-checkbox-box {
+					&.p-highlight {
+						border: 2px solid #641b1e;
+						background-color: #641b1e;
+					}
+				}
 			}
 		}
 	}
@@ -247,6 +470,360 @@
 			}
 
 			.p-sidebar-footer {
+			}
+		}
+
+		&.p-inputwrapper {
+			.p-dropdown {
+				background-color: #ffffff;
+
+				.p-dropdown-label {
+				}
+			}
+
+			&.ng-pristine,
+			&.ng-valid {
+				.p-dropdown {
+					border: 1px solid #a8a8a8;
+
+					&:focus {
+						border-color: #641b1e;
+					}
+
+					&.white-theme {
+						&:enabled:hover,
+						&:enabled:focus {
+							border-color: #ffffff;
+						}
+					}
+
+					&.small {
+						.p-dropdown-item {
+							span {
+								font-size: 0.9rem;
+							}
+						}
+					}
+				}
+			}
+
+			&.ng-touched:not(.ng-invalid):hover,
+			&.ng-pristine:hover {
+				.p-dropdown {
+					border-color: #641b1e;
+
+					&.white-theme {
+						border-color: #ffffff;
+					}
+
+					&.small {
+						.p-dropdown-item {
+							span {
+								font-size: 0.9rem;
+							}
+						}
+					}
+				}
+			}
+
+			&.ng-touched.ng-invalid {
+				.p-dropdown {
+					border-color: #e24c4c;
+
+					&:focus,
+					&:enabled:focus,
+					&:hover {
+						border-color: #641b1e;
+					}
+
+					&.white-theme {
+						&:enabled:hover,
+						&:enabled:focus {
+							border-color: #ffffff;
+						}
+					}
+
+					&.small {
+						&:enabled:hover,
+						&:enabled:focus {
+							.p-dropdown-item {
+								span {
+									font-size: 0.9rem;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			.p-dropdown {
+				// box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+
+				&:not(.p-disabled).p-focus {
+					box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+				}
+
+				.p-dropdown-panel {
+					.p-dropdown-items-wrapper {
+						.p-dropdown-items {
+							.p-dropdown-item {
+								&.p-highlight {
+									color: #641b1e;
+									background-color: #fff0e8;
+								}
+
+								&:not(.p-highlight):not(.p-disabled):hover {
+									color: #495057;
+									background-color: #fff8f3;
+								}
+							}
+						}
+					}
+				}
+
+				&.white-theme {
+					&:not(.p-disabled).p-focus {
+						box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+					}
+				}
+				&.small {
+					&:not(.p-disabled).p-focus {
+						.p-dropdown-item {
+							span {
+								font-size: 0.9rem;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		&.p-inputwrapper {
+			.p-calendar {
+				.p-inputtext {
+					border: 1px solid #a8a8a8;
+
+					&:focus,
+					&:enabled:focus,
+					&:hover {
+						border-color: #641b1e;
+					}
+				}
+
+				&.no-popup {
+					.p-datepicker {
+						display: none;
+					}
+				}
+			}
+
+			&.ng-touched.ng-invalid {
+				.p-calendar {
+					.p-inputtext {
+						border-color: #e24c4c;
+
+						&:focus,
+						&:enabled:focus,
+						&:hover {
+							border-color: #641b1e;
+						}
+					}
+				}
+			}
+
+			.p-inputwrapper-focus {
+			}
+		}
+
+		.p-dialog-mask {
+			.p-dialog {
+				.p-dialog-header {
+					.p-dialog-title {
+					}
+
+					.p-dialog-header-icons {
+						button.p-dialog-header-icon {
+							color: #641b1e;
+
+							&:hover {
+								background-color: #f7ded3;
+							}
+
+							&:focus,
+							&:focus-visible {
+								box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+							}
+
+							&.p-dialog-header-close {
+								.p-dialog-header-close-icon {
+									@apply text-lg;
+								}
+							}
+						}
+					}
+				}
+
+				.p-dialog-content {
+				}
+			}
+		}
+
+		.p-accordion {
+			padding: 0 1.5rem;
+
+			.p-accordion-tab {
+				background-color: #ffffff;
+				border-bottom: solid 1px #eaeaea;
+
+				.p-accordion-header:not(.p-disabled) {
+					.p-accordion-header-link {
+						display: flex;
+						flex-direction: row-reverse;
+						justify-content: space-between;
+						background-color: #ffffff;
+						color: #641b1e;
+						padding: 2.05rem 0;
+						border: 0;
+
+						.p-accordion-toggle-icon {
+						}
+
+						.p-accordion-header-text {
+							@apply text-xl;
+						}
+
+						&:focus {
+							box-shadow: none;
+						}
+						&:focus-visible {
+							box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+						}
+					}
+				}
+
+				> .error {
+					.p-accordion-tab {
+						.p-accordion-header:not(.p-disabled) {
+							.p-accordion-header-link {
+								@apply text-red-700;
+							}
+						}
+					}
+				}
+
+				.p-toggleable-content {
+					overflow: hidden;
+
+					.p-accordion-content {
+						padding: 0;
+						border: 0;
+						border-radius: 0;
+						background-color: #f8f9fa;
+					}
+				}
+			}
+
+			.p-element:last-child {
+				.p-accordion-tab {
+					border-bottom: none;
+				}
+			}
+		}
+
+		//MULTISELECT
+		p-multiselect {
+			&.ng-touched.ng-invalid > .p-multiselect {
+				border-color: #e24c4c;
+			}
+		}
+
+		.p-multiselect {
+			border: 1px solid #a8a8a8;
+
+			&:hover,
+			&:focus {
+				border-color: #641b1e;
+			}
+
+			&:not(.p-disabled) {
+				&.p-focus {
+					box-shadow: 0 0 0 3px rgba(100, 27, 30, 0.2);
+				}
+			}
+
+			.p-component.p-multiselect-panel {
+				.p-multiselect-header {
+					padding: 0.75rem 0.75rem 0.3rem 0.75rem;
+					background: #ffffff;
+					border-bottom: none;
+
+					.p-multiselect-filter-container {
+						display: flex;
+						flex-direction: row-reverse;
+
+						.p-multiselect-filter.p-inputtext {
+							padding: auto 0.75rem;
+							padding-left: 2.5rem;
+							height: 2.5rem;
+						}
+
+						.p-multiselect-filter-icon {
+							right: auto;
+							left: 0.75rem;
+						}
+					}
+					.p-multiselect-close {
+						display: none;
+
+						.p-multiselect-close-icon {
+						}
+					}
+				}
+				.p-multiselect-items-wrapper {
+					padding: 0;
+
+					ul.p-multiselect-items {
+						li.p-element.p-multiselect-item {
+							padding: 0.5rem 1.25rem;
+
+							.p-checkbox {
+								height: 18px;
+								width: 18px;
+
+								.p-checkbox-box {
+									height: 18px;
+									width: 18px;
+									border: 2px solid #a8a8a8;
+
+									.p-checkbox-icon {
+										font-size: 12px;
+									}
+
+									&.p-highlight {
+										border: 2px solid #641b1e;
+									}
+								}
+							}
+
+							span {
+							}
+
+							&:focus {
+								box-shadow: none;
+							}
+							&:focus-visible {
+								outline: none;
+
+								box-shadow: inset 0 0 0 3px rgba(100, 27, 30, 0.2);
+							}
+
+							&.p-highlight {
+								color: #641b1e;
+								background-color: #fff0e8;
+							}
+						}
+					}
+				}
 			}
 		}
 	}

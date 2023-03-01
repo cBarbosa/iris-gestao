@@ -5,10 +5,11 @@ namespace IrisGestao.ApplicationService.Services.Interface;
 
 public interface IImovelService
 {
-    Task<CommandResult> GetAll();
+    Task<CommandResult> GetAllPaging(int? idCategoria, int? idProprietario, string? nome, int limit, int page);
     Task<CommandResult> GetById(int codigo);
     Task<CommandResult> Insert(CriarImovelCommand cmd);
-    Task<CommandResult> Update(int? codigo, CriarImovelCommand cmd);
-
+    Task<CommandResult> Update(Guid guid, CriarImovelCommand cmd);
     Task<CommandResult> Delete(int? codigo);
+    Task<CommandResult> GetByGuid(Guid uuid);
+    Task<CommandResult> AlterarStatus(Guid uuid, bool status);
 }

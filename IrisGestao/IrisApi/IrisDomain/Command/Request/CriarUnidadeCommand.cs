@@ -8,10 +8,9 @@ namespace IrisGestao.Domain.Command.Request
 {
     public class CriarUnidadeCommand
     {
-        public int? Id { get; set; }
-        public int? IdImovel { get; set; }
-        public int? IdTipoUnidade { get; set; }
-        public string Tipo { get; set; }
+        public Guid GuidReferencia { get; set; }
+        public int IdTipoUnidade { get; set; }
+        public string? Tipo { get; set; }
         public decimal AreaUtil { get; set; }
         public decimal AreaTotal { get; set; }
         public decimal? AreaHabitese { get; set; }
@@ -22,7 +21,6 @@ namespace IrisGestao.Domain.Command.Request
         public decimal? TaxaAdministracao { get; set; }
         public decimal? ValorPotencial { get; set; }
         public bool UnidadeLocada { get; set; }
-        public string? GuidReferencia { get; set; }
-        public DateTime? DataUltimaModificacao { get; set; }
+        public int? QtdeCopias { get; set; }
     }
 }

@@ -1,11 +1,10 @@
-﻿using IrisGestao.ApplicationService.Repository.Interfaces;
+using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace IrisGestao.Infraestructure.Repository.Impl;
 
@@ -17,23 +16,269 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
         
     }
 
-    public IEnumerable<Imovel> GetById(int codigo)
+    public async Task<IEnumerable<Imovel>> GetById(int id)
     {
-        var lstImovel = DbSet.Include(x => x.Unidade)
-                                .Include(x => x.IdClienteProprietarioNavigation)
-                                .Include(x => x.IdCategoriaImovelNavigation)
-                                .Where(x => x.Id == codigo).ToList();
-
-        return lstImovel.AsEnumerable();
+        return await  DbSet
+                .Include(x => x.Unidade)
+                .Include(x => x.IdClienteProprietarioNavigation)
+                .Include(x => x.IdCategoriaImovelNavigation)
+            .Where(x => x.Id == id)
+            .ToListAsync();
     }
 
-
-    public IEnumerable<Imovel> GetAll()
+    public async Task<CommandPagingResult?> GetAllPaging(int? idCategoria, int? idProprietario, string? nome, int limit, int page)
     {
-        var lstImovel = DbSet.Include(x => x.Unidade)
-                                .Include(x => x.IdClienteProprietarioNavigation)
-                                .Include(x => x.IdCategoriaImovelNavigation).ToList();
+        var skip = (page - 1) * limit;
 
-        return lstImovel.AsEnumerable();
+        try
+        {
+            var imoveis = await DbSet
+                        .Include(x => x.IdClienteProprietarioNavigation)
+                            .ThenInclude(y => y.IdTipoClienteNavigation)
+                        .Include(x => x.IdCategoriaImovelNavigation)
+                        .Include(x => x.ImovelEndereco)
+                        .Include(x => x.Unidade)
+                            .ThenInclude(y => y.IdTipoUnidadeNavigation)
+                        .Where(x => x.IdCategoriaImovel.Equals(TipoImovelEnum.IMOVEL_CARTEIRA) 
+                                    && (x.Status)
+                                    && (idCategoria.HasValue
+                                        ? x.Unidade.FirstOrDefault(y => y.IdTipoUnidade.Equals(idCategoria.Value)) != null
+                                        : true)
+                                    && (idProprietario.HasValue
+                                        ? x.IdClienteProprietario.Equals(idProprietario.Value)
+                                        : true)
+                                    && (!string.IsNullOrEmpty(nome)
+                                        ? x.Nome.Contains(nome!)
+                                        : true)
+                            )
+                        .Select(x => new
+                        {
+                            GuidReferencia = x.GuidReferencia,
+                            Nome = x.Nome,
+                            NumCentroCusto = x.NumCentroCusto,
+                            ImovelEndereco = x.ImovelEndereco,
+                            Status          = x.Status,
+                            Unidade = x.Unidade.Select(y => new
+                                {
+                                    GuidReferencia = y.GuidReferencia,
+                                    IdImovel = y.IdImovel,
+                                    AreaUtil = y.AreaUtil,
+                                    AreaTotal = y.AreaTotal,
+                                    AreaHabitese = y.AreaHabitese,
+                                    InscricaoIPTU = y.InscricaoIPTU,
+                                    Matricula = y.Matricula,
+                                    MatriculaEnergia = y.MatriculaEnergia,
+                                    MatriculaAgua = y.MatriculaAgua,
+                                    TaxaAdministracao = y.TaxaAdministracao,
+                                    Tipo = y.Tipo,
+                                    ValorPotencial = y.ValorPotencial,
+                                    DataCriacao = y.DataCriacao,
+                                    DataUltimaModificacao = y.DataUltimaModificacao,
+                                    Ativo = y.Status,
+                                    IdTipoUnidadeNavigation = new
+                                    {
+                                        Id = y.IdTipoUnidadeNavigation.Id,
+                                        Nome = y.IdTipoUnidadeNavigation.Nome
+                                    }
+                                }
+                                ).Where(y => y.Ativo),
+                            AreaTotal = x.Unidade.Where(x => x.Status).Sum(x => x.AreaTotal),
+                            AreaUtil = x.Unidade.Where(x=> x.Status).Sum(x => x.AreaUtil),
+                            AreaHabitese = x.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
+                            NroUnidades = x.Unidade.Where(x => x.Status).Count(),
+                            ImgCapa = "../../../../assets/images/imovel.png",
+                            Imagens = ImagemListFake,
+                            Anexos = AnexoListFake,
+                            IdCategoriaImovelNavigation = x.IdCategoriaImovelNavigation == null ? null : new 
+                            {
+                                Id = x.IdCategoriaImovelNavigation.Id,
+                                Nome = x.IdCategoriaImovelNavigation.Nome
+                            },
+                            IdClienteProprietarioNavigation = x.IdClienteProprietarioNavigation == null ? null : new 
+                            {
+                                Id = x.IdClienteProprietarioNavigation.Id,
+                                GuidReferencia = x.IdClienteProprietarioNavigation.GuidReferencia,
+                                CpfCnpj = x.IdClienteProprietarioNavigation.CpfCnpj,
+                                Nome = x.IdClienteProprietarioNavigation.Nome,
+                                Telefone = x.IdClienteProprietarioNavigation.Telefone,
+                                Email = x.IdClienteProprietarioNavigation.Email,
+                                Cep = x.IdClienteProprietarioNavigation.Cep,
+                                Endereco = x.IdClienteProprietarioNavigation.Endereco,
+                                Bairro = x.IdClienteProprietarioNavigation.Bairro,
+                                Cidade = x.IdClienteProprietarioNavigation.Cidade,
+                                Estado = x.IdClienteProprietarioNavigation.Estado,
+                                IdTipoClienteNavigation = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation == null
+                                    ? null
+                                    : new 
+                                    {
+                                        Id = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Id,
+                                        Nome = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Nome,
+                                    }
+                            }
+                        })
+                    .ToListAsync();
+
+            var totalCount = imoveis.Count();
+
+            var imoveisPaging = imoveis.Skip(skip).Take(limit);
+
+            if (imoveisPaging.Any())
+                return new CommandPagingResult(imoveisPaging, totalCount, page, limit);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex.Message);
+        }
+
+        return null!;
     }
+
+    public async Task<object?> GetByGuid(Guid guid)
+    {
+        return await DbSet
+                        .Include(x => x.IdClienteProprietarioNavigation)
+                            .ThenInclude(y => y.IdTipoClienteNavigation)
+                        .Include(x => x.IdCategoriaImovelNavigation)
+                        .Include(x => x.ImovelEndereco)
+                        .Include(x => x.Unidade)
+                            .ThenInclude(y => y.IdTipoUnidadeNavigation)
+                        .Where(x => x.GuidReferencia.Equals(guid))
+                        .Select(x => new
+                        {
+                            GuidReferencia = x.GuidReferencia,
+                            Nome = x.Nome,
+                            NumCentroCusto = x.NumCentroCusto,
+                            ImovelEndereco = x.ImovelEndereco,
+                            Unidade = x.Unidade.Select(y => new
+                                {
+                                    GuidReferencia = y.GuidReferencia,
+                                    IdImovel = y.IdImovel,
+                                    AreaUtil = y.AreaUtil,
+                                    AreaTotal = y.AreaTotal,
+                                    AreaHabitese = y.AreaHabitese,
+                                    InscricaoIPTU = y.InscricaoIPTU,
+                                    Matricula = y.Matricula,
+                                    MatriculaEnergia = y.MatriculaEnergia,
+                                    MatriculaAgua = y.MatriculaAgua,
+                                    TaxaAdministracao = y.TaxaAdministracao,
+                                    ValorPotencial = y.ValorPotencial,
+                                    Tipo = y.Tipo,
+                                    DataCriacao = y.DataCriacao,
+                                    DataUltimaModificacao = y.DataUltimaModificacao,
+                                    UnidadeLocada = y.UnidadeLocada,
+                                    Ativo = y.Status,
+                                    IdTipoUnidadeNavigation = new
+                                    {
+                                        Id = y.IdTipoUnidadeNavigation.Id,
+                                        Nome = y.IdTipoUnidadeNavigation.Nome
+                                    }
+                            }).Where(y => y.Ativo),
+                            AreaTotal = x.Unidade.Where(x => x.Status).Sum(x => x.AreaTotal),
+                            AreaUtil = x.Unidade.Where(x => x.Status).Sum(x => x.AreaUtil),
+                            AreaHabitese = x.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
+                            NroUnidades = x.Unidade.Where(x => x.Status).Count(),
+                            ImgCapa = ImagemCapaFake,
+                            Imagens = ImagemListFake,
+                            Anexos = AnexoListFake,
+                            IdCategoriaImovelNavigation = x.IdCategoriaImovelNavigation == null ? null : new 
+                            {
+                                Id = x.IdCategoriaImovelNavigation.Id,
+                                Nome = x.IdCategoriaImovelNavigation.Nome
+                            },
+                            IdClienteProprietarioNavigation = x.IdClienteProprietarioNavigation == null ? null : new 
+                            {
+                                Id = x.IdClienteProprietarioNavigation.Id,
+                                GuidReferencia = x.IdClienteProprietarioNavigation.GuidReferencia,
+                                CpfCnpj = x.IdClienteProprietarioNavigation.CpfCnpj,
+                                Nome = x.IdClienteProprietarioNavigation.Nome,
+                                Telefone = x.IdClienteProprietarioNavigation.Telefone,
+                                Email = x.IdClienteProprietarioNavigation.Email,
+                                Cep = x.IdClienteProprietarioNavigation.Cep,
+                                Endereco = x.IdClienteProprietarioNavigation.Endereco,
+                                Bairro = x.IdClienteProprietarioNavigation.Bairro,
+                                Cidade = x.IdClienteProprietarioNavigation.Cidade,
+                                Estado = x.IdClienteProprietarioNavigation.Estado,
+                                IdTipoClienteNavigation = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation == null
+                                    ? null
+                                    : new 
+                                    {
+                                        Id = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Id,
+                                        Nome = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Nome,
+                                    }
+                            }
+                        })
+                    .FirstOrDefaultAsync();
+    }
+    
+    public async Task<Imovel?> GetByReferenceGuid(Guid guid)
+    {
+        return await DbSet
+            .FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
+    }
+
+    public static string ImagemCapaFake => "../../../../assets/images/imovel.png";
+
+    public static List<object> ImagemListFake => new List<object>
+    {
+        new
+        {
+            ThumbUrl =".../../../assets/images/property/1.jpg",
+            Url = ".../../../assets/images/property/1.jpg"
+        },
+        new
+        {
+            ThumbUrl =".../../../assets/images/property/2.png",
+            Url = ".../../../assets/images/property/2.png"
+        },
+        new
+        {
+            ThumbUrl =".../../../assets/images/property/3.png",
+            Url = ".../../../assets/images/property/3.png"
+        },
+        new
+        {
+            ThumbUrl =".../../../assets/images/property/4.png",
+            Url = ".../../../assets/images/property/4.png"
+        },
+        new
+        {
+            ThumbUrl =".../../../assets/images/property/5.png",
+            Url = ".../../../assets/images/property/5.png"
+        },
+        new
+        {
+            ThumbUrl =".../../../assets/images/property/2.png",
+            Url = ".../../../assets/images/property/2.png"
+        },
+        new
+        {
+            ThumbUrl =".../../../assets/images/property/4.png",
+            Url = ".../../../assets/images/property/4.png"
+        }
+    };
+    
+    public static List<object> AnexoListFake => new List<object>
+    {
+        new
+        {
+            Nome = "Projeto",
+            Tipo = 1,
+            FileName = "Projeto.pdf",
+            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
+        },
+        new
+        {
+            Nome = "Matricula",
+            FileName = "Matricula.pdf",
+            Tipo = 2,
+            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
+        },
+        new
+        {
+            Nome = "Habite-se",
+            FileName = "habite-se.pdf",
+            Tipo = 3,
+            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
+        }
+    };
 }

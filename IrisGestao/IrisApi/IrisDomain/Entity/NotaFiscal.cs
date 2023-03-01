@@ -28,6 +28,9 @@ public partial class NotaFiscal: BaseEntity<NotaFiscal>
     [Unicode(false)]
     public string GuidReferencia { get; set; } = null!;
 
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
     [ForeignKey("IdObra")]
     [InverseProperty("NotaFiscal")]
     public virtual Obra IdObraNavigation { get; set; } = null!;

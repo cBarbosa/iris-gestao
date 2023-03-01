@@ -16,7 +16,7 @@ public partial class IrisContext : DbContext
     public IrisContext(DbContextOptions<IrisContext> options)
         : base(options)
     {
-        
+
     }
 
     public virtual DbSet<Anexo> Anexo { get; set; } = null!;
@@ -28,6 +28,10 @@ public partial class IrisContext : DbContext
     public virtual DbSet<Contato> Contato { get; set; } = null!;
 
     public virtual DbSet<ContratoAluguel> ContratoAluguel { get; set; } = null!;
+
+    public virtual DbSet<ContratoAluguelImovel> ContratoAluguelImovel { get; set; }
+
+    public virtual DbSet<ContratoAluguelUnidade> ContratoAluguelUnidade { get; set; }
 
     public virtual DbSet<ContratoFornecedor> ContratoFornecedor { get; set; } = null!;
 
@@ -57,6 +61,8 @@ public partial class IrisContext : DbContext
 
     public virtual DbSet<Orcamento> Orcamento { get; set; } = null!;
 
+    public virtual DbSet<TipoCliente> TipoCliente { get; set; } = null!;
+
     public virtual DbSet<TipoContrato> TipoContrato { get; set; } = null!;
 
     public virtual DbSet<TipoCreditoAluguel> TipoCreditoAluguel { get; set; } = null!;
@@ -83,6 +89,8 @@ public partial class IrisContext : DbContext
         modelBuilder.Entity<Anexo>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Anexo__3214EC0789E97BE1");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
         });
 
         modelBuilder.Entity<CategoriaImovel>(entity =>
@@ -93,11 +101,17 @@ public partial class IrisContext : DbContext
         modelBuilder.Entity<Cliente>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Cliente__3214EC0757390793");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
+
+            entity.HasOne(d => d.IdTipoClienteNavigation).WithMany(p => p.Cliente).HasConstraintName("fk_Cliente_TipoCliente");
         });
 
         modelBuilder.Entity<Contato>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Contato__3214EC075FC95E7B");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
             entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.Contato).HasConstraintName("fk_Contato_Cliente");
 
@@ -108,13 +122,11 @@ public partial class IrisContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC07A0145D0B");
 
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
+
             entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.ContratoAluguel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Cliente_ContratoAluguel");
-
-            entity.HasOne(d => d.IdImovelNavigation).WithMany(p => p.ContratoAluguel)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_Imovel_ContratoAluguel");
 
             entity.HasOne(d => d.IdIndiceReajusteNavigation).WithMany(p => p.ContratoAluguel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -129,9 +141,37 @@ public partial class IrisContext : DbContext
                 .HasConstraintName("fk_TipoCreditoAluguel_ContratoAluguel");
         });
 
+        modelBuilder.Entity<ContratoAluguelImovel>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC071E103FF9");
+
+            entity.HasOne(d => d.IdContratoAluguelNavigation).WithMany(p => p.ContratoAluguelImovel)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_ContratoAluguelImovel_ContratoAluguel");
+
+            entity.HasOne(d => d.IdImovelNavigation).WithMany(p => p.ContratoAluguelImovel)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_ContratoAluguelImovel_Imovel");
+        });
+
+        modelBuilder.Entity<ContratoAluguelUnidade>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC07C8AD6C60");
+
+            entity.HasOne(d => d.IdContratoAluguelImovelNavigation).WithMany(p => p.ContratoAluguelUnidade)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_ContratoAluguelUnidade_ContratoAluguelImovel");
+
+            entity.HasOne(d => d.IdUnidadeNavigation).WithMany(p => p.ContratoAluguelUnidade)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_ContratoAluguelUnidade_Unidade");
+        });
+
         modelBuilder.Entity<ContratoFornecedor>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC0705E0D2A7");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
             entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.ContratoFornecedor)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -157,11 +197,15 @@ public partial class IrisContext : DbContext
         modelBuilder.Entity<DadoBancario>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__DadoBanc__3214EC078DAD5BD6");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
         });
 
         modelBuilder.Entity<DespesaLocatario>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__DespesaL__3214EC07E7605EA9");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
             entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.DespesaLocatario).HasConstraintName("fk_Cliente_DespesaLocatario");
 
@@ -178,6 +222,8 @@ public partial class IrisContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__DespesaP__3214EC071FE0AF7B");
 
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
+
             entity.HasOne(d => d.IdContratoFornecedorNavigation).WithMany(p => p.DespesaProprietario).HasConstraintName("fk_ContratoFornecedor_DespesaProprietario");
 
             entity.HasOne(d => d.IdTipoDespesaNavigation).WithMany(p => p.DespesaProprietario)
@@ -192,6 +238,8 @@ public partial class IrisContext : DbContext
         modelBuilder.Entity<Evento>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Evento__3214EC07454993EE");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
             entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.Evento)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -210,6 +258,8 @@ public partial class IrisContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__FaturaTi__3214EC07D65B2553");
 
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
+
             entity.HasOne(d => d.IdTituloNavigation).WithMany(p => p.FaturaTitulo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Titulo_FaturaTitulo");
@@ -218,11 +268,15 @@ public partial class IrisContext : DbContext
         modelBuilder.Entity<FormaPagamento>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__FormaPag__3214EC07339B3487");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
         });
 
         modelBuilder.Entity<Fornecedor>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Forneced__3214EC0745F417AA");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
             entity.HasOne(d => d.IdDadoBancarioNavigation).WithMany(p => p.Fornecedor)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -232,6 +286,8 @@ public partial class IrisContext : DbContext
         modelBuilder.Entity<Imovel>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Imovel__3214EC07850C004D");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
             entity.HasOne(d => d.IdCategoriaImovelNavigation).WithMany(p => p.Imovel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -245,6 +301,8 @@ public partial class IrisContext : DbContext
         modelBuilder.Entity<ImovelEndereco>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__ImovelEn__3214EC07CBE1BD40");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
             entity.HasOne(d => d.IdImovelNavigation).WithMany(p => p.ImovelEndereco)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -260,6 +318,8 @@ public partial class IrisContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__NotaFisc__3214EC074EA91E7D");
 
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
+
             entity.HasOne(d => d.IdObraNavigation).WithMany(p => p.NotaFiscal)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Obra_NotaFiscal");
@@ -272,6 +332,8 @@ public partial class IrisContext : DbContext
         modelBuilder.Entity<Obra>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Obra__3214EC0729D49DC7");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
             entity.HasOne(d => d.IdImovelNavigation).WithMany(p => p.Obra)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -286,9 +348,16 @@ public partial class IrisContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Orcament__3214EC07A8D543C8");
 
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
+
             entity.HasOne(d => d.IdTipoServicoNavigation).WithMany(p => p.Orcamento)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_TipoServico_Orcamento");
+        });
+
+        modelBuilder.Entity<TipoCliente>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__TipoClie__3214EC078042100E");
         });
 
         modelBuilder.Entity<TipoContrato>(entity =>
@@ -330,6 +399,8 @@ public partial class IrisContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Titulo__3214EC078550CE76");
 
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
+
             entity.HasOne(d => d.IdImovelNavigation).WithMany(p => p.Titulo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Imovel_Titulo");
@@ -342,6 +413,8 @@ public partial class IrisContext : DbContext
         modelBuilder.Entity<Unidade>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Unidade__3214EC075A1ECD2B");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
             entity.HasOne(d => d.IdImovelNavigation).WithMany(p => p.Unidade)
                 .OnDelete(DeleteBehavior.ClientSetNull)

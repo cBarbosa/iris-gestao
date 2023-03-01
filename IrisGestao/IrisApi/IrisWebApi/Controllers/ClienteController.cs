@@ -10,28 +10,37 @@ public class ClienteController : Controller
 {
     private readonly IClienteService clienteService;
 
-    public ClienteController(IClienteService ClienteService)
+    public ClienteController(IClienteService clienteService)
     {
-        this.clienteService = ClienteService;
+        this.clienteService = clienteService;
     }
  
-    // GET
-    [HttpGet("/api/[controller]")]
+    [HttpGet]
     [Produces("application/json")]
-   public async Task<IActionResult> GetAll() =>
-        Ok(await clienteService.GetAll());
+   public async Task<IActionResult> GetAllPaging(
+       [FromQuery] int? idTipo
+       , [FromQuery] string? nome
+       , [FromQuery] int? limit = 10
+       , [FromQuery] int? page = 1) =>  
+        Ok(await clienteService.GetAllPaging(idTipo,nome, limit ?? 10, page ?? 1));
 
-    // GET
-    [HttpGet("/api/[controller]/{codigo}/id/")]
+    [HttpGet("{guid}/guid")]
     [Produces("application/json")]
-    public async Task<IActionResult> BuscarCliente([FromRoute] int codigo) =>
-        Ok(await clienteService.GetById(codigo));
+    public async Task<IActionResult> GetByGuid([FromRoute] Guid guid) =>
+        Ok(await clienteService.GetByGuid(guid));
 
-    [HttpPost("/api/[controller]/criar")]
+    [HttpPost("criar")]
     [Produces("application/json")]
-    public async Task<IActionResult> Cadatrar([FromBody] CriarClienteCommand cmd)
+    public async Task<IActionResult> Cadatrar([FromBody] CriarClienteCommand cmd) =>
+        Ok(await clienteService.Insert(cmd));
+
+    [HttpPut("{guid}/atualizar")]
+    [Produces("application/json")]
+    public async Task<IActionResult> Atualizar(
+        Guid guid,
+        [FromBody] CriarClienteCommand cmd)
     {
-        var result = await clienteService.Insert(cmd);
+        var result = await clienteService.Update(guid, cmd);
 
         if (result == null)
             return BadRequest("Operação não realizada");
@@ -39,19 +48,18 @@ public class ClienteController : Controller
         return Ok(result);
     }
 
-    [HttpPut("/api/[controller]/{codigo}/atualizar/")]
+    [HttpPut("{guid}/{status}/alterar-status")]
     [Produces("application/json")]
-    public async Task<IActionResult> Atualizar(int? codigo, [FromBody] CriarClienteCommand cmd)
+    public async Task<IActionResult> AlterarStatus(
+    Guid guid,
+    bool status)
     {
-        var result = await clienteService.Update(codigo, cmd);
-
-        if (result == null)
-            return BadRequest("Operação não realizada");
+        var result = await clienteService.AlterarStatus(guid, status);
 
         return Ok(result);
     }
 
-    [HttpDelete("/api/[controller]/{codigo}/deletar/")]
+    [HttpDelete("{codigo}/deletar")]
     [Produces("application/json")]
     public async Task<IActionResult> Deletar(int? codigo)
     {
@@ -62,5 +70,10 @@ public class ClienteController : Controller
 
         return Ok(result);
     }
+    
+    [HttpGet("lista-proprietarios")]
+    [Produces("application/json")]
+    public async Task<IActionResult> GetAllOwners() =>
+        Ok(await clienteService.GetAllOwners());
 }
 

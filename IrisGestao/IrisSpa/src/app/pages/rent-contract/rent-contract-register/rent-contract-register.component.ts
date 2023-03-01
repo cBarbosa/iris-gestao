@@ -1,0 +1,695 @@
+import { Location } from '@angular/common';
+import { Component } from '@angular/core';
+import {
+	AbstractControl,
+	FormBuilder,
+	FormGroup,
+	Validators,
+} from '@angular/forms';
+import { Router } from '@angular/router';
+import { first, fromEventPattern } from 'rxjs';
+import { RentContractService } from 'src/app/shared/services/rent-contract.service';
+import { Utils } from 'src/app/shared/utils';
+import { ContratoAluguel } from 'src/app/shared/models/contrato-aluguel.model';
+import {
+	ClienteService,
+	CommonService,
+	DominiosService,
+	ImovelService,
+} from 'src/app/shared/services';
+
+type Step = {
+	label: string;
+	isValid?: boolean;
+	isCurrent?: boolean;
+	isVisited?: boolean;
+};
+
+type DropdownItem = {
+	label: string;
+	value: any;
+	disabled?: boolean;
+	[label: string]: any;
+};
+
+@Component({
+	selector: 'app-rent-contract-register',
+	templateUrl: './rent-contract-register.component.html',
+	styleUrls: ['./rent-contract-register.component.scss'],
+})
+export class RentContractRegisterComponent {
+	registerForm: FormGroup;
+	propertyAddForm: FormGroup;
+
+	stepList: Step[];
+	currentStep: number;
+
+	onInputDate: Function;
+	onBlurDate: Function;
+
+	linkedProperties: {
+		nome: string;
+		guid: string;
+		tipo: string;
+		unidades: {
+			guid: string;
+			name: string;
+		}[];
+	}[] = [];
+	linkedPropertiesInvalid = false;
+	editingLinkedProperty: string | null = null;
+	propertyAddVisible = false;
+
+	displayModal = false;
+	modalContent: {
+		isError?: boolean;
+		header?: string;
+		message: string;
+	} = {
+		message: '',
+	};
+
+	contractTypes: DropdownItem[] = [
+		{
+			label: 'Selecione',
+			value: null,
+			disabled: true,
+		},
+	];
+
+	renters: DropdownItem[] = [
+		{
+			label: 'Selecione',
+			value: null,
+			disabled: true,
+		},
+	];
+
+	//??? QUAIS DIAS
+	dueDates: DropdownItem[] = Array.from({ length: 31 }, (v, k) => {
+		return { label: 'Todo dia ' + (k + 1), value: k + 1, disabled: false };
+	});
+
+	discountDeadlines: DropdownItem[] = [
+		{
+			label: 'Selecione',
+			value: null,
+			disabled: true,
+		},
+		{
+			label: 'Valor teste',
+			value: -1,
+			disabled: false,
+		},
+	];
+
+	readjustmentIndexes: DropdownItem[] = [
+		{
+			label: 'Selecione',
+			value: null,
+			disabled: true,
+		},
+	];
+
+	hasGracePeriod: DropdownItem[] = [
+		{
+			label: 'Sim',
+			value: true,
+		},
+		{
+			label: 'Não',
+			value: false,
+		},
+	];
+
+	creditTo: DropdownItem[] = [
+		{
+			label: 'Selecione',
+			value: null,
+			disabled: true,
+		},
+	];
+
+	buildings: DropdownItem[] = [
+		{
+			label: 'Selecione',
+			value: null,
+			disabled: true,
+		},
+	];
+
+	units: DropdownItem[] = [];
+
+	constructor(
+		private fb: FormBuilder,
+		private location: Location,
+		private router: Router,
+		private rentContractService: RentContractService,
+		private dominiosService: DominiosService,
+		private commonService: CommonService,
+		private imovelService: ImovelService,
+		private clienteService: ClienteService
+	) {}
+
+	ngOnInit() {
+		this.currentStep = 1;
+
+		this.stepList = [
+			{
+				label: 'Informações do Contrato',
+				isCurrent: this.currentStep === 1,
+				isVisited: false,
+			},
+			{
+				label: 'Taxas e valores',
+				isCurrent: this.currentStep === 2,
+			},
+			{
+				label: 'Anexos',
+				isCurrent: this.currentStep === 3,
+			},
+		];
+
+		this.registerForm = this.fb.group({
+			contractInfo: this.fb.group({
+				numero: ['', Validators.required],
+				tipo: [null, Validators.required],
+				locatario: [null, Validators.required],
+				dataInicio: [null, Validators.required],
+				// dataFim: [null, Validators.required],
+				dataOcupacao: [null, Validators.required],
+				dataVencimento: [1, Validators.required],
+			}),
+			valuesInfo: this.fb.group({
+				valor: ['', Validators.required],
+				// valorLiquido: ['', Validators.required],
+				retencao: ['', Validators.required],
+				desconto: [null, Validators.required],
+				descontoPrazo: [null, Validators.required],
+				reajuste: [null, Validators.required],
+				periodicidade: [null, Validators.required],
+				carencia: [true, Validators.required],
+				carenciaPrazo: [null, Validators.required],
+				creditarPara: [null, Validators.required],
+			}),
+
+			attachmentsInfo: this.fb.group({
+				attachment: [null],
+			}),
+		});
+
+		this.propertyAddForm = this.fb.group({
+			edificio: [null, Validators.required],
+			unidade: [null, [Validators.required]],
+		});
+
+		this.propertyAddForm.controls['unidade'].disable();
+
+		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
+		this.onInputDate = onInputDate;
+		this.onBlurDate = onBlurDate;
+
+		this.dominiosService.getTiposContrato().subscribe((event) => {
+			if (event) {
+				event.data.forEach((item: any) => {
+					this.contractTypes.push({
+						label: item.nome,
+						value: item.id,
+					});
+				});
+			}
+		});
+
+		this.commonService.getReadjustment().subscribe((event) => {
+			if (event) {
+				event.data.forEach((item: any) => {
+					this.readjustmentIndexes.push({
+						label: item.nome,
+						value: item.id,
+					});
+				});
+			}
+		});
+
+		this.clienteService.getListaProprietarios().subscribe((event) => {
+			if (event) {
+				event.data.forEach((item: any) => {
+					this.renters.push({
+						label: item.nome,
+						value: item.guidReferencia,
+					});
+				});
+			}
+		});
+
+		this.dominiosService.getTiposCreditoAluguel().subscribe((event) => {
+			if (event) {
+				event.data.forEach((item: any) => {
+					this.creditTo.push({
+						label: item.nome,
+						value: item.id,
+					});
+				});
+			}
+		});
+
+		this.imovelService.getProperties(100, 1).subscribe((event) => {
+			if (event) {
+				event.data.items.forEach((item: any) => {
+					this.buildings.push({
+						label: item.nome,
+						value: {
+							guid: item.guidReferencia,
+							name: item.nome,
+						},
+						units: item.unidade,
+					});
+				});
+			}
+		});
+	}
+
+	get contractInfoForm() {
+		return this.registerForm.controls['contractInfo'] as FormGroup;
+	}
+
+	get valuesInfoForm() {
+		return this.registerForm.controls['valuesInfo'] as FormGroup;
+	}
+
+	get attachmentsForm() {
+		return this.registerForm.controls['attachmentsInfo'] as FormGroup;
+	}
+
+	get f(): { [key: string]: AbstractControl<any, any> } {
+		if (this.currentStep === 1) return this.contractInfoForm.controls;
+		if (this.currentStep === 2) return this.valuesInfoForm.controls;
+		return this.attachmentsForm.controls;
+	}
+
+	checkHasError(c: AbstractControl) {
+		return Utils.checkHasError(c);
+	}
+
+	changeStep(step: number) {
+		this.stepList = this.stepList.map((entry: Step, i: number) => {
+			const stepData: Step = {
+				label: entry.label,
+				isCurrent: undefined,
+				isValid: undefined,
+				isVisited: entry.isVisited,
+			};
+
+			const stepListIndex = i + 1;
+
+			if (!entry.isVisited && stepListIndex === this.currentStep) {
+				stepData.isVisited = true;
+			}
+
+			if (stepListIndex === 1) {
+				stepData.isValid = this.contractInfoForm.valid ? true : false;
+			} else if (stepListIndex === 2) {
+				stepData.isValid = this.valuesInfoForm.valid ? true : false;
+			} else if (stepListIndex === 3) {
+				stepData.isValid = this.attachmentsForm.valid ? true : false;
+			}
+
+			if (step > stepListIndex) {
+				if (stepListIndex === 2) {
+				} else if (stepListIndex === 3) {
+					stepData.isValid = this.attachmentsForm.valid ? true : false;
+				}
+			}
+
+			if (step === stepListIndex) {
+				stepData.isCurrent = true;
+			}
+
+			return stepData;
+		});
+
+		this.currentStep = step;
+	}
+
+	changeStepCb = (step: number) => {
+		if (this.stepList[step - 1].isVisited || step < this.currentStep)
+			this.changeStep(step);
+	};
+
+	nextStep() {
+		const currStep = this.currentStep;
+		if (currStep === 1) {
+			this.contractInfoForm.updateValueAndValidity();
+			if (this.contractInfoForm.invalid) {
+				this.contractInfoForm.markAllAsTouched();
+
+				if (this.linkedProperties.length === 0) {
+					this.linkedPropertiesInvalid = true;
+				}
+				return;
+			}
+		}
+		if (currStep === 2) {
+			this.valuesInfoForm.updateValueAndValidity();
+			if (this.valuesInfoForm.invalid) {
+				this.valuesInfoForm.markAllAsTouched();
+				return;
+			}
+		}
+		if (currStep === 3) {
+			this.onSubmit();
+		}
+
+		window.scrollTo(0, 0);
+
+		if (this.currentStep < this.stepList.length)
+			this.changeStep(this.currentStep + 1);
+	}
+
+	prevStep() {
+		if (this.currentStep > 1) this.changeStep(this.currentStep - 1);
+		else this.goBack();
+	}
+
+	onHasGracePeriodChange() {
+		const carencia = this.valuesInfoForm.controls['carencia'].value;
+
+		if (carencia)
+			this.valuesInfoForm.controls['carenciaPrazo'].setValidators(
+				Validators.required
+			);
+		else this.valuesInfoForm.controls['carenciaPrazo'].setValidators(null);
+
+		this.valuesInfoForm.controls['carenciaPrazo'].updateValueAndValidity();
+	}
+
+	onUpload(e: any) {}
+
+	onSubmit(e: any = null) {
+		if (this.registerForm.invalid || this.linkedProperties.length === 0) {
+			this.registerForm.markAllAsTouched();
+			if (this.linkedProperties.length === 0) {
+				this.linkedPropertiesInvalid = true;
+			}
+			return;
+		}
+
+		/*{
+    "guidCliente": "5bda2407-e4be-48c0-9aae-7351662d978d",
+    "idTipoCreditoAluguel": 1,
+    "idIndiceReajuste": 2,
+    "idTipoContrato": 2,
+    "numeroContrato": "1239854768401",
+    "valorAluguel": 1.000,
+    "percentualRetencaoImpostos": 5.0,
+    "percentualDescontoAluguel": 10.0,
+    "carenciaAluguel": true,
+    "prazoCarencia": 24,
+    "dataInicioContrato": "2023-01-22T00:00:00.0000Z",
+    "prazoTotalContrato": 24,
+    "dataOcupacao": "2023-02-01T00:00:00.000Z",
+    "diaVencimentoAluguel": 5,
+    "periodicidadeReajuste": 12,
+    "lstImoveis": [
+        {
+            "guidImovel": "0f9a10da-e223-4282-819d-46f0fa8d7f21",
+            "lstUnidades": [
+                "2DD43519-34FD-4A19-9A76-8F5859B6B2FC",
+                "00a6237c-c12a-4854-b70f-1ce001b89f20"
+            ]
+        },
+        {
+            "guidImovel": "5b6ae81a-556f-4603-8b7f-f9e876740c58",
+            "lstUnidades": [
+                "28C34BCF-C531-4F52-9972-E604AEEBD9EA",
+                "B24F12ED-14F7-4538-86D7-3E233D26D7B4"
+            ]
+        },
+        {
+            "guidImovel": "20767265-c3b7-4681-a679-31b6304cff71",
+            "lstUnidades": [
+                "d60bbe64-d98a-44be-8e91-c8be0ce0f236"
+            ]
+        }
+    ]
+}*/
+
+		/*
+{
+    "contractInfo": {
+        "nome": "nome do contrato",
+        "tipo": -1,
+        "locatario": -1,
+        "dataInicio": "2023-02-07T03:00:00.000Z",
+        "dataFim": "2023-02-08T03:00:00.000Z",
+        "dataOcupacao": "2023-02-09T03:00:00.000Z",
+        "dataVencimento": -1
+    },
+    "valuesInfo": {
+        "valor": 10,
+        "valorLiquido": 20,
+        "retencao": "30",
+        "desconto": -1,
+        "descontoPrazo": -1,
+        "reajuste": -1,
+        "periodicidade": -1,
+        "carencia": false,
+        "carenciaPrazo": -1,
+        "creditarPara": -1
+    },
+    "attachmentsInfo": {
+        "attachment": null
+    }
+}
+*/
+
+		let formData: {
+			contractInfo: {
+				numero: string; // x
+				tipo: number; // x
+				locatario: string; // x
+				dataInicio: string; // x
+				// dataFim: string;
+				dataOcupacao: string; // x
+				dataVencimento: number; // x
+			};
+			valuesInfo: {
+				valor: number; // x
+				// valorLiquido: number;
+				retencao: string; // x
+				desconto: string; // x
+				descontoPrazo: string; //???
+				reajuste: number; // x
+				periodicidade: string; // x
+				carencia: boolean; // x
+				carenciaPrazo: string; // x
+				creditarPara: number; // x
+			};
+			attachmentsInfo: {
+				attachment: null;
+			};
+		} = this.registerForm.getRawValue();
+
+		console.log('formData', formData);
+
+		const contractObj: ContratoAluguel = {
+			guidCliente: formData.contractInfo.locatario,
+			idTipoCreditoAluguel: formData.valuesInfo.creditarPara,
+			idIndiceReajuste: formData.valuesInfo.reajuste,
+			idTipoContrato: formData.contractInfo.tipo,
+			numeroContrato: formData.contractInfo.numero,
+			valorAluguel: formData.valuesInfo.valor,
+			percentualRetencaoImpostos: +formData.valuesInfo.retencao,
+			percentualDescontoAluguel: +formData.valuesInfo.desconto,
+			carenciaAluguel: formData.valuesInfo.carencia,
+			prazoCarencia: +formData.valuesInfo.carenciaPrazo,
+			dataInicioContrato: formData.contractInfo.dataInicio,
+			prazoTotalContrato: +formData.valuesInfo.descontoPrazo, //???
+			dataOcupacao: formData.contractInfo.dataOcupacao,
+			diaVencimentoAluguel: formData.contractInfo.dataVencimento,
+			periodicidadeReajuste: +formData.valuesInfo.periodicidade,
+			lstImoveis: this.linkedProperties.map((p) => {
+				return {
+					guidImovel: p.guid,
+					lstUnidades: p.unidades.map((u) => u.guid),
+				};
+			}),
+		};
+
+		this.rentContractService
+			.registerContract(contractObj)
+			.pipe(first())
+			.subscribe({
+				next: (response: any) => {
+					if (response.success) {
+						this.modalContent = {
+							header: 'Cadastro realizado com sucesso',
+							message: response.message,
+						};
+					} else {
+						this.modalContent = {
+							header: 'Cadastro não realizado',
+							message: response.message,
+							isError: true,
+						};
+					}
+
+					this.openModal();
+				},
+				error: (error: any) => {
+					console.error(error);
+					this.modalContent = {
+						header: 'Cadastro não realizado',
+						message: 'Erro no envio de dados',
+						isError: true,
+					};
+
+					this.openModal();
+				},
+			});
+	}
+
+	onProprietarySubmit(e: any = null) {
+		const formData = this.propertyAddForm.getRawValue();
+
+		if (this.editingLinkedProperty === null) {
+			this.linkedProperties.push({
+				nome: formData.edificio.name,
+				guid: formData.edificio.guid,
+				tipo: 'Edifício Coorporativo',
+				unidades: formData.unidade,
+			});
+		} else {
+			const index = this.linkedProperties.findIndex(
+				(p) => p.guid === this.editingLinkedProperty
+			);
+
+			this.linkedProperties.splice(index, 1, {
+				nome: formData.edificio.name,
+				guid: formData.edificio.guid,
+				tipo: 'Edifício Coorporativo',
+				unidades: formData.unidade,
+			});
+
+			this.linkedProperties = [...this.linkedProperties];
+		}
+
+		if (this.linkedProperties.length !== 0) {
+			this.linkedPropertiesInvalid = false;
+		}
+
+		this.propertyAddForm.reset();
+
+		this.hideAddProperty();
+	}
+
+	onChangeBuilding(event: any) {
+		const building = this.buildings.find((b) => b.value?.guid === event?.guid);
+
+		if (building?.value !== null)
+			this.propertyAddForm.controls['unidade'].enable();
+		else this.propertyAddForm.controls['unidade'].disable();
+
+		this.propertyAddForm.controls['unidade'].setValue(null);
+
+		this.units = [];
+
+		building?.['units']?.forEach((item: any) => {
+			this.units.push({
+				label: item.tipo,
+				value: {
+					guid: item.guidReferencia,
+					name: item.tipo,
+				},
+			});
+		});
+	}
+
+	updateLinkedPropertiesValidity() {
+		if (this.linkedProperties.length === 0) this.linkedPropertiesInvalid = true;
+		else this.linkedPropertiesInvalid = false;
+	}
+
+	removeLinkedProperty(guid: string) {
+		const index = this.linkedProperties.findIndex((p) => p.guid === guid);
+
+		this.linkedProperties.splice(index, 1);
+		this.updateLinkedPropertiesValidity();
+	}
+
+	editLinkedProperty(property: any) {
+		this.propertyAddForm.patchValue({
+			edificio: {
+				name: property.nome,
+				guid: property.guid,
+			},
+			unidade: property.unidades,
+		});
+
+		const building = this.buildings.find(
+			(b) => b.value?.guid === property.guid
+		);
+
+		this.propertyAddForm.controls['unidade'].enable();
+
+		this.propertyAddForm.controls['unidade'].setValue([]);
+
+		this.units = [];
+
+		building?.['units']?.forEach((item: any) => {
+			const value = {
+				guid: item.guidReferencia,
+				name: item.tipo,
+			};
+
+			this.units.push({
+				label: item.tipo,
+				value: value,
+			});
+
+			if (property.unidades.some((u: any) => u.guid === item.guidReferencia)) {
+				this.propertyAddForm.controls['unidade'].setValue([
+					...this.propertyAddForm.controls['unidade'].value,
+					value,
+				]);
+			}
+		});
+
+		this.editingLinkedProperty = property.guid;
+		this.showAddProperty();
+	}
+
+	resetLinkedProperties() {
+		this.linkedProperties = [];
+	}
+
+	showAddProperty() {
+		this.propertyAddVisible = true;
+	}
+
+	hideAddProperty = () => {
+		this.editingLinkedProperty = null;
+		this.propertyAddForm.patchValue({
+			edificio: null,
+			unidade: null,
+		});
+		this.propertyAddVisible = false;
+	};
+
+	openModal() {
+		this.displayModal = true;
+	}
+	closeModal(onClose?: Function, ...params: any[]) {
+		this.displayModal = false;
+
+		if (onClose !== undefined) onClose(...params);
+	}
+
+	goBack() {
+		this.location.back();
+	}
+
+	navigateTo = (route: string) => {
+		this.router.navigate([route]);
+	};
+}

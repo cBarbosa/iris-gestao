@@ -1,0 +1,74 @@
+<div class="property-item">
+	<div class="property-image">
+		<div class="image">
+			<img src="{{ propertyData.imgCapa }}" alt="" />
+		</div>
+		<!-- <div class="property-category">{{propertyData.idCategoriaImovelNavigation?.nome}}</div> -->
+		<!-- <p-tag
+			[rounded]="true"
+			class="property-category"
+			[styleClass]="propertyData.idCategoriaImovelNavigation?.nome == 'Imóvel de carteira' ? 'wallet' : 'market'"
+		></p-tag> -->
+	</div>
+	<div class="property-info">
+		<h4>
+			{{ propertyData.nome }}
+			<span class="property-id">#{{ propertyData.numCentroCusto }}</span>
+		</h4>
+		<p>{{ propertyData.imovelEndereco?.[0]?.rua ?? '' }}</p>
+		<div class="location">
+			<app-icon name="pin-building" styleClass="mr-1"></app-icon>
+			{{ propertyData.idCategoriaImovelNavigation?.nome }}
+		</div>
+		<div class="property-features">
+			<span class="feature">
+				<app-icon name="door" styleClass="mr-1"></app-icon>
+				{{ propertyData.nroUnidades ?? 0 }} unidades
+			</span>
+			<span class="feature">
+				<app-icon name="area" styleClass="mr-1"></app-icon>
+				{{ propertyData.areaTotal ?? 0 | area }}
+			</span>
+			<span class="feature">
+				<app-icon name="area" styleClass="mr-1"></app-icon>
+				{{ propertyData.areaHabitese ?? 0 | area }}
+			</span>
+			<span class="feature">
+				<app-icon name="area" styleClass="mr-1"></app-icon>
+				{{ propertyData.areaUtil ?? 0 | area }}
+			</span>
+		</div>
+	</div>
+	<div class="proprietary-info">
+		<div class="content">
+			<div>
+				<h6>Proprietário</h6>
+				<ul>
+					<li>
+						<a
+							[routerLink]="[
+								'/client/details/' +
+									propertyData.idClienteProprietarioNavigation?.guidReferencia
+							]"
+						>
+							{{ propertyData.idClienteProprietarioNavigation?.nome }}
+						</a>
+					</li>
+					<li>
+						{{
+							propertyData.idClienteProprietarioNavigation?.cpfCnpj ?? ""
+								| cpfcnpj
+						}}
+					</li>
+					<li>{{ propertyData.idClienteProprietarioNavigation?.telefone ?? '' | telefone }}</li>
+				</ul>
+			</div>
+			<button
+				pButton
+				(click)="navigateTo('property/details/' + propertyData.guidReferencia)"
+				label="Ver detalhes"
+				title="detalhes do imóvel"
+			></button>
+		</div>
+	</div>
+</div>
