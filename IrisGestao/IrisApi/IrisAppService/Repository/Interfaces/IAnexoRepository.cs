@@ -5,5 +5,6 @@ namespace IrisGestao.ApplicationService.Repository.Interfaces;
 
 public interface IAnexoRepository : IRepository<Anexo>, IDisposable
 {
-    Task<IEnumerable<Anexo>> BuscarAnexoPorIdReferencia(Guid uuid);
+    Task<IEnumerable<Anexo>> GetByGuid(Guid uuid);
+    Task<IEnumerable<Anexo>> GetByClassificacao(Guid uuid, string classificacao);
 }

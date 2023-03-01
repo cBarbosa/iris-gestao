@@ -10,6 +10,7 @@ public class AzureStorageService: IAzureStorageService
     private readonly ILogger<AzureStorageService> logger;
     private readonly string blobAzureStorageConnectionString;
     private readonly BlobServiceClient blobServiceClient;
+    private readonly string environment;
 
     public AzureStorageService(
         IConfiguration configuration,
@@ -18,6 +19,7 @@ public class AzureStorageService: IAzureStorageService
         this.logger = logger;
         blobAzureStorageConnectionString = configuration["ConnectionStrings:BlobAzureStorage"];
         blobServiceClient = new BlobServiceClient(blobAzureStorageConnectionString);
+        environment = configuration["ASPNETCORE_ENVIRONMENT"];
     }
     
     public async Task<string> UploadBase64data(
@@ -31,7 +33,7 @@ public class AzureStorageService: IAzureStorageService
             var blobClient = new BlobClient(
                 blobAzureStorageConnectionString
                 , container
-                , $"{destinationFolder}/{fileName}");
+                , $"{environment}/{destinationFolder}/{fileName}");
 
             using (var stream = new MemoryStream(base64Data))
             {

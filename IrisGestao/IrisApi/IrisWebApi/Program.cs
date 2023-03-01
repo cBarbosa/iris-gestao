@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using IrisGestao.Infraestructure.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

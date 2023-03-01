@@ -10,14 +10,15 @@ public partial class Anexo : BaseEntity<Anexo>
     [Unicode(false)]
     public string Nome { get; set; } = null!;
 
-    [Column(TypeName = "text")]
+    [StringLength(255)]
+    [Unicode(false)]
     public string Local { get; set; } = null!;
 
     [StringLength(50)]
     [Unicode(false)]
     public Guid GuidReferencia { get; set; }
 
-    [StringLength(10)]
+    [StringLength(30)]
     [Unicode(false)]
     public string? MimeType { get; set; }
 
