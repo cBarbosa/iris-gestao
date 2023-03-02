@@ -7,7 +7,14 @@
 </ng-container>
 <ng-template #details>
 	<div class="property-view">
-		<div class="cover"></div>
+		<div
+			class="cover"
+			[style.background-image]="
+				'url(\'' +
+				(coverImage ?? './assets/images/imovel-placeholder-large.png') +
+				'\')'
+			"
+		></div>
 
 		<div class="content">
 			<div class="main-card">
@@ -81,7 +88,7 @@
 							>
 								Editar imóvel
 							</button>
-							
+
 							<button
 								pButton
 								type="button"
@@ -89,7 +96,8 @@
 								class="p-element p-button-outlined h-11 p-button p-component"
 								style="margin-left: 10px"
 							>
-							Inativar</button>
+								Inativar
+							</button>
 						</span>
 					</div>
 				</div>
@@ -263,21 +271,15 @@
 					</div> -->
 					<div class="data small">
 						<span class="label">Ins. IPTU:</span>
-						<span class="value">{{
-							unit.inscricaoIPTU ?? ""
-						}}</span>
+						<span class="value">{{ unit.inscricaoIPTU ?? "" }}</span>
 					</div>
 					<div class="data small">
 						<span class="label">N° Neoenergia:</span>
-						<span class="value">{{
-							unit.matriculaEnergia ?? ""
-						}}</span>
+						<span class="value">{{ unit.matriculaEnergia ?? "" }}</span>
 					</div>
 					<div class="data small">
 						<span class="label">N° CAESB:</span>
-						<span class="value">{{
-							unit.matriculaAgua ?? ""
-						}}</span>
+						<span class="value">{{ unit.matriculaAgua ?? "" }}</span>
 					</div>
 				</div>
 			</p-tabPanel>
@@ -317,7 +319,7 @@
 				class="p-button-outlined h-9 w-full"
 				(click)="navigateTo('property/edit/unit/' + this.unit.guidReferencia)"
 			></button>
-			
+
 			<button
 				pButton
 				pRipple
@@ -335,7 +337,6 @@
 				class="p-button-outlined h-9 w-full"
 				(click)="displayConfirmationCloneUnit = true"
 			></button>
-
 		</div>
 	</ng-template>
 </p-sidebar>
@@ -354,8 +355,18 @@
 			{{ modalContent.message }}
 		</p>
 
-		<button *ngIf="!isInativarImovel" pButton label="Continuar" (click)="reloadPage()"></button>
-		<button *ngIf="isInativarImovel" pButton label="Continuar" (click)="navigateTo('/property/listing')"></button>
+		<button
+			*ngIf="!isInativarImovel"
+			pButton
+			label="Continuar"
+			(click)="reloadPage()"
+		></button>
+		<button
+			*ngIf="isInativarImovel"
+			pButton
+			label="Continuar"
+			(click)="navigateTo('/property/listing')"
+		></button>
 	</div>
 	<ng-template #error>
 		<div class="modal-error">
@@ -377,8 +388,8 @@
 >
 	<h2>Deseja realmente inativar essa Unidade?</h2>
 	<p>
-		Ao inativar não será possível visualizá-la novamente. Caso
-		queira continuar, clique em confirmar.
+		Ao inativar não será possível visualizá-la novamente. Caso queira continuar,
+		clique em confirmar.
 	</p>
 
 	<div class="flex justify-between gap-5">
@@ -407,8 +418,8 @@
 >
 	<h2>Deseja realmente inativar esse Imóvel?</h2>
 	<p>
-		Ao inativar o imóvel não será possível visualizá-lo novamente. Caso
-		queira continuar, clique em confirmar.
+		Ao inativar o imóvel não será possível visualizá-lo novamente. Caso queira
+		continuar, clique em confirmar.
 	</p>
 
 	<div class="flex justify-between gap-5">

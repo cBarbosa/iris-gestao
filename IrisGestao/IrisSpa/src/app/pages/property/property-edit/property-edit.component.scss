@@ -17,6 +17,7 @@
 		section {
 			@apply p-6;
 			flex-grow: 1;
+			position: relative;
 
 			h4 {
 				@apply text-2xl font-bold;
@@ -44,8 +45,11 @@
 				.photo-input {
 					@apply mb-6;
 
-					img {
+					img.coverPhoto {
 						width: 100%;
+						aspect-ratio: 1440 / 360;
+						object-fit: cover;
+						border: solid 1px #cecece;
 						height: auto;
 					}
 					.buttons {
@@ -72,11 +76,12 @@
 				}
 
 				.document-list {
-					@apply mb-5 mt-5 mb-7;
+					@apply mt-5 mb-7;
 
 					.document {
-						@apply my-3 flex justify-between text-sm;
+						@apply flex justify-between items-center text-sm rounded;
 						color: #641b1e;
+						padding: 0.4rem;
 
 						.buttons {
 							@apply text-xl;
@@ -88,6 +93,26 @@
 
 								&:hover {
 									background-color: #f7ded3;
+								}
+							}
+
+							label {
+								@apply inline-block mx-1 w-7 h-7 rounded-full;
+								padding: 0.1rem 0 0 0;
+								text-align: center;
+								cursor: pointer;
+								font-size: 1rem;
+
+								&:hover {
+									background-color: #f7ded3;
+								}
+
+								i {
+									color: #641b1e;
+								}
+
+								input[type="file"] {
+									display: none;
 								}
 							}
 						}
@@ -111,59 +136,94 @@
 						&.occupancy > span:first-child:before {
 							background-image: url("../../../../assets/images/icons/blueprint-buildings.svg");
 						}
+
+						&.empty {
+							color: #5f5f5f;
+
+							> span:first-child:before {
+								filter: grayscale(1);
+							}
+						}
+
+						&:hover {
+							background-color: rgba(0, 0, 0, 0.02);
+						}
 					}
 				}
 			}
 
 			.property-photos {
-				display: flex;
-				align-items: flex-start;
+				position: relative;
+				width: 100%;
+				max-width: 100%;
+				// width: 400px;
+				overflow-x: hidden;
 
-				.photo {
-					position: relative;
-					overflow: hidden;
-					width: 7.5rem;
-					height: 6.5rem;
+				.photo-scroller {
+					display: flex;
+					align-items: flex-start;
+					flex-wrap: wrap;
+					gap: 1rem;
+					width: 100%;
+					max-width: 100%;
 
-					&:not(:last-child) {
-						margin-right: 1rem;
+					> * {
+						flex-grow: 0;
+						flex-shrink: 1;
+						flex-basis: 7.5rem;
 					}
 
-					img {
-						min-width: 100%;
-						min-height: 100%;
-						max-width: none;
-						max-height: 100%;
-						background-color: #262626;
+					.photo {
+						position: relative;
+						overflow: hidden;
+						width: 7.5rem;
+						height: 6.5rem;
+
+						img {
+							min-width: 100%;
+							min-height: 100%;
+							max-width: none;
+							max-height: 100%;
+							object-fit: cover;
+							background-color: #262626;
+						}
+
+						button {
+							position: absolute;
+							bottom: 0;
+							left: 0;
+							border-radius: 0;
+							padding: 0 0 0 0.36rem;
+							@apply text-xl w-8 h-8;
+							color: #ffffff;
+						}
 					}
 
-					button {
-						position: absolute;
-						bottom: 0;
-						left: 0;
+					.add-photo-button {
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						align-items: center;
+						width: 7.5rem;
+						height: 6.5rem;
 						border-radius: 0;
-						padding: 0 0 0 0.36rem;
-						@apply text-xl w-8 h-8;
-						color: #ffffff;
-					}
-				}
+						color: #641b1e;
+						padding: 0.4rem;
+						background-color: #f7ded3;
+						cursor: pointer;
+						@apply text-sm;
 
-				.add-photo-button {
-					width: 7.5rem;
-					height: 6.5rem;
-					display: block;
-					border-radius: 0;
-					color: #641b1e;
-					padding: 0.4rem;
-					background-color: #f7ded3;
-					@apply text-sm;
+						i {
+							@apply text-2xl;
+						}
 
-					i {
-						@apply text-2xl;
-					}
+						&:hover {
+							background-color: rgb(248, 212, 197);
+						}
 
-					&:hover {
-						background-color: rgb(248, 212, 197);
+						input[type="file"] {
+							display: none;
+						}
 					}
 				}
 			}
@@ -249,6 +309,41 @@
 		.p-button {
 			@apply mt-10;
 			width: 100%;
+		}
+
+		.modal-error {
+			i {
+				color: #e24c4c;
+			}
+		}
+	}
+
+	.crop-modal {
+		text-align: center;
+		min-width: 35rem;
+		max-width: 60vw;
+		--cropper-outline-color: rgba(75, 75, 75, 0.829);
+		--cropper-overlay-color: transparent;
+
+		h3 {
+			@apply font-bold;
+			font-size: 1.5rem;
+			color: #353635;
+		}
+
+		i {
+			@apply mt-4;
+			font-size: 5rem;
+			color: #319016;
+		}
+
+		p {
+			@apply text-lg mt-4;
+			color: #262626;
+		}
+
+		.p-button {
+			@apply mt-10;
 		}
 
 		.modal-error {
