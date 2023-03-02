@@ -590,7 +590,7 @@ export class RentContractRegisterComponent {
 				};
 			}),
 		};
-
+		
 		this.rentContractService
 			.registerContract(contractObj)
 			.pipe(first())
@@ -623,7 +623,7 @@ export class RentContractRegisterComponent {
 				},
 			});
 	}
-
+	
 	onProprietarySubmit(e: any = null) {
 		const formData: {
 			edificio: {

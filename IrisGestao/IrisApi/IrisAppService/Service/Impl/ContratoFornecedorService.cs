@@ -70,7 +70,7 @@ public class ContratoFornecedorService: IContratoFornecedorService
         var fornecedor = await fornecedorRepository.GetByReferenceGuid(cmd.GuidFornecedor.Value);
         if (fornecedor == null)
         {
-            return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
+            return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Imovel", null!);
         }
 
         var imovel = await imovelRepository.GetByReferenceGuid(cmd.GuidImovel.Value);
