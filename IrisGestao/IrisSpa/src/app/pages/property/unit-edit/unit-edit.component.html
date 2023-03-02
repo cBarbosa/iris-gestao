@@ -30,7 +30,7 @@
 
 			<div class="photo-data">
 				<img
-				*ngIf="unit"
+					*ngIf="unit"
 					[src]="unit.idImovelNavigation?.imgCapa ?? ''"
 					alt="property-photo"
 				/>
@@ -83,37 +83,64 @@
 			<h5>Documentos</h5>
 
 			<div class="document-list">
-				<div class="document project">
+				<div
+					class="document project"
+					*ngIf="propertyAttachments && propertyAttachments.projeto"
+				>
 					<span>Projeto</span>
 					<span class="buttons">
 						<button
 							pButton
 							type="button"
 							class="p-button-rounded p-button-text"
+							(click)="
+								downloadFile(
+									propertyAttachments.projeto.local,
+									propertyAttachments.projeto.nome
+								)
+							"
 						>
 							<i class="ph-download-simple"></i>
 						</button>
 					</span>
 				</div>
-				<div class="document registration">
+				<div
+					class="document registration"
+					*ngIf="propertyAttachments && propertyAttachments.matricula"
+				>
 					<span>Matrícula</span>
 					<span class="buttons">
 						<button
 							pButton
 							type="button"
 							class="p-button-rounded p-button-text"
+							(click)="
+								downloadFile(
+									propertyAttachments.matricula.local,
+									propertyAttachments.matricula.nome
+								)
+							"
 						>
 							<i class="ph-download-simple"></i>
 						</button>
 					</span>
 				</div>
-				<div class="document occupancy">
+				<div
+					class="document occupancy"
+					*ngIf="propertyAttachments && propertyAttachments.habitese"
+				>
 					<span>Habite-se</span>
 					<span class="buttons">
 						<button
 							pButton
 							type="button"
 							class="p-button-rounded p-button-text"
+							(click)="
+								downloadFile(
+									propertyAttachments.habitese.local,
+									propertyAttachments.habitese.nome
+								)
+							"
 						>
 							<i class="ph-download-simple"></i>
 						</button>
@@ -124,22 +151,38 @@
 		<section class="aditional-data" formGroupName="unitInfo">
 			<h4>Informações da unidade</h4>
 
-			<h5 class="mb-5">Fotos do imóvel</h5>
-			<div class="property-photos">
-				<div class="photo">
-					<img
-						src="../../../../assets/images/property/3.png"
-						alt="Foto do imóvel"
-					/>
-					<button pButton type="button">
-						<i class="ph-trash"></i>
-					</button>
+			<h5 class="mb-2">Fotos da unidade</h5>
+			<div class="property-photos mb-5">
+				<div class="photo-scroller">
+					<label for="addPhoto" class="add-photo-button">
+						<i class="ph-plus"></i>
+						<div>Adicionar foto</div>
+						<input
+							pButton
+							type="file"
+							id="addPhoto"
+							(change)="addPhoto($event)"
+							class="hidden"
+							multiple
+						/>
+					</label>
+					<ng-container *ngFor="let photo of unitPhotos; index as i">
+						<div class="photo">
+							<img [src]="photo.data" [alt]="photo.name" />
+							<button pButton type="button" (click)="removePhoto(i)">
+								<i class="ph-trash"></i>
+							</button>
+						</div>
+					</ng-container>
+					<ng-container *ngFor="let photo of addedUnitPhotos; index as i">
+						<div class="photo">
+							<img [src]="photo.data" [alt]="photo.name" />
+							<button pButton type="button" (click)="removePhoto(i, true)">
+								<i class="ph-trash"></i>
+							</button>
+						</div>
+					</ng-container>
 				</div>
-
-				<button pButton type="button" class="p-button-rounded add-photo-button">
-					<i class="ph-plus"></i>
-					<div>Adicionar foto</div>
-				</button>
 			</div>
 
 			<div class="field" [hidden]="true">
