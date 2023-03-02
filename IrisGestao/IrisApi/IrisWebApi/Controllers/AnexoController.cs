@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IrisWebApi.Controllers;
 
 [Route("api/[controller]")]
+[Produces("application/json")]
 [ApiController]
 public class AnexoController : Controller
 {
@@ -17,23 +18,18 @@ public class AnexoController : Controller
     }
 
     [HttpGet]
-    [Produces("application/json")]
     public async Task<IActionResult> GetAll() =>
         Ok(await anexoService.GetAll());
     
     [HttpGet("{codigo}/id")]
-    [Produces("application/json")]
     public async Task<IActionResult> BuscarAnexo([FromRoute] int codigo) =>
         Ok(await anexoService.GetById(codigo));
     
-    
     [HttpGet("{uid:guid}")]
-    [Produces("application/json")]
     public async Task<IActionResult> GetByIdReferencia([FromRoute] Guid uid) =>
         Ok(await anexoService.GetByIdReferencia(uid));
     
     [HttpPost("{uid:guid}/classificacao/{classificacao}")]
-    [Produces("application/json")]
     public async Task<IActionResult> Post(
         [FromRoute] Guid uid,
         [FromRoute] string? classificacao,
@@ -64,13 +60,13 @@ public class AnexoController : Controller
         return Ok(await anexoService.Insert(cmd));
     }
     
-    [HttpPut("{codigo:int}/atualizar")]
-    [Produces("application/json")]
-    public async Task<IActionResult> Atualizar(int codigo, [FromBody] CriarAnexoCommand cmd) => 
+    [HttpPut("{codigo:int}")]
+    public async Task<IActionResult> Atualizar(
+        [FromRoute] int codigo,
+        [FromBody] CriarAnexoCommand cmd) => 
         Ok(await anexoService.Update(codigo, cmd));
     
-    [HttpDelete("{codigo:int}/deletar")]
-    [Produces("application/json")]
+    [HttpDelete("{codigo:int}")]
     public async Task<IActionResult> Deletar(int codigo) =>
         Ok(await anexoService.Delete(codigo));
     
