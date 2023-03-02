@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { Imovel } from '../../models';
+import { IImovel } from '../../models';
 
 @Component({
 	selector: 'app-property-item',
@@ -9,7 +9,7 @@ import { Imovel } from '../../models';
 })
 export class PropertyItemComponent {
 	@Input('data')
-	propertyData: Imovel;
+	propertyData: IImovel;
 
 	constructor(private router: Router) {}
 

@@ -9,12 +9,13 @@ import {
 } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 import { first } from 'rxjs';
-import { Imovel } from 'src/app/shared/models';
+import { IImovel, Imovel } from 'src/app/shared/models';
 import {
 	ImovelService,
 	ClienteService,
 	CommonService,
 } from 'src/app/shared/services';
+import { AnexoService } from 'src/app/shared/services/anexo.service';
 import { Utils } from 'src/app/shared/utils';
 
 @Component({
@@ -23,7 +24,7 @@ import { Utils } from 'src/app/shared/utils';
 	styleUrls: ['./property-listing.component.scss'],
 })
 export class PropertyListingComponent implements OnInit {
-	properties: Imovel[] = [];
+	properties: IImovel[] = [];
 
 	totalListCount: number;
 	isLoadingList = true;
@@ -54,7 +55,8 @@ export class PropertyListingComponent implements OnInit {
 		private clienteService: ClienteService,
 		private commonService: CommonService,
 		private router: Router,
-		private activatedRoute: ActivatedRoute
+		private activatedRoute: ActivatedRoute,
+		private anexoService: AnexoService
 	) {}
 
 	ngOnInit(): void {
@@ -163,9 +165,29 @@ export class PropertyListingComponent implements OnInit {
 						this.pageCount > 1 || this.pageIndex > this.pageCount;
 
 					if (event.data.items.length > 0) {
-						event.data.items.forEach((imovel: Imovel) => {
+						event.data.items.forEach(async (imovel: Imovel) => {
 							// console.debug('Imovel Data >> ' + JSON.stringify(imovel));
-							this.properties.push(imovel);
+
+							let cover;
+
+							await this.anexoService
+								.getFiles(imovel.guidReferencia)
+								.subscribe({
+									next: (response) => {
+										cover =
+											response?.find((file) => file.classificacao === 'capa')
+												?.local ?? './assets/images/imovel-placeholder.png';
+
+										const imovelObj: IImovel = {
+											...imovel,
+											imgCapa: cover,
+										};
+										this.properties.push(imovelObj);
+									},
+									error(err) {
+										console.error(err);
+									},
+								});
 						});
 						this.noRestults = false;
 					} else {
@@ -224,12 +246,12 @@ export class PropertyListingComponent implements OnInit {
 
 	truncateChar(text: string): string {
 		const charlimit = 48;
-		if(!text || text.length <= charlimit ) {
+		if (!text || text.length <= charlimit) {
 			return text;
 		}
-	
-	  	const without_html = text.replace(/<(?:.|\n)*?>/gm, '');
-	  	const shortened = without_html.substring(0, charlimit) + "...";
-	  	return shortened;
+
+		const without_html = text.replace(/<(?:.|\n)*?>/gm, '');
+		const shortened = without_html.substring(0, charlimit) + '...';
+		return shortened;
 	}
 }
