@@ -48,4 +48,25 @@ public class AzureStorageService: IAzureStorageService
             return string.Empty;
         }
     }
+    
+    public async Task<bool> DeleteBlobFile(
+        string fileName,
+        string originFolder,
+        string container)
+    {
+        try
+        {
+            var blobClient = new BlobClient(
+                blobAzureStorageConnectionString
+                , container
+                , $"{environment}/{originFolder}/{fileName}");
+
+            return await blobClient.DeleteIfExistsAsync();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, e.Message);
+            return false;
+        }
+    }
 }

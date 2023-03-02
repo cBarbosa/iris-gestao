@@ -45,17 +45,24 @@ public class AnexoService: IAnexoService
 
     public async Task<CommandResult> GetByIdReferencia(Guid uid)
     {
-        var anexos = await anexoRepository.GetByGuid(uid);
+        try
+        {
+            var anexos = await anexoRepository.GetByGuid(uid);
 
-        return !anexos.Any()
-            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
-            : new CommandResult(true, SuccessResponseEnums.Success_1005, anexos);
+            return new CommandResult(true, SuccessResponseEnums.Success_1005, anexos);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+        }
+        
     }
 
     public async Task<CommandResult> Insert(CriarAnexoCommand cmd)
     {
         #region valida extensões
-        string[] fotoExtensoes = {".png", ".jpg", ".jpeg", ".svn"};
+        string[] fotoExtensoes = {".png", ".jpg", ".jpeg", ".svn", ".gif"};
         string[] documentoExtensoes = {".xls", ".doc", ".pdf", ".xlsx", ".docx"};
 
         var validaFotos = cmd.Classificacao.Equals("capa")
@@ -75,7 +82,7 @@ public class AnexoService: IAnexoService
                     ? fotoExtensoes.Contains($".{extensao}")
                     : validaDocumentos & documentoExtensoes.Contains($".{extensao}")).Any(isValid => !isValid))
         {
-            return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
+            return new CommandResult(false, "Este tipo de arquivo não pode ser enviado", null!);
         }
         #endregion
 
@@ -96,7 +103,7 @@ public class AnexoService: IAnexoService
 
         if (azureFiles.Count < cmd.Images.Count)
         {
-            return new CommandResult(false, ErrorResponseEnums.Error_1000, azureFiles);
+            return new CommandResult(false, "Erro no processamento dos arquivos", azureFiles);
         }
 
         try
@@ -105,7 +112,7 @@ public class AnexoService: IAnexoService
 
             return azureFiles.Count > 0
                 ? new CommandResult(true, SuccessResponseEnums.Success_1000, azureFiles)
-                : new CommandResult(false, ErrorResponseEnums.Error_1000, azureFiles);
+                : new CommandResult(false, "Erro no upload de arquivos", azureFiles);
         }
         catch (Exception e)
         {
@@ -149,6 +156,16 @@ public class AnexoService: IAnexoService
                 return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
             }
             
+            var result = await azureStorageService.DeleteBlobFile(
+                anexo.Nome,
+                $"{anexo.GuidReferencia}",
+                "assets");
+
+            if (!result)
+            {
+                return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
+            }
+
             anexoRepository.Delete(codigo);
             return new CommandResult(true, SuccessResponseEnums.Success_1002, null!);
         }
