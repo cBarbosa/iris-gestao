@@ -160,7 +160,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                         ? x.NumeroContrato.Contains(numeroContrato!)
                                         : true)
                                    && ((dthInicioVigencia.HasValue && dthFimVigencia.HasValue)
-                                        ? (x.DataInicioContrato >= dthInicioVigencia && x.DataFimContrato <= dthFimVigencia) : true)
+                                        ? (x.DataInicioContrato >= dthInicioVigencia.Value && x.DataFimContrato <= dthFimVigencia.Value) : true)
                         )
                         .Select(x => new
                         {

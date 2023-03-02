@@ -37,14 +37,14 @@ public class ContratoAluguelService: IContratoAluguelService
 
     public async Task<CommandResult> GetAllPaging(int? idTipoImovel, int? idBaseReajuste, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? numeroContrato, int limit, int page)
     {
-        if(dthInicioVigencia.HasValue && dthFimVigencia.HasValue)
+        /*if(dthInicioVigencia.HasValue && dthFimVigencia.HasValue)
         {
             var diffDatas = dthFimVigencia.Value - dthInicioVigencia.Value;
             if(diffDatas.Days < 1 || diffDatas.Days > 30)
             {
                 return new CommandResult(false, String.Format(ErrorResponseEnums.Error_1008,30), null!);
             }
-        }
+        }*/
         
         var result = await contratoAluguelRepository.GetAllPaging(idTipoImovel, idBaseReajuste, dthInicioVigencia, dthFimVigencia, numeroContrato, limit, page);
 
@@ -69,7 +69,7 @@ public class ContratoAluguelService: IContratoAluguelService
 
     public async Task<CommandResult> Insert(CriarContratoAluguelCommand cmd)
     {
-        var ContratoAluguel = new ContratoAluguel();
+        var contratoAluguel = new ContratoAluguel();
         if (cmd.GuidCliente.Equals(Guid.Empty))
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
@@ -80,15 +80,24 @@ public class ContratoAluguelService: IContratoAluguelService
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
         }
-        BindContratoAluguelData(cmd, ContratoAluguel);
-        ContratoAluguel.IdCliente = cliente.Id;
+        BindContratoAluguelData(cmd, contratoAluguel);
+        contratoAluguel.IdCliente = cliente.Id;
+
+        if(contratoAluguel.DataOcupacao.Value > contratoAluguel.DataFimContrato)
+        {
+            return new CommandResult(false, "A data de ocupação do imóvel não pode ser maior que a data fim do contrato", null!);
+        }
+        if (contratoAluguel.PeriodicidadeReajuste > contratoAluguel.PrazoTotalContrato)
+        {
+            return new CommandResult(false, "A periodicidade de reajuste não pode ser maior que o prazo total do contrato", null!);
+        }
 
         try
         {
-            contratoAluguelRepository.Insert(ContratoAluguel);
-            await CriaContratoAluguelImovel(ContratoAluguel.Id, cmd.lstImoveis);
+            contratoAluguelRepository.Insert(contratoAluguel);
+            await CriaContratoAluguelImovel(contratoAluguel.Id, cmd.lstImoveis);
 
-            return new CommandResult(true, SuccessResponseEnums.Success_1000, ContratoAluguel);
+            return new CommandResult(true, SuccessResponseEnums.Success_1000, contratoAluguel);
         }
         catch (Exception e)
         {
