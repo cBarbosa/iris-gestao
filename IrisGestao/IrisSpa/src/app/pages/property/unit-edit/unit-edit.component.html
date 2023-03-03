@@ -30,8 +30,11 @@
 
 			<div class="photo-data">
 				<img
-					*ngIf="unit"
-					[src]="unit.idImovelNavigation?.imgCapa ?? ''"
+					*ngIf="attachmentsObj"
+					[src]="
+						propertyAttachments.capa?.local ??
+						'assets/images/imovel-placeholder.png'
+					"
 					alt="property-photo"
 				/>
 			</div>

@@ -8,7 +8,11 @@ import {
 	ImageData as ImagemData,
 } from 'src/app/shared/models';
 import { ImovelService } from 'src/app/shared/services';
-import { AnexoService } from 'src/app/shared/services/anexo.service';
+import {
+	AnexoService,
+	Attachment,
+} from 'src/app/shared/services/anexo.service';
+import { Utils } from 'src/app/shared/utils';
 
 @Component({
 	selector: 'app-property-view',
@@ -22,6 +26,11 @@ export class PropertyViewComponent implements OnInit {
 	unit: ImovelUnidade | undefined;
 	units: ImovelUnidade[] = [];
 	imageList: ImagemData[] = [];
+	attachmentDocs: {
+		projeto?: Attachment;
+		matricula?: Attachment;
+		habitese?: Attachment;
+	} = {};
 
 	coverImage: string | undefined;
 
@@ -160,6 +169,42 @@ export class PropertyViewComponent implements OnInit {
 				this.isLoadingView = false;
 				this.isCorporativeBuilding =
 					this.units[0].idTipoUnidadeNavigation?.id == 1;
+
+				this.anexoService
+					.getFiles(imovel.guidReferencia)
+					.pipe(first())
+					.subscribe({
+						next: (response) => {
+							console.log('>>>>', response);
+							let photos: Attachment[] = [];
+
+							response?.forEach((file) => {
+								const classificacao = file.classificacao;
+
+								if (classificacao === 'foto') photos.push(file);
+								else if (classificacao === 'projeto')
+									this.attachmentDocs.projeto = file;
+								else if (classificacao === 'matricula')
+									this.attachmentDocs.matricula = file;
+								else if (classificacao === 'habitese')
+									this.attachmentDocs.habitese = file;
+							});
+
+							this.imageList =
+								photos?.map((photo) => {
+									return {
+										url: photo.local,
+										thumbUrl: photo.local,
+										alt: photo.nome,
+									};
+								}) ?? [];
+						},
+						error: (err) => {
+							// console.error(err)
+							console.log('>>>>', err);
+							this.imageList = [];
+						},
+					});
 			});
 	}
 
@@ -287,5 +332,18 @@ export class PropertyViewComponent implements OnInit {
 	reloadPage() {
 		this.closeModal();
 		this.getData();
+	}
+
+	async downloadFile(
+		file: File | string | ArrayBuffer | null,
+		filename: string
+	) {
+		if (file instanceof File) {
+			file = (await Utils.fileToDataUrl(file)).data;
+		}
+
+		if (file === null) return;
+
+		Utils.saveAs(file, filename);
 	}
 }
