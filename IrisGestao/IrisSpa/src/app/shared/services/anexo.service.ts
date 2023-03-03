@@ -18,6 +18,14 @@ export type Attachment = {
 	tamanho: number;
 };
 
+export type ArquivoClassificacoes =
+	| 'capa'
+	| 'foto'
+	| 'habitese'
+	| 'projeto'
+	| 'matricula'
+	| 'outrosdocs';
+
 const httpOptions = {
 	headers: new HttpHeaders({
 		'Content-Type': 'multipart/form-data',
@@ -46,16 +54,15 @@ export class AnexoService {
 				`${env.config.apiUrl}Anexo/${uid}/classificacao/${classificacao}`,
 				formData
 			)
-			.pipe(first())
-			.subscribe({
-				next: (response) => {
+			.pipe(
+				map((response) => {
 					console.debug('registerFile:', response);
+
+					if (!response.success)
+						console.error('registerFile:', response.message);
 					return response;
-				},
-				error: (error) => {
-					console.error('registerFile:', error);
-				},
-			});
+				})
+			);
 	}
 
 	getFiles(guid: string) {

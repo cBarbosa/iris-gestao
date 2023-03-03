@@ -64,6 +64,7 @@ export class UnitEditComponent implements OnInit {
 	];
 
 	propertyAttachments: {
+		capa: Attachment | undefined;
 		projeto: Attachment | undefined;
 		matricula: Attachment | undefined;
 		habitese: Attachment | undefined;
@@ -271,6 +272,10 @@ export class UnitEditComponent implements OnInit {
 			.subscribe({
 				next: (event) => {
 					this.propertyAttachments = {
+						capa: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'capa'
+						),
 						habitese: event?.find(
 							({ classificacao }: { classificacao: string }) =>
 								classificacao === 'habitese'
