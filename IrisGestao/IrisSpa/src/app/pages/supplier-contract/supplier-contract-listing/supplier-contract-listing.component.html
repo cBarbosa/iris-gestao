@@ -54,7 +54,7 @@
 					pButton
 					type="button"
 					class="p-button-outlined h-9 white-theme"
-					(click)="navigateTo('rent-contract/register')"
+					(click)="navigateTo('supplier-contract/register')"
 				>
 					<i class="pi pi-plus"></i>
 					Adicionar Contrato
@@ -100,6 +100,7 @@
 						<td class="font-bold">{{ contract.numeroContrato }}</td>
 						<!-- \/ ?? -->
 						<td>{{ contract.prestador }}</td>
+						<td>{{ contract.cpfCnpj | cpfcnpj }}</td>
 						<!-- \/ ?? multiplos imoveis com multiplas unidades-->
 						<!-- <td>{{ contract.unidade }}</td> -->
 						<td>{{ contract.dataInicioContrato | date : "shortDate" }}</td>

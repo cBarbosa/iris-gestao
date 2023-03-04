@@ -18,18 +18,7 @@ export class SupplierContractListingComponent {
 	rows = 10;
 	pageIndex = 1;
 	noRestults = false;
-	contractEntries: any[] = [
-		{
-			numeroContrato: '123456',
-			prestador: 'Nome prestador',
-			cpfCnpj: '12345678900',
-			dataInicioContrato: new Date('2023-01-15'),
-			dataFimContrato: new Date(),
-			valorServico: 32000,
-			action: '',
-			guidReferencia: 'abcd-efghi',
-		},
-	];
+	contractEntries: any[] = [];
 
 	tableMenu: MenuItem[];
 	focusedContract: any;
@@ -89,7 +78,7 @@ export class SupplierContractListingComponent {
 							return {
 								numeroContrato: contrato.numeroContrato,
 								prestador: contrato.fornecedor.nome,
-								cpfCnpj: 'UNIDADE',
+								cpfCnpj: contrato.fornecedor.cpfCnpj,
 								dataInicioContrato: contrato.dataInicioContrato
 									? new Date(contrato.dataInicioContrato)
 									: null,

@@ -104,14 +104,24 @@
 					</ng-container>
 				</div>
 
+				<!-- \/ manter link para outro formulário ????? FIX-->
 				<div class="flex justify-start text-sm font-medium mb-6">
+					<p-button
+						icon="pi pi-external-link"
+						iconPos="right"
+						label="Novo Fornecedor"
+						styleClass="p-button-text text-sm"
+						(click)="navigateTo('supplier/register/new')"
+					></p-button>
+				</div>
+				<!-- <div class="flex justify-start text-sm font-medium mb-6">
 					<p-button
 						icon="pi pi-plus"
 						label="Novo Fornecedor"
 						styleClass="p-button-text text-sm"
 						(click)="registerSupplierVisible = true"
 					></p-button>
-				</div>
+				</div> -->
 
 				<div
 					class="add-property-alert"
@@ -139,13 +149,6 @@
 									pButton
 									type="button"
 									class="p-button-text"
-									label="Editar"
-									(click)="editLinkedProperty(property)"
-								></button>
-								<button
-									pButton
-									type="button"
-									class="p-button-text"
 									label="Excluir"
 									(click)="removeLinkedProperty(property.guid)"
 								></button>
@@ -156,15 +159,6 @@
 						>
 							<div *ngIf="property.tipo" class="basis-0 max-w-[50%]">
 								{{ property.tipo }}
-							</div>
-							<div *ngIf="property.unidades.length > 0" class="basis-0">
-								Unidade(s):
-								<ng-container
-									*ngFor="let unit of property.unidades; index as i"
-								>
-									<ng-container *ngIf="i !== 0">, </ng-container>
-									{{ unit.name }}
-								</ng-container>
 							</div>
 						</div>
 					</div>
@@ -438,7 +432,7 @@
 			pRipple
 			type="button"
 			label="Cancelar"
-			(click)="navigateTo('rent-contract/listing')"
+			(click)="navigateTo('supplier-contract/listing')"
 			class="p-button-outlined h-11"
 		></button>
 
@@ -458,15 +452,10 @@
 <!-- ------------------------------------------------------------------------ -->
 <!-- ------------------------------------------------------------------------ -->
 
-<form [formGroup]="propertyAddForm" *ngIf="propertyAddVisible">
+<form [formGroup]="propertyAddForm">
 	<p-sidebar [(visible)]="propertyAddVisible" position="right">
 		<ng-template pTemplate="header">
-			<h4 *ngIf="editingLinkedProperty === null; else editingHeader">
-				Adicionar novo Edifício
-			</h4>
-			<ng-template #editingHeader
-				><h4>Editar Edifício vinculado</h4></ng-template
-			>
+			<h4>Adicionar novo Edifício</h4>
 		</ng-template>
 		<ng-template pTemplate="content">
 			<div class="register-property-form">
@@ -477,7 +466,6 @@
 						[options]="buildings"
 						formControlName="edificio"
 						aria-describedby="edificio-help"
-						(ngModelChange)="onChangeBuilding($event)"
 					></p-dropdown>
 					<ng-container *ngIf="checkHasError(f['edificio'])">
 						<small
@@ -490,37 +478,6 @@
 						<ng-template #error2>
 							<small id="edificio-help" class="p-error block">
 								Edifício inválido
-							</small>
-						</ng-template>
-					</ng-container>
-				</div>
-
-				<div class="field">
-					<label for="unidade" class="block">Unidade</label>
-					<p-multiSelect
-						[options]="units"
-						formControlName="unidade"
-						defaultLabel="Selecione a(s) unidade(s)"
-						[showToggleAll]="false"
-						[showClear]="false"
-					></p-multiSelect>
-
-					<ng-container
-						*ngIf="checkHasError(propertyAddForm.controls['unidade'])"
-					>
-						<small
-							id="unidade-help"
-							*ngIf="
-								propertyAddForm.controls['unidade'].hasError('required');
-								else error2
-							"
-							class="p-error block"
-						>
-							Informe a data de nascimento
-						</small>
-						<ng-template #error2>
-							<small id="unidade-help" class="p-error block">
-								Data de nascimento inválida
 							</small>
 						</ng-template>
 					</ng-container>
@@ -553,26 +510,27 @@
 
 <!-- ------------------------------------------------------------------------ -->
 <!-- ------------------------------------------------------------------------ -->
-<!-- REGISTRO DE LOCATARIO (SIDEBAR) -->
+<!-- REGISTRO DE FORNECEDOR (SIDEBAR) CORRIGIR!!!!!!!!!!!!! -->
 <!-- ------------------------------------------------------------------------ -->
 <!-- ------------------------------------------------------------------------ -->
 
+<!--
 <form [formGroup]="registerSupplierForm" *ngIf="registerSupplierForm">
 	<p-sidebar [(visible)]="registerSupplierVisible" position="right">
 		<ng-template pTemplate="header">
-			<h4>Adicionar novo locatário</h4>
+			<h4>Adicionar novo fornecedor</h4>
 		</ng-template>
 		<ng-template pTemplate="content">
 			<div class="register-renter-form">
 				<div class="field">
 					<label for="client-type" class="block">Tipo de cliente</label>
-					<!-- <p-dropdown
+					<p-dropdown
 						id="client-type"
-						[options]="renterTypes"
-						formControlName="tipoCliente"
+						[options]="supplierTypes"
+						formControlName="tipoFornecedor"
 						aria-describedby="client-type-help"
-						(onChange)="renterTypeChange()"
-					></p-dropdown> -->
+						(onChange)="supplierTypeChange($event)"
+					></p-dropdown>
 					<ng-container *ngIf="checkHasError(f['tipoCliente'])">
 						<small
 							id="client-type-help"
@@ -620,7 +578,7 @@
 					</ng-container>
 				</div>
 
-				<!-- <div class="field">
+				<! -- <div class="field">
 					<label for="cpf-cnpj" class="block">{{ currCpfCnpj }}</label>
 					<input
 						id="cpf-cnpj"
@@ -649,7 +607,7 @@
 							</small>
 						</ng-template>
 					</ng-container>
-				</div> -->
+				</div> -- >
 
 				<div class="field">
 					<label for="birthday" class="block">Nascimento</label>
@@ -770,6 +728,7 @@
 		</ng-template>
 	</p-sidebar>
 </form>
+-->
 
 <p-dialog
 	[(visible)]="displayModal"
@@ -794,9 +753,9 @@
 
 		<button
 			pButton
-			label="Continuar 2"
+			label="Continuar"
 			*ngIf="!registerSupplierVisible"
-			(click)="closeModal(navigateTo, 'rent-contract/listing')"
+			(click)="closeModal(navigateTo, 'supplier-contract/listing')"
 		></button>
 	</div>
 	<ng-template #error>

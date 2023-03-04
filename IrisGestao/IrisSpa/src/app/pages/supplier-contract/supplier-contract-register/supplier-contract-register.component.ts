@@ -17,7 +17,12 @@ import {
 import { SupplierContractService } from 'src/app/shared/services/supplier-contract.service';
 import { SupplierService } from 'src/app/shared/services/supplier.service';
 import { Utils } from 'src/app/shared/utils';
-import { EmailValidator } from 'src/app/shared/validators/custom-validators';
+import {
+	CnpjValidator,
+	CpfValidator,
+	EmailValidator,
+	PastDateValidator,
+} from 'src/app/shared/validators/custom-validators';
 
 type Step = {
 	label: string;
@@ -55,13 +60,8 @@ export class SupplierContractRegisterComponent {
 		nome: string;
 		guid: string;
 		tipo: string;
-		unidades: {
-			guid: string;
-			name: string;
-		}[];
 	}[] = [];
 	linkedPropertiesInvalid = false;
-	editingLinkedProperty: string | null = null;
 	propertyAddVisible = false;
 
 	displayModal = false;
@@ -101,6 +101,7 @@ export class SupplierContractRegisterComponent {
 		},
 	];
 
+	/* \/ quais opções ????? FIX*/
 	readjustmentFrequencies: DropdownItem[] = [
 		{
 			label: 'Selecione',
@@ -121,7 +122,16 @@ export class SupplierContractRegisterComponent {
 		},
 	];
 
-	units: DropdownItem[] = [];
+	supplierTypes: DropdownItem[] = [
+		{
+			label: 'Pessoa física',
+			value: 'cpf',
+		},
+		{
+			label: 'Pessoa Jurídica',
+			value: 'cnpj',
+		},
+	];
 
 	constructor(
 		private fb: FormBuilder,
@@ -176,19 +186,65 @@ export class SupplierContractRegisterComponent {
 
 		this.propertyAddForm = this.fb.group({
 			edificio: [null, Validators.required],
-			unidade: [null, [Validators.required]],
 		});
-
-		this.propertyAddForm.controls['unidade'].disable();
 
 		this.registerSupplierForm = this.fb.group({
-			name: ['', [Validators.required]],
-			tipoCliente: ['cpf', [Validators.required]],
+			tipoFornecedor: ['cpf', [Validators.required]],
 			cpfCnpj: ['', [Validators.required]],
-			birthday: ['', [Validators.required]],
+			nome: ['', [Validators.required]],
+			razaoSocial: ['', [Validators.required]],
+			endereco: ['', [Validators.required]],
+			bairro: ['', [Validators.required]],
+			cidade: ['', [Validators.required]],
+			estado: ['', [Validators.required]],
+			cep: ['', [Validators.required]],
 			email: ['', [Validators.required, EmailValidator]],
-			telephone: ['', [Validators.required]],
+			telefone: ['', [Validators.required]],
+
+			contato: this.fb.group({
+				nome: ['', []],
+				email: ['', [EmailValidator]],
+				telefone: ['', []],
+				cargo: ['', []],
+				dataNascimento: ['', []],
+			}),
+			dadosBancarios: this.fb.group({
+				agencia: [null, [Validators.required]],
+				operacao: [null, [Validators.required]],
+				conta: [null, [Validators.required]],
+				banco: ['', [Validators.required]],
+				chavePix: ['', [Validators.required]],
+			}),
 		});
+
+		/*
+		{
+    "cpfCnpj": "55642822000168",
+    "nome": "Segurança Patrimonial",
+    "razaoSocial": "Segurança Patrimonial LTDA",
+    "endereco": "Quadra SQN 115",
+    "bairro": "Asa Norte",
+    "cidade": "Brasília",
+    "estado": "DF",
+    "cep": 70772000,
+    "email": "renato.s.almeida@outlook.com",
+    "telefone": "61991363588",
+    "contato": {
+        "nome": "Segurança Patrimonial ",
+        "email": "renato.s.almeida@outlook.com",
+        "telefone": "61991363588",
+        "cargo": "Executivo",
+        "dataNascimento": "1988-04-26"
+    },
+    "dadosBancarios": {
+        "agencia": 1041,
+        "operacao": 1,
+        "conta": 22630,
+        "banco": "Caixa Economica Federal",
+        "chavePix": "61991363588"
+    }
+}
+ */
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
@@ -408,7 +464,7 @@ export class SupplierContractRegisterComponent {
 				valor: number; //x
 				dataInicio: string; //x
 				dataFim: string; //x
-				dataVencimento: number;
+				dataVencimento: number; // ??????
 				pagamento: number; //x
 				reajuste: number; //x
 				periodicidade: number; //x
@@ -452,18 +508,21 @@ export class SupplierContractRegisterComponent {
 			diaPagamento: number;
 			periodicidadeReajuste: number;
 		} = {
-			guidImovel: '05ca9f97-5a0c-45be-b02c-91184f4769f6',
+			/* \/ é possivel enviar mais de um imovel? ????? FIX */
+			guidImovel: this.linkedProperties[0].guid,
 			guidFornecedor: formData.contractInfo.prestador,
 			idFormaPagamento: formData.valuesInfo.pagamento,
 			idIndiceReajuste: formData.valuesInfo.reajuste,
 			numeroContrato: formData.contractInfo.numero,
 			descricaoDoServico: formData.contractInfo.nome,
+			/* \/ o que é percentual ????? FIX */
 			percentual: 10,
 			dataAtualizacao: new Date().toISOString(),
 			valorServicoContratado: formData.valuesInfo.valor,
 			dataInicioContrato: formData.valuesInfo.dataInicio,
 			dataFimContrato: formData.valuesInfo.dataFim,
-			diaPagamento: 0,
+			/* \/ diaPagamento == data do vencimento da parcela ????? FIX */
+			diaPagamento: formData.valuesInfo.dataVencimento,
 			periodicidadeReajuste: formData.valuesInfo.periodicidade,
 		};
 
@@ -503,27 +562,12 @@ export class SupplierContractRegisterComponent {
 	onPropertySubmit(e: any = null) {
 		const formData = this.propertyAddForm.getRawValue();
 
-		if (this.editingLinkedProperty === null) {
-			this.linkedProperties.push({
-				nome: formData.edificio.name,
-				guid: formData.edificio.guid,
-				tipo: 'Edifício Coorporativo',
-				unidades: formData.unidade,
-			});
-		} else {
-			const index = this.linkedProperties.findIndex(
-				(p) => p.guid === this.editingLinkedProperty
-			);
-
-			this.linkedProperties.splice(index, 1, {
-				nome: formData.edificio.name,
-				guid: formData.edificio.guid,
-				tipo: 'Edifício Coorporativo',
-				unidades: formData.unidade,
-			});
-
-			this.linkedProperties = [...this.linkedProperties];
-		}
+		/* FIX: tipo: 'Edifício Coorporativo' hardcoded */
+		this.linkedProperties.push({
+			nome: formData.edificio.name,
+			guid: formData.edificio.guid,
+			tipo: 'Edifício Coorporativo',
+		});
 
 		if (this.linkedProperties.length !== 0) {
 			this.linkedPropertiesInvalid = false;
@@ -534,26 +578,29 @@ export class SupplierContractRegisterComponent {
 		this.hideAddProperty();
 	}
 
-	onChangeBuilding(event: any) {
-		const building = this.buildings.find((b) => b.value?.guid === event?.guid);
-
-		if (building?.value !== null)
-			this.propertyAddForm.controls['unidade'].enable();
-		else this.propertyAddForm.controls['unidade'].disable();
-
-		this.propertyAddForm.controls['unidade'].setValue(null);
-
-		this.units = [];
-
-		building?.['units']?.forEach((item: any) => {
-			this.units.push({
-				label: item.tipo,
-				value: {
-					guid: item.guidReferencia,
-					name: item.tipo,
-				},
-			});
-		});
+	supplierTypeChange(e: any) {
+		const isCpf = e.value;
+		if (!isCpf) {
+			this.registerSupplierForm.controls['CpfCnpj'].setValidators([
+				Validators.required,
+				CpfValidator,
+			]);
+			this.registerSupplierForm.controls['DataNascimento'].setValidators([
+				PastDateValidator,
+			]);
+		} else {
+			this.registerSupplierForm.controls['CpfCnpj'].setValidators([
+				Validators.required,
+				CnpjValidator,
+			]);
+			this.registerSupplierForm.controls['DataNascimento'].removeValidators([
+				PastDateValidator,
+			]);
+		}
+		this.registerSupplierForm.controls['CpfCnpj'].updateValueAndValidity();
+		this.registerSupplierForm.controls[
+			'DataNascimento'
+		].updateValueAndValidity();
 	}
 
 	onSupplierSubmit() {
@@ -646,48 +693,6 @@ export class SupplierContractRegisterComponent {
 		this.updateLinkedPropertiesValidity();
 	}
 
-	editLinkedProperty(property: any) {
-		this.propertyAddForm.patchValue({
-			edificio: {
-				name: property.nome,
-				guid: property.guid,
-			},
-			unidade: property.unidades,
-		});
-
-		const building = this.buildings.find(
-			(b) => b.value?.guid === property.guid
-		);
-
-		this.propertyAddForm.controls['unidade'].enable();
-
-		this.propertyAddForm.controls['unidade'].setValue([]);
-
-		this.units = [];
-
-		building?.['units']?.forEach((item: any) => {
-			const value = {
-				guid: item.guidReferencia,
-				name: item.tipo,
-			};
-
-			this.units.push({
-				label: item.tipo,
-				value: value,
-			});
-
-			if (property.unidades.some((u: any) => u.guid === item.guidReferencia)) {
-				this.propertyAddForm.controls['unidade'].setValue([
-					...this.propertyAddForm.controls['unidade'].value,
-					value,
-				]);
-			}
-		});
-
-		this.editingLinkedProperty = property.guid;
-		this.showAddProperty();
-	}
-
 	resetLinkedProperties() {
 		this.linkedProperties = [];
 	}
@@ -697,7 +702,6 @@ export class SupplierContractRegisterComponent {
 	}
 
 	hideAddProperty = () => {
-		this.editingLinkedProperty = null;
 		this.propertyAddForm.patchValue({
 			edificio: null,
 			unidade: null,

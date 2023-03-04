@@ -32,26 +32,30 @@ export class SupplierContractViewComponent {
 
 	getByIdContract() {
 		this.isLoadingView = true;
-		// this.contractService
-		// 	.getContractByGuid(this.guid)
-		// 	.pipe(first())
-		// 	.subscribe({
-		// 		next: (event) => {
-		// 			if (event.success) {
-		// 				this.contract = event.data;
-		// 				this.isCnpj = event.data.cpfCnpj.length > 11;
-		// 				//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
-		// 				this.properties = [...event.data.imovel];
-		// 			} else {
-		// 				this.contract = null;
-		// 			}
-		// 			this.isLoadingView = false;
-		// 		},
-		// 		error: (err) => {
-		// 			this.contract = null;
-		// 			this.isLoadingView = false;
-		// 		},
-		// 	});
+		this.contractService
+			.getContractByGuid(this.guid)
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					console.log('event', event);
+					if (event.success) {
+						this.contract = event.data[0];
+						this.isCnpj = event.data[0].fornecedor.cpfCnpj.length > 11;
+						//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
+						// this.properties = [...event.data.imovel];
+						this.property = event.data[0].imovel as unknown as Imovel;
+					} else {
+						this.contract = null;
+					}
+					this.isLoadingView = false;
+				},
+				error: (err) => {
+					this.contract = null;
+					this.isLoadingView = false;
+				},
+			});
+
+		/*
 		const event = {
 			message: 'Dados carregados com sucesso',
 			success: true,
@@ -207,10 +211,11 @@ export class SupplierContractViewComponent {
 				},
 			],
 		};
-		this.contract = event.data[0];
-		this.isCnpj = event.data[0].fornecedor.cpfCnpj.length > 11;
+		// */
+		// this.contract = event.data[0];
+		// this.isCnpj = event.data[0].fornecedor.cpfCnpj.length > 11;
 
-		this.property = event.data[0].imovel as unknown as Imovel;
+		// this.property = event.data[0].imovel as unknown as Imovel;
 
 		this.isLoadingView = false;
 	}
