@@ -29,27 +29,37 @@ export class TopbarComponent {
 		this.items = [
 			{
 				label: 'Home',
-				id: route.startsWith('/home') ? 'current' : '',
+				id: route.startsWith('/home/') ? 'current' : '',
 				command: () => this.navigateTo('home'),
 			},
 			{
 				label: 'Imóveis',
-				id: route.startsWith('/property') ? 'current' : '',
+				id: route.startsWith('/property/') ? 'current' : '',
 				command: () => this.navigateTo('property/listing'),
 			},
 			{
 				label: 'Clientes',
-				id: route.startsWith('/client') ? 'current' : '',
+				id: route.startsWith('/client/') ? 'current' : '',
 				command: () => this.navigateTo('client/listing'),
 			},
 			{
 				label: 'Contratos',
-				id: route.startsWith('/rent-contract') ? 'current' : '',
-				command: () => this.navigateTo('rent-contract/listing'),
+				items: [
+					{
+						label: 'Contrato de aluguel',
+						id: route.startsWith('/rent-contract/') ? 'current' : '',
+						command: () => this.navigateTo('rent-contract/listing'),
+					},
+					{
+						label: 'Contrato de fornecedor',
+						id: route.startsWith('/supplier-contract/') ? 'current' : '',
+						command: () => this.navigateTo('supplier-contract/listing'),
+					},
+				],
 			},
 			{
 				label: 'Fornecedores',
-				id: route.startsWith('/supplier') ? 'current' : '',
+				id: route.startsWith('/supplier/') ? 'current' : '',
 				command: () => this.navigateTo('supplier/listing'),
 			},
 			// {
