@@ -16,7 +16,8 @@
 		left: 0;
 		right: 0;
 		margin: 0 auto;
-		background: url("../../../../assets/images/imovel.jpg") no-repeat center;
+		background-repeat: no-repeat;
+		background-position: center;
 		background-size: cover;
 	}
 

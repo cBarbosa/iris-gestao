@@ -13,6 +13,61 @@ export class Utils {
 		};
 	}
 
+	static async dataUrlToFile(
+		dataUrl: string | ArrayBuffer,
+		fileName: string,
+		mimeType: string
+	): Promise<File> {
+		if (dataUrl instanceof ArrayBuffer) {
+			dataUrl = this.arrayBufferToBase64(dataUrl);
+		}
+		const res: Response = await fetch(dataUrl);
+		const blob: Blob = await res.blob();
+		return new File([blob], fileName, { type: mimeType });
+	}
+
+	static async fileToDataUrl(file: File): Promise<{
+		name: string;
+		mimetype: string;
+		data: string | ArrayBuffer | null;
+	}> {
+		return new Promise((res, rej) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+
+			reader.onload = () =>
+				res({ name: file.name, mimetype: file.type, data: reader.result });
+			reader.onerror = (error) => rej(error);
+		});
+	}
+
+	static saveAs(uri: string | ArrayBuffer, filename: string) {
+		if (uri instanceof ArrayBuffer) {
+			uri = this.arrayBufferToBase64(uri);
+		}
+
+		const linkNode = document.createElement('a');
+		if (typeof linkNode.download === 'string') {
+			document.body.appendChild(linkNode); // Firefox requires the linkNode to be in the body
+			linkNode.download = filename;
+			linkNode.href = uri;
+			linkNode.click();
+			document.body.removeChild(linkNode); // remove the linkNode when done
+		} else {
+			location.replace(uri);
+		}
+	}
+
+	static arrayBufferToBase64(buffer: ArrayBuffer) {
+		var binary = '';
+		var bytes = new Uint8Array(buffer);
+		var len = bytes.byteLength;
+		for (var i = 0; i < len; i++) {
+			binary += String.fromCharCode(bytes[i]);
+		}
+		return window.btoa(binary);
+	}
+
 	static calendarMaskHandlers(): any {
 		// TO MASK CALENDAR INPUT
 		let calendarDateMask: string;

@@ -10,6 +10,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/internal/operators/first';
 import { ImovelUnidade, ImovelUnidadeType } from 'src/app/shared/models';
 import { DominiosService, ImovelService } from 'src/app/shared/services';
+import {
+	AnexoService,
+	Attachment,
+} from 'src/app/shared/services/anexo.service';
 
 import { Utils } from 'src/app/shared/utils';
 
@@ -17,6 +21,14 @@ type DropdownItem = {
 	label: string;
 	value: any;
 	disabled?: boolean;
+};
+
+type Base64Metadata = {
+	name: string;
+	data: File | string | ArrayBuffer | null;
+	mimetype: string;
+	isNew?: boolean;
+	id?: number | string;
 };
 
 @Component({
@@ -51,13 +63,38 @@ export class UnitEditComponent implements OnInit {
 		},
 	];
 
+	propertyAttachments: {
+		capa: Attachment | undefined;
+		projeto: Attachment | undefined;
+		matricula: Attachment | undefined;
+		habitese: Attachment | undefined;
+	};
+
+	attachmentsObj:
+		| Partial<{
+				capa: Attachment;
+				foto: Attachment[];
+				habitese: Attachment;
+				projeto: Attachment;
+				matricula: Attachment;
+				outrosdocs: Attachment[];
+		  }>
+		| undefined;
+
+	unitPhotos: Base64Metadata[] = [];
+
+	addedUnitPhotos: Base64Metadata[] = [];
+
+	deletedUnitPhotos: number[] = [];
+
 	constructor(
 		private fb: FormBuilder,
 		private route: ActivatedRoute,
 		private router: Router,
 		private location: Location,
 		private imovelService: ImovelService,
-		private dominiosService: DominiosService
+		private dominiosService: DominiosService,
+		private anexoService: AnexoService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
@@ -95,6 +132,55 @@ export class UnitEditComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.getData();
+
+		this.anexoService
+			.getFiles(this.uid)
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					this.attachmentsObj = {
+						capa: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'capa'
+						),
+						foto: event?.filter(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'foto'
+						),
+						habitese: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'habitese'
+						),
+						projeto: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'projeto'
+						),
+						matricula: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'matricula'
+						),
+						outrosdocs: event?.filter(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'outrosdocs'
+						),
+					};
+
+					console.debug('attachmentsObj', this.attachmentsObj);
+
+					if (this.attachmentsObj?.foto?.length)
+						this.unitPhotos = this.attachmentsObj.foto.map((foto) => {
+							return {
+								name: foto.nome,
+								mimetype: foto.mimeType,
+								data: foto.local,
+								id: foto.id,
+							};
+						});
+				},
+				error: (error) => {
+					console.error('Erro: ', error);
+				},
+			});
 	}
 
 	get propertyInfoForm() {
@@ -136,12 +222,18 @@ export class UnitEditComponent implements OnInit {
 					if (unidade) {
 						this.unit = unidade;
 						this.isLoadingView = false;
-						this.propertyGuid = unidade.idImovelNavigation?.guidReferencia ?? '';
+						this.propertyGuid =
+							unidade.idImovelNavigation?.guidReferencia ?? '';
+
+						this.getPropertyAttachments(this.propertyGuid);
 
 						this.propertyInfoForm.patchValue({
-							proprietary : unidade.idImovelNavigation?.idClienteProprietarioNavigation?.nome,
+							proprietary:
+								unidade.idImovelNavigation?.idClienteProprietarioNavigation
+									?.nome,
 							propertyName: unidade.idImovelNavigation?.nome,
-							category: unidade.idImovelNavigation?.idCategoriaImovelNavigation?.nome,
+							category:
+								unidade.idImovelNavigation?.idCategoriaImovelNavigation?.nome,
 							typeStr: unidade.idTipoUnidadeNavigation?.nome,
 						});
 
@@ -169,6 +261,39 @@ export class UnitEditComponent implements OnInit {
 				error: () => {
 					this.invalidGuid = true;
 					this.isLoading = false;
+				},
+			});
+	}
+
+	getPropertyAttachments(propertyGuid: string) {
+		this.anexoService
+			.getFiles(this.propertyGuid)
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					this.propertyAttachments = {
+						capa: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'capa'
+						),
+						habitese: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'habitese'
+						),
+						projeto: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'projeto'
+						),
+						matricula: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'matricula'
+						),
+					};
+
+					console.log(this.propertyAttachments);
+				},
+				error: (error) => {
+					console.error('Erro: ', error);
 				},
 			});
 	}
@@ -231,6 +356,59 @@ export class UnitEditComponent implements OnInit {
 					this.openModal();
 				},
 			});
+
+		this.savePhotos();
+		this.deletePhotos();
+	}
+
+	addPhoto(event: any) {
+		const files = event.target.files;
+
+		const base64promises = [...files].map((file: File) => {
+			return Utils.fileToDataUrl(file);
+		});
+
+		Promise.all(base64promises).then((base64files) => {
+			base64files.forEach((base64file) => {
+				this.addedUnitPhotos.push(base64file);
+			});
+		});
+	}
+
+	async savePhotos() {
+		if (this.addedUnitPhotos.length === 0) return;
+
+		const filesPromises = this.addedUnitPhotos.map((file) => {
+			return Utils.dataUrlToFile(file.data as string, file.name, file.mimetype);
+		});
+
+		const files = await Promise.all(filesPromises);
+
+		const formData = new FormData();
+
+		files.forEach((file) => {
+			formData.append('files', file);
+		});
+
+		console.debug('sending', formData);
+
+		this.anexoService.registerFile(this.uid, formData, 'foto');
+	}
+
+	removePhoto(index: number, newPhoto = false) {
+		if (newPhoto) {
+			this.addedUnitPhotos.splice(index, 1);
+			return;
+		}
+
+		const removedId: number = this.unitPhotos.splice(index, 1)[0].id as number;
+		this.deletedUnitPhotos.push(removedId);
+	}
+
+	deletePhotos() {
+		this.deletedUnitPhotos.forEach((photoId) => {
+			this.anexoService.deleteFile(photoId).subscribe();
+		});
 	}
 
 	openModal() {
@@ -251,7 +429,7 @@ export class UnitEditComponent implements OnInit {
 		this.router.navigate([route]);
 	};
 
-	getListTypes() : void {
+	getListTypes(): void {
 		this.dominiosService.getTipoUnidade().subscribe((event) => {
 			if (event) {
 				event.data.forEach((item: any) => {
@@ -266,5 +444,18 @@ export class UnitEditComponent implements OnInit {
 				);
 			}
 		});
+	}
+
+	async downloadFile(
+		file: File | string | ArrayBuffer | null,
+		filename: string
+	) {
+		if (file instanceof File) {
+			file = (await Utils.fileToDataUrl(file)).data;
+		}
+
+		if (file === null) return;
+
+		Utils.saveAs(file, filename);
 	}
 }

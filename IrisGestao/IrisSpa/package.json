@@ -21,6 +21,7 @@
 		"@angular/platform-browser-dynamic": "^15.0.0",
 		"@angular/router": "^15.0.0",
 		"ngx-currency": "^3.0.0",
+		"ngx-image-cropper": "^6.3.2",
 		"ngx-mask": "^14.2.4",
 		"primeicons": "^6.0.1",
 		"primeng": "^15.0.0",

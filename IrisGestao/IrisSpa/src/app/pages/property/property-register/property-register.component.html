@@ -316,7 +316,7 @@
 						type="text"
 						formControlName="registration"
 						aria-describedby="registration-help"
-						maxlength=16
+						maxlength="16"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['registration'])">
@@ -342,7 +342,7 @@
 						type="text"
 						formControlName="iptu"
 						aria-describedby="iptu-help"
-						maxlength=16
+						maxlength="16"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['iptu'])">
@@ -370,7 +370,7 @@
 						type="text"
 						formControlName="neoenergia"
 						aria-describedby="neoenergia-help"
-						maxlength=16
+						maxlength="16"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['neoenergia'])">
@@ -396,7 +396,7 @@
 						type="text"
 						formControlName="caesb"
 						aria-describedby="caesb-help"
-						maxlength=16
+						maxlength="16"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['caesb'])">
@@ -686,13 +686,12 @@
 				<p-fileUpload
 					id="occupancy"
 					mode="basic"
-					name="demo[]"
-					url="./upload"
-					accept="image/*"
+					name="habitese"
+					accept="application/*"
 					chooseLabel="Arraste ou clique para fazer o upload"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
-					(onUpload)="onUpload($event)"
+					(onSelect)="onSelect($event, 'habitese')"
 				></p-fileUpload>
 				<ng-container *ngIf="checkHasError(f['occupancy'])">
 					<small
@@ -715,13 +714,12 @@
 				<p-fileUpload
 					id="project"
 					mode="basic"
-					name="demo[]"
-					url="./upload"
-					accept="image/*"
+					name="projeto"
+					accept="application/*"
 					chooseLabel="Arraste ou clique para fazer o upload"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
-					(onUpload)="onUpload($event)"
+					(onSelect)="onSelect($event, 'projeto')"
 				></p-fileUpload>
 				<ng-container *ngIf="checkHasError(f['project'])">
 					<small
@@ -744,13 +742,12 @@
 				<p-fileUpload
 					id="registration"
 					mode="basic"
-					name="demo[]"
-					url="./upload"
-					accept="image/*"
+					name="matricula"
+					accept="application/*"
 					chooseLabel="Arraste ou clique para fazer o upload"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
-					(onUpload)="onUpload($event)"
+					(onSelect)="onSelect($event, 'matricula')"
 				></p-fileUpload>
 				<ng-container *ngIf="checkHasError(f['registration'])">
 					<small
@@ -773,13 +770,13 @@
 				<p-fileUpload
 					id="others"
 					mode="basic"
-					name="demo[]"
+					name="outrosdocs[]"
 					url="./upload"
-					accept="image/*"
+					accept="application/*"
 					chooseLabel="Arraste ou clique para fazer o upload"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
-					(onUpload)="onUpload($event)"
+					(onSelect)="onSelect($event, 'outrosdocs')"
 				></p-fileUpload>
 				<ng-container *ngIf="checkHasError(f['others'])">
 					<small
@@ -839,7 +836,6 @@
 		</ng-template>
 		<ng-template pTemplate="content">
 			<div class="register-proprietary-form">
-
 				<div class="field">
 					<label for="client-type" class="block">Tipo de cliente</label>
 					<p-dropdown

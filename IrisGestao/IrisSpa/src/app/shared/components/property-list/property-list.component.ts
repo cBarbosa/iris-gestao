@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { PropertyItemModule } from '../property-item/property-item.module';
-import { Imovel } from 'src/app/shared/models';
+import { IImovel } from 'src/app/shared/models';
 import { CommonModule } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
 import { SpinnerComponent } from '../custom-ui/spinner/spinner.component';
@@ -19,7 +19,7 @@ import { SpinnerComponent } from '../custom-ui/spinner/spinner.component';
 })
 export class PropertyListComponent {
 	@Input()
-	properties: Imovel[];
+	properties: IImovel[];
 
 	@Input()
 	pageSize: number = 10;

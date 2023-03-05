@@ -8,6 +8,11 @@ import {
 	ImageData as ImagemData,
 } from 'src/app/shared/models';
 import { ImovelService } from 'src/app/shared/services';
+import {
+	AnexoService,
+	Attachment,
+} from 'src/app/shared/services/anexo.service';
+import { Utils } from 'src/app/shared/utils';
 
 @Component({
 	selector: 'app-property-view',
@@ -21,6 +26,13 @@ export class PropertyViewComponent implements OnInit {
 	unit: ImovelUnidade | undefined;
 	units: ImovelUnidade[] = [];
 	imageList: ImagemData[] = [];
+	attachmentDocs: {
+		projeto?: Attachment;
+		matricula?: Attachment;
+		habitese?: Attachment;
+	} = {};
+
+	coverImage: string | undefined;
 
 	isFavorite = true;
 	isInativarImovel = false;
@@ -42,7 +54,8 @@ export class PropertyViewComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
-		private imovelService: ImovelService
+		private imovelService: ImovelService,
+		private anexoService: AnexoService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
@@ -75,6 +88,25 @@ export class PropertyViewComponent implements OnInit {
 		];
 
 		this.getData();
+
+		this.anexoService
+			.getFiles(this.uid)
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					const cover = event?.find(
+						({ classificacao }: { classificacao: string }) =>
+							classificacao === 'capa'
+					);
+
+					if (cover) this.coverImage = cover.local;
+
+					console.log(this.coverImage);
+				},
+				error: (error) => {
+					console.error('Erro: ', error);
+				},
+			});
 	}
 
 	onUpdateUnitList = (modalContent: {
@@ -106,12 +138,12 @@ export class PropertyViewComponent implements OnInit {
 
 	confirmClone(): void {
 		this.displayConfirmationCloneUnit = true;
-	};
+	}
 
 	closeConfirmationInativarModal() {
 		this.displayConfirmationInactiveUnitModal = false;
 	}
-	
+
 	confirmImovelInativar() {
 		this.displayConfirmationInactiveImovelModal = true;
 	}
@@ -121,7 +153,7 @@ export class PropertyViewComponent implements OnInit {
 	}
 
 	closeConfirmationCloneUnit() {
-		this.displayConfirmationCloneUnit  = false;
+		this.displayConfirmationCloneUnit = false;
 	}
 
 	getData(): void {
@@ -137,6 +169,42 @@ export class PropertyViewComponent implements OnInit {
 				this.isLoadingView = false;
 				this.isCorporativeBuilding =
 					this.units[0].idTipoUnidadeNavigation?.id == 1;
+
+				this.anexoService
+					.getFiles(imovel.guidReferencia)
+					.pipe(first())
+					.subscribe({
+						next: (response) => {
+							console.log('>>>>', response);
+							let photos: Attachment[] = [];
+
+							response?.forEach((file) => {
+								const classificacao = file.classificacao;
+
+								if (classificacao === 'foto') photos.push(file);
+								else if (classificacao === 'projeto')
+									this.attachmentDocs.projeto = file;
+								else if (classificacao === 'matricula')
+									this.attachmentDocs.matricula = file;
+								else if (classificacao === 'habitese')
+									this.attachmentDocs.habitese = file;
+							});
+
+							this.imageList =
+								photos?.map((photo) => {
+									return {
+										url: photo.local,
+										thumbUrl: photo.local,
+										alt: photo.nome,
+									};
+								}) ?? [];
+						},
+						error: (err) => {
+							// console.error(err)
+							console.log('>>>>', err);
+							this.imageList = [];
+						},
+					});
 			});
 	}
 
@@ -144,10 +212,10 @@ export class PropertyViewComponent implements OnInit {
 		this.unit = item;
 	}
 
-	cloneUnitModal():void {
+	cloneUnitModal(): void {
 		this.cloneUnit(this.unit?.guidReferencia || '');
 		this.closeConfirmationCloneUnit();
-	};
+	}
 
 	cloneUnit(uid: string): void {
 		this.isLoadingView = true;
@@ -193,7 +261,7 @@ export class PropertyViewComponent implements OnInit {
 			.inactiveUnit(this.unit!.guidReferencia!, false)
 			.subscribe({
 				next: (response) => {
-					console.log('inativarUnit >> retorno '+ JSON.stringify(response));
+					console.log('inativarUnit >> retorno ' + JSON.stringify(response));
 					if (response.success) {
 						this.closeConfirmationInativarModal();
 						//this.isInativar = true;
@@ -222,35 +290,33 @@ export class PropertyViewComponent implements OnInit {
 
 	inativarImovel() {
 		this.closeConfirmationInativarImovelModal();
-		this.imovelService
-			.inactiveImovel(this.uid, false)
-			.subscribe({
-				next: (response) => {
-					console.log('inactiveImovel >> retorno '+ JSON.stringify(response));
-					if (response.success) {
-						this.closeConfirmationInativarImovelModal();
-						this.isInativarImovel = true;
-						this.onUpdateUnitList({
-							header: 'Imóvel Inativado',
-							message: response.message ?? 'Imóvel inativado com sucesso',
-						});
-					} else {
-						this.onUpdateUnitList({
-							header: 'Imóvel não inativado',
-							message: response.message ?? 'Erro na inativação do Imóvel',
-							isError: true,
-						});
-					}
-				},
-				error: (err) => {
-					console.error(err);
+		this.imovelService.inactiveImovel(this.uid, false).subscribe({
+			next: (response) => {
+				console.log('inactiveImovel >> retorno ' + JSON.stringify(response));
+				if (response.success) {
+					this.closeConfirmationInativarImovelModal();
+					this.isInativarImovel = true;
+					this.onUpdateUnitList({
+						header: 'Imóvel Inativado',
+						message: response.message ?? 'Imóvel inativado com sucesso',
+					});
+				} else {
 					this.onUpdateUnitList({
 						header: 'Imóvel não inativado',
-						message: 'Erro no envio de dados',
+						message: response.message ?? 'Erro na inativação do Imóvel',
 						isError: true,
 					});
-				},
-			});
+				}
+			},
+			error: (err) => {
+				console.error(err);
+				this.onUpdateUnitList({
+					header: 'Imóvel não inativado',
+					message: 'Erro no envio de dados',
+					isError: true,
+				});
+			},
+		});
 	}
 
 	openModal() {
@@ -266,5 +332,18 @@ export class PropertyViewComponent implements OnInit {
 	reloadPage() {
 		this.closeModal();
 		this.getData();
+	}
+
+	async downloadFile(
+		file: File | string | ArrayBuffer | null,
+		filename: string
+	) {
+		if (file instanceof File) {
+			file = (await Utils.fileToDataUrl(file)).data;
+		}
+
+		if (file === null) return;
+
+		Utils.saveAs(file, filename);
 	}
 }
