@@ -105,7 +105,7 @@
 				</div>
 
 				<!-- \/ manter link para outro formulário ????? FIX-->
-				<div class="flex justify-start text-sm font-medium mb-6">
+				<!-- <div class="flex justify-start text-sm font-medium mb-6">
 					<p-button
 						icon="pi pi-external-link"
 						iconPos="right"
@@ -113,7 +113,7 @@
 						styleClass="p-button-text text-sm"
 						(click)="navigateTo('supplier/register/new')"
 					></p-button>
-				</div>
+				</div> -->
 				<!-- <div class="flex justify-start text-sm font-medium mb-6">
 					<p-button
 						icon="pi pi-plus"
@@ -123,7 +123,7 @@
 					></p-button>
 				</div> -->
 
-				<div
+				<!-- <div
 					class="add-property-alert"
 					[class.invalid]="linkedPropertiesInvalid"
 					*ngIf="linkedProperties.length === 0; else properties"
@@ -174,7 +174,34 @@
 							(click)="showAddProperty()"
 						></button>
 					</div>
-				</ng-template>
+				</ng-template> -->
+
+				<div class="field">
+					<label for="imovel" class="block">Imóvel do contrato</label>
+					<p-dropdown
+						id="imovel"
+						[options]="buildings"
+						[filter]="true"
+						filterBy="label"
+						optionValue="value"
+						formControlName="imovel"
+						aria-describedby="imovel-help"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['imovel'])">
+						<small
+							id="imovel-help"
+							*ngIf="f['imovel'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o imóvel do contrato
+						</small>
+						<ng-template #error2>
+							<small id="imovel-help" class="p-error block">
+								Imóvel do contrato inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
 			</div>
 		</section>
 
@@ -369,6 +396,33 @@
 						</ng-template>
 					</ng-container>
 				</div>
+
+				<div class="field">
+					<label for="percentual" class="block">Percentual</label>
+					<input
+						id="percentual"
+						type="text"
+						formControlName="percentual"
+						aria-describedby="percentual-help"
+						mask="percent"
+						suffix="%"
+						pInputText
+					/>
+					<ng-container *ngIf="checkHasError(f['percentual'])">
+						<small
+							id="percentual-help"
+							*ngIf="f['percentual'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o percentual do contrato
+						</small>
+						<ng-template #error2>
+							<small id="percentual-help" class="p-error block">
+								Percentual do contrato inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
 			</div>
 		</section>
 
@@ -377,11 +431,7 @@
 		<!-- STEP 3 -->
 		<!-- ------------------------------------------------------------------------ -->
 		<!-- ------------------------------------------------------------------------ -->
-		<section
-			*ngIf="currentStep === 3"
-			class="form-data"
-			formGroupName="attachmentsInfo"
-		>
+		<section *ngIf="currentStep === 3" class="form-data">
 			<h4>Selecione os anexos</h4>
 			<p>
 				Para finalizar adicione os documentos necessários para começar o
@@ -389,32 +439,45 @@
 			</p>
 
 			<div class="field">
-				<label for="attachment" class="block">Anexo</label>
+				<label for="projeto" class="block">Projeto</label>
 				<p-fileUpload
-					id="attachment"
+					id="projeto"
 					mode="basic"
-					name="demo[]"
-					url="./upload"
-					accept="image/*"
+					name="projeto"
+					accept="application/*"
 					chooseLabel="Arraste ou clique para fazer o upload"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
-					(onUpload)="onUpload($event)"
+					(onSelect)="onSelect($event, 'projeto')"
 				></p-fileUpload>
-				<ng-container *ngIf="checkHasError(f['attachment'])">
-					<small
-						id="attachment-help"
-						*ngIf="f['attachment'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Selecione o anexo
-					</small>
-					<ng-template #error2>
-						<small id="attachment-help" class="p-error block">
-							Anexo inválido
-						</small>
-					</ng-template>
-				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="matricula" class="block">Matrícula</label>
+				<p-fileUpload
+					id="matricula"
+					mode="basic"
+					name="matricula"
+					accept="application/*"
+					chooseLabel="Arraste ou clique para fazer o upload"
+					chooseIcon="pi-upload"
+					[maxFileSize]="1000000"
+					(onSelect)="onSelect($event, 'matricula')"
+				></p-fileUpload>
+			</div>
+
+			<div class="field">
+				<label for="habitese" class="block">Habite-se</label>
+				<p-fileUpload
+					id="habitese"
+					mode="basic"
+					name="habitese"
+					accept="application/*"
+					chooseLabel="Arraste ou clique para fazer o upload"
+					chooseIcon="pi-upload"
+					[maxFileSize]="1000000"
+					(onSelect)="onSelect($event, 'habitese')"
+				></p-fileUpload>
 			</div>
 		</section>
 	</div>
@@ -444,68 +507,6 @@
 			(click)="nextStep()"
 		></button>
 	</div>
-</form>
-
-<!-- ------------------------------------------------------------------------ -->
-<!-- ------------------------------------------------------------------------ -->
-<!-- REGISTRO DE PROPRIEDADE (SIDEBAR) -->
-<!-- ------------------------------------------------------------------------ -->
-<!-- ------------------------------------------------------------------------ -->
-
-<form [formGroup]="propertyAddForm">
-	<p-sidebar [(visible)]="propertyAddVisible" position="right">
-		<ng-template pTemplate="header">
-			<h4>Adicionar novo Edifício</h4>
-		</ng-template>
-		<ng-template pTemplate="content">
-			<div class="register-property-form">
-				<div class="field">
-					<label for="edificio">Edifício</label>
-					<p-dropdown
-						id="edificio"
-						[options]="buildings"
-						formControlName="edificio"
-						aria-describedby="edificio-help"
-					></p-dropdown>
-					<ng-container *ngIf="checkHasError(f['edificio'])">
-						<small
-							id="edificio-help"
-							*ngIf="f['edificio'].hasError('required'); else error2"
-							class="p-error block"
-						>
-							Informe o edificio
-						</small>
-						<ng-template #error2>
-							<small id="edificio-help" class="p-error block">
-								Edifício inválido
-							</small>
-						</ng-template>
-					</ng-container>
-				</div>
-			</div>
-		</ng-template>
-		<ng-template pTemplate="footer">
-			<div class="flex justify-between gap-4">
-				<button
-					pButton
-					pRipple
-					type="button"
-					label="Cancelar"
-					class="p-button-outlined h-9 w-full"
-					(click)="hideAddProperty()"
-				></button>
-
-				<button
-					pButton
-					pRipple
-					type="button"
-					label="Continuar"
-					class="h-9 w-full"
-					(click)="onPropertySubmit()"
-				></button>
-			</div>
-		</ng-template>
-	</p-sidebar>
 </form>
 
 <!-- ------------------------------------------------------------------------ -->

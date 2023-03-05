@@ -412,6 +412,10 @@
 				&.p-button-outlined {
 					border: solid 1px #641b1e;
 				}
+
+				&.p-fileupload-choose-selected {
+					background-color: rgba(100, 27, 29, 0.075);
+				}
 			}
 		}
 

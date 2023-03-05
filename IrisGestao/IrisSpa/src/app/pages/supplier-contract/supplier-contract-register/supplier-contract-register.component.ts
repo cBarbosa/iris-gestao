@@ -45,7 +45,6 @@ type DropdownItem = {
 })
 export class SupplierContractRegisterComponent {
 	registerForm: FormGroup;
-	propertyAddForm: FormGroup;
 	registerSupplierForm: FormGroup;
 
 	registerSupplierVisible = false;
@@ -55,14 +54,6 @@ export class SupplierContractRegisterComponent {
 
 	onInputDate: Function;
 	onBlurDate: Function;
-
-	linkedProperties: {
-		nome: string;
-		guid: string;
-		tipo: string;
-	}[] = [];
-	linkedPropertiesInvalid = false;
-	propertyAddVisible = false;
 
 	displayModal = false;
 	modalContent: {
@@ -133,6 +124,12 @@ export class SupplierContractRegisterComponent {
 		},
 	];
 
+	attachments: {
+		projeto?: File;
+		matricula?: File;
+		habitese?: File;
+	} = {};
+
 	constructor(
 		private fb: FormBuilder,
 		private location: Location,
@@ -168,6 +165,7 @@ export class SupplierContractRegisterComponent {
 				nome: ['', Validators.required],
 				numero: ['', Validators.required],
 				prestador: [null, Validators.required],
+				imovel: [null, Validators.required],
 			}),
 			valuesInfo: this.fb.group({
 				valor: ['', Validators.required],
@@ -177,15 +175,8 @@ export class SupplierContractRegisterComponent {
 				pagamento: [null, Validators.required],
 				reajuste: [null, Validators.required],
 				periodicidade: [null, Validators.required],
+				percentual: [null, Validators.required],
 			}),
-
-			attachmentsInfo: this.fb.group({
-				attachment: [null],
-			}),
-		});
-
-		this.propertyAddForm = this.fb.group({
-			edificio: [null, Validators.required],
 		});
 
 		this.registerSupplierForm = this.fb.group({
@@ -383,13 +374,13 @@ export class SupplierContractRegisterComponent {
 			} else if (stepListIndex === 2) {
 				stepData.isValid = this.valuesInfoForm.valid ? true : false;
 			} else if (stepListIndex === 3) {
-				stepData.isValid = this.attachmentsForm.valid ? true : false;
+				// stepData.isValid = this.attachmentsForm.valid ? true : false;
 			}
 
 			if (step > stepListIndex) {
 				if (stepListIndex === 2) {
 				} else if (stepListIndex === 3) {
-					stepData.isValid = this.attachmentsForm.valid ? true : false;
+					// stepData.isValid = this.attachmentsForm.valid ? true : false;
 				}
 			}
 
@@ -414,10 +405,6 @@ export class SupplierContractRegisterComponent {
 			this.contractInfoForm.updateValueAndValidity();
 			if (this.contractInfoForm.invalid) {
 				this.contractInfoForm.markAllAsTouched();
-
-				if (this.linkedProperties.length === 0) {
-					this.linkedPropertiesInvalid = true;
-				}
 				return;
 			}
 		}
@@ -443,14 +430,14 @@ export class SupplierContractRegisterComponent {
 		else this.goBack();
 	}
 
-	onUpload(e: any) {}
+	onSelect(e: any, classificacao: 'projeto' | 'matricula' | 'habitese') {
+		console.log('e', e);
+		this.attachments[classificacao] = e.currentFiles[0];
+	}
 
 	onSubmit(e: any = null) {
 		if (this.registerForm.invalid) {
 			this.registerForm.markAllAsTouched();
-			if (this.linkedProperties.length === 0) {
-				this.linkedPropertiesInvalid = true;
-			}
 			return;
 		}
 
@@ -459,19 +446,17 @@ export class SupplierContractRegisterComponent {
 				nome: string; //x
 				numero: string; //x
 				prestador: string; //x
+				imovel: string; //x
 			};
 			valuesInfo: {
 				valor: number; //x
 				dataInicio: string; //x
 				dataFim: string; //x
-				dataVencimento: number; // ??????
+				dataVencimento: number; //x
 				pagamento: number; //x
 				reajuste: number; //x
 				periodicidade: number; //x
-			};
-
-			attachmentsInfo: {
-				attachment: [null];
+				percentual: number;
 			};
 		} = this.registerForm.getRawValue();
 
@@ -508,24 +493,30 @@ export class SupplierContractRegisterComponent {
 			diaPagamento: number;
 			periodicidadeReajuste: number;
 		} = {
-			/* \/ é possivel enviar mais de um imovel? ????? FIX */
-			guidImovel: this.linkedProperties[0].guid,
+			guidImovel: formData.contractInfo.imovel,
 			guidFornecedor: formData.contractInfo.prestador,
 			idFormaPagamento: formData.valuesInfo.pagamento,
 			idIndiceReajuste: formData.valuesInfo.reajuste,
 			numeroContrato: formData.contractInfo.numero,
 			descricaoDoServico: formData.contractInfo.nome,
 			/* \/ o que é percentual ????? FIX */
-			percentual: 10,
+			percentual: formData.valuesInfo.percentual,
 			dataAtualizacao: new Date().toISOString(),
 			valorServicoContratado: formData.valuesInfo.valor,
 			dataInicioContrato: formData.valuesInfo.dataInicio,
 			dataFimContrato: formData.valuesInfo.dataFim,
-			/* \/ diaPagamento == data do vencimento da parcela ????? FIX */
 			diaPagamento: formData.valuesInfo.dataVencimento,
 			periodicidadeReajuste: formData.valuesInfo.periodicidade,
 		};
 
+		const filesObj = {
+			projeto: this.attachments.projeto,
+			matricula: this.attachments.matricula,
+			habitese: this.attachments.habitese,
+		};
+
+		console.log('files', filesObj);
+		/** 
 		this.contractService
 			.registerContract(contractObj)
 			.pipe(first())
@@ -556,26 +547,7 @@ export class SupplierContractRegisterComponent {
 
 					this.openModal();
 				},
-			});
-	}
-
-	onPropertySubmit(e: any = null) {
-		const formData = this.propertyAddForm.getRawValue();
-
-		/* FIX: tipo: 'Edifício Coorporativo' hardcoded */
-		this.linkedProperties.push({
-			nome: formData.edificio.name,
-			guid: formData.edificio.guid,
-			tipo: 'Edifício Coorporativo',
-		});
-
-		if (this.linkedProperties.length !== 0) {
-			this.linkedPropertiesInvalid = false;
-		}
-
-		this.propertyAddForm.reset();
-
-		this.hideAddProperty();
+			});*/
 	}
 
 	supplierTypeChange(e: any) {
@@ -680,34 +652,6 @@ export class SupplierContractRegisterComponent {
 		// 		},
 		// 	});
 	}
-
-	updateLinkedPropertiesValidity() {
-		if (this.linkedProperties.length === 0) this.linkedPropertiesInvalid = true;
-		else this.linkedPropertiesInvalid = false;
-	}
-
-	removeLinkedProperty(guid: string) {
-		const index = this.linkedProperties.findIndex((p) => p.guid === guid);
-
-		this.linkedProperties.splice(index, 1);
-		this.updateLinkedPropertiesValidity();
-	}
-
-	resetLinkedProperties() {
-		this.linkedProperties = [];
-	}
-
-	showAddProperty() {
-		this.propertyAddVisible = true;
-	}
-
-	hideAddProperty = () => {
-		this.propertyAddForm.patchValue({
-			edificio: null,
-			unidade: null,
-		});
-		this.propertyAddVisible = false;
-	};
 
 	openModal() {
 		this.displayModal = true;
