@@ -69,7 +69,7 @@ public class ContratoFornecedorRepository : Repository<ContratoFornecedor>, ICon
                                 },
                                 IdClienteProprietarioNavigation = x.IdImovelNavigation.IdClienteProprietarioNavigation == null ? null : new
                                 {
-                                    CpfCnpj = x.IdImovelNavigation.IdClienteProprietarioNavigation.CpfCnpj,
+                                     CpfCnpj = x.IdImovelNavigation.IdClienteProprietarioNavigation.CpfCnpj,
                                     Nome = x.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
                                     Telefone = x.IdImovelNavigation.IdClienteProprietarioNavigation.Telefone
                                 }
