@@ -67,6 +67,12 @@ public class ContratoFornecedorRepository : Repository<ContratoFornecedor>, ICon
                                     Id = x.IdImovelNavigation.IdCategoriaImovelNavigation.Id,
                                     Nome = x.IdImovelNavigation.IdCategoriaImovelNavigation.Nome
                                 },
+                                IdClienteProprietarioNavigation = x.IdImovelNavigation.IdClienteProprietarioNavigation == null ? null : new
+                                {
+                                     CpfCnpj = x.IdImovelNavigation.IdClienteProprietarioNavigation.CpfCnpj,
+                                    Nome = x.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
+                                    Telefone = x.IdImovelNavigation.IdClienteProprietarioNavigation.Telefone
+                                }
                             },
                             IndiceReajuste = x.IdIndiceReajusteNavigation == null ? null : new
                             {
