@@ -147,7 +147,7 @@ export class SupplierContractRegisterComponent {
 	) {}
 
 	ngOnInit() {
-		this.currentStep = 3;
+		this.currentStep = 1;
 
 		this.stepList = [
 			{
