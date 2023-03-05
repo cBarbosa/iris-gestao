@@ -78,16 +78,23 @@
 							}
 						}
 
-						.p-submenu-list {
+						ul.p-submenu-list {
 							@apply rounded;
 							height: auto;
 
-							.p-menuitem-link {
-								border-bottom: none;
-
-								&:hover {
-									background-color: rgba(0, 0, 0, 0.05);
+							.p-menuitem {
+								.p-menuitem-link {
 									border-bottom: none;
+
+									&:hover {
+										background-color: rgba(0, 0, 0, 0.05);
+										border-bottom: none;
+									}
+
+									&#current {
+										background-color: rgba(0, 0, 0, 0.05);
+										border-bottom: none;
+									}
 								}
 							}
 						}

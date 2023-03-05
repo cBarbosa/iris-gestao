@@ -14,6 +14,10 @@ import {
 	DominiosService,
 	ImovelService,
 } from 'src/app/shared/services';
+import {
+	AnexoService,
+	ArquivoClassificacoes,
+} from 'src/app/shared/services/anexo.service';
 import { SupplierContractService } from 'src/app/shared/services/supplier-contract.service';
 import { SupplierService } from 'src/app/shared/services/supplier.service';
 import { Utils } from 'src/app/shared/utils';
@@ -138,7 +142,8 @@ export class SupplierContractRegisterComponent {
 		private supplierService: SupplierService,
 		private dominiosService: DominiosService,
 		private commonService: CommonService,
-		private imovelService: ImovelService
+		private imovelService: ImovelService,
+		private anexoService: AnexoService
 	) {}
 
 	ngOnInit() {
@@ -250,11 +255,7 @@ export class SupplierContractRegisterComponent {
 				event.data.items.forEach((item: any) => {
 					this.buildings.push({
 						label: item.nome,
-						value: {
-							guid: item.guidReferencia,
-							name: item.nome,
-						},
-						units: item.unidade,
+						value: item.guidReferencia,
 					});
 				});
 			}
@@ -269,14 +270,10 @@ export class SupplierContractRegisterComponent {
 		return this.registerForm.controls['valuesInfo'] as FormGroup;
 	}
 
-	get attachmentsForm() {
-		return this.registerForm.controls['attachmentsInfo'] as FormGroup;
-	}
-
 	get f(): { [key: string]: AbstractControl<any, any> } {
 		if (this.currentStep === 1) return this.contractInfoForm.controls;
 		if (this.currentStep === 2) return this.valuesInfoForm.controls;
-		return this.attachmentsForm.controls;
+		return this.valuesInfoForm.controls;
 	}
 
 	checkHasError(c: AbstractControl) {
@@ -509,20 +506,25 @@ export class SupplierContractRegisterComponent {
 			periodicidadeReajuste: formData.valuesInfo.periodicidade,
 		};
 
-		const filesObj = {
-			projeto: this.attachments.projeto,
-			matricula: this.attachments.matricula,
-			habitese: this.attachments.habitese,
+		const registerAttachments = (guid: string) => {
+			Object.entries(this.attachments).forEach(([classificacao, file]) => {
+				const formData = new FormData();
+				formData.append('files', file);
+
+				this.anexoService
+					.registerFile(guid, formData, classificacao as ArquivoClassificacoes)
+					.subscribe();
+			});
 		};
 
-		console.log('files', filesObj);
-		/** 
 		this.contractService
 			.registerContract(contractObj)
 			.pipe(first())
 			.subscribe({
 				next: (response: any) => {
 					if (response.success) {
+						registerAttachments(response.data.guidReferencia);
+
 						this.modalContent = {
 							header: 'Cadastro realizado com sucesso',
 							message: response.message,
@@ -547,7 +549,7 @@ export class SupplierContractRegisterComponent {
 
 					this.openModal();
 				},
-			});*/
+			});
 	}
 
 	supplierTypeChange(e: any) {

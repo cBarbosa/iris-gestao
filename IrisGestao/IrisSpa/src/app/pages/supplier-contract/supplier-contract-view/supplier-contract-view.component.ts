@@ -2,7 +2,12 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
 import { Imovel } from 'src/app/shared/models';
+import {
+	AnexoService,
+	Attachment,
+} from 'src/app/shared/services/anexo.service';
 import { SupplierContractService } from 'src/app/shared/services/supplier-contract.service';
+import { Utils } from 'src/app/shared/utils';
 
 @Component({
 	selector: 'app-supplier-contract-view',
@@ -16,10 +21,17 @@ export class SupplierContractViewComponent {
 	isLoadingView = false;
 	isCnpj: boolean = false;
 
+	attachmentDocs: {
+		projeto?: Attachment;
+		matricula?: Attachment;
+		habitese?: Attachment;
+	} = {};
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
-		private contractService: SupplierContractService
+		private contractService: SupplierContractService,
+		private anexoService: AnexoService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.guid = paramMap.get('guid') ?? '';
@@ -28,6 +40,29 @@ export class SupplierContractViewComponent {
 
 	ngOnInit(): void {
 		this.getByIdContract();
+
+		this.anexoService
+			.getFiles(this.guid)
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					console.log('>>>>', response);
+
+					response?.forEach((file) => {
+						const classificacao = file.classificacao;
+
+						if (classificacao === 'projeto') this.attachmentDocs.projeto = file;
+						else if (classificacao === 'matricula')
+							this.attachmentDocs.matricula = file;
+						else if (classificacao === 'habitese')
+							this.attachmentDocs.habitese = file;
+					});
+				},
+				error: (err) => {
+					// console.error(err)
+					console.log('>>>>', err);
+				},
+			});
 	}
 
 	getByIdContract() {
@@ -220,7 +255,18 @@ export class SupplierContractViewComponent {
 		this.isLoadingView = false;
 	}
 
-	downloadFile(uri: string) {}
+	async downloadFile(
+		file: File | string | ArrayBuffer | null,
+		filename: string
+	) {
+		if (file instanceof File) {
+			file = (await Utils.fileToDataUrl(file)).data;
+		}
+
+		if (file === null) return;
+
+		Utils.saveAs(file, filename);
+	}
 
 	navigateTo = (route: string): void => {
 		this.router.navigate([route]);

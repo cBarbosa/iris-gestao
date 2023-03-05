@@ -120,16 +120,52 @@
 					<button
 						type="button"
 						class="attachment"
-						*ngFor="let att of contract?.anexos"
-						(click)="downloadFile(att.uri)"
+						*ngIf="attachmentDocs.projeto"
+						(click)="
+							downloadFile(
+								attachmentDocs.projeto.local,
+								attachmentDocs.projeto.nome
+							)
+						"
 					>
 						<span class="icon">
-							<app-icon
-								[name]="'att-' + ['proj', 'mat', 'hab'][att.tipo - 1]"
-								size="1.5rem"
-							></app-icon>
+							<app-icon name="att-proj" size="1.5rem"></app-icon>
 						</span>
-						<span class="label">{{ att.nome }}</span>
+						<span class="label">Projeto</span>
+					</button>
+
+					<button
+						type="button"
+						class="attachment"
+						*ngIf="attachmentDocs.matricula"
+						(click)="
+							downloadFile(
+								attachmentDocs.matricula.local,
+								attachmentDocs.matricula.nome
+							)
+						"
+					>
+						<span class="icon">
+							<app-icon name="att-mat" size="1.5rem"></app-icon>
+						</span>
+						<span class="label">Matrícula</span>
+					</button>
+
+					<button
+						type="button"
+						class="attachment"
+						*ngIf="attachmentDocs.habitese"
+						(click)="
+							downloadFile(
+								attachmentDocs.habitese.local,
+								attachmentDocs.habitese.nome
+							)
+						"
+					>
+						<span class="icon">
+							<app-icon name="att-hab" size="1.5rem"></app-icon>
+						</span>
+						<span class="label">Habite-se</span>
 					</button>
 				</div>
 			</section>
