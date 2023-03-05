@@ -149,5 +149,11 @@ public class ContratoFornecedorService: IContratoFornecedorService
         contratoFornecedor.DiaPagamento                = cmd.DiaPagamento;
         contratoFornecedor.PeriodicidadeReajuste       = cmd.PeriodicidadeReajuste;
         contratoFornecedor.Status                      = true;
+        contratoFornecedor.PrazoTotalMeses             = calculaMes(cmd.DataInicioContrato, cmd.DataFimContrato);
+    }
+
+    private static int calculaMes(DateTime dataInicio, DateTime dataFim)
+    {
+        return ((dataInicio.Year - dataFim.Year) * 12) + dataInicio.Month - dataFim.Month;
     }
 }
