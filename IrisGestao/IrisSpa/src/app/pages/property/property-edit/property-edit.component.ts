@@ -16,7 +16,10 @@ import {
 } from 'src/app/shared/services';
 import { Utils } from 'src/app/shared/utils';
 import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
-import { AnexoService } from 'src/app/shared/services/anexo.service';
+import {
+	AnexoService,
+	ArquivoClassificacoes,
+} from 'src/app/shared/services/anexo.service';
 import { Attachment } from 'src/app/shared/services/anexo.service';
 
 type DropdownItem = {
@@ -520,7 +523,9 @@ export class PropertyEditComponent {
 			);
 			console.debug('updating');
 		} else {
-			this.anexoService.registerFile(this.propertyGuid, formData, 'capa');
+			this.anexoService
+				.registerFile(this.propertyGuid, formData, 'capa')
+				.subscribe();
 		}
 	}
 
@@ -555,7 +560,9 @@ export class PropertyEditComponent {
 
 		console.debug('sending', formData);
 
-		this.anexoService.registerFile(this.propertyGuid, formData, 'foto');
+		this.anexoService
+			.registerFile(this.propertyGuid, formData, 'foto')
+			.subscribe();
 	}
 
 	removePhoto(index: number, newPhoto = false) {
@@ -724,6 +731,26 @@ export class PropertyEditComponent {
 			this.anexoService.deleteFile(this.attachmentsObj.habitese.id).subscribe();
 		}
 	}
+
+	// registerUpdateFile(formData: FormData, classificacao: ArquivoClassificacoes) {
+	// 	if (!this.attachmentsObj) return false;
+
+	// 	if(classificacao === 'foto' || classificacao === 'outrosdocs') return false
+
+	// 	if (this.attachmentsObj[classificacao] != null) {
+	// 		this.anexoService.updateFile(
+	// 			this.attachmentsObj[classificacao]?.id ?? 1,
+	// 			this.propertyGuid,
+	// 			formData,
+	// 			'capa'
+	// 		);
+	// 		console.debug('updating');
+	// 	} else {
+	// 		this.anexoService
+	// 			.registerFile(this.propertyGuid, formData, 'capa')
+	// 			.subscribe();
+	// 	}
+	// }
 
 	async downloadFile(
 		file: File | string | ArrayBuffer | null,
