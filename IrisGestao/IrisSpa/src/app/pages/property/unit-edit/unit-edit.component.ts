@@ -428,7 +428,7 @@ export class UnitEditComponent implements OnInit {
 
 		console.debug('sending', formData);
 
-		this.anexoService.registerFile(this.uid, formData, 'foto');
+		this.anexoService.registerFile(this.uid, formData, 'foto').subscribe();
 	}
 
 	removePhoto(index: number, newPhoto = false) {

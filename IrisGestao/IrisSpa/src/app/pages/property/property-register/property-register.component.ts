@@ -510,8 +510,6 @@ export class PropertyRegisterComponent {
 		e: any,
 		classificacao: Exclude<ArquivoClassificacoes, 'capa' | 'foto'>
 	) {
-		// this.anexoService.registerFile()
-
 		this.selectedFiles[classificacao] = e.currentFiles[0];
 
 		console.log('selectedFiles', this.selectedFiles);
