@@ -540,15 +540,21 @@ export class UnitEditComponent implements OnInit {
 					this.docProjeto.mimetype
 				).then((file) => {
 					formData.append('files', file);
-					this.anexoService
-						.registerFile(this.uid, formData, classificacao)
-						.subscribe();
+					this.anexoService.registerUpdateFile(
+						this.attachmentsObj,
+						this.uid,
+						formData,
+						classificacao
+					);
 				});
 			} else {
 				formData.append('files', this.docProjeto.data);
-				this.anexoService
-					.registerFile(this.uid, formData, classificacao)
-					.subscribe();
+				this.anexoService.registerUpdateFile(
+					this.attachmentsObj,
+					this.uid,
+					formData,
+					classificacao
+				);
 			}
 		}
 
@@ -568,15 +574,21 @@ export class UnitEditComponent implements OnInit {
 					this.docMatricula.mimetype
 				).then((file) => {
 					formData.append('files', file);
-					this.anexoService
-						.registerFile(this.uid, formData, classificacao)
-						.subscribe();
+					this.anexoService.registerUpdateFile(
+						this.attachmentsObj,
+						this.uid,
+						formData,
+						classificacao
+					);
 				});
 			} else {
 				formData.append('files', this.docMatricula.data);
-				this.anexoService
-					.registerFile(this.uid, formData, classificacao)
-					.subscribe();
+				this.anexoService.registerUpdateFile(
+					this.attachmentsObj,
+					this.uid,
+					formData,
+					classificacao
+				);
 			}
 		}
 
@@ -596,15 +608,21 @@ export class UnitEditComponent implements OnInit {
 					this.docHabitese.mimetype
 				).then((file) => {
 					formData.append('files', file);
-					this.anexoService
-						.registerFile(this.uid, formData, classificacao)
-						.subscribe();
+					this.anexoService.registerUpdateFile(
+						this.attachmentsObj,
+						this.uid,
+						formData,
+						classificacao
+					);
 				});
 			} else {
 				formData.append('files', this.docHabitese.data);
-				this.anexoService
-					.registerFile(this.uid, formData, classificacao)
-					.subscribe();
+				this.anexoService.registerUpdateFile(
+					this.attachmentsObj,
+					this.uid,
+					formData,
+					classificacao
+				);
 			}
 		}
 	}

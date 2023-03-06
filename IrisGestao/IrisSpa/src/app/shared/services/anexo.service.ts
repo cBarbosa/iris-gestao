@@ -93,7 +93,7 @@ export class AnexoService {
 				next: (response) => {
 					if (response.success) {
 						console.debug('file deleted');
-						return this.registerFile(uid, formData, classificacao);
+						return this.registerFile(uid, formData, classificacao).subscribe();
 					}
 
 					console.error('updateFile: ', response);
@@ -104,6 +104,38 @@ export class AnexoService {
 					return err;
 				},
 			});
+	}
+
+	registerUpdateFile(
+		attachmentsObj:
+			| Partial<{
+					capa: Attachment;
+					foto: Attachment[];
+					habitese: Attachment;
+					projeto: Attachment;
+					matricula: Attachment;
+					outrosdocs: Attachment[];
+			  }>
+			| undefined,
+		guid: string,
+		formData: FormData,
+		classificacao: ArquivoClassificacoes
+	) {
+		if (!attachmentsObj) return null;
+
+		if (classificacao === 'foto' || classificacao === 'outrosdocs') return null;
+
+		if (attachmentsObj[classificacao] != null) {
+			console.debug('updating');
+			return this.updateFile(
+				(attachmentsObj[classificacao] as Attachment).id,
+				guid,
+				formData,
+				classificacao
+			);
+		} else {
+			return this.registerFile(guid, formData, classificacao).subscribe();
+		}
 	}
 
 	deleteFile(code: number) {
