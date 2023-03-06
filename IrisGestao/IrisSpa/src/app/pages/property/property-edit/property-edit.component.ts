@@ -640,15 +640,27 @@ export class PropertyEditComponent {
 					this.docProjeto.mimetype
 				).then((file) => {
 					formData.append('files', file);
-					this.anexoService
-						.registerFile(this.propertyGuid, formData, classificacao)
-						.subscribe();
+					// this.anexoService
+					// 	.registerFile(this.propertyGuid, formData, classificacao)
+					// 	.subscribe();
+					this.anexoService.registerUpdateFile(
+						this.attachmentsObj,
+						this.propertyGuid,
+						formData,
+						classificacao
+					);
 				});
 			} else {
 				formData.append('files', this.docProjeto.data);
-				this.anexoService
-					.registerFile(this.propertyGuid, formData, classificacao)
-					.subscribe();
+				// this.anexoService
+				// 	.registerFile(this.propertyGuid, formData, classificacao)
+				// 	.subscribe();
+				this.anexoService.registerUpdateFile(
+					this.attachmentsObj,
+					this.propertyGuid,
+					formData,
+					classificacao
+				);
 			}
 		}
 
@@ -668,15 +680,21 @@ export class PropertyEditComponent {
 					this.docMatricula.mimetype
 				).then((file) => {
 					formData.append('files', file);
-					this.anexoService
-						.registerFile(this.propertyGuid, formData, classificacao)
-						.subscribe();
+					this.anexoService.registerUpdateFile(
+						this.attachmentsObj,
+						this.propertyGuid,
+						formData,
+						classificacao
+					);
 				});
 			} else {
 				formData.append('files', this.docMatricula.data);
-				this.anexoService
-					.registerFile(this.propertyGuid, formData, classificacao)
-					.subscribe();
+				this.anexoService.registerUpdateFile(
+					this.attachmentsObj,
+					this.propertyGuid,
+					formData,
+					classificacao
+				);
 			}
 		}
 
@@ -696,15 +714,21 @@ export class PropertyEditComponent {
 					this.docHabitese.mimetype
 				).then((file) => {
 					formData.append('files', file);
-					this.anexoService
-						.registerFile(this.propertyGuid, formData, classificacao)
-						.subscribe();
+					this.anexoService.registerUpdateFile(
+						this.attachmentsObj,
+						this.propertyGuid,
+						formData,
+						classificacao
+					);
 				});
 			} else {
 				formData.append('files', this.docHabitese.data);
-				this.anexoService
-					.registerFile(this.propertyGuid, formData, classificacao)
-					.subscribe();
+				this.anexoService.registerUpdateFile(
+					this.attachmentsObj,
+					this.propertyGuid,
+					formData,
+					classificacao
+				);
 			}
 		}
 	}
@@ -731,26 +755,6 @@ export class PropertyEditComponent {
 			this.anexoService.deleteFile(this.attachmentsObj.habitese.id).subscribe();
 		}
 	}
-
-	// registerUpdateFile(formData: FormData, classificacao: ArquivoClassificacoes) {
-	// 	if (!this.attachmentsObj) return false;
-
-	// 	if(classificacao === 'foto' || classificacao === 'outrosdocs') return false
-
-	// 	if (this.attachmentsObj[classificacao] != null) {
-	// 		this.anexoService.updateFile(
-	// 			this.attachmentsObj[classificacao]?.id ?? 1,
-	// 			this.propertyGuid,
-	// 			formData,
-	// 			'capa'
-	// 		);
-	// 		console.debug('updating');
-	// 	} else {
-	// 		this.anexoService
-	// 			.registerFile(this.propertyGuid, formData, 'capa')
-	// 			.subscribe();
-	// 	}
-	// }
 
 	async downloadFile(
 		file: File | string | ArrayBuffer | null,
