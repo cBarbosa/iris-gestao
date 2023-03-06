@@ -32,6 +32,8 @@ export class PropertyViewComponent implements OnInit {
 		habitese?: Attachment;
 	} = {};
 
+	unitCover: string | undefined | null;
+
 	coverImage: string | undefined;
 
 	isFavorite = true;
@@ -175,7 +177,6 @@ export class PropertyViewComponent implements OnInit {
 					.pipe(first())
 					.subscribe({
 						next: (response) => {
-							console.log('>>>>', response);
 							let photos: Attachment[] = [];
 
 							response?.forEach((file) => {
@@ -210,6 +211,29 @@ export class PropertyViewComponent implements OnInit {
 
 	setCurrentUnit(item: ImovelUnidade): void {
 		this.unit = item;
+
+		item.guidReferencia && this.getUnitFiles(item.guidReferencia);
+	}
+
+	getUnitFiles(guid: string) {
+		this.unitCover = null;
+		this.anexoService
+			.getFiles(guid)
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					const hasPhoto = response?.some((file) => {
+						if (file.classificacao === 'foto') {
+							this.unitCover = file.local;
+							return true;
+						}
+						return false;
+					});
+				},
+				error: (err) => {
+					// console.error(err)
+				},
+			});
 	}
 
 	cloneUnitModal(): void {

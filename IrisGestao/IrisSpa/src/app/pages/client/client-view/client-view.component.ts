@@ -94,6 +94,7 @@ export class ClientViewComponent implements OnInit {
 			this.isCnpj = event.cpfCnpj.length > 11;
 			//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
 			this.properties = [...event.imovel];
+			console.log(this.properties);
 			this.contacts = event.contato.map((contato: Contato) => {
 				return {
 					guidReferenciaContato: contato.guidReferenciaContato,
@@ -101,13 +102,13 @@ export class ClientViewComponent implements OnInit {
 					cargo: contato.cargo,
 					email: contato.email,
 					telefone: contato.telefone,
-						dataNascimento: contato.dataNascimento != null ? new Date(
-							contato.dataNascimento as string
-						).toLocaleDateString()
-						: null,
+					dataNascimento:
+						contato.dataNascimento != null
+							? new Date(contato.dataNascimento as string).toLocaleDateString()
+							: null,
 				};
 			});
-			
+
 			this.isLoadingView = false;
 		});
 	}
@@ -127,10 +128,12 @@ export class ClientViewComponent implements OnInit {
 							cargo: contato.cargo,
 							email: contato.email,
 							telefone: contato.telefone,
-								dataNascimento: contato.dataNascimento != null ? new Date(
-									contato.dataNascimento as string
-								).toLocaleDateString()
-								: null,
+							dataNascimento:
+								contato.dataNascimento != null
+									? new Date(
+											contato.dataNascimento as string
+									  ).toLocaleDateString()
+									: null,
 						};
 					});
 				},
@@ -154,23 +157,23 @@ export class ClientViewComponent implements OnInit {
 		this.displayModal = true;
 	};
 
-	confirmDelete = ():void => {
+	confirmDelete = (): void => {
 		this.displayConfirmationModal = true;
 	};
 
-	closeConfirmationModal = ():void => {
+	closeConfirmationModal = (): void => {
 		this.displayConfirmationModal = false;
 	};
 
-	closeModal = ():void => {
+	closeModal = (): void => {
 		this.displayModal = false;
 	};
 
-	confirmInativar = ():void => {
+	confirmInativar = (): void => {
 		this.displayConfirmationInactiveModal = true;
 	};
 
-	closeConfirmationInativarModal = ():void => {
+	closeConfirmationInativarModal = (): void => {
 		this.displayConfirmationInactiveModal = false;
 	};
 
@@ -178,16 +181,16 @@ export class ClientViewComponent implements OnInit {
 		this.selectedContact = { ...item, guidClienteReferencia: this.uid };
 	};
 
-	setCurrentContract= (item: any): void => {
+	setCurrentContract = (item: any): void => {
 		console.log('Contrato Selecionado >> ' + JSON.stringify(item));
 		this.contractidSelected = item.guidReferencia;
 	};
 
-	showContract = ():void => {
-		this.navigateTo('rent-contract/details/' +this.contractidSelected);
+	showContract = (): void => {
+		this.navigateTo('rent-contract/details/' + this.contractidSelected);
 	};
 
-	showContactDetails = ():void => {
+	showContactDetails = (): void => {
 		this.contactDetailsVisible = true;
 		this.contactEditVisible = false;
 		this.contactRegisterVisible = false;
@@ -217,7 +220,7 @@ export class ClientViewComponent implements OnInit {
 		this.contactRegisterVisible = false;
 	};
 
-	deleteContact = ():void => {
+	deleteContact = (): void => {
 		this.closeConfirmationModal();
 		if (this.selectedContact?.guidReferenciaContato) {
 			this.contatoService
@@ -251,38 +254,36 @@ export class ClientViewComponent implements OnInit {
 
 	inativarCliente = (): void => {
 		this.closeConfirmationModal();
-		this.clienteService
-			.inativarCliente(this.uid, false)
-			.subscribe({
-				next: (response) => {
-					console.log('InativarCliente >> retorno '+ JSON.stringify(response));
-					if (response.success) {
-						this.closeConfirmationInativarModal();
-						this.isInativar = true;
-						this.onUpdateContactList({
-							header: 'Cliente Inativado',
-							message: response.message ?? 'Cliente inativado com sucesso',
-						});
-					} else {
-						this.onUpdateContactList({
-							header: 'Cliente não inativado',
-							message: response.message ?? 'Erro na inativação de contato',
-							isError: true,
-						});
-					}
-				},
-				error: (err) => {
-					console.error(err);
+		this.clienteService.inativarCliente(this.uid, false).subscribe({
+			next: (response) => {
+				console.log('InativarCliente >> retorno ' + JSON.stringify(response));
+				if (response.success) {
+					this.closeConfirmationInativarModal();
+					this.isInativar = true;
 					this.onUpdateContactList({
-						header: 'Contato não inativado',
-						message: 'Erro no envio de dados',
+						header: 'Cliente Inativado',
+						message: response.message ?? 'Cliente inativado com sucesso',
+					});
+				} else {
+					this.onUpdateContactList({
+						header: 'Cliente não inativado',
+						message: response.message ?? 'Erro na inativação de contato',
 						isError: true,
 					});
-				},
-			});
+				}
+			},
+			error: (err) => {
+				console.error(err);
+				this.onUpdateContactList({
+					header: 'Contato não inativado',
+					message: 'Erro no envio de dados',
+					isError: true,
+				});
+			},
+		});
 	};
 
-	navigateTo = (route: string):void => {
+	navigateTo = (route: string): void => {
 		this.router.navigate([route]);
-	}
+	};
 }
