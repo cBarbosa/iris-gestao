@@ -164,36 +164,10 @@ export class PropertyListingComponent implements OnInit {
 					this.showPaginator =
 						this.pageCount > 1 || this.pageIndex > this.pageCount;
 
-					if (event.data.items.length > 0) {
-						event.data.items.forEach(async (imovel: Imovel) => {
-							// console.debug('Imovel Data >> ' + JSON.stringify(imovel));
+					this.properties = event.data.items;
 
-							let cover;
-
-							await this.anexoService
-								.getFiles(imovel.guidReferencia)
-								.subscribe({
-									next: (response) => {
-										cover =
-											response?.find((file) => file.classificacao === 'capa')
-												?.local ?? './assets/images/imovel-placeholder.png';
-
-										const imovelObj: IImovel = {
-											...imovel,
-											imgCapa: cover,
-										};
-										this.properties.push(imovelObj);
-									},
-									error(err) {
-										console.error(err);
-									},
-								});
-						});
-						this.noRestults = false;
-					} else {
-						this.properties = [];
-						this.noRestults = true;
-					}
+					if (event.data.items.length > 0) this.noRestults = false;
+					else this.noRestults = true;
 				} else {
 					this.showPaginator = true;
 					this.pageCount = 1;

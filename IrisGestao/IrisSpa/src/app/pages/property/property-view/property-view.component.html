@@ -263,9 +263,9 @@
 	</ng-template>
 	<ng-template pTemplate="content">
 		<img
-			src="../../../assets/images/property/edit.png"
+			[src]="unitCover ?? '../../../assets/images/imovel-placeholder.png'"
 			alt="Foto unidade"
-			class="mb-3"
+			class="mb-3 max-h-44 w-full object-cover"
 		/>
 		<p-tabView>
 			<p-tabPanel header="Detalhes">
