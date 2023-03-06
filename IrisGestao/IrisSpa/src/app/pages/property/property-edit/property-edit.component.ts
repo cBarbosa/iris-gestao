@@ -633,19 +633,15 @@ export class PropertyEditComponent {
 					this.docProjeto.mimetype
 				).then((file) => {
 					formData.append('files', file);
-					this.anexoService.registerFile(
-						this.propertyGuid,
-						formData,
-						classificacao
-					);
+					this.anexoService
+						.registerFile(this.propertyGuid, formData, classificacao)
+						.subscribe();
 				});
 			} else {
 				formData.append('files', this.docProjeto.data);
-				this.anexoService.registerFile(
-					this.propertyGuid,
-					formData,
-					classificacao
-				);
+				this.anexoService
+					.registerFile(this.propertyGuid, formData, classificacao)
+					.subscribe();
 			}
 		}
 
@@ -665,19 +661,15 @@ export class PropertyEditComponent {
 					this.docMatricula.mimetype
 				).then((file) => {
 					formData.append('files', file);
-					this.anexoService.registerFile(
-						this.propertyGuid,
-						formData,
-						classificacao
-					);
+					this.anexoService
+						.registerFile(this.propertyGuid, formData, classificacao)
+						.subscribe();
 				});
 			} else {
 				formData.append('files', this.docMatricula.data);
-				this.anexoService.registerFile(
-					this.propertyGuid,
-					formData,
-					classificacao
-				);
+				this.anexoService
+					.registerFile(this.propertyGuid, formData, classificacao)
+					.subscribe();
 			}
 		}
 
@@ -697,19 +689,15 @@ export class PropertyEditComponent {
 					this.docHabitese.mimetype
 				).then((file) => {
 					formData.append('files', file);
-					this.anexoService.registerFile(
-						this.propertyGuid,
-						formData,
-						classificacao
-					);
+					this.anexoService
+						.registerFile(this.propertyGuid, formData, classificacao)
+						.subscribe();
 				});
 			} else {
 				formData.append('files', this.docHabitese.data);
-				this.anexoService.registerFile(
-					this.propertyGuid,
-					formData,
-					classificacao
-				);
+				this.anexoService
+					.registerFile(this.propertyGuid, formData, classificacao)
+					.subscribe();
 			}
 		}
 	}

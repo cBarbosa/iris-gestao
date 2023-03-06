@@ -83,8 +83,9 @@
 				/>
 			</div>
 
-			<h5>Documentos</h5>
+			<h5>Documentos da unidade</h5>
 
+			<!--
 			<div class="document-list">
 				<div
 					class="document project"
@@ -148,6 +149,162 @@
 							<i class="ph-download-simple"></i>
 						</button>
 					</span>
+				</div>
+			</div>
+			-->
+
+			<div class="document-list">
+				<div
+					class="document project"
+					[class.empty]="!docProjeto || deletedDocs.projeto"
+				>
+					<span>Projeto</span>
+					<span
+						class="buttons"
+						*ngIf="docProjeto && !deletedDocs.projeto; else uploadProjeto"
+					>
+						<button
+							pButton
+							type="button"
+							class="p-button-rounded p-button-text"
+							(click)="downloadFile(docProjeto.data, docProjeto.name)"
+						>
+							<i class="ph-download-simple"></i>
+						</button>
+						<button
+							pButton
+							type="button"
+							class="p-button-rounded p-button-text"
+							(click)="removeDoc('projeto')"
+						>
+							<i class="ph-trash"></i>
+						</button>
+					</span>
+
+					<ng-template #uploadProjeto>
+						<span class="buttons">
+							<button
+								pButton
+								type="button"
+								class="p-button-rounded p-button-text"
+								*ngIf="deletedDocs.projeto"
+								(click)="deletedDocs.projeto = false"
+							>
+								<i class="ph-arrow-u-up-left"></i>
+							</button>
+							<label for="inputProjeto">
+								<i class="ph-upload-simple"></i>
+								<input
+									pButton
+									type="file"
+									id="inputProjeto"
+									(change)="addDoc($event, 'projeto')"
+								/>
+							</label>
+						</span>
+					</ng-template>
+				</div>
+
+				<div
+					class="document registration"
+					[class.empty]="!docMatricula || deletedDocs.matricula"
+				>
+					<span>Matrícula</span>
+					<span
+						class="buttons"
+						*ngIf="docMatricula && !deletedDocs.matricula; else uploadMatricula"
+					>
+						<button
+							pButton
+							type="button"
+							class="p-button-rounded p-button-text"
+							(click)="downloadFile(docMatricula.data, docMatricula.name)"
+						>
+							<i class="ph-download-simple"></i>
+						</button>
+						<button
+							pButton
+							type="button"
+							class="p-button-rounded p-button-text"
+							(click)="removeDoc('matricula')"
+						>
+							<i class="ph-trash"></i>
+						</button>
+					</span>
+
+					<ng-template #uploadMatricula>
+						<span class="buttons">
+							<button
+								pButton
+								type="button"
+								class="p-button-rounded p-button-text"
+								*ngIf="deletedDocs.matricula"
+								(click)="deletedDocs.matricula = false"
+							>
+								<i class="ph-arrow-u-up-left"></i>
+							</button>
+							<label for="inputMatricula">
+								<i class="ph-upload-simple"></i>
+								<input
+									pButton
+									type="file"
+									id="inputMatricula"
+									(change)="addDoc($event, 'matricula')"
+								/>
+							</label>
+						</span>
+					</ng-template>
+				</div>
+
+				<div
+					class="document occupancy"
+					[class.empty]="!docHabitese || deletedDocs.habitese"
+				>
+					<span>Habite-se</span>
+					<span
+						class="buttons"
+						*ngIf="docHabitese && !deletedDocs.habitese; else uploadHabitese"
+					>
+						<button
+							pButton
+							type="button"
+							class="p-button-rounded p-button-text"
+							(click)="downloadFile(docHabitese.data, docHabitese.name)"
+						>
+							<i class="ph-download-simple"></i>
+						</button>
+						<button
+							pButton
+							type="button"
+							class="p-button-rounded p-button-text"
+							(click)="removeDoc('habitese')"
+						>
+							<i class="ph-trash"></i>
+						</button>
+					</span>
+
+					<ng-template #uploadHabitese>
+						<span class="buttons">
+							<button
+								pButton
+								type="button"
+								class="p-button-rounded p-button-text"
+								*ngIf="deletedDocs.habitese"
+								(click)="deletedDocs.habitese = false"
+							>
+								<i class="ph-arrow-u-up-left"></i>
+							</button>
+							<label for="inputHabitese">
+								<i class="ph-upload-simple"></i>
+								<input
+									pButton
+									type="file"
+									id="inputHabitese"
+									(change)="addDoc($event, 'habitese')"
+								/>
+							</label>
+						</span>
+					</ng-template>
 				</div>
 			</div>
 		</section>
