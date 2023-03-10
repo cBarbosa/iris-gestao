@@ -308,6 +308,74 @@
 				}
 			}
 
+			.attachment-data {
+				@apply mt-3;
+
+				.document {
+					@apply flex justify-between items-center text-sm rounded;
+					color: #641b1e;
+					padding: 0.4rem;
+
+					.buttons {
+						@apply text-xl;
+
+						button {
+							@apply mx-1 w-7 h-7 rounded-full;
+							padding: 0 0 0 0.37rem;
+							text-align: center;
+
+							&:hover {
+								background-color: #f7ded3;
+							}
+						}
+
+						label {
+							@apply inline-block mx-1 w-7 h-7 rounded-full;
+							padding: 0.1rem 0 0 0;
+							text-align: center;
+							cursor: pointer;
+							font-size: 1rem;
+
+							&:hover {
+								background-color: #f7ded3;
+							}
+
+							i {
+								color: #641b1e;
+							}
+
+							input[type="file"] {
+								display: none;
+							}
+						}
+					}
+
+					> span:first-child:before {
+						content: "";
+						display: inline-block;
+						@apply w-6 h-6 mr-4 rounded;
+						margin-bottom: -0.4rem;
+						background-color: #f7ded3;
+						background-position: center center;
+						background-repeat: no-repeat;
+					}
+
+					&.project > span:first-child:before {
+						background-image: url("../../../../assets/images/icons/blueprint-buildings.svg");
+					}
+					&.registration > span:first-child:before {
+						background-image: url("../../../../assets/images/icons/blueprint-home.svg");
+					}
+					&.occupancy > span:first-child:before {
+						background-image: url("../../../../assets/images/icons/blueprint-buildings.svg");
+					}
+
+					&:hover {
+						background-color: rgba(0, 0, 0, 0.02);
+					}
+				}
+			}
+
 			.history-data {
 				.data {
 					@apply pb-4;

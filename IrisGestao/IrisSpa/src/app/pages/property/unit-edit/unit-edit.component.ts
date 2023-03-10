@@ -359,11 +359,6 @@ export class UnitEditComponent implements OnInit {
 			UnidadeLocada: this.unit.unidadeAlocada,
 		} as ImovelUnidadeType;
 
-		this.savePhotos();
-		this.deletePhotos();
-		this.saveDocs();
-		this.deleteDocs();
-
 		Promise.all([
 			this.savePhotos(),
 			this.deletePhotos(),
@@ -391,7 +386,6 @@ export class UnitEditComponent implements OnInit {
 
 							this.editUnitForm.enable();
 							this.isLoadingView = false;
-
 							this.openModal();
 						},
 						error: (error: any) => {
@@ -402,6 +396,8 @@ export class UnitEditComponent implements OnInit {
 								isError: true,
 							};
 
+							this.editUnitForm.enable();
+							this.isLoadingView = false;
 							this.openModal();
 						},
 					});
@@ -410,10 +406,15 @@ export class UnitEditComponent implements OnInit {
 				console.error('Erro no envio do batch de anexos:', error);
 				this.modalContent = {
 					header: 'Atualização não realizada',
-					message: 'Erro no envio de anexos',
+					message:
+						error.err?.err ??
+						error.err ??
+						'Os arquivos podem estar com o mesmo nome. Para corrigir verifique os arquivos e teste novamente.',
 					isError: true,
 				};
 
+				this.editUnitForm.enable();
+				this.isLoadingView = false;
 				this.openModal();
 			});
 	}
@@ -455,7 +456,7 @@ export class UnitEditComponent implements OnInit {
 			err?: any;
 		}>((res, rej) => {
 			this.anexoService
-				.registerFile(this.propertyGuid, formData, 'foto')
+				.registerFile(this.uid, formData, 'foto')
 				.pipe(first())
 				.subscribe({
 					next(response) {
@@ -620,7 +621,7 @@ export class UnitEditComponent implements OnInit {
 										const registerUpdatePromise =
 											this.anexoService.registerUpdateFile(
 												this.attachmentsObj,
-												this.propertyGuid,
+												this.uid,
 												formData,
 												classificacao
 											);
@@ -649,13 +650,11 @@ export class UnitEditComponent implements OnInit {
 							} else {
 								// @ts-ignore
 								formData.append('files', this.docs[classificacao]!.data);
-								// this.anexoService
-								// 	.registerFile(this.propertyGuid, formData, classificacao)
-								// 	.subscribe();
+
 								this.anexoService
 									.registerUpdateFile(
 										this.attachmentsObj,
-										this.propertyGuid,
+										this.uid,
 										formData,
 										classificacao
 									)
