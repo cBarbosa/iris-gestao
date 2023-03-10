@@ -3,7 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
 import { ApiResponse } from 'src/app/shared/models';
 import { ContratoAluguel } from 'src/app/shared/models/contrato-aluguel.model';
+import {
+	Attachment,
+	AnexoService
+} from 'src/app/shared/services/anexo.service';
 import { RentContractService } from 'src/app/shared/services/rent-contract.service';
+import { Utils } from 'src/app/shared/utils';
 
 @Component({
 	selector: 'app-rent-contract-view',
@@ -26,10 +31,18 @@ export class RentContractViewComponent {
 		| null = null;
 	contactsVisible = false;
 
+	attachmentDocs: {
+		projeto?: Attachment;
+		matricula?: Attachment;
+		habitese?: Attachment;
+		outros?: Attachment;
+	} = {};
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
-		private rentContractService: RentContractService
+		private rentContractService: RentContractService,
+		private anexoService: AnexoService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.guid = paramMap.get('guid') ?? '';
@@ -39,6 +52,7 @@ export class RentContractViewComponent {
 	ngOnInit() {
 		console.log(this.guid);
 		this.getData();
+		this.getAtachs();
 	}
 
 	getData(): void {
@@ -89,5 +103,43 @@ export class RentContractViewComponent {
 
 	navigateTo(route: string) {
 		this.router.navigate([route]);
+	}
+
+	getAtachs():void {
+		this.anexoService
+			.getFiles(this.guid)
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+
+					response?.forEach((file) => {
+						const classificacao = file.classificacao;
+
+						if (classificacao === 'projeto') this.attachmentDocs.projeto = file;
+						else if (classificacao === 'matricula')
+							this.attachmentDocs.matricula = file;
+						else if (classificacao === 'habitese')
+							this.attachmentDocs.habitese = file;
+						else if (classificacao === 'outrosdocs')
+							this.attachmentDocs.outros = file;
+					});
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+	};
+
+	async downloadFile(
+		file: File | string | ArrayBuffer | null,
+		filename: string
+	) {
+		if (file instanceof File) {
+			file = (await Utils.fileToDataUrl(file)).data;
+		}
+
+		if (file === null) return;
+
+		Utils.saveAs(file, filename);
 	}
 }

@@ -76,7 +76,7 @@ export class SupplierContractListingComponent {
 
 						this.contractEntries = event.data.items.map((contrato: any) => {
 							return {
-								numeroContrato: contrato.numeroContrato,
+								numeroContrato: contrato.descricaoServico,
 								prestador: contrato.fornecedor.nome,
 								cpfCnpj: contrato.fornecedor.cpfCnpj,
 								dataInicioContrato: contrato.dataInicioContrato
