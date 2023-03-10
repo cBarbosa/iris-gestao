@@ -12,6 +12,7 @@ import { ImovelUnidade, ImovelUnidadeType } from 'src/app/shared/models';
 import { DominiosService, ImovelService } from 'src/app/shared/services';
 import {
 	AnexoService,
+	ArquivoClassificacoes,
 	Attachment,
 } from 'src/app/shared/services/anexo.service';
 
@@ -81,9 +82,11 @@ export class UnitEditComponent implements OnInit {
 		  }>
 		| undefined;
 
-	docProjeto: Base64Metadata;
-	docMatricula: Base64Metadata;
-	docHabitese: Base64Metadata;
+	docs: {
+		projeto?: Base64Metadata;
+		matricula?: Base64Metadata;
+		habitese?: Base64Metadata;
+	} = {};
 
 	deletedDocs = {
 		projeto: false,
@@ -188,7 +191,7 @@ export class UnitEditComponent implements OnInit {
 						});
 
 					if (this.attachmentsObj?.projeto)
-						this.docProjeto = {
+						this.docs.projeto = {
 							name: this.attachmentsObj.projeto.nome,
 							mimetype: this.attachmentsObj.projeto.mimeType,
 							data: this.attachmentsObj.projeto.local,
@@ -196,7 +199,7 @@ export class UnitEditComponent implements OnInit {
 						};
 
 					if (this.attachmentsObj?.matricula)
-						this.docMatricula = {
+						this.docs.matricula = {
 							name: this.attachmentsObj.matricula.nome,
 							mimetype: this.attachmentsObj.matricula.mimeType,
 							data: this.attachmentsObj.matricula.local,
@@ -204,7 +207,7 @@ export class UnitEditComponent implements OnInit {
 						};
 
 					if (this.attachmentsObj?.habitese)
-						this.docHabitese = {
+						this.docs.habitese = {
 							name: this.attachmentsObj.habitese.nome,
 							mimetype: this.attachmentsObj.habitese.mimeType,
 							data: this.attachmentsObj.habitese.local,
@@ -356,45 +359,63 @@ export class UnitEditComponent implements OnInit {
 			UnidadeLocada: this.unit.unidadeAlocada,
 		} as ImovelUnidadeType;
 
-		const save = this.imovelService
-			.saveUnit(this.uid, data)
-			?.pipe(first())
-			.subscribe({
-				next: (response: any) => {
-					if (response.success) {
-						this.modalContent = {
-							header: 'Atualização realizada com sucesso',
-							message: response.message,
-						};
-					} else {
-						this.modalContent = {
-							header: 'Atualização não realizada',
-							message: response.message,
-							isError: true,
-						};
-					}
-
-					this.editUnitForm.enable();
-					this.isLoadingView = false;
-
-					this.openModal();
-				},
-				error: (error: any) => {
-					console.error(error);
-					this.modalContent = {
-						header: 'Atualização não realizada',
-						message: 'Erro no envio de dados',
-						isError: true,
-					};
-
-					this.openModal();
-				},
-			});
-
 		this.savePhotos();
 		this.deletePhotos();
 		this.saveDocs();
 		this.deleteDocs();
+
+		Promise.all([
+			this.savePhotos(),
+			this.deletePhotos(),
+			this.saveDocs(),
+			this.deleteDocs(),
+		])
+			.then((result) => {
+				this.imovelService
+					.saveUnit(this.uid, data)
+					?.pipe(first())
+					.subscribe({
+						next: (response: any) => {
+							if (response.success) {
+								this.modalContent = {
+									header: 'Atualização realizada com sucesso',
+									message: response.message,
+								};
+							} else {
+								this.modalContent = {
+									header: 'Atualização não realizada',
+									message: response.message,
+									isError: true,
+								};
+							}
+
+							this.editUnitForm.enable();
+							this.isLoadingView = false;
+
+							this.openModal();
+						},
+						error: (error: any) => {
+							console.error(error);
+							this.modalContent = {
+								header: 'Atualização não realizada',
+								message: 'Erro no envio de dados do formulário',
+								isError: true,
+							};
+
+							this.openModal();
+						},
+					});
+			})
+			.catch((error) => {
+				console.error('Erro no envio do batch de anexos:', error);
+				this.modalContent = {
+					header: 'Atualização não realizada',
+					message: 'Erro no envio de anexos',
+					isError: true,
+				};
+
+				this.openModal();
+			});
 	}
 
 	addPhoto(event: any) {
@@ -428,7 +449,25 @@ export class UnitEditComponent implements OnInit {
 
 		console.debug('sending', formData);
 
-		this.anexoService.registerFile(this.uid, formData, 'foto').subscribe();
+		return new Promise<{
+			classificacao: ArquivoClassificacoes;
+			response?: any;
+			err?: any;
+		}>((res, rej) => {
+			this.anexoService
+				.registerFile(this.propertyGuid, formData, 'foto')
+				.pipe(first())
+				.subscribe({
+					next(response) {
+						if (response.success) res({ classificacao: 'foto', response });
+						else
+							rej({ classificacao: 'foto', response, err: response.message });
+					},
+					error(err) {
+						rej({ classificacao: 'foto', err });
+					},
+				});
+		});
 	}
 
 	removePhoto(index: number, newPhoto = false) {
@@ -442,9 +481,28 @@ export class UnitEditComponent implements OnInit {
 	}
 
 	deletePhotos() {
+		const promises: Promise<{ response?: any; err?: any }>[] = [];
+
 		this.deletedUnitPhotos.forEach((photoId) => {
-			this.anexoService.deleteFile(photoId).subscribe();
+			promises.push(
+				new Promise((res, rej) => {
+					this.anexoService
+						.deleteFile(photoId)
+						.pipe(first())
+						.subscribe({
+							next(response) {
+								if (response.success) res({ response });
+								else rej({ response, err: response.message });
+							},
+							error(err) {
+								rej({ err });
+							},
+						});
+				})
+			);
 		});
+
+		return Promise.all(promises);
 	}
 
 	openModal() {
@@ -489,7 +547,7 @@ export class UnitEditComponent implements OnInit {
 
 		switch (type) {
 			case 'projeto':
-				this.docProjeto = {
+				this.docs.projeto = {
 					name: file.name,
 					mimetype: file.type,
 					data: file,
@@ -499,7 +557,7 @@ export class UnitEditComponent implements OnInit {
 				break;
 
 			case 'matricula':
-				this.docMatricula = {
+				this.docs.matricula = {
 					name: file.name,
 					mimetype: file.type,
 					data: file,
@@ -509,7 +567,7 @@ export class UnitEditComponent implements OnInit {
 				break;
 
 			case 'habitese':
-				this.docHabitese = {
+				this.docs.habitese = {
 					name: file.name,
 					mimetype: file.type,
 					data: file,
@@ -524,107 +582,109 @@ export class UnitEditComponent implements OnInit {
 	}
 
 	saveDocs() {
-		if (
-			!this.deletedDocs.projeto &&
-			this.docProjeto &&
-			this.docProjeto.isNew &&
-			this.docProjeto.data !== null
-		) {
-			const classificacao = 'projeto';
-			const formData = new FormData();
+		const promises: Promise<{
+			classificacao: ArquivoClassificacoes;
+			response?: any;
+			err?: any;
+		}>[] = [];
 
-			if (!(this.docProjeto.data instanceof File)) {
-				Utils.dataUrlToFile(
-					this.docProjeto.data,
-					this.docProjeto.name,
-					this.docProjeto.mimetype
-				).then((file) => {
-					formData.append('files', file);
-					this.anexoService.registerUpdateFile(
-						this.attachmentsObj,
-						this.uid,
-						formData,
-						classificacao
-					);
-				});
-			} else {
-				formData.append('files', this.docProjeto.data);
-				this.anexoService.registerUpdateFile(
-					this.attachmentsObj,
-					this.uid,
-					formData,
-					classificacao
+		const saveDoc = (classificacao: 'projeto' | 'matricula' | 'habitese') => {
+			if (
+				!this.deletedDocs[classificacao] &&
+				this.docs[classificacao] &&
+				this.docs[classificacao]!.isNew &&
+				this.docs[classificacao]!.data !== null
+			) {
+				const formData = new FormData();
+
+				console.debug('adding file of class', classificacao);
+
+				promises.push(
+					new Promise((res, rej) => {
+						if (this.docs[classificacao] && this.docs[classificacao]!.data) {
+							if (!(this.docs[classificacao]!.data instanceof File)) {
+								Utils.dataUrlToFile(
+									//@ts-ignore
+									this.docs[classificacao]!.data,
+									this.docs[classificacao]!.name,
+									this.docs[classificacao]!.mimetype
+								)
+									.then((file) => {
+										formData.append('files', file);
+										// this.anexoService
+										// 	.registerFile(this.propertyGuid, formData, classificacao)
+										// 	.subscribe();
+
+										console.debug('creating file');
+
+										const registerUpdatePromise =
+											this.anexoService.registerUpdateFile(
+												this.attachmentsObj,
+												this.propertyGuid,
+												formData,
+												classificacao
+											);
+
+										if (registerUpdatePromise)
+											registerUpdatePromise
+												.then((obj) => {
+													if (obj === null) return rej(obj);
+
+													if (obj?.err) {
+														rej(obj);
+													}
+
+													if (obj.response.success) res(obj);
+													else rej(obj);
+												})
+												.catch((err) => {
+													console.error('1. Erro ao atualizar anexos');
+													rej({ err });
+												});
+									})
+									.catch((err) => {
+										console.error('2. Erro ao atualizar anexos');
+										rej({ err });
+									});
+							} else {
+								// @ts-ignore
+								formData.append('files', this.docs[classificacao]!.data);
+								// this.anexoService
+								// 	.registerFile(this.propertyGuid, formData, classificacao)
+								// 	.subscribe();
+								this.anexoService
+									.registerUpdateFile(
+										this.attachmentsObj,
+										this.propertyGuid,
+										formData,
+										classificacao
+									)
+									?.then((obj) => {
+										if (obj === null) return;
+
+										if (obj?.err) {
+											rej(obj);
+										}
+
+										if (obj.response.success) res(obj);
+										else rej(obj);
+									})
+									.catch((err) => {
+										console.error('2. Erro ao atualizar anexos');
+										rej({ err });
+									});
+							}
+						}
+					})
 				);
 			}
-		}
+		};
 
-		if (
-			!this.deletedDocs.matricula &&
-			this.docMatricula &&
-			this.docMatricula.isNew &&
-			this.docMatricula.data !== null
-		) {
-			const classificacao = 'matricula';
-			const formData = new FormData();
+		saveDoc('projeto');
+		saveDoc('matricula');
+		saveDoc('habitese');
 
-			if (!(this.docMatricula.data instanceof File)) {
-				Utils.dataUrlToFile(
-					this.docMatricula.data,
-					this.docMatricula.name,
-					this.docMatricula.mimetype
-				).then((file) => {
-					formData.append('files', file);
-					this.anexoService.registerUpdateFile(
-						this.attachmentsObj,
-						this.uid,
-						formData,
-						classificacao
-					);
-				});
-			} else {
-				formData.append('files', this.docMatricula.data);
-				this.anexoService.registerUpdateFile(
-					this.attachmentsObj,
-					this.uid,
-					formData,
-					classificacao
-				);
-			}
-		}
-
-		if (
-			!this.deletedDocs.habitese &&
-			this.docHabitese &&
-			this.docHabitese.isNew &&
-			this.docHabitese.data !== null
-		) {
-			const classificacao = 'habitese';
-			const formData = new FormData();
-
-			if (!(this.docHabitese.data instanceof File)) {
-				Utils.dataUrlToFile(
-					this.docHabitese.data,
-					this.docHabitese.name,
-					this.docHabitese.mimetype
-				).then((file) => {
-					formData.append('files', file);
-					this.anexoService.registerUpdateFile(
-						this.attachmentsObj,
-						this.uid,
-						formData,
-						classificacao
-					);
-				});
-			} else {
-				formData.append('files', this.docHabitese.data);
-				this.anexoService.registerUpdateFile(
-					this.attachmentsObj,
-					this.uid,
-					formData,
-					classificacao
-				);
-			}
-		}
+		return Promise.all(promises);
 	}
 
 	removeDoc(doc: 'projeto' | 'matricula' | 'habitese') {
@@ -632,22 +692,43 @@ export class UnitEditComponent implements OnInit {
 	}
 
 	deleteDocs() {
-		if (this.deletedDocs.projeto && this.attachmentsObj?.projeto) {
-			console.debug('deleting doc', this.attachmentsObj.projeto.id);
-			this.anexoService.deleteFile(this.attachmentsObj.projeto.id).subscribe();
-		}
+		const promises: Promise<{ response?: any; err?: any }>[] = [];
 
-		if (this.deletedDocs.matricula && this.attachmentsObj?.matricula) {
-			console.debug('deleting doc', this.attachmentsObj.matricula.id);
-			this.anexoService
-				.deleteFile(this.attachmentsObj.matricula.id)
-				.subscribe();
-		}
+		promises.concat(
+			(
+				['projeto', 'matricula', 'habitese'] as [
+					'projeto',
+					'matricula',
+					'habitese'
+				]
+			).map((classificacao) => {
+				return new Promise((res, rej) => {
+					if (
+						this.deletedDocs[classificacao] &&
+						this.attachmentsObj?.[classificacao]
+					) {
+						console.debug(
+							'deleting doc',
+							this.attachmentsObj[classificacao]!.id
+						);
+						this.anexoService
+							.deleteFile(this.attachmentsObj[classificacao]!.id)
+							.pipe(first())
+							.subscribe({
+								next(response) {
+									if (response.success) res({ response });
+									else rej({ response, err: response.message });
+								},
+								error(err) {
+									rej({ err });
+								},
+							});
+					}
+				});
+			})
+		);
 
-		if (this.deletedDocs.habitese && this.attachmentsObj?.habitese) {
-			console.debug('deleting doc', this.attachmentsObj.habitese.id);
-			this.anexoService.deleteFile(this.attachmentsObj.habitese.id).subscribe();
-		}
+		return Promise.all(promises);
 	}
 
 	async downloadFile(
