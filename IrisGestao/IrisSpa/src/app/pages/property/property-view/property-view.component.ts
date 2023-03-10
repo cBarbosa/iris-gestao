@@ -170,7 +170,7 @@ export class PropertyViewComponent implements OnInit {
 				this.imageList = imovel.imagens!;
 				this.isLoadingView = false;
 				this.isCorporativeBuilding =
-					this.units[0].idTipoUnidadeNavigation?.id == 1;
+					this.units[0]?.idTipoUnidadeNavigation?.id == 1;
 
 				this.anexoService
 					.getFiles(imovel.guidReferencia)

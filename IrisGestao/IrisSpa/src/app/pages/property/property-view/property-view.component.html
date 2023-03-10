@@ -180,7 +180,14 @@
 				</p-table>
 			</section>
 
-			<section class="attachments">
+			<section
+				class="attachments"
+				*ngIf="
+					attachmentDocs.projeto ||
+					attachmentDocs.matricula ||
+					attachmentDocs.habitese
+				"
+			>
 				<h3>Anexos</h3>
 
 				<div
