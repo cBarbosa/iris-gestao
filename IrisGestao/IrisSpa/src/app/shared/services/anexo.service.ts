@@ -115,6 +115,8 @@ export class AnexoService {
 				});
 		});
 
+		// return Promise.reject({ classificacao, err: 'mensagem erro teste 1' });
+
 		return new Promise<{
 			classificacao: ArquivoClassificacoes;
 			response?: any;
