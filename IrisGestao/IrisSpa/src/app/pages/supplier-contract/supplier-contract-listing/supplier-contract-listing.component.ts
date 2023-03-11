@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { first } from 'rxjs';
 import { CommonService } from 'src/app/shared/services';
+import { AnexoService, ArquivoClassificacoes } from 'src/app/shared/services/anexo.service';
 import { SupplierContractService } from 'src/app/shared/services/supplier-contract.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -129,4 +130,5 @@ export class SupplierContractListingComponent {
 	navigateTo(route: string) {
 		this.router.navigate([route]);
 	}
+
 }
