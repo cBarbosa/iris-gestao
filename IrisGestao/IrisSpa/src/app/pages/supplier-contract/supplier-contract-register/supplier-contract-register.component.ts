@@ -132,6 +132,7 @@ export class SupplierContractRegisterComponent {
 		projeto?: File;
 		matricula?: File;
 		habitese?: File;
+		outrosdocs?: File;
 	} = {};
 
 	constructor(
@@ -179,8 +180,8 @@ export class SupplierContractRegisterComponent {
 				dataVencimento: [1, Validators.required],
 				pagamento: [null, Validators.required],
 				reajuste: [null, Validators.required],
-				periodicidade: [null, Validators.required],
-				percentual: [null, Validators.required],
+				periodicidade: [null, Validators.required]
+				// percentual: [null, Validators.required],
 			}),
 		});
 
@@ -427,7 +428,7 @@ export class SupplierContractRegisterComponent {
 		else this.goBack();
 	}
 
-	onSelect(e: any, classificacao: 'projeto' | 'matricula' | 'habitese') {
+	onSelect(e: any, classificacao: 'projeto' | 'matricula' | 'habitese' | 'outrosdocs') {
 		console.log('e', e);
 		this.attachments[classificacao] = e.currentFiles[0];
 	}
@@ -453,27 +454,9 @@ export class SupplierContractRegisterComponent {
 				pagamento: number; //x
 				reajuste: number; //x
 				periodicidade: number; //x
-				percentual: number;
+				// percentual: number;
 			};
 		} = this.registerForm.getRawValue();
-
-		// 		{
-		//     "guidImovel": "05ca9f97-5a0c-45be-b02c-91184f4769f6",
-		//     "guidFornecedor": "7f60724d-5601-4ac8-8aa1-588f88457ac8",
-		//     "idFormaPagamento": 2,
-		//     "idIndiceReajuste": 1,
-		//     "numeroContrato": "123456/2023",
-		//     "descricaoDoServico": "Serviço de limpeza",
-		//     "percentual": 10,
-		//     "dataAtualizacao": "2023-02-10T03:00:12.252Z",
-		//     "valorServicoContratado": 220000,
-		//     "dataInicioContrato": "2023-02-10T03:00:12.252Z",
-		//     "dataFimContrato": "2024-02-10T03:00:12.252Z",
-		//     "diaPagamento": 26,
-		//     "periodicidadeReajuste": 12
-		// }
-
-		console.log('formData', formData);
 
 		const contractObj: {
 			guidImovel: string;
@@ -482,7 +465,7 @@ export class SupplierContractRegisterComponent {
 			idIndiceReajuste: number;
 			numeroContrato: string;
 			descricaoDoServico: string;
-			percentual: number;
+			//percentual: number;
 			dataAtualizacao: string;
 			valorServicoContratado: number;
 			dataInicioContrato: string;
@@ -497,7 +480,7 @@ export class SupplierContractRegisterComponent {
 			numeroContrato: formData.contractInfo.numero,
 			descricaoDoServico: formData.contractInfo.nome,
 			/* \/ o que é percentual ????? FIX */
-			percentual: formData.valuesInfo.percentual,
+			//percentual: formData.valuesInfo.percentual,
 			dataAtualizacao: new Date().toISOString(),
 			valorServicoContratado: formData.valuesInfo.valor,
 			dataInicioContrato: formData.valuesInfo.dataInicio,
