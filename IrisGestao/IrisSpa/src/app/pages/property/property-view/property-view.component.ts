@@ -33,6 +33,11 @@ export class PropertyViewComponent implements OnInit {
 	} = {};
 
 	unitCover: string | undefined | null;
+	unitDocs: {
+		projeto?: { name: string; uri: string } | undefined;
+		matricula?: { name: string; uri: string } | undefined;
+		habitese?: { name: string; uri: string } | undefined;
+	};
 
 	coverImage: string | undefined;
 
@@ -217,17 +222,23 @@ export class PropertyViewComponent implements OnInit {
 
 	getUnitFiles(guid: string) {
 		this.unitCover = null;
+		this.unitDocs = {};
+
 		this.anexoService
 			.getFiles(guid)
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
-					const hasPhoto = response?.some((file) => {
+					response?.forEach((file) => {
 						if (file.classificacao === 'foto') {
-							this.unitCover = file.local;
-							return true;
+							if (this.unitCover === null) this.unitCover = file.local;
+						} else if (file.classificacao === 'projeto') {
+							this.unitDocs.projeto = { name: file.nome, uri: file.local };
+						} else if (file.classificacao === 'matricula') {
+							this.unitDocs.matricula = { name: file.nome, uri: file.local };
+						} else if (file.classificacao === 'habitese') {
+							this.unitDocs.habitese = { name: file.nome, uri: file.local };
 						}
-						return false;
 					});
 				},
 				error: (err) => {

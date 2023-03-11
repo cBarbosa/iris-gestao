@@ -415,7 +415,10 @@ export class PropertyEditComponent {
 				console.error('Erro no envio do batch de anexos:', error);
 				this.modalContent = {
 					header: 'Atualização não realizada',
-					message: 'Erro no envio de anexos',
+					message:
+						error.err?.err ??
+						error.err ??
+						'Os arquivos podem estar com o mesmo nome. Para corrigir verifique os arquivos e teste novamente.',
 					isError: true,
 				};
 

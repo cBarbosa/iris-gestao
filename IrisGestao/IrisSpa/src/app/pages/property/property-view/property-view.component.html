@@ -326,6 +326,55 @@
 						<span class="value">{{ unit.matriculaAgua ?? "" }}</span>
 					</div>
 				</div>
+				<div class="attachment-data">
+					<div class="document project" *ngIf="unitDocs.projeto">
+						<span>Projeto</span>
+						<span class="buttons">
+							<button
+								pButton
+								type="button"
+								class="p-button-rounded p-button-text"
+								(click)="
+									downloadFile(unitDocs.projeto.uri, unitDocs.projeto.name)
+								"
+							>
+								<i class="ph-download-simple"></i>
+							</button>
+						</span>
+					</div>
+
+					<div class="document registration" *ngIf="unitDocs.matricula">
+						<span>Matrícula</span>
+						<span class="buttons">
+							<button
+								pButton
+								type="button"
+								class="p-button-rounded p-button-text"
+								(click)="
+									downloadFile(unitDocs.matricula.uri, unitDocs.matricula.name)
+								"
+							>
+								<i class="ph-download-simple"></i>
+							</button>
+						</span>
+					</div>
+
+					<div class="document occupancy" *ngIf="unitDocs.habitese">
+						<span>Habite-se</span>
+						<span class="buttons">
+							<button
+								pButton
+								type="button"
+								class="p-button-rounded p-button-text"
+								(click)="
+									downloadFile(unitDocs.habitese.uri, unitDocs.habitese.name)
+								"
+							>
+								<i class="ph-download-simple"></i>
+							</button>
+						</span>
+					</div>
+				</div>
 			</p-tabPanel>
 			<p-tabPanel header="Histórico">
 				<div class="history-data">
