@@ -250,8 +250,7 @@
 
 						<!-- Anexos -->
 						<p-accordionTab header="Anexos">
-							<!-- \/ ?? cada imovel tem seus anexos -->
-							<div class="attachments">
+							<!-- <div class="attachments">
 								<a
 									[href]="contract.anexos?.[0]?.uri"
 									target="_blank"
@@ -282,6 +281,58 @@
 									</span>
 									<span class="label">Habite-se</span>
 								</a>
+							</div> -->
+							<div class="attachments-card">
+								<button
+									type="button"
+									class="attachment"
+									*ngIf="attachmentDocs.projeto"
+									(click)="
+										downloadFile(
+											attachmentDocs.projeto.local,
+											attachmentDocs.projeto.nome
+										)
+									"
+								>
+									<span class="icon">
+										<app-icon name="att-proj" size="1.5rem"></app-icon>
+									</span>
+									<span class="label">Projeto</span>
+								</button>
+			
+								<button
+									type="button"
+									class="attachment"
+									*ngIf="attachmentDocs.matricula"
+									(click)="
+										downloadFile(
+											attachmentDocs.matricula.local,
+											attachmentDocs.matricula.nome
+										)
+									"
+								>
+									<span class="icon">
+										<app-icon name="att-mat" size="1.5rem"></app-icon>
+									</span>
+									<span class="label">Matrícula</span>
+								</button>
+			
+								<button
+									type="button"
+									class="attachment"
+									*ngIf="attachmentDocs.habitese"
+									(click)="
+										downloadFile(
+											attachmentDocs.habitese.local,
+											attachmentDocs.habitese.nome
+										)
+									"
+								>
+									<span class="icon">
+										<app-icon name="att-hab" size="1.5rem"></app-icon>
+									</span>
+									<span class="label">Habite-se</span>
+								</button>
 							</div>
 						</p-accordionTab>
 					</p-accordion>

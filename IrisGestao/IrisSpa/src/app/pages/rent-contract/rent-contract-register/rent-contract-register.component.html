@@ -621,13 +621,14 @@
 					id="occupancy"
 					mode="basic"
 					name="demo[]"
-					url="./upload"
-					accept="image/*"
+					accept="application/*"
 					chooseLabel="Arraste ou clique para fazer o upload"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
 					(onUpload)="onUpload($event)"
+					(onSelect)="onSelect($event, 'projeto')"
 				></p-fileUpload>
+
 				<ng-container *ngIf="checkHasError(f['occupancy'])">
 					<small
 						id="occupancy-help"

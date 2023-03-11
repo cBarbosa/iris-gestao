@@ -88,7 +88,7 @@
 						<th>Nome do contrato</th>
 						<th>Prestador do serviço</th>
 						<!-- <th>Unidade locada</th> -->
-						<th>CPF/CNPJ</th>
+						<!-- <th>CPF/CNPJ</th> -->
 						<th>Início do contrato</th>
 						<th>Fim do contrato</th>
 						<th>Valor do serviço</th>
@@ -100,7 +100,7 @@
 						<td class="font-bold">{{ contract.numeroContrato }}</td>
 						<!-- \/ ?? -->
 						<td>{{ contract.prestador }}</td>
-						<td>{{ contract.cpfCnpj | cpfcnpj }}</td>
+						<!-- <td>{{ contract.cpfCnpj | cpfcnpj }}</td> -->
 						<!-- \/ ?? multiplos imoveis com multiplas unidades-->
 						<!-- <td>{{ contract.unidade }}</td> -->
 						<td>{{ contract.dataInicioContrato | date : "shortDate" }}</td>

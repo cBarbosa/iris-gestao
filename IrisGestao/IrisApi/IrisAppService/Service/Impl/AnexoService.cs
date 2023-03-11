@@ -103,7 +103,10 @@ public class AnexoService: IAnexoService
 
         if (azureFiles.Count < cmd.Images.Count)
         {
-            return new CommandResult(false, "Erro no processamento dos arquivos", azureFiles);
+            return new CommandResult(false, 
+                "O(s) arquivo(s) pode(m) já ter sido enviado com este nome anteriormente." +
+                " Para corrigir verifique o(s) arquivo(s) e teste novamente",
+                azureFiles);
         }
 
         try

@@ -109,7 +109,8 @@
 					}
 				}
 
-				.attachments {
+				.attachments-card {
+					background-color: #ffffff;
 					display: flex;
 					justify-content: flex-start;
 					max-width: 1155px;
@@ -118,14 +119,14 @@
 					padding: 1.5rem;
 					border-radius: 4px;
 					gap: 0.5rem;
-
-					a.attachment {
+	
+					button.attachment {
 						height: 100%;
 						flex-basis: 14rem;
 						padding: 0.5rem;
 						text-align: start;
 						@apply rounded;
-
+	
 						.icon {
 							display: inline-flex;
 							justify-content: center;
@@ -134,7 +135,7 @@
 							height: 40px;
 							background-color: #f7ded3;
 							border-radius: 4px;
-
+	
 							::ng-deep .cstm-icon {
 								margin-bottom: -3px;
 							}
@@ -143,9 +144,9 @@
 							@apply text-lg ml-3;
 							color: #641b1e;
 						}
-
+	
 						&:hover {
-							background-color: #ffffff;
+							background-color: #fff9f6;
 						}
 					}
 				}

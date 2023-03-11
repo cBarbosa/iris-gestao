@@ -25,6 +25,7 @@ export class SupplierContractViewComponent {
 		projeto?: Attachment;
 		matricula?: Attachment;
 		habitese?: Attachment;
+		outros?: Attachment;
 	} = {};
 
 	constructor(
@@ -40,13 +41,15 @@ export class SupplierContractViewComponent {
 
 	ngOnInit(): void {
 		this.getByIdContract();
+		this.getAtachs();
+	}
 
+	getAtachs():void {
 		this.anexoService
 			.getFiles(this.guid)
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
-					console.log('>>>>', response);
 
 					response?.forEach((file) => {
 						const classificacao = file.classificacao;
@@ -56,14 +59,15 @@ export class SupplierContractViewComponent {
 							this.attachmentDocs.matricula = file;
 						else if (classificacao === 'habitese')
 							this.attachmentDocs.habitese = file;
+						else if (classificacao === 'outrosdocs')
+							this.attachmentDocs.outros = file;
 					});
 				},
 				error: (err) => {
-					// console.error(err)
-					console.log('>>>>', err);
+					console.error(err);
 				},
 			});
-	}
+	};
 
 	getByIdContract() {
 		this.isLoadingView = true;
