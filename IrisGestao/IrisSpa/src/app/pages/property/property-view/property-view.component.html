@@ -79,33 +79,43 @@
 							</div>
 							<div class="value">{{ property.areaTotal ?? 0 | area }}</div>
 						</span>
-						<span class="ml-7 mt-2">
-							<button
-								pButton
-								type="button"
-								class="p-element h-11 p-button p-component"
-								(click)="navigateTo('property/edit/' + uid)"
-							>
-								Editar imóvel
-							</button>
-
-							<button
-								pButton
-								type="button"
-								(click)="confirmImovelInativar()"
-								class="p-element p-button-outlined h-11 p-button p-component"
-								style="margin-left: 10px"
-							>
-								Inativar
-							</button>
-						</span>
 					</div>
+					<span class="property-options">
+						<button
+							pButton
+							type="button"
+							class="p-element h-11 p-button p-component"
+							(click)="navigateTo('property/edit/' + uid)"
+						>
+							Editar imóvel
+						</button>
+
+						<button
+							pButton
+							type="button"
+							(click)="confirmImovelInativar()"
+							class="p-element p-button-outlined h-11 p-button p-component"
+							style="margin-left: 10px"
+						>
+							Inativar
+						</button>
+					</span>
 				</div>
 			</div>
 
 			<section class="units" *ngIf="property && property.unidade">
-				<div class="w-full flex justify-between">
-					<h3>Unidades</h3>
+				<div class="unidades-header">
+					<div class="flex justify-between items-center">
+						<h3>Unidades</h3>
+
+						<!-- <button
+							pButton
+							pRipple
+							type="button"
+							icon="pi pi-sliders-h"
+							class="p-button-rounded p-button-text"
+						></button> -->
+					</div>
 					<button
 						pButton
 						type="button"
@@ -115,7 +125,7 @@
 						(click)="navigateTo('property/register/unit/' + this.uid)"
 						*ngIf="!isCorporativeBuilding"
 					>
-						Adicionar unidade
+						{{ isMobile ? "Add. unidade" : "Adicionar unidade" }}
 					</button>
 				</div>
 
@@ -123,61 +133,120 @@
 					sem unidades cadastradas
 				</div>
 
-				<p-table
-					[value]="units"
-					styleClass="p-datatable-striped"
-					[tableStyle]="{ 'min-width': '50rem' }"
-					*ngIf="property.unidade && property.unidade!.length > 0"
-				>
-					<ng-template pTemplate="header">
-						<tr>
-							<th>Nome</th>
-							<th>Área Habite-se</th>
-							<th>Área Útil</th>
-							<th>Locatário</th>
-							<th>Vencimento</th>
-							<th>Locação</th>
-							<th></th>
-						</tr>
-					</ng-template>
-					<!-- <ng-container *ngFor="let unit of property.unidade"></ng-container> -->
-					<ng-template pTemplate="body" let-unit>
-						<tr>
-							<td>{{ unit.tipo }}</td>
-							<td>{{ unit.areaHabitese ?? 0 | area }}</td>
-							<td>{{ unit.areaUtil | area }}</td>
-							<td>-</td>
-							<td>-</td>
-							<td class="w-52">
-								<ng-container *ngIf="unit.unidadeLocada; else disponivel">
-									<p-tag
-										value="Unidade locada"
-										[rounded]="true"
-										severity="danger"
-										styleClass="w-36"
-									></p-tag>
-								</ng-container>
-								<ng-template #disponivel>
+				<ng-container *ngIf="!isMobile; else mobileUnitList">
+					<p-table
+						[value]="units"
+						styleClass="p-datatable-striped"
+						[tableStyle]="{ 'min-width': '50rem' }"
+						*ngIf="property.unidade && property.unidade!.length > 0"
+					>
+						<ng-template pTemplate="header">
+							<tr>
+								<th>Nome</th>
+								<th>Área Habite-se</th>
+								<th>Área Útil</th>
+								<th>Locatário</th>
+								<th>Vencimento</th>
+								<th>Locação</th>
+								<th></th>
+							</tr>
+						</ng-template>
+						<!-- <ng-container *ngFor="let unit of property.unidade"></ng-container> -->
+						<ng-template pTemplate="body" let-unit>
+							<tr>
+								<td>{{ unit.tipo }}</td>
+								<td>{{ unit.areaHabitese ?? 0 | area }}</td>
+								<td>{{ unit.areaUtil | area }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td class="w-52">
+									<ng-container *ngIf="unit.unidadeLocada; else disponivel">
+										<p-tag
+											value="Unidade locada"
+											[rounded]="true"
+											severity="danger"
+											styleClass="w-36"
+										></p-tag>
+									</ng-container>
+									<ng-template #disponivel>
+										<p-tag
+											value="Unidade disponível"
+											[rounded]="true"
+											severity="success"
+											styleClass="w-36"
+										></p-tag>
+									</ng-template>
+								</td>
+								<td class="action w-16">
+									<button
+										type="button"
+										pButton
+										icon="pi pi-ellipsis-v"
+										class="p-button-rounded"
+										(click)="actionMenu.toggle($event); setCurrentUnit(unit)"
+									></button>
+								</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</ng-container>
+
+				<ng-template #mobileUnitList>
+					<ul>
+						<li *ngFor="let unit of units.slice(0, unitListAmount)">
+							<div class="unitCard">
+								<div class="tags">
 									<p-tag
 										value="Unidade disponível"
 										[rounded]="true"
 										severity="success"
 										styleClass="w-36"
 									></p-tag>
-								</ng-template>
-							</td>
-							<td class="action w-16">
-								<button
-									type="button"
-									pButton
-									icon="pi pi-ellipsis-v"
-									class="p-button-rounded"
-									(click)="actionMenu.toggle($event); setCurrentUnit(unit)"
-								></button>
-							</td>
-						</tr>
-					</ng-template>
-				</p-table>
+								</div>
+								<header>
+									<h4>{{ unit.tipo }}</h4>
+
+									<button
+										pButton
+										pRipple
+										type="button"
+										icon="pi pi-ellipsis-v"
+										class="p-button-rounded p-button-text"
+										(click)="actionMenu.toggle($event); setCurrentUnit(unit)"
+									></button>
+								</header>
+								<div class="infos">
+									<div class="data">
+										<div class="label">Área Habita-se</div>
+										<div class="value">{{ unit.areaHabitese ?? 0 | area }}</div>
+									</div>
+									<div class="data">
+										<div class="label">Área Útil</div>
+										<div class="value">{{ unit.areaUtil ?? 0 | area }}</div>
+									</div>
+									<div class="data">
+										<div class="label">Locatário</div>
+										<div class="value">-</div>
+									</div>
+									<div class="data">
+										<div class="label">Vencimento</div>
+										<div class="value">-</div>
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+
+					<button
+						pButton
+						type="button"
+						class="p-button-outlined icon-left h-9"
+						(click)="showMoreUnits()"
+						*ngIf="unitListAmount < units.length"
+					>
+						Carregar mais
+					</button>
+				</ng-template>
 			</section>
 
 			<section
@@ -440,7 +509,23 @@
 	[draggable]="false"
 	[resizable]="false"
 	styleClass="form-modal"
+	*ngIf="!isMobile"
 >
+	<ng-container *ngTemplateOutlet="modalContentTemplate"></ng-container>
+</p-dialog>
+
+<p-sidebar
+	[(visible)]="displayModal"
+	position="bottom"
+	styleClass="form-modal"
+	*ngIf="isMobile"
+>
+	<ng-template pTemplate="content">
+		<ng-container *ngTemplateOutlet="modalContentTemplate"></ng-container>
+	</ng-template>
+</p-sidebar>
+
+<ng-template #modalContentTemplate>
 	<div *ngIf="!modalContent.isError; else error" class="modal-success">
 		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
 		<i class="ph-check-circle"></i>
@@ -471,14 +556,35 @@
 			<button pButton label="Continuar" (click)="closeModal()"></button>
 		</div>
 	</ng-template>
-</p-dialog>
+</ng-template>
+
 <p-dialog
 	[(visible)]="displayConfirmationInactiveUnitModal"
 	[modal]="true"
 	[draggable]="false"
 	[resizable]="false"
 	styleClass="confirmation-modal"
+	*ngIf="!isMobile"
 >
+	<ng-container
+		*ngTemplateOutlet="confirmationInactiveUnitModalContentTemplate"
+	></ng-container>
+</p-dialog>
+
+<p-sidebar
+	[(visible)]="displayConfirmationInactiveUnitModal"
+	position="bottom"
+	styleClass="confirmation-modal"
+	*ngIf="isMobile"
+>
+	<ng-template pTemplate="content">
+		<ng-container
+			*ngTemplateOutlet="confirmationInactiveUnitModalContentTemplate"
+		></ng-container>
+	</ng-template>
+</p-sidebar>
+
+<ng-template #confirmationInactiveUnitModalContentTemplate>
 	<h2>Deseja realmente inativar essa Unidade?</h2>
 	<p>
 		Ao inativar não será possível visualizá-la novamente. Caso queira continuar,
@@ -500,7 +606,7 @@
 			class="w-full"
 		></button>
 	</div>
-</p-dialog>
+</ng-template>
 
 <p-dialog
 	[(visible)]="displayConfirmationInactiveImovelModal"
@@ -508,7 +614,27 @@
 	[draggable]="false"
 	[resizable]="false"
 	styleClass="confirmation-modal"
+	*ngIf="!isMobile"
 >
+	<ng-container
+		*ngTemplateOutlet="confirmationInactiveImovelModalContentTemplate"
+	></ng-container>
+</p-dialog>
+
+<p-sidebar
+	[(visible)]="displayConfirmationInactiveImovelModal"
+	position="bottom"
+	styleClass="confirmation-modal"
+	*ngIf="isMobile"
+>
+	<ng-template pTemplate="content">
+		<ng-container
+			*ngTemplateOutlet="confirmationInactiveImovelModalContentTemplate"
+		></ng-container>
+	</ng-template>
+</p-sidebar>
+
+<ng-template #confirmationInactiveImovelModalContentTemplate>
 	<h2>Deseja realmente inativar esse Imóvel?</h2>
 	<p>
 		Ao inativar o imóvel não será possível visualizá-lo novamente. Caso queira
@@ -530,14 +656,35 @@
 			class="w-full"
 		></button>
 	</div>
-</p-dialog>
+</ng-template>
+
 <p-dialog
 	[(visible)]="displayConfirmationCloneUnit"
 	[modal]="true"
 	[draggable]="false"
 	[resizable]="false"
 	styleClass="confirmation-modal"
+	*ngIf="!isMobile"
 >
+	<ng-container
+		*ngTemplateOutlet="confirmationCloneUnitModalContentTemplate"
+	></ng-container>
+</p-dialog>
+
+<p-sidebar
+	[(visible)]="displayConfirmationCloneUnit"
+	position="bottom"
+	styleClass="confirmation-modal"
+	*ngIf="isMobile"
+>
+	<ng-template pTemplate="content">
+		<ng-container
+			*ngTemplateOutlet="confirmationCloneUnitModalContentTemplate"
+		></ng-container>
+	</ng-template>
+</p-sidebar>
+
+<ng-template #confirmationCloneUnitModalContentTemplate>
 	<h2>Deseja realmente duplicar essa unidade?</h2>
 	<p>
 		Ao duplicar esta unidade será criado outro registro com os mesmo dados. Caso
@@ -559,4 +706,4 @@
 			class="w-full"
 		></button>
 	</div>
-</p-dialog>
+</ng-template>

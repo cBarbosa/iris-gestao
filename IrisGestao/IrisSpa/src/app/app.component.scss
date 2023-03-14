@@ -627,6 +627,22 @@
 					}
 				}
 			}
+
+			@media (max-width: 768px) {
+				.p-dropdown {
+					.p-dropdown-panel {
+						max-width: calc(100vw - 3rem);
+
+						.p-dropdown-items-wrapper {
+							.p-dropdown-items {
+								.p-dropdown-item {
+									text-overflow: ellipsis;
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 
 		&.p-inputwrapper {

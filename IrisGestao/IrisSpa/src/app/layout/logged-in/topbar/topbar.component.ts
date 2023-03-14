@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 
 @Component({
 	selector: 'app-topbar',
@@ -10,12 +11,18 @@ import { filter } from 'rxjs';
 })
 export class TopbarComponent {
 	items: MenuItem[] = [];
+	isMobile: boolean = false;
+	displayMobileMenu: boolean = true;
 
-	constructor(private router: Router) {
+	constructor(
+		private router: Router,
+		private responsiveService: ResponsiveService
+	) {
 		router.events
 			.pipe(filter((event) => event instanceof NavigationEnd))
 			.subscribe((event) => {
 				this.updateTopMenu((event as NavigationEnd).url);
+				this.closeMobileMenu();
 			});
 	}
 
@@ -23,6 +30,10 @@ export class TopbarComponent {
 		// Detect current route
 		const currRoute = this.router.routerState.snapshot.url;
 		this.updateTopMenu(currRoute);
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth <= 960;
+		});
 	}
 
 	updateTopMenu(route: string) {
@@ -94,6 +105,14 @@ export class TopbarComponent {
 			// 	],
 			// },
 		];
+	}
+
+	openMobileMenu() {
+		this.displayMobileMenu = true;
+	}
+
+	closeMobileMenu() {
+		this.displayMobileMenu = false;
 	}
 
 	navigateTo(route: string) {

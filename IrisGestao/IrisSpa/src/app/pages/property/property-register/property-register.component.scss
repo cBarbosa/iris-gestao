@@ -140,6 +140,7 @@
 ::ng-deep {
 	.p-sidebar.p-sidebar-right {
 		width: 25rem;
+		max-width: 100%;
 
 		.p-sidebar-header {
 			h4 {
@@ -164,6 +165,41 @@
 		}
 
 		.p-sidebar-footer {
+		}
+	}
+
+	.p-sidebar.p-sidebar-bottom {
+		height: auto;
+		max-height: 80vh;
+	}
+}
+
+@media (max-width: 768px) {
+	.register-form {
+		margin: 0;
+		padding-top: 0.5rem;
+
+		.input-wrapper {
+			flex-direction: column;
+		}
+
+		.form-actions {
+			flex-wrap: wrap;
+
+			button {
+				flex-grow: 1;
+
+				&:first-child {
+					order: 3;
+					width: 100%;
+				}
+			}
+		}
+
+		::ng-deep {
+			button.add-proprietary-button {
+				margin: 0.5rem 0 0 -1rem;
+			}
 		}
 	}
 }

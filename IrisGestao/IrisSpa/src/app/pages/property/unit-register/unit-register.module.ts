@@ -13,6 +13,8 @@ import { DialogModule } from 'primeng/dialog';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 import { NgxMaskModule } from 'ngx-mask';
+import { TabViewModule } from 'primeng/tabview';
+import { SidebarModule } from 'primeng/sidebar';
 
 @NgModule({
 	declarations: [UnitRegisterComponent],
@@ -28,7 +30,9 @@ import { NgxMaskModule } from 'ngx-mask';
 		DialogModule,
 		NgxCurrencyModule,
 		SpinnerComponent,
-		NgxMaskModule
+		NgxMaskModule,
+		TabViewModule,
+		SidebarModule,
 	],
 })
 export class UnitRegisterModule {}
