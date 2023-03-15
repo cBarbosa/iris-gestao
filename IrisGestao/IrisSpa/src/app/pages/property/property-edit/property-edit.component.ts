@@ -22,6 +22,7 @@ import {
 } from 'src/app/shared/services/anexo.service';
 import { Attachment } from 'src/app/shared/services/anexo.service';
 import { ApiResponse } from 'src/app/shared/models';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 
 type DropdownItem = {
 	label: string;
@@ -89,6 +90,8 @@ export class PropertyEditComponent {
 	} = {
 		message: '',
 	};
+
+	isMobile = false;
 
 	dropdownUfList: DropdownItem[] = [
 		{ label: 'Selecione', value: null, disabled: true },
@@ -194,7 +197,8 @@ export class PropertyEditComponent {
 		private activatedRoute: ActivatedRoute,
 		private commonService: CommonService,
 		private anexoService: AnexoService,
-		private router: Router
+		private router: Router,
+		private responsiveService: ResponsiveService
 	) {}
 
 	ngOnInit() {
@@ -218,6 +222,10 @@ export class PropertyEditComponent {
 			neighborhood: [null, [Validators.required]],
 			city: [null, [Validators.required]],
 			state: [null, [Validators.required]],
+		});
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
 		});
 
 		this.imovelService.getProperty(this.propertyGuid).subscribe((event) => {

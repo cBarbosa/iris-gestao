@@ -215,7 +215,7 @@
 	}
 }
 
-:host ::ng-deep {
+::ng-deep {
 	.p-inputwrapper {
 		width: 100%;
 
@@ -271,5 +271,103 @@
 		max-width: 1440px;
 		width: 100%;
 		margin: 5rem;
+	}
+}
+
+:host ::ng-deep {
+	.p-element {
+		.p-sidebar.p-sidebar-bottom {
+			height: auto;
+			max-height: 80vh;
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	.edit-form {
+		margin: 0;
+
+		h1 {
+			margin: 0 1.5rem;
+		}
+		.input-wrapper {
+			flex-direction: column;
+
+			section {
+				&.property-data {
+					max-width: none;
+					background-color: transparent;
+
+					.photo-input {
+						.buttons {
+							justify-content: flex-end;
+						}
+					}
+				}
+
+				&.aditional-data {
+					.property-photos {
+						.photo-scroller {
+							justify-content: center;
+							gap: 0.5rem;
+
+							> * {
+								flex-grow: 0;
+								flex-shrink: 1;
+								flex-basis: 7.5rem;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.form-actions {
+			flex-wrap: wrap;
+			button {
+				flex-grow: 1;
+
+				&:first-child {
+					order: 3;
+					width: 100%;
+				}
+			}
+		}
+	}
+
+	::ng-deep {
+		.form-modal {
+			max-width: 100%;
+		}
+
+		.p-element {
+			.p-tabview {
+				.p-tabview-nav-container {
+					.p-tabview-nav-content {
+						margin: 0 1.5rem;
+
+						ul.p-tabview-nav {
+							display: flex;
+
+							li {
+								flex-grow: 1;
+
+								.p-tabview-nav-link {
+									padding-bottom: 1rem;
+
+									.p-tabview-title {
+										width: 100%;
+										text-align: center;
+									}
+								}
+							}
+						}
+					}
+				}
+				.p-tabview-panels {
+					padding: 0;
+				}
+			}
+		}
 	}
 }

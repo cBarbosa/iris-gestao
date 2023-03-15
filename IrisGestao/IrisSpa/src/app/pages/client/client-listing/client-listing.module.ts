@@ -11,6 +11,8 @@ import { CpfCnpjPipeModule } from 'src/app/shared/pipes';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
+import { CardItemComponent } from 'src/app/shared/components/card-item/card-item.component';
+import { SidebarModule } from 'primeng/sidebar';
 
 @NgModule({
 	declarations: [ClientListingComponent],
@@ -26,6 +28,8 @@ import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/sp
 		ClientListingRoutingModule,
 		CpfCnpjPipeModule,
 		SpinnerComponent,
+		CardItemComponent,
+		SidebarModule,
 	],
 })
 export class ClientListingModule {}

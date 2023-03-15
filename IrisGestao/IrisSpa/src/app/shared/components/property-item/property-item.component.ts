@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { IImovel } from '../../models';
 import { AnexoService } from '../../services/anexo.service';
+import { ResponsiveService } from '../../services/responsive-service.service';
 
 @Component({
 	selector: 'app-property-item',
@@ -12,7 +13,13 @@ export class PropertyItemComponent {
 	@Input('data')
 	propertyData: IImovel;
 
-	constructor(private router: Router, private anexoService: AnexoService) {}
+	isMobile = true;
+
+	constructor(
+		private router: Router,
+		private anexoService: AnexoService,
+		private responsiveService: ResponsiveService
+	) {}
 
 	ngOnInit() {
 		console.log(this.propertyData);
@@ -26,6 +33,10 @@ export class PropertyItemComponent {
 			error(err) {
 				console.error(err);
 			},
+		});
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
 		});
 	}
 

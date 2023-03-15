@@ -12,6 +12,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { TabViewModule } from 'primeng/tabview';
+import { SidebarModule } from 'primeng/sidebar';
 
 @NgModule({
 	declarations: [PropertyEditComponent],
@@ -27,6 +29,8 @@ import { ImageCropperModule } from 'ngx-image-cropper';
 		SpinnerComponent,
 		NgxMaskModule.forChild(),
 		ImageCropperModule,
+		TabViewModule,
+		SidebarModule,
 	],
 })
 export class PropertyEditModule {}

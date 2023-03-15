@@ -24,8 +24,9 @@ import {
 } from 'src/app/shared/validators/custom-validators';
 import {
 	AnexoService,
-	ArquivoClassificacoes
+	ArquivoClassificacoes,
 } from 'src/app/shared/services/anexo.service';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 
 type Step = {
 	label: string;
@@ -58,6 +59,8 @@ export class RentContractRegisterComponent {
 
 	onInputDate: Function;
 	onBlurDate: Function;
+
+	isMobile = false;
 
 	linkedProperties: {
 		nome: string;
@@ -172,7 +175,8 @@ export class RentContractRegisterComponent {
 		private commonService: CommonService,
 		private imovelService: ImovelService,
 		private clienteService: ClienteService,
-		private anexoService: AnexoService
+		private anexoService: AnexoService,
+		private responsiveService: ResponsiveService
 	) {}
 
 	ngOnInit() {
@@ -193,6 +197,10 @@ export class RentContractRegisterComponent {
 				isCurrent: this.currentStep === 3,
 			},
 		];
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
 
 		this.registerForm = this.fb.group({
 			contractInfo: this.fb.group({
@@ -473,7 +481,6 @@ export class RentContractRegisterComponent {
 	onUpload(e: any) {}
 
 	onSubmit(e: any = null) {
-
 		if (this.registerForm.invalid || this.linkedProperties.length === 0) {
 			this.registerForm.markAllAsTouched();
 			if (this.linkedProperties.length === 0) {
@@ -481,7 +488,6 @@ export class RentContractRegisterComponent {
 			}
 			return;
 		}
-
 
 		const formData: {
 			contractInfo: {
@@ -534,7 +540,7 @@ export class RentContractRegisterComponent {
 			}),
 		};
 
-console.debug('contractObj', contractObj);
+		console.debug('contractObj', contractObj);
 
 		this.rentContractService
 			.registerContract(contractObj)
@@ -568,7 +574,7 @@ console.debug('contractObj', contractObj);
 
 					this.openModal();
 				},
-		});
+			});
 
 		const registerAttachments = (guid: string) => {
 			Object.entries(this.attachments).forEach(([classificacao, file]) => {
@@ -823,8 +829,11 @@ console.debug('contractObj', contractObj);
 		this.router.navigate([route]);
 	};
 
-	onSelect(e: any, classificacao: 'projeto' | 'matricula' | 'habitese' | 'outrosdocs') {
+	onSelect(
+		e: any,
+		classificacao: 'projeto' | 'matricula' | 'habitese' | 'outrosdocs'
+	) {
 		console.log('e', e);
 		this.attachments[classificacao] = e.currentFiles[0];
-	};
+	}
 }

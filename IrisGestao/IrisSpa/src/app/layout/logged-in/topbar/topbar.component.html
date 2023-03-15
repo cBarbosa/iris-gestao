@@ -1,5 +1,5 @@
 <div class="topbar">
-	<p-menubar [model]="items">
+	<p-menubar [model]="isMobile ? [] : items">
 		<ng-template pTemplate="start">
 			<img
 				src="../../../../assets/images/topbar-logo.png"
@@ -14,7 +14,32 @@
 				size="large"
 				shape="circle"
 				styleClass="mt-1"
+				*ngIf="!isMobile"
 			></p-avatar>
+			<button
+				pButton
+				pRipple
+				type="button"
+				icon="pi pi-bars"
+				class="p-button-rounded p-button-text hamburger"
+				(click)="openMobileMenu()"
+				*ngIf="isMobile"
+			></button>
 		</ng-template>
 	</p-menubar>
 </div>
+
+<p-sidebar [(visible)]="displayMobileMenu" position="right">
+	<ng-template pTemplate="content">
+		<p-panelMenu [model]="items"></p-panelMenu>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<p-avatar
+			image="../../../../assets/images/avatar.png"
+			styleClass="mr-2"
+			size="large"
+			shape="circle"
+			styleClass="mt-1"
+		></p-avatar>
+	</ng-template>
+</p-sidebar>

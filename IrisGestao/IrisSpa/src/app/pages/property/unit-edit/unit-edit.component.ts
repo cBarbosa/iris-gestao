@@ -15,6 +15,7 @@ import {
 	ArquivoClassificacoes,
 	Attachment,
 } from 'src/app/shared/services/anexo.service';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 
 import { Utils } from 'src/app/shared/utils';
 
@@ -55,6 +56,8 @@ export class UnitEditComponent implements OnInit {
 	} = {
 		message: '',
 	};
+
+	isMobile = false;
 
 	unitTypes: DropdownItem[] = [
 		{
@@ -107,7 +110,8 @@ export class UnitEditComponent implements OnInit {
 		private location: Location,
 		private imovelService: ImovelService,
 		private dominiosService: DominiosService,
-		private anexoService: AnexoService
+		private anexoService: AnexoService,
+		private responsiveService: ResponsiveService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
@@ -145,6 +149,10 @@ export class UnitEditComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.getData();
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
 
 		this.anexoService
 			.getFiles(this.uid)

@@ -103,13 +103,17 @@
 					@apply text-sm flex;
 
 					.feature {
-						@apply px-7 first:pl-0 border-r last:border-0;
+						@apply px-7 first:pl-0 border-r;
 						border-color: #eaeaea;
 
 						.value {
 							@apply text-2xl font-bold;
 						}
 					}
+				}
+
+				.property-options {
+					@apply ml-7 mt-2;
 				}
 			}
 		}
@@ -123,6 +127,60 @@
 			}
 
 			&.units {
+				.unidades-header {
+					@apply w-full flex justify-between gap-3 mb-7;
+
+					h3 {
+						margin: 0;
+					}
+				}
+
+				ul > li {
+					.unitCard {
+						@apply w-full px-6 pt-4 pb-6;
+						background-color: white;
+
+						.tags {
+							@apply mb-2;
+						}
+
+						header {
+							@apply flex justify-between items-center;
+
+							h4 {
+								@apply text-lg font-bold;
+							}
+
+							.p-button {
+								@apply h-9 w-9;
+							}
+						}
+
+						.infos {
+							@apply mt-3 gap-5;
+							display: grid;
+							grid-template-columns: 1fr 1fr;
+							.data {
+								.label {
+									@apply text-sm text-gray-400;
+								}
+								.value {
+								}
+							}
+						}
+					}
+
+					&:nth-child(even) {
+						.unitCard {
+							background-color: #f8f9fa;
+						}
+					}
+
+					&:last-child {
+						@apply border-b-2 border-gray-100;
+					}
+				}
+
 				::ng-deep {
 					.p-datatable {
 						.p-datatable-wrapper {
@@ -465,23 +523,187 @@
 ::ng-deep {
 	.p-sidebar.p-sidebar-right {
 		width: 26rem;
+		max-width: 100%;
 	}
 
-	.p-dialog {
-		&.confirmation-modal {
-			@apply w-[25rem];
+	.confirmation-modal {
+		@apply w-[25rem];
 
-			.p-dialog-content {
-				text-align: center;
+		> div {
+			text-align: center;
 
-				h2 {
-					@apply text-3xl font-bold mb-4;
+			h2 {
+				@apply text-3xl font-bold mb-4;
+			}
+
+			p {
+				@apply text-lg mb-10;
+			}
+		}
+	}
+}
+
+::ng-deep {
+	.p-element {
+		.p-sidebar.p-sidebar-bottom {
+			height: auto;
+			max-height: 80vh;
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	.property-view {
+		margin: 0 0rem;
+
+		.cover {
+			height: 220px;
+		}
+
+		.content {
+			padding-top: 150px;
+			width: 100%;
+			max-width: 100%;
+			overflow-x: hidden;
+
+			.main-card {
+				margin: 0 1rem;
+				width: auto;
+
+				.left-side {
+					min-width: auto;
+
+					h4 {
+						.property-id {
+							display: block;
+							margin: 0;
+						}
+					}
+
+					a {
+						margin: 0;
+					}
+
+					p {
+					}
+
+					.location {
+					}
 				}
 
-				p {
-					@apply text-lg mb-10;
+				.right-side {
+					@apply mt-6 w-full;
+					flex-direction: column;
+					align-items: flex-start;
+
+					.property-features {
+						width: 100%;
+
+						.feature {
+							@apply border-0 grow;
+
+							&:nth-child(1) {
+								@apply border-r;
+								border-color: #eaeaea;
+							}
+
+							&:nth-child(2) {
+								@apply pr-0;
+							}
+
+							.value {
+								@apply text-lg;
+							}
+						}
+
+						span:not(.feature) {
+							display: none;
+						}
+					}
+
+					.property-options {
+						@apply ml-0 mt-4 w-full flex justify-between;
+					}
 				}
 			}
+
+			section {
+				h3 {
+					margin: 0 1rem 1rem;
+				}
+
+				&.units {
+					position: relative;
+
+					.unidades-header {
+						padding: 0 1rem;
+						// flex-direction: column;
+
+						button.p-button {
+							justify-content: center;
+						}
+					}
+					> button.p-button {
+						justify-content: center;
+						position: relative;
+						margin: 1rem;
+						width: calc(100% - 2rem);
+					}
+				}
+
+				&.attachments {
+					padding: 0 1rem;
+
+					.attachments-card {
+						@apply p-3;
+						height: auto;
+						flex-direction: column;
+
+						button.attachment {
+							height: fit-content;
+							flex-basis: auto;
+
+							.icon {
+							}
+							.label {
+							}
+						}
+					}
+				}
+
+				&.photos {
+					padding: 0 1rem;
+
+					.photos-grid {
+						border: solid red 5px;
+						ul {
+							grid-template-columns: 1fr 1fr;
+							// grid-template-rows: none;
+							grid-column-gap: 0px;
+							grid-row-gap: 0px;
+
+							li {
+								img {
+								}
+
+								&:first-child {
+									grid-column-start: 1;
+									grid-column-end: 2;
+									grid-row-start: 1;
+									grid-row-end: 2;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	::ng-deep {
+		.form-modal,
+		.confirmation-modal {
+			width: 100%;
 		}
 	}
 }

@@ -11,6 +11,9 @@ import { ButtonModule } from 'primeng/button';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 import { MenuModule } from 'primeng/menu';
 import { CalendarModule } from 'primeng/calendar';
+import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
+import { CardItemComponent } from 'src/app/shared/components/card-item/card-item.component';
+import { SidebarModule } from 'primeng/sidebar';
 
 @NgModule({
 	declarations: [RentContractListingComponent],
@@ -26,6 +29,9 @@ import { CalendarModule } from 'primeng/calendar';
 		SpinnerComponent,
 		MenuModule,
 		CalendarModule,
+		ResponsiveDialogComponent,
+		CardItemComponent,
+		SidebarModule,
 	],
 })
 export class RentContractListingModule {}

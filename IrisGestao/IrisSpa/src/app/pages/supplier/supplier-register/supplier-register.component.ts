@@ -1,31 +1,26 @@
+import { Component, OnInit } from '@angular/core';
 import {
-  Component,
-  OnInit
-} from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  Validators
+	AbstractControl,
+	FormBuilder,
+	FormGroup,
+	Validators,
 } from '@angular/forms';
-import {
-  ActivatedRoute,
-  Router
-} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe, Location } from '@angular/common';
 import {
-  CnpjValidator,
-  CpfValidator,
-  EmailValidator,
-  PastDateValidator
+	CnpjValidator,
+	CpfValidator,
+	EmailValidator,
+	PastDateValidator,
 } from 'src/app/shared/validators/custom-validators';
 import { Utils } from 'src/app/shared/utils';
 import { first } from 'rxjs';
 import {
-  CommonService,
-  DominiosService,
-  FornecedorService
+	CommonService,
+	DominiosService,
+	FornecedorService,
 } from 'src/app/shared/services';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 
 type Step = {
 	label: string;
@@ -41,31 +36,33 @@ type DropdownItem = {
 };
 
 @Component({
-  selector: 'app-supplier-register',
-  templateUrl: './supplier-register.component.html',
-  styleUrls: ['./supplier-register.component.scss']
+	selector: 'app-supplier-register',
+	templateUrl: './supplier-register.component.html',
+	styleUrls: ['./supplier-register.component.scss'],
 })
-export class SupplierRegisterComponent implements OnInit{
-  uid: string = '';
-  isLoadingData: boolean = false;
-  registerForm: FormGroup;
-  currentStep: number = 1;
-  operacaoCriar:boolean = true;
-  displayModal: boolean = false;
-  operacaoClonar: boolean = false;
+export class SupplierRegisterComponent implements OnInit {
+	uid: string = '';
+	isLoadingData: boolean = false;
+	registerForm: FormGroup;
+	currentStep: number = 1;
+	operacaoCriar: boolean = true;
+	displayModal: boolean = false;
+	operacaoClonar: boolean = false;
 
-	supplier:any;
+	supplier: any;
 	onInputDate: Function;
 	onBlurDate: Function;
 
-  	stepList: Step[];
+	isMobile = false;
 
-  	dropDownSupplierTypeList: DropdownItem[] = [
+	stepList: Step[];
+
+	dropDownSupplierTypeList: DropdownItem[] = [
 		{ label: 'Pessoa física', value: 'cpf' },
 		{ label: 'Pessoa jurídica', value: 'cnpj' },
 	];
 
-  linkedContact: {
+	linkedContact: {
 		dataCriacao: string;
 		nome: string;
 		email: string;
@@ -73,12 +70,12 @@ export class SupplierRegisterComponent implements OnInit{
 		cargo: string;
 		dataNascimento: Date;
 	} | null;
-  contactRegisterVisible = false;
+	contactRegisterVisible = false;
 
-  isLoadingCep:boolean = false;
-  prevCepInputValue = '';
+	isLoadingCep: boolean = false;
+	prevCepInputValue = '';
 
-  modalContent: {
+	modalContent: {
 		isError?: boolean;
 		header?: string;
 		message: string;
@@ -86,43 +83,44 @@ export class SupplierRegisterComponent implements OnInit{
 		message: '',
 	};
 
-	dropDownBankList : DropdownItem[] = [
+	dropDownBankList: DropdownItem[] = [
 		{
 			label: 'Escolha o banco',
 			value: null,
 		},
 	];
 
-  constructor(
+	constructor(
 		private fb: FormBuilder,
 		private route: ActivatedRoute,
 		private router: Router,
 		private location: Location,
-    private supplierService: FornecedorService,
+		private supplierService: FornecedorService,
 		private dominiosService: DominiosService,
-		private commonService: CommonService
-	) { };
+		private commonService: CommonService,
+		private responsiveService: ResponsiveService
+	) {}
 
-  get supplierInfoForm() {
+	get supplierInfoForm() {
 		return this.registerForm.controls['clientInfo'] as FormGroup;
-	};
+	}
 
 	get addressInfoForm() {
 		return this.registerForm.controls['addressInfo'] as FormGroup;
-	};
+	}
 
-  get bankInfoForm() {
+	get bankInfoForm() {
 		return this.registerForm.controls['bankInfo'] as FormGroup;
-	};
+	}
 
-  get f(): { [key: string]: AbstractControl<any, any> } {
+	get f(): { [key: string]: AbstractControl<any, any> } {
 		if (this.currentStep === 1) return this.supplierInfoForm.controls;
 		if (this.currentStep === 2) return this.addressInfoForm.controls;
-    if (this.currentStep === 3) return this.bankInfoForm.controls;
+		if (this.currentStep === 3) return this.bankInfoForm.controls;
 		return this.registerForm.controls;
-	};
+	}
 
-  get CpfCnpjMask() {
+	get CpfCnpjMask() {
 		if (this.f['tipoFornecedor'].value === 'cpf') return '000.000.000-00';
 		return '00.000.000/0000-00';
 	}
@@ -137,17 +135,20 @@ export class SupplierRegisterComponent implements OnInit{
 		return true;
 	}
 
-  ngOnInit():void {
-
-    this.route.paramMap.subscribe((paramMap) => {
+	ngOnInit(): void {
+		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? 'new';
+		});
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
 		});
 
 		if (this.uid !== 'new') this.operacaoCriar = false;
 
-    this.initForm();
+		this.initForm();
 
-    this.stepList = [
+		this.stepList = [
 			{
 				label: 'Informações do fornecedor',
 				isCurrent: true,
@@ -156,17 +157,21 @@ export class SupplierRegisterComponent implements OnInit{
 			{
 				label: 'Endereço',
 			},
-      {
+			{
 				label: 'Dados bancários',
-			}
+			},
 		];
 
-    this.getData();
-	this.getBanks();
-  };
+		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
+		this.onInputDate = onInputDate;
+		this.onBlurDate = onBlurDate;
 
-  initForm = ():void => {
-    this.registerForm = this.fb.group({
+		this.getData();
+		this.getBanks();
+	}
+
+	initForm = (): void => {
+		this.registerForm = this.fb.group({
 			clientInfo: this.fb.group({
 				CpfCnpj: ['', [Validators.required, CpfValidator]],
 				tipoFornecedor: ['cpf', [Validators.required]],
@@ -183,18 +188,18 @@ export class SupplierRegisterComponent implements OnInit{
 				Estado: [''],
 				Cep: ['', Validators.required],
 			}),
-      bankInfo: this.fb.group({
-        IdBanco: [''],
-        Agencia: [''],
-        Conta: [''],
-        Operacao: [''],
-        ChavePix: [''],
-      }),
+			bankInfo: this.fb.group({
+				IdBanco: [''],
+				Agencia: [''],
+				Conta: [''],
+				Operacao: [''],
+				ChavePix: [''],
+			}),
 		});
-  };
+	};
 
-  getData = (): void => {
-    const datePipe = new DatePipe('en-US');
+	getData = (): void => {
+		const datePipe = new DatePipe('en-US');
 
 		if (this.uid == 'new') {
 			return;
@@ -206,11 +211,12 @@ export class SupplierRegisterComponent implements OnInit{
 			.getSupplierById(this.uid)
 			?.pipe(first())
 			.subscribe((supplier) => {
-
 				this.supplier = supplier;
 
 				const isDate = supplier?.dataNascimento instanceof Date;
-				const formattedDate = isDate ? new Date(supplier?.dataNascimento) : null;
+				const formattedDate = isDate
+					? new Date(supplier?.dataNascimento)
+					: null;
 
 				this.prevCepInputValue = supplier?.cep;
 
@@ -222,22 +228,22 @@ export class SupplierRegisterComponent implements OnInit{
 						DataNascimento: formattedDate,
 						Telefone: supplier?.telefone,
 						Email: supplier?.email,
-						tipoFornecedor: supplier.cpfCnpj.length > 11 ? 'cnpj' : 'cpf'
+						tipoFornecedor: supplier.cpfCnpj.length > 11 ? 'cnpj' : 'cpf',
 					},
 					addressInfo: {
 						Cep: supplier?.cep,
 						Endereco: supplier?.endereco,
 						Bairro: supplier?.bairro,
 						Cidade: supplier?.cidade,
-						Estado: supplier?.estado
+						Estado: supplier?.estado,
 					},
 					bankInfo: {
 						IdBanco: supplier?.dadoBancario?.idBanco,
 						Agencia: supplier?.dadoBancario?.agencia,
 						Conta: supplier?.dadoBancario?.conta,
 						Operacao: supplier?.dadoBancario?.operacao,
-						ChavePix: supplier?.dadoBancario?.chavePix
-					}
+						ChavePix: supplier?.dadoBancario?.chavePix,
+					},
 				});
 
 				this.registerForm.markAllAsTouched();
@@ -253,22 +259,21 @@ export class SupplierRegisterComponent implements OnInit{
 						label: 'Endereço',
 						isVisited: true,
 					},
-          			{
+					{
 						label: 'Dados bancários',
 						isVisited: true,
-					}
+					},
 				];
-        
+
 				this.isLoadingData = false;
 			});
 	};
 
-	getBanks = ():void => {
-
+	getBanks = (): void => {
 		this.dominiosService.getBanks().subscribe({
 			next: (response: any) => {
-				if(response.success)	{
-					response?.data.forEach((bank:any) => {
+				if (response.success) {
+					response?.data.forEach((bank: any) => {
 						this.dropDownBankList.push({
 							label: bank.descricao,
 							value: bank.id,
@@ -282,29 +287,34 @@ export class SupplierRegisterComponent implements OnInit{
 		});
 	};
 
-  onSubmit = (e: any = null):void => {
-
+	onSubmit = (e: any = null): void => {
 		if (this.registerForm.invalid) {
 			this.registerForm.markAllAsTouched();
 			return;
-		};
+		}
 
 		let dataNascimento = null;
 		if (this.registerForm.value.clientInfo.tipoFornecedor === 'cpf') {
 			dataNascimento: this.registerForm.value.clientInfo.DataNascimento != ''
 				? new Date(
-					this.registerForm.value.clientInfo.DataNascimento?.getTime() -
-						this.registerForm.value.clientInfo.DataNascimento?.getTimezoneOffset() *
-							60 *
-							1000)
+						this.registerForm.value.clientInfo.DataNascimento?.getTime() -
+							this.registerForm.value.clientInfo.DataNascimento?.getTimezoneOffset() *
+								60 *
+								1000
+				  )
 				: null;
 		}
 
-		const dataContactNascimento = (this.linkedContact?.dataNascimento != null || this.linkedContact?.dataNascimento != undefined)
-			? new Date(
-				this.linkedContact?.dataNascimento?.getTime() -
-				this.linkedContact?.dataNascimento?.getTimezoneOffset() * 60 * 1000)
-			: null;
+		const dataContactNascimento =
+			this.linkedContact?.dataNascimento != null ||
+			this.linkedContact?.dataNascimento != undefined
+				? new Date(
+						this.linkedContact?.dataNascimento?.getTime() -
+							this.linkedContact?.dataNascimento?.getTimezoneOffset() *
+								60 *
+								1000
+				  )
+				: null;
 
 		const data: any = {
 			CpfCnpj: this.registerForm.value.clientInfo.CpfCnpj,
@@ -327,8 +337,8 @@ export class SupplierRegisterComponent implements OnInit{
 				Agencia: this.bankInfoForm.value.Agencia,
 				Conta: this.bankInfoForm.value.Conta,
 				Operacao: this.bankInfoForm.value.Operacao,
-				ChavePix: this.bankInfoForm.value.ChavePix
-			}
+				ChavePix: this.bankInfoForm.value.ChavePix,
+			},
 		};
 
 		if (
@@ -437,24 +447,24 @@ export class SupplierRegisterComponent implements OnInit{
 		}
 	};
 
-	goBack = ():void => {
+	goBack = (): void => {
 		this.location.back();
 	};
 
-	navigateTo = (route: string):void => {
+	navigateTo = (route: string): void => {
 		this.router.navigate([route]);
 	};
 
-  checkHasError(c: AbstractControl) {
+	checkHasError(c: AbstractControl) {
 		return Utils.checkHasError(c);
-	};
+	}
 
-  changeStepCb = (step: number):void => {
+	changeStepCb = (step: number): void => {
 		if (this.stepList[step - 1].isVisited || step < this.currentStep)
 			this.changeStep(step);
 	};
 
-  changeStep = (step: number):void => {
+	changeStep = (step: number): void => {
 		this.stepList = this.stepList.map((entry: Step, i: number) => {
 			const stepData: Step = {
 				label: entry.label,
@@ -476,7 +486,7 @@ export class SupplierRegisterComponent implements OnInit{
 				stepData.isValid = this.addressInfoForm.valid ? true : false;
 			}
 
-      if (stepListIndex === 3) {
+			if (stepListIndex === 3) {
 				stepData.isValid = this.bankInfoForm.valid ? true : false;
 			}
 
@@ -489,23 +499,23 @@ export class SupplierRegisterComponent implements OnInit{
 		this.currentStep = step;
 	};
 
-  prevStep = ():void => {
+	prevStep = (): void => {
 		if (this.currentStep > 1) this.changeStep(this.currentStep - 1);
 		else this.goBack();
 	};
 
-  nextStep = ():void => {
+	nextStep = (): void => {
 		const currStep = this.currentStep;
 
-    if (currStep === 1 && this.supplierInfoForm.invalid) {
-      this.supplierInfoForm.markAllAsTouched();
-      return;
-    }
+		if (currStep === 1 && this.supplierInfoForm.invalid) {
+			this.supplierInfoForm.markAllAsTouched();
+			return;
+		}
 
-    if (currStep === 2 && this.addressInfoForm.invalid) {
-      this.supplierInfoForm.markAllAsTouched();
-      return;
-    }
+		if (currStep === 2 && this.addressInfoForm.invalid) {
+			this.supplierInfoForm.markAllAsTouched();
+			return;
+		}
 
 		if (currStep === 3) {
 			this.onSubmit();
@@ -515,31 +525,41 @@ export class SupplierRegisterComponent implements OnInit{
 			this.changeStep(this.currentStep + 1);
 	};
 
-  supplierTypeChange = ():void => {
+	supplierTypeChange = (): void => {
 		if (!this.isCnpj) {
-			this.supplierInfoForm.controls['CpfCnpj'].setValidators([Validators.required, CpfValidator]);
-			this.supplierInfoForm.controls['DataNascimento'].setValidators([PastDateValidator]);
+			this.supplierInfoForm.controls['CpfCnpj'].setValidators([
+				Validators.required,
+				CpfValidator,
+			]);
+			this.supplierInfoForm.controls['DataNascimento'].setValidators([
+				PastDateValidator,
+			]);
 		} else {
-			this.supplierInfoForm.controls['CpfCnpj'].setValidators([Validators.required, CnpjValidator]);
-			this.supplierInfoForm.controls['DataNascimento'].removeValidators([PastDateValidator]);
+			this.supplierInfoForm.controls['CpfCnpj'].setValidators([
+				Validators.required,
+				CnpjValidator,
+			]);
+			this.supplierInfoForm.controls['DataNascimento'].removeValidators([
+				PastDateValidator,
+			]);
 		}
 		this.supplierInfoForm.controls['CpfCnpj'].updateValueAndValidity();
 		this.supplierInfoForm.controls['DataNascimento'].updateValueAndValidity();
 	};
 
-  resetLinkedContact = ():void => {
+	resetLinkedContact = (): void => {
 		this.linkedContact = null;
 	};
 
-  showContactRegister = ():void => {
+	showContactRegister = (): void => {
 		this.contactRegisterVisible = true;
 	};
 
-  hideContactRegister = () => {
+	hideContactRegister = () => {
 		this.contactRegisterVisible = false;
 	};
 
-  onUpdateContactLinked = ({
+	onUpdateContactLinked = ({
 		idFornecedor,
 		nome,
 		email,
@@ -566,13 +586,13 @@ export class SupplierRegisterComponent implements OnInit{
 		};
 	};
 
-  setAddressByCEP = (e: any):void => {
+	setAddressByCEP = (e: any): void => {
 		const cep = e.target.value.replace(/\D/g, '');
 
 		if (cep.length !== 8 || cep === this.prevCepInputValue.toString()) {
 			this.prevCepInputValue = cep;
 			return;
-		};
+		}
 
 		this.isLoadingCep = true;
 		this.addressInfoForm.controls['Cep'].disable();
@@ -624,7 +644,7 @@ export class SupplierRegisterComponent implements OnInit{
 		this.prevCepInputValue = cep;
 	};
 
-  dropdownUfList: DropdownItem[] = [
+	dropdownUfList: DropdownItem[] = [
 		{ label: 'Selecione', value: null, disabled: true },
 		{ label: 'Acre', value: 'AC' },
 		{ label: 'Alagoas', value: 'AL' },
@@ -655,14 +675,13 @@ export class SupplierRegisterComponent implements OnInit{
 		{ label: 'Tocantins', value: 'TO' },
 	];
 
-  openModal = ():void => {
+	openModal = (): void => {
 		this.displayModal = true;
 	};
 
-  closeModal = (onClose?: Function, ...params: any[]):void => {
+	closeModal = (onClose?: Function, ...params: any[]): void => {
 		this.displayModal = false;
 
 		if (onClose !== undefined) onClose(...params);
 	};
-
 }
