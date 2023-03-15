@@ -25,7 +25,9 @@
 	margin-right: 2px;
 	@apply pb-8;
 
-	header {
+	header.list-header {
+		@apply flex justify-between flex-wrap py-9 px-5;
+
 		h3 {
 			color: #ffffff;
 
@@ -128,6 +130,39 @@
 		.p-tag {
 			&.p-tag-danger {
 				color: #ff4f4c;
+			}
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	.header-background {
+		display: none;
+	}
+	.content-wrapper {
+		padding: 0;
+		top: 0;
+
+		.content {
+			min-width: auto;
+			width: 100%;
+			margin: 0;
+
+			.list-header {
+				@apply flex-col pt-4 pb-6;
+				background-color: #6b7c36;
+				width: 100%;
+			}
+
+			.options {
+				.addButton {
+					@apply w-full justify-center;
+				}
+			}
+
+			.cardList {
+				& > button.p-button {
+				}
 			}
 		}
 	}

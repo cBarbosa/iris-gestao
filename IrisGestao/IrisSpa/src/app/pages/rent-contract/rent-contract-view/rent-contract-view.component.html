@@ -8,14 +8,21 @@
 <ng-template #details>
 	<div class="contract-view">
 		<div class="content-wrapper">
-			<div class="flex justify-between items-center py-6 h-[7.5rem]">
-				<h2 class="text-2xl font-bold">Detalhe do contrato</h2>
+			<div
+				class="flex max-md:flex-col justify-between md:items-center gap-y-3 py-6 md:h-[7.5rem]"
+			>
+				<h2 class="text-2xl font-bold max-md:mx-4">Detalhe do contrato</h2>
 				<div
 					class="ending-contract-alert"
 					*ngIf="contract.exibirAlertaVencimento"
 				>
-					<span>O contrato está próximo do fim.</span>
-					<button type="button" pButton class="h-9" (click)="showContacts()">
+					<span class="min-w-[5rem]">O contrato está próximo do fim.</span>
+					<button
+						type="button"
+						pButton
+						class="h-9 min-w-[11rem]"
+						(click)="showContacts()"
+					>
 						Comunicar locatário
 					</button>
 				</div>
@@ -53,7 +60,7 @@
 							<button
 								pButton
 								type="button"
-								class="p-button-outlined h-7"
+								class="p-button-outlined h-8"
 								(click)="navigateTo('contract/edit/' + contract.guidReferencia)"
 								disabled
 							>
@@ -299,7 +306,7 @@
 									</span>
 									<span class="label">Projeto</span>
 								</button>
-			
+
 								<button
 									type="button"
 									class="attachment"
@@ -316,7 +323,7 @@
 									</span>
 									<span class="label">Matrícula</span>
 								</button>
-			
+
 								<button
 									type="button"
 									class="attachment"

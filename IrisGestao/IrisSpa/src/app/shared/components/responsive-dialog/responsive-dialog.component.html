@@ -1,0 +1,27 @@
+<p-dialog
+	[(visible)]="visible"
+	(onHide)="emitVisibleChange(false)"
+	[modal]="true"
+	[draggable]="false"
+	[resizable]="false"
+	[styleClass]="styleClass"
+	*ngIf="!isMobile"
+>
+	<ng-container *ngTemplateOutlet="content"></ng-container>
+</p-dialog>
+
+<p-sidebar
+	[(visible)]="visible"
+	(onHide)="emitVisibleChange(false)"
+	position="bottom"
+	[styleClass]="styleClass"
+	*ngIf="isMobile"
+>
+	<ng-template pTemplate="content">
+		<ng-container *ngTemplateOutlet="content"></ng-container>
+	</ng-template>
+</p-sidebar>
+
+<ng-template #content>
+	<ng-content></ng-content>
+</ng-template>

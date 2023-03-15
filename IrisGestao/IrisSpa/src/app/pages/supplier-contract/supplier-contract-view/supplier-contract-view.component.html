@@ -18,7 +18,6 @@
 							<span>Contrato {{ contract?.numeroContrato }}</span>
 							<!-- <span>{{ cliente?.idTipoClienteNavigation?.nome }}</span> -->
 						</h3>
-						<div></div>
 						<div class="actions">
 							<button
 								pButton
@@ -37,71 +36,97 @@
 						</button-->
 						</div>
 					</header>
-					<div class="contract-info">
-						<div class="contract-data">
-							<div class="data-label">Prestador de serviço</div>
-							<div class="data-value">
-								{{ contract?.fornecedor.nome | cpfcnpj }}
+
+					<p-panel
+						[header]="
+							displayContractDetails ? 'Menos Detalhes' : 'Mais detalhes'
+						"
+						[toggleable]="true"
+						[collapsed]="!displayContractDetails"
+						(onBeforeToggle)="toggleClientDetails()"
+						styleClass="mt-3"
+						*ngIf="isMobile"
+					>
+						<ng-container
+							*ngTemplateOutlet="contractInfoTemplate"
+						></ng-container>
+					</p-panel>
+
+					<ng-container *ngIf="!isMobile">
+						<ng-container
+							*ngTemplateOutlet="contractInfoTemplate"
+						></ng-container>
+					</ng-container>
+
+					<ng-template #contractInfoTemplate>
+						<div class="contract-info">
+							<div class="contract-data">
+								<div class="data-label">Prestador de serviço</div>
+								<div class="data-value">
+									{{ contract?.fornecedor.nome | cpfcnpj }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">CNPJ</div>
+								<div class="data-value">
+									{{ contract?.fornecedor.cpfCnpj | cpfcnpj }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Valor do serviço</div>
+								<div class="data-value">
+									{{ contract?.valorServicoContratado | currency }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Dia do pagamento</div>
+								<div class="data-value">
+									Todo dia
+									{{ contract?.diaPagamento.toString().padStart(2, "0") }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Data início do contrato</div>
+								<div class="data-value">
+									{{ contract?.dataInicioContrato | date : "shortDate" }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Data final do contrato</div>
+								<div class="data-value">
+									{{ contract?.dataFimContrato | date : "shortDate" }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Total de meses</div>
+								<div class="data-value">{{ contract?.prazoTotalMeses }}</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Forma de pagamento</div>
+								<div class="data-value">
+									{{ contract?.formaPagamento.nome }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Índice do contrato</div>
+								<div class="data-value">
+									{{ contract?.indiceReajuste.nome }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Periodicidade de reajuste</div>
+								<div class="data-value">
+									{{ contract?.periodicidadeReajuste }} meses
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Centro de custo</div>
+								<div class="data-value">
+									{{ contract?.imovel.numCentroCusto }}
+								</div>
 							</div>
 						</div>
-						<div class="contract-data">
-							<div class="data-label">CNPJ</div>
-							<div class="data-value">
-								{{ contract?.fornecedor.cpfCnpj | cpfcnpj }}
-							</div>
-						</div>
-						<div class="contract-data">
-							<div class="data-label">Valor do serviço</div>
-							<div class="data-value">
-								{{ contract?.valorServicoContratado | currency }}
-							</div>
-						</div>
-						<div class="contract-data">
-							<div class="data-label">Dia do pagamento</div>
-							<div class="data-value">
-								Todo dia
-								{{ contract?.diaPagamento.toString().padStart(2, "0") }}
-							</div>
-						</div>
-						<div class="contract-data">
-							<div class="data-label">Data início do contrato</div>
-							<div class="data-value">
-								{{ contract?.dataInicioContrato | date : "shortDate" }}
-							</div>
-						</div>
-						<div class="contract-data">
-							<div class="data-label">Data final do contrato</div>
-							<div class="data-value">
-								{{ contract?.dataFimContrato | date : "shortDate" }}
-							</div>
-						</div>
-						<div class="contract-data">
-							<div class="data-label">Total de meses</div>
-							<div class="data-value">{{ contract?.prazoTotalMeses }}</div>
-						</div>
-						<div class="contract-data">
-							<div class="data-label">Forma de pagamento</div>
-							<div class="data-value">
-								{{ contract?.formaPagamento.nome }}
-							</div>
-						</div>
-						<div class="contract-data">
-							<div class="data-label">Índice do contrato</div>
-							<div class="data-value">{{ contract?.indiceReajuste.nome }}</div>
-						</div>
-						<div class="contract-data">
-							<div class="data-label">Periodicidade de reajuste</div>
-							<div class="data-value">
-								{{ contract?.periodicidadeReajuste }} meses
-							</div>
-						</div>
-						<div class="contract-data">
-							<div class="data-label">Centro de custo</div>
-							<div class="data-value">
-								{{ contract?.imovel.numCentroCusto }}
-							</div>
-						</div>
-					</div>
+					</ng-template>
 				</div>
 			</section>
 
@@ -114,7 +139,7 @@
 			</section>
 
 			<section class="attachments">
-				<h3>Anexos</h3>
+				<h2>Anexos</h2>
 
 				<div class="attachments-card">
 					<button

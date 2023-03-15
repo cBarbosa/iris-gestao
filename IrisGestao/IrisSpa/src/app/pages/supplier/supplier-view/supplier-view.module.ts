@@ -15,13 +15,14 @@ import { ContactDetailSidebarComponent } from '../../client/contact-detail-sideb
 import { ContactEditSidebarComponent } from '../../client/contact-edit-sidebar/contact-edit-sidebar.component';
 import { ContactRegisterSidebarComponent } from '../../client/contact-register-sidebar/contact-register-sidebar.component';
 import { SupplierViewComponent } from './supplier-view.component';
-
+import { PanelModule } from 'primeng/panel';
+import { CardItemComponent } from 'src/app/shared/components/card-item/card-item.component';
 
 @NgModule({
-  declarations: [SupplierViewComponent],
-  imports: [
-    CommonModule,
-    SupplierViewRoutingModule,
+	declarations: [SupplierViewComponent],
+	imports: [
+		CommonModule,
+		SupplierViewRoutingModule,
 		ButtonModule,
 		PropertyItemModule,
 		CpfCnpjPipeModule,
@@ -36,6 +37,8 @@ import { SupplierViewComponent } from './supplier-view.component';
 		ContactRegisterSidebarComponent,
 		TelefonePipeModule,
 		CepPipeModule,
-  ]
+		PanelModule,
+		CardItemComponent,
+	],
 })
-export class SupplierViewModule { }
+export class SupplierViewModule {}

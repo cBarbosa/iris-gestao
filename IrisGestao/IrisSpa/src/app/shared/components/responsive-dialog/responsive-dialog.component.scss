@@ -1,0 +1,9 @@
+::ng-deep {
+	.p-element {
+		.p-sidebar.p-sidebar-bottom {
+			height: auto;
+			max-height: 80vh;
+			width: 100%;
+		}
+	}
+}

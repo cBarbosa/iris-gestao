@@ -181,3 +181,44 @@
 		}
 	}
 }
+
+@media (max-width: 768px) {
+	.register-form {
+		margin: 0;
+		padding-top: 0.5rem;
+
+		.input-wrapper {
+			flex-direction: column;
+		}
+
+		.form-actions {
+			flex-wrap: wrap;
+
+			button {
+				flex-grow: 1;
+
+				&:first-child {
+					order: 3;
+					width: 100%;
+				}
+			}
+		}
+
+		.add-property-alert {
+			span {
+			}
+
+			button.p-button {
+			}
+		}
+
+		::ng-deep {
+		}
+	}
+
+	::ng-deep {
+		.form-modal {
+			max-width: 100%;
+		}
+	}
+}

@@ -196,6 +196,20 @@
 				&:not([disabled]):active {
 					background-color: rgba(100, 27, 30, 0.04);
 				}
+
+				&.white-theme {
+					color: #ffffff;
+
+					&:not([disabled]):hover {
+						background-color: rgba(255, 255, 255, 0.06);
+					}
+
+					&:not([disabled]):focus-visible,
+					&:not([disabled]):active {
+						box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+						color: #ffffff;
+					}
+				}
 			}
 		}
 
@@ -501,6 +515,15 @@
 			}
 
 			.p-sidebar-footer {
+			}
+
+			&.p-sidebar-right,
+			&.p-sidebar-left {
+				max-width: 100%;
+			}
+
+			&.p-sidebar-bottom {
+				height: auto;
 			}
 		}
 

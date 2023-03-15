@@ -11,6 +11,8 @@ import { ButtonModule } from 'primeng/button';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 import { MenuModule } from 'primeng/menu';
 import { CpfCnpjPipeModule } from 'src/app/shared/pipes';
+import { CardItemComponent } from 'src/app/shared/components/card-item/card-item.component';
+import { SidebarModule } from 'primeng/sidebar';
 
 @NgModule({
 	declarations: [SupplierContractListingComponent],
@@ -26,6 +28,8 @@ import { CpfCnpjPipeModule } from 'src/app/shared/pipes';
 		SpinnerComponent,
 		MenuModule,
 		CpfCnpjPipeModule,
+		CardItemComponent,
+		SidebarModule,
 	],
 })
 export class SupplierContractListingModule {}
