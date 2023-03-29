@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from 'src/app/shared/services';
@@ -83,6 +83,7 @@ export class ConstructionListingComponent {
 				dateFormat: 'shortDate',
 				timezone: '',
 			}),
+			currency: new CurrencyPipe('pt-BR', 'R$'),
 		};
 
 		this.commonService

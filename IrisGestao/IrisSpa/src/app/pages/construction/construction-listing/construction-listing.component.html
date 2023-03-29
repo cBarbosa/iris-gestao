@@ -146,29 +146,30 @@
 								infos: [
 									{
 										label: 'Nome da obra',
-										data: construction.numeroContrato
+										data: construction.nomeObra
 									},
 									{
 										label: 'Prédio de referência',
-										data: construction.locatario
+										data: construction.predio
 									},
 									{
 										label: 'Imóvel de referência',
-										data: construction.dataInicioContrato,
-										pipe: cardPipes['date']
+										data: construction.imovel
 									},
 									{
 										label: 'Valor da obra',
-										data: construction.proxAjuste
+										data: construction.valor,
+										pipe: cardPipes['currency']
 									},
 									{
 										label: 'Previsão de término',
-										data: construction.dataFimContrato,
+										data: construction.dataFim,
 										pipe: cardPipes['date']
 									},
 									{
 										label: 'Data de início',
-										data: construction.baseReajuste
+										data: construction.dataInicio,
+										pipe: cardPipes['date']
 									}
 								]
 							}"
