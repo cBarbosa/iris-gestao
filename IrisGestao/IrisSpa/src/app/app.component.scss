@@ -896,6 +896,15 @@
 				}
 			}
 		}
+
+		.p-progressbar {
+			border-radius: 9999px;
+
+			.p-progressbar-value {
+				background-color: #641b1e;
+				border-radius: 9999px;
+			}
+		}
 	}
 
 	.p-button {
