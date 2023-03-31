@@ -190,6 +190,25 @@
 			>
 				<h3>Anexos</h3>
 
+				<app-attachment-list
+					[attachmentList]="[
+						{
+							fileName:
+								'Projetsadf dsfdas fdasfdsaf dsasdafdsadfa fadsfddsfao.pdf',
+							fileLocation: 'https://www.google.com'
+						},
+						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
+						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
+						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
+						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
+						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
+						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
+						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
+						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
+						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' }
+					]"
+				></app-attachment-list>
+				<!--
 				<div
 					class="attachments-card"
 					*ngIf="
@@ -247,6 +266,7 @@
 						<span class="label">Habite-se</span>
 					</button>
 				</div>
+				-->
 			</section>
 
 			<ng-container *ngIf="imageList.length > 0">
