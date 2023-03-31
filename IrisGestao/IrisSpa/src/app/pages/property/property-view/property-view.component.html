@@ -191,22 +191,12 @@
 				<h3>Anexos</h3>
 
 				<app-attachment-list
-					[attachmentList]="[
-						{
-							fileName:
-								'Projetsadf dsfdas fdasfdsaf dsasdafdsadfa fadsfddsfao.pdf',
-							fileLocation: 'https://www.google.com'
-						},
-						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
-						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
-						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
-						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
-						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
-						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
-						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
-						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' },
-						{ fileName: 'Projeto.pdf', fileLocation: 'https://www.google.com' }
-					]"
+					*ngIf="
+						attachmentDocs?.projeto ||
+						attachmentDocs?.matricula ||
+						attachmentDocs?.habitese
+					"
+					[attachmentList]="attachmentList"
 				></app-attachment-list>
 				<!--
 				<div
