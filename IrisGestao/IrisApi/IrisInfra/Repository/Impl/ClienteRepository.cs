@@ -126,8 +126,14 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                 .Include(x => x.ContratoAluguel)
                     .ThenInclude(y => y.IdIndiceReajusteNavigation)
                 .Where(x =>
-                        (idTipo.HasValue
-                            ? x.IdTipoCliente.Equals(idTipo.Value)
+                        (idTipo.HasValue && idTipo.Value == 1
+                            ? x.Imovel.Count > 0 
+                            : true)
+                        && (idTipo.HasValue && idTipo.Value == 2
+                            ? x.ContratoAluguel.Count > 0
+                            : true)
+                        && (idTipo.HasValue && idTipo.Value == 3
+                            ? x.ContratoAluguel.Count == 0 && x.Imovel.Count == 0
                             : true)
                         && (!string.IsNullOrEmpty(nome)
                             ? x.Nome.Contains(nome)

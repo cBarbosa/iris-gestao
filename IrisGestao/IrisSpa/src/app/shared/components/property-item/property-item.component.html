@@ -23,19 +23,19 @@
 		<div class="property-features">
 			<span class="feature">
 				<app-icon name="door" styleClass="mr-1"></app-icon>
-				{{ propertyData.nroUnidades ?? 0 }} unidades
+				{{ propertyData.nroUnidades ? propertyData.nroUnidades > 1 ? propertyData.nroUnidades + " unidades" : "1 unidade" : "0 unidade" }}
 			</span>
 			<span class="feature">
 				<app-icon name="area" styleClass="mr-1"></app-icon>
-				{{ propertyData.areaTotal ?? 0 | area }}
+				{{ propertyData.areaTotal ?? 0 | area }} Total
 			</span>
 			<span class="feature">
 				<app-icon name="area" styleClass="mr-1"></app-icon>
-				{{ propertyData.areaHabitese ?? 0 | area }}
+				{{ propertyData.areaHabitese ?? 0 | area }} Habite-se
 			</span>
 			<span class="feature">
 				<app-icon name="area" styleClass="mr-1"></app-icon>
-				{{ propertyData.areaUtil ?? 0 | area }}
+				{{ propertyData.areaUtil ?? 0 | area }} Útil
 			</span>
 		</div>
 	</div>
