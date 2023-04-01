@@ -14,27 +14,25 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ContactRegisterSidebarComponent } from '../../client/contact-register-sidebar/contact-register-sidebar.component';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
 
 @NgModule({
-  declarations: [
-    SupplierRegisterComponent
-  ],
-  imports: [
-    CommonModule,
-    SupplierRegisterRoutingModule,
-	ReactiveFormsModule,
-	ButtonModule,
-	InputTextModule,
-	CalendarModule,
-	DropdownModule,
-	DialogModule,
-	FormStepsComponent,
-	NgxMaskModule.forChild(),
-	SpinnerComponent,
-	SidebarModule,
-	ContactRegisterSidebarComponent,
-	TelefonePipeModule,
-  ]
+	declarations: [SupplierRegisterComponent],
+	imports: [
+		CommonModule,
+		SupplierRegisterRoutingModule,
+		ReactiveFormsModule,
+		ButtonModule,
+		InputTextModule,
+		CalendarModule,
+		DropdownModule,
+		FormStepsComponent,
+		NgxMaskModule.forChild(),
+		SpinnerComponent,
+		SidebarModule,
+		ContactRegisterSidebarComponent,
+		TelefonePipeModule,
+		ResponsiveDialogComponent,
+	],
 })
-export class SupplierRegisterModule { }
+export class SupplierRegisterModule {}

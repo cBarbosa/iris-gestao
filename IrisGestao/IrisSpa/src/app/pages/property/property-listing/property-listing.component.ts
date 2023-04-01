@@ -16,6 +16,7 @@ import {
 	CommonService,
 } from 'src/app/shared/services';
 import { AnexoService } from 'src/app/shared/services/anexo.service';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
 @Component({
@@ -40,6 +41,9 @@ export class PropertyListingComponent implements OnInit {
 	filterCategory: number;
 	filterProprietary: number;
 
+	isMobile: boolean = false;
+	displayMobileFilters: boolean = false;
+
 	proprietaryOptions: {
 		label: string;
 		value: string | null;
@@ -56,7 +60,8 @@ export class PropertyListingComponent implements OnInit {
 		private commonService: CommonService,
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
-		private anexoService: AnexoService
+		private anexoService: AnexoService,
+		private responsiveService: ResponsiveService
 	) {}
 
 	ngOnInit(): void {
@@ -136,6 +141,10 @@ export class PropertyListingComponent implements OnInit {
 					console.error(err);
 				},
 			});
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
 	}
 
 	loadClientsPage(event: LazyLoadEvent) {
@@ -164,36 +173,10 @@ export class PropertyListingComponent implements OnInit {
 					this.showPaginator =
 						this.pageCount > 1 || this.pageIndex > this.pageCount;
 
-					if (event.data.items.length > 0) {
-						event.data.items.forEach(async (imovel: Imovel) => {
-							// console.debug('Imovel Data >> ' + JSON.stringify(imovel));
+					this.properties = event.data.items;
 
-							let cover;
-
-							await this.anexoService
-								.getFiles(imovel.guidReferencia)
-								.subscribe({
-									next: (response) => {
-										cover =
-											response?.find((file) => file.classificacao === 'capa')
-												?.local ?? './assets/images/imovel-placeholder.png';
-
-										const imovelObj: IImovel = {
-											...imovel,
-											imgCapa: cover,
-										};
-										this.properties.push(imovelObj);
-									},
-									error(err) {
-										console.error(err);
-									},
-								});
-						});
-						this.noRestults = false;
-					} else {
-						this.properties = [];
-						this.noRestults = true;
-					}
+					if (event.data.items.length > 0) this.noRestults = false;
+					else this.noRestults = true;
 				} else {
 					this.showPaginator = true;
 					this.pageCount = 1;
@@ -239,6 +222,14 @@ export class PropertyListingComponent implements OnInit {
 		// this.pageIndex = page;
 		// this.getPagingData(page + 1);
 	};
+
+	openFilters() {
+		this.displayMobileFilters = true;
+	}
+
+	closeFilters() {
+		this.displayMobileFilters = false;
+	}
 
 	navigateTo(route: string) {
 		this.router.navigate([route]);

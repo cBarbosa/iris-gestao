@@ -12,18 +12,25 @@ public partial class Obra: BaseEntity<Obra>
 
     public int IdOrcamento { get; set; }
 
+    public Guid? GuidReferencia { get; set; }
+
+    [StringLength(100)]
+    public string Nome { get; set; }
+
     [Column(TypeName = "date")]
     public DateTime? DataInicio { get; set; }
 
     [Column(TypeName = "date")]
     public DateTime? DataPrevistaTermino { get; set; }
 
-    [StringLength(50)]
-    [Unicode(false)]
-    public string? GuidReferencia { get; set; }
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal? ValorOrcamento { get; set; }
+
+    [Column(TypeName = "decimal(5, 2)")]
+    public decimal? Percentual { get; set; }
 
     [Column(TypeName = "datetime")]
-    public DateTime? DataCriacao { get; set; }
+    public DateTime DataCriacao { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime? DataUltimaModificacao { get; set; }

@@ -85,7 +85,12 @@
 					<span>
 						Você precisa atribuir pelo menos um imóvel ao seu contrato
 					</span>
-					<button type="button" (click)="showAddProperty()" pButton>
+					<button
+						type="button"
+						class="min-w-[6.5rem]"
+						(click)="showAddProperty()"
+						pButton
+					>
 						Adicionar
 					</button>
 				</div>
@@ -621,13 +626,18 @@
 					id="occupancy"
 					mode="basic"
 					name="demo[]"
-					url="./upload"
-					accept="image/*"
-					chooseLabel="Arraste ou clique para fazer o upload"
+					accept="application/*"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
 					(onUpload)="onUpload($event)"
+					(onSelect)="onSelect($event, 'projeto')"
 				></p-fileUpload>
+
 				<ng-container *ngIf="checkHasError(f['occupancy'])">
 					<small
 						id="occupancy-help"
@@ -995,11 +1005,9 @@
 	</p-sidebar>
 </form>
 
-<p-dialog
-	[(visible)]="displayModal"
-	[modal]="true"
-	[draggable]="false"
-	[resizable]="false"
+<app-responsive-dialog
+	[isMobile]="isMobile"
+	[visible]="displayModal"
 	styleClass="form-modal"
 >
 	<div *ngIf="!modalContent.isError; else error" class="modal-success">
@@ -1033,4 +1041,4 @@
 			<button pButton label="Continuar" (click)="closeModal()"></button>
 		</div>
 	</ng-template>
-</p-dialog>
+</app-responsive-dialog>

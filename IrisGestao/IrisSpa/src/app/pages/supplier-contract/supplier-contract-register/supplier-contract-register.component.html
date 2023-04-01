@@ -215,7 +215,7 @@
 				<h4>Taxas e valores</h4>
 
 				<div class="field">
-					<label for="valor" class="block">Valor do servço</label>
+					<label for="valor" class="block">Valor do serviço</label>
 					<input
 						id="valor"
 						type="text"
@@ -371,7 +371,7 @@
 					</ng-container>
 				</div>
 
-				<div class="field">
+				<!-- <div class="field">
 					<label for="periodicidade" class="block"
 						>Periodicidade de reajuste</label
 					>
@@ -395,9 +395,39 @@
 							</small>
 						</ng-template>
 					</ng-container>
-				</div>
+				</div> -->
 
 				<div class="field">
+					<label for="periodicidade" class="block">
+						Periodicidade de reajuste
+					</label>
+					<input
+						id="periodicidade"
+						type="text"
+						formControlName="periodicidade"
+						aria-describedby="periodicidade-help"
+						mask="0*"
+						suffix=" Meses"
+						maxlength="9"
+						pInputText
+					/>
+					<ng-container *ngIf="checkHasError(f['periodicidade'])">
+						<small
+							id="periodicidade-help"
+							*ngIf="f['periodicidade'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe a periodicidade de reajuste
+						</small>
+						<ng-template #error2>
+							<small id="periodicidade-help" class="p-error block">
+								Periodicidade de reajuste inválida
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<!-- <div class="field">
 					<label for="percentual" class="block">Percentual</label>
 					<input
 						id="percentual"
@@ -422,7 +452,7 @@
 							</small>
 						</ng-template>
 					</ng-container>
-				</div>
+				</div> -->
 			</div>
 		</section>
 
@@ -445,10 +475,14 @@
 					mode="basic"
 					name="projeto"
 					accept="application/*"
-					chooseLabel="Arraste ou clique para fazer o upload"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
-					(onSelect)="onSelect($event, 'projeto')"
+					(onSelect)="onSelect($event, 'outrosdocs')"
 				></p-fileUpload>
 			</div>
 
@@ -459,7 +493,11 @@
 					mode="basic"
 					name="matricula"
 					accept="application/*"
-					chooseLabel="Arraste ou clique para fazer o upload"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
 					(onSelect)="onSelect($event, 'matricula')"
@@ -473,7 +511,11 @@
 					mode="basic"
 					name="habitese"
 					accept="application/*"
-					chooseLabel="Arraste ou clique para fazer o upload"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
 					(onSelect)="onSelect($event, 'habitese')"
@@ -731,11 +773,9 @@
 </form>
 -->
 
-<p-dialog
-	[(visible)]="displayModal"
-	[modal]="true"
-	[draggable]="false"
-	[resizable]="false"
+<app-responsive-dialog
+	[isMobile]="isMobile"
+	[visible]="displayModal"
 	styleClass="form-modal"
 >
 	<div *ngIf="!modalContent.isError; else error" class="modal-success">
@@ -769,4 +809,4 @@
 			<button pButton label="Continuar" (click)="closeModal()"></button>
 		</div>
 	</ng-template>
-</p-dialog>
+</app-responsive-dialog>

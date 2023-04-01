@@ -12,6 +12,7 @@ import {
 	AnexoService,
 	Attachment,
 } from 'src/app/shared/services/anexo.service';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
 @Component({
@@ -31,6 +32,18 @@ export class PropertyViewComponent implements OnInit {
 		matricula?: Attachment;
 		habitese?: Attachment;
 	} = {};
+
+	attachmentList: { fileName: string; fileLocation: string }[] = [];
+
+	unitCover: string | undefined | null;
+	unitDocs: {
+		projeto?: { name: string; uri: string } | undefined;
+		matricula?: { name: string; uri: string } | undefined;
+		habitese?: { name: string; uri: string } | undefined;
+	};
+
+	isMobile: boolean = false;
+	unitListAmount = 4;
 
 	coverImage: string | undefined;
 
@@ -55,7 +68,8 @@ export class PropertyViewComponent implements OnInit {
 		private router: Router,
 		private route: ActivatedRoute,
 		private imovelService: ImovelService,
-		private anexoService: AnexoService
+		private anexoService: AnexoService,
+		private responsiveService: ResponsiveService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
@@ -89,24 +103,9 @@ export class PropertyViewComponent implements OnInit {
 
 		this.getData();
 
-		this.anexoService
-			.getFiles(this.uid)
-			.pipe(first())
-			.subscribe({
-				next: (event) => {
-					const cover = event?.find(
-						({ classificacao }: { classificacao: string }) =>
-							classificacao === 'capa'
-					);
-
-					if (cover) this.coverImage = cover.local;
-
-					console.log(this.coverImage);
-				},
-				error: (error) => {
-					console.error('Erro: ', error);
-				},
-			});
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
 	}
 
 	onUpdateUnitList = (modalContent: {
@@ -119,6 +118,13 @@ export class PropertyViewComponent implements OnInit {
 		this.modalContent = modalContent;
 		this.displayModal = true;
 	};
+
+	showMoreUnits() {
+		this.unitListAmount =
+			this.unitListAmount + 4 > this.units.length
+				? this.units.length
+				: this.unitListAmount + 4;
+	}
 
 	toggleFavorite() {
 		this.isFavorite = !this.isFavorite;
@@ -168,14 +174,13 @@ export class PropertyViewComponent implements OnInit {
 				this.imageList = imovel.imagens!;
 				this.isLoadingView = false;
 				this.isCorporativeBuilding =
-					this.units[0].idTipoUnidadeNavigation?.id == 1;
+					this.units[0]?.idTipoUnidadeNavigation?.id == 1;
 
 				this.anexoService
 					.getFiles(imovel.guidReferencia)
 					.pipe(first())
 					.subscribe({
 						next: (response) => {
-							console.log('>>>>', response);
 							let photos: Attachment[] = [];
 
 							response?.forEach((file) => {
@@ -188,6 +193,12 @@ export class PropertyViewComponent implements OnInit {
 									this.attachmentDocs.matricula = file;
 								else if (classificacao === 'habitese')
 									this.attachmentDocs.habitese = file;
+
+								if (classificacao !== 'foto')
+									this.attachmentList.push({
+										fileName: file.nome,
+										fileLocation: file.local,
+									});
 							});
 
 							this.imageList =
@@ -210,6 +221,35 @@ export class PropertyViewComponent implements OnInit {
 
 	setCurrentUnit(item: ImovelUnidade): void {
 		this.unit = item;
+
+		item.guidReferencia && this.getUnitFiles(item.guidReferencia);
+	}
+
+	getUnitFiles(guid: string) {
+		this.unitCover = null;
+		this.unitDocs = {};
+
+		this.anexoService
+			.getFiles(guid)
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					response?.forEach((file) => {
+						if (file.classificacao === 'foto') {
+							if (this.unitCover === null) this.unitCover = file.local;
+						} else if (file.classificacao === 'projeto') {
+							this.unitDocs.projeto = { name: file.nome, uri: file.local };
+						} else if (file.classificacao === 'matricula') {
+							this.unitDocs.matricula = { name: file.nome, uri: file.local };
+						} else if (file.classificacao === 'habitese') {
+							this.unitDocs.habitese = { name: file.nome, uri: file.local };
+						}
+					});
+				},
+				error: (err) => {
+					// console.error(err)
+				},
+			});
 	}
 
 	cloneUnitModal(): void {

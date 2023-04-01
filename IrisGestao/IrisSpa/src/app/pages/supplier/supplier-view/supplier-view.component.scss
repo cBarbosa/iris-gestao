@@ -4,7 +4,7 @@
 	min-height: 100vh;
 }
 
-.client-view {
+.supplier-view {
 	margin: 0 2rem;
 
 	.content {
@@ -29,7 +29,7 @@
 			width: 100%;
 		}
 
-		section.client {
+		section.supplier {
 			.main-card {
 				background-color: #ffffff;
 				display: block;
@@ -58,14 +58,19 @@
 						display: flex;
 						justify-content: space-between;
 						@apply gap-4;
+
+						.p-button {
+							width: 100%;
+							justify-content: center;
+						}
 					}
 				}
 
-				.client-info {
+				.supplier-info {
 					@apply grid gap-6 justify-items-start self-stretch pt-6;
 					grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
 
-					.client-data {
+					.supplier-data {
 						.data-label {
 							color: #646464;
 							@apply text-sm;
@@ -180,6 +185,95 @@
 					@apply text-lg mb-10;
 				}
 			}
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	.supplier-view {
+		margin: 0 0rem;
+
+		.content {
+			width: 100%;
+			max-width: 100%;
+			overflow-x: hidden;
+
+			h2 {
+				@apply mx-4;
+			}
+
+			section {
+				header {
+					@apply mx-4 my-4;
+
+					h2 {
+						margin: 0;
+					}
+				}
+
+				&.supplier {
+					.main-card {
+						header {
+							h3 {
+								span {
+									display: block;
+									margin: 0;
+								}
+							}
+
+							.actions {
+								@apply mt-3;
+								width: 100%;
+							}
+						}
+					}
+				}
+
+				&.contacts {
+					header {
+						button {
+							margin-top: 0;
+						}
+					}
+				}
+
+				&.property {
+					@apply px-4;
+				}
+
+				&.attachments {
+					.attachments-card {
+						@apply flex-col;
+						height: auto;
+
+						button.attachment {
+							flex-basis: 0;
+						}
+					}
+				}
+			}
+		}
+
+		.ending-supplier-alert {
+			width: 100%;
+			justify-content: space-between;
+
+			span {
+				@apply font-bold;
+			}
+
+			::ng-deep {
+				.p-button {
+					@apply text-sm justify-center;
+				}
+			}
+		}
+	}
+
+	::ng-deep {
+		.form-modal,
+		.confirmation-modal {
+			width: 100%;
 		}
 	}
 }

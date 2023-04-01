@@ -11,6 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { PropertyListComponent } from 'src/app/shared/components/property-list/property-list.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SidebarModule } from 'primeng/sidebar';
 
 @NgModule({
 	declarations: [PropertyListingComponent],
@@ -27,6 +28,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 		ButtonModule,
 		DropdownModule,
 		PropertyListComponent,
+		SidebarModule,
 	],
 })
 export class PropertyListingModule {}

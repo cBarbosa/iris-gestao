@@ -13,6 +13,8 @@ import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/sp
 import { NgxMaskModule } from 'ngx-mask';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { DropdownModule } from 'primeng/dropdown';
+import { TabViewModule } from 'primeng/tabview';
+import { SidebarModule } from 'primeng/sidebar';
 
 @NgModule({
 	declarations: [UnitEditComponent],
@@ -29,6 +31,8 @@ import { DropdownModule } from 'primeng/dropdown';
 		SpinnerComponent,
 		NgxCurrencyModule,
 		NgxMaskModule.forChild(),
+		TabViewModule,
+		SidebarModule,
 	],
 })
 export class UnitEditModule {}

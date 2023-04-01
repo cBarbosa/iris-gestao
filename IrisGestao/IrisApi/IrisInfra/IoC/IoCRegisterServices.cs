@@ -41,6 +41,7 @@ public class IoCRegisterServices
         services.AddScoped<ITituloUnidadeService, TituloUnidadeService>();
         services.AddScoped<IFaturaTituloService, FaturaTituloService>();
         services.AddScoped<IAzureStorageService, AzureStorageService>();
+        services.AddScoped<IObraService, ObraService>();
 
         //External Services
         services.AddScoped<IRepublicaVirtualService, RepublicaVirtualService>();
@@ -75,5 +76,7 @@ public class IoCRegisterServices
         services.AddScoped<ITituloReceberRepository, Repository.Impl.TituloReceberRepository>();
         services.AddScoped<ITituloImovelRepository, Repository.Impl.TituloImovelRepository>();
         services.AddScoped<ITituloUnidadeRepository, Repository.Impl.TituloUnidadeRepository>();
+        services.AddScoped<IObraRepository, Repository.Impl.ObraRepository>();
+        services.AddScoped<INotaFiscalRepository, Repository.Impl.NotaFiscalRepository>();
     }
 }

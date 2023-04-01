@@ -61,7 +61,7 @@ export class SupplierContractService {
 		idIndiceReajuste: number;
 		numeroContrato: string;
 		descricaoDoServico: string;
-		percentual: number;
+		// percentual: number;
 		dataAtualizacao: string;
 		valorServicoContratado: number;
 		dataInicioContrato: string;

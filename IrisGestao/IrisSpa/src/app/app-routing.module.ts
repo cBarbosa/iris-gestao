@@ -77,6 +77,17 @@ const routes: Routes = [
 				},
 			},
 			{
+				path: 'construction',
+				loadChildren: () =>
+					import('./pages/construction/construction.module').then(
+						(m) => m.ConstructionModule
+					),
+				canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
 				path: '',
 				redirectTo: 'home',
 				pathMatch: 'full',

@@ -19,44 +19,62 @@
 		<h1 class="text-2xl font-bold mb-6">Editar imóvel</h1>
 
 		<div class="input-wrapper">
-			<section class="proprierty-data">
-				<h4>Informações do imóvel</h4>
-				<p>
-					Aqui você encontra todas as informações referente ao imóvel
-					selecionado.
-				</p>
+			<ng-container *ngIf="!isMobile">
+				<ng-container *ngTemplateOutlet="propertyDataTemplate"></ng-container>
 
-				<div class="photo-input">
-					<img
-						[src]="
-							croppedCover
-								? croppedCover
-								: defaultCoverImage ??
-								  '../../../../assets/images/imovel-placeholder.png'
-						"
-						alt="cover-photo"
-						class="coverPhoto"
-					/>
+				<ng-container *ngTemplateOutlet="aditionalDataTemplate"></ng-container>
+			</ng-container>
 
-					<div class="buttons">
-						<button
-							pButton
-							type="button"
-							label="Resetar capa"
-							class="p-button-outlined"
-							[disabled]="croppedCover === null"
-							(click)="croppedCover = null"
-						></button>
+			<p-tabView *ngIf="isMobile">
+				<p-tabPanel header="Arquivos">
+					<ng-container *ngTemplateOutlet="propertyDataTemplate"></ng-container>
+				</p-tabPanel>
+				<p-tabPanel header="Info. imóvel">
+					<ng-container
+						*ngTemplateOutlet="aditionalDataTemplate"
+					></ng-container>
+				</p-tabPanel>
+			</p-tabView>
 
-						<button
-							pButton
-							type="button"
-							label="Nova capa"
-							class="p-button-outlined"
-							(click)="openCropModal()"
-						></button>
+			<ng-template #propertyDataTemplate>
+				<section class="property-data">
+					<h4>Informações do imóvel</h4>
+					<p>
+						Aqui você encontra todas as informações referente ao imóvel
+						selecionado.
+					</p>
 
-						<!-- <p-fileUpload
+					<div class="photo-input">
+						<img
+							[src]="
+								croppedCover
+									? croppedCover
+									: defaultCoverImage ??
+									  '../../../../assets/images/imovel-placeholder.png'
+							"
+							alt="cover-photo"
+							class="coverPhoto"
+						/>
+
+						<div class="buttons">
+							<button
+								pButton
+								type="button"
+								label="Resetar capa"
+								class="p-button-outlined"
+								[disabled]="croppedCover === null"
+								(click)="croppedCover = null"
+							></button>
+
+							<button
+								pButton
+								type="button"
+								label="Nova capa"
+								class="p-button-outlined"
+								(click)="openCropModal()"
+							></button>
+
+							<!-- <p-fileUpload
 							mode="basic"
 							name="demo[]"
 							accept="image/*"
@@ -68,446 +86,291 @@
 							(change)="fileChangeEvent($event)"
 							[auto]="true"
 						></p-fileUpload> -->
-					</div>
-				</div>
-
-				<h5>Documentos</h5>
-
-				<div class="document-list">
-					<div
-						class="document project"
-						[class.empty]="!docProjeto || deletedDocs.projeto"
-					>
-						<span>Projeto</span>
-						<span
-							class="buttons"
-							*ngIf="docProjeto && !deletedDocs.projeto; else uploadProjeto"
-						>
-							<button
-								pButton
-								type="button"
-								class="p-button-rounded p-button-text"
-								(click)="downloadFile(docProjeto.data, docProjeto.name)"
-							>
-								<i class="ph-download-simple"></i>
-							</button>
-							<button
-								pButton
-								type="button"
-								class="p-button-rounded p-button-text"
-								(click)="removeDoc('projeto')"
-							>
-								<i class="ph-trash"></i>
-							</button>
-						</span>
-
-						<ng-template #uploadProjeto>
-							<span class="buttons">
-								<button
-									pButton
-									type="button"
-									class="p-button-rounded p-button-text"
-									*ngIf="deletedDocs.projeto"
-									(click)="deletedDocs.projeto = false"
-								>
-									<i class="ph-arrow-u-up-left"></i>
-								</button>
-								<label for="inputProjeto">
-									<i class="ph-upload-simple"></i>
-									<input
-										pButton
-										type="file"
-										id="inputProjeto"
-										(change)="addDoc($event, 'projeto')"
-									/>
-								</label>
-							</span>
-						</ng-template>
+						</div>
 					</div>
 
-					<div
-						class="document registration"
-						[class.empty]="!docMatricula || deletedDocs.matricula"
-					>
-						<span>Matrícula</span>
-						<span
-							class="buttons"
-							*ngIf="
-								docMatricula && !deletedDocs.matricula;
-								else uploadMatricula
-							"
-						>
-							<button
-								pButton
-								type="button"
-								class="p-button-rounded p-button-text"
-								(click)="downloadFile(docMatricula.data, docMatricula.name)"
-							>
-								<i class="ph-download-simple"></i>
-							</button>
-							<button
-								pButton
-								type="button"
-								class="p-button-rounded p-button-text"
-								(click)="removeDoc('matricula')"
-							>
-								<i class="ph-trash"></i>
-							</button>
-						</span>
+					<h5>Documentos</h5>
 
-						<ng-template #uploadMatricula>
-							<span class="buttons">
-								<button
-									pButton
-									type="button"
-									class="p-button-rounded p-button-text"
-									*ngIf="deletedDocs.matricula"
-									(click)="deletedDocs.matricula = false"
-								>
-									<i class="ph-arrow-u-up-left"></i>
-								</button>
-								<label for="inputMatricula">
-									<i class="ph-upload-simple"></i>
-									<input
-										pButton
-										type="file"
-										id="inputMatricula"
-										(change)="addDoc($event, 'matricula')"
-									/>
-								</label>
-							</span>
-						</ng-template>
+				  <app-upload-list [guid]="propertyGuid"></app-upload-list>
+					
+				</section>
+			</ng-template>
+
+			<ng-template #aditionalDataTemplate>
+				<section class="aditional-data">
+					<div class="field">
+						<label for="proprietary" class="block">Proprietário</label>
+						<p-dropdown
+							id="proprietary"
+							[options]="proprietaries"
+							[filter]="true"
+							filterBy="label"
+							formControlName="proprietary"
+							aria-describedby="proprietary-help"
+						></p-dropdown>
+						<ng-container *ngIf="checkHasError(f['proprietary'])">
+							<small
+								id="proprietary-help"
+								*ngIf="f['proprietary'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o proprietário
+							</small>
+							<ng-template #error2>
+								<small id="proprietary-help" class="p-error block">
+									Proprietário inválido
+								</small>
+							</ng-template>
+						</ng-container>
 					</div>
 
-					<div
-						class="document occupancy"
-						[class.empty]="!docHabitese || deletedDocs.habitese"
-					>
-						<span>Habite-se</span>
-						<span
-							class="buttons"
-							*ngIf="docHabitese && !deletedDocs.habitese; else uploadHabitese"
-						>
-							<button
-								pButton
-								type="button"
-								class="p-button-rounded p-button-text"
-								(click)="downloadFile(docHabitese.data, docHabitese.name)"
-							>
-								<i class="ph-download-simple"></i>
-							</button>
-							<button
-								pButton
-								type="button"
-								class="p-button-rounded p-button-text"
-								(click)="removeDoc('habitese')"
-							>
-								<i class="ph-trash"></i>
-							</button>
-						</span>
-
-						<ng-template #uploadHabitese>
-							<span class="buttons">
-								<button
-									pButton
-									type="button"
-									class="p-button-rounded p-button-text"
-									*ngIf="deletedDocs.habitese"
-									(click)="deletedDocs.habitese = false"
-								>
-									<i class="ph-arrow-u-up-left"></i>
-								</button>
-								<label for="inputHabitese">
-									<i class="ph-upload-simple"></i>
-									<input
-										pButton
-										type="file"
-										id="inputHabitese"
-										(change)="addDoc($event, 'habitese')"
-									/>
-								</label>
-							</span>
-						</ng-template>
-					</div>
-				</div>
-				<!-- 
-				<button
-					pButton
-					type="button"
-					label="Adicionar novo documento"
-					class="p-button-outlined w-full"
-				></button> -->
-			</section>
-
-			<section class="aditional-data">
-				<div class="field">
-					<label for="proprietary" class="block">Proprietário</label>
-					<p-dropdown
-						id="proprietary"
-						[options]="proprietaries"
-						[filter]="true"
-						filterBy="label"
-						formControlName="proprietary"
-						aria-describedby="proprietary-help"
-					></p-dropdown>
-					<ng-container *ngIf="checkHasError(f['proprietary'])">
-						<small
-							id="proprietary-help"
-							*ngIf="f['proprietary'].hasError('required'); else error2"
-							class="p-error block"
-						>
-							Informe o proprietário
-						</small>
-						<ng-template #error2>
-							<small id="proprietary-help" class="p-error block">
-								Proprietário inválido
-							</small>
-						</ng-template>
-					</ng-container>
-				</div>
-
-				<div class="field">
-					<label for="name" class="block">Nome do imóvel</label>
-					<input
-						id="name"
-						type="text"
-						formControlName="name"
-						aria-describedby="name-help"
-						maxlength="100"
-						pInputText
-					/>
-					<ng-container *ngIf="checkHasError(f['name'])">
-						<small
-							id="name-help"
-							*ngIf="f['name'].hasError('required'); else error2"
-							class="p-error block"
-						>
-							Informe o nome
-						</small>
-						<ng-template #error2>
-							<small id="name-help" class="p-error block">
-								Nome inválido
-							</small>
-						</ng-template>
-					</ng-container>
-				</div>
-
-				<div class="field">
-					<label for="category" class="block">Categoria do imóvel</label>
-					<p-dropdown
-						id="category"
-						[options]="propertyCategories"
-						formControlName="category"
-						aria-describedby="category-help"
-					></p-dropdown>
-					<ng-container *ngIf="checkHasError(f['category'])">
-						<small
-							id="category-help"
-							*ngIf="f['category'].hasError('required'); else error2"
-							class="p-error block"
-						>
-							Informe o tipo de unidade
-						</small>
-						<ng-template #error2>
-							<small id="category-help" class="p-error block">
-								Tipo de unidade inválido
-							</small>
-						</ng-template>
-					</ng-container>
-				</div>
-
-				<div class="field">
-					<label for="cost-centre" class="block">N° do centro de custo</label>
-					<input
-						id="cost-centre"
-						type="text"
-						formControlName="costCentre"
-						aria-describedby="cost-centre-help"
-						mask="0*"
-						maxlength="20"
-						pInputText
-					/>
-					<ng-container *ngIf="checkHasError(f['costCentre'])">
-						<small
-							id="cost-centre-help"
-							*ngIf="f['costCentre'].hasError('required'); else error2"
-							class="p-error block"
-						>
-							Informe o n° do centro de custo
-						</small>
-						<ng-template #error2>
-							<small id="cost-centre-help" class="p-error block">
-								N° do centro de custo inválido
-							</small>
-						</ng-template>
-					</ng-container>
-				</div>
-
-				<div class="field">
-					<label for="Cep" class="block">CEP</label>
-					<span class="p-input-icon-right w-full">
-						<i class="pi pi-spin pi-spinner" *ngIf="isLoadingCep"></i>
+					<div class="field">
+						<label for="name" class="block">Nome do imóvel</label>
 						<input
-							id="Cep"
+							id="name"
 							type="text"
-							formControlName="zipcode"
-							aria-describedby="cep-help"
+							formControlName="name"
+							aria-describedby="name-help"
+							maxlength="100"
 							pInputText
-							[dropSpecialCharacters]="false"
-							mask="00.000-000"
-							(blur)="setAddressByCEP($event)"
 						/>
-					</span>
-					<ng-container *ngIf="checkHasError(f['zipcode'])">
-						<small
-							id="cep-help"
-							*ngIf="f['zipcode'].hasError('required'); else error2"
-							class="p-error block"
-						>
-							Informe o CEP do endereço
-						</small>
-						<ng-template #error2>
-							<small id="cep-help" class="p-error block"> CEP inválido </small>
-						</ng-template>
-					</ng-container>
-				</div>
-
-				<div class="field">
-					<label for="Endereco" class="block">Endereço</label>
-					<input
-						id="Endereco"
-						type="text"
-						formControlName="street"
-						aria-describedby="Endereco-help"
-						pInputText
-						maxlength="100"
-					/>
-					<ng-container *ngIf="checkHasError(f['street'])">
-						<small
-							id="Endereco-help"
-							*ngIf="f['street'].hasError('required'); else error2"
-							class="p-error block"
-						>
-							Informe o Endereco do cliente
-						</small>
-						<ng-template #error2>
-							<small id="Endereco-help" class="p-error block">
-								Endereco inválido
+						<ng-container *ngIf="checkHasError(f['name'])">
+							<small
+								id="name-help"
+								*ngIf="f['name'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o nome
 							</small>
-						</ng-template>
-					</ng-container>
-				</div>
-
-				<div class="field">
-					<label for="Bairro" class="block">Bairro</label>
-					<input
-						id="Bairro"
-						type="text"
-						formControlName="neighborhood"
-						aria-describedby="Bairro-help"
-						pInputText
-						maxlength="50"
-					/>
-					<ng-container *ngIf="checkHasError(f['neighborhood'])">
-						<small
-							id="Bairro-help"
-							*ngIf="f['neighborhood'].hasError('required'); else error2"
-							class="p-Bairro block"
-						>
-							Informe o Bairro do cliente
-						</small>
-						<ng-template #error2>
-							<small id="Bairro-help" class="p-error block">
-								Bairro inválido
-							</small>
-						</ng-template>
-					</ng-container>
-				</div>
-
-				<div class="field">
-					<label for="Cidade" class="block">Cidade</label>
-					<input
-						id="Cidade"
-						type="text"
-						formControlName="city"
-						aria-describedby="Cidade-help"
-						pInputText
-						maxlength="50"
-					/>
-					<ng-container *ngIf="checkHasError(f['city'])">
-						<small
-							id="Cidade-help"
-							*ngIf="f['city'].hasError('required'); else error2"
-							class="p-error block"
-						>
-							Informe o Cidade do cliente
-						</small>
-						<ng-template #error2>
-							<small id="Cidade-help" class="p-error block">
-								Cidade inválido
-							</small>
-						</ng-template>
-					</ng-container>
-				</div>
-
-				<div class="field">
-					<label for="Estado" class="block">Estado</label>
-					<p-dropdown
-						id="Estado"
-						[options]="dropdownUfList"
-						formControlName="state"
-						aria-describedby="Estado-help"
-					></p-dropdown>
-					<ng-container *ngIf="checkHasError(f['state'])">
-						<small
-							id="Estado-help"
-							*ngIf="f['state'].hasError('required'); else error2"
-							class="p-error block"
-						>
-							Informe o Estado do cliente
-						</small>
-						<ng-template #error2>
-							<small id="Estado-help" class="p-error block">
-								Estado inválido
-							</small>
-						</ng-template>
-					</ng-container>
-				</div>
-
-				<h5 class="mb-5">Fotos do imóvel</h5>
-				<div class="property-photos">
-					<div class="photo-scroller">
-						<label for="addPhoto" class="add-photo-button">
-							<i class="ph-plus"></i>
-							<div>Adicionar foto</div>
-							<input
-								pButton
-								type="file"
-								id="addPhoto"
-								(change)="addPhoto($event)"
-								class="hidden"
-								multiple
-							/>
-						</label>
-						<ng-container *ngFor="let photo of propertyPhotos; index as i">
-							<div class="photo">
-								<img [src]="photo.data" [alt]="photo.name" />
-								<button pButton type="button" (click)="removePhoto(i)">
-									<i class="ph-trash"></i>
-								</button>
-							</div>
-						</ng-container>
-						<ng-container *ngFor="let photo of addedPropertyPhotos; index as i">
-							<div class="photo">
-								<img [src]="photo.data" [alt]="photo.name" />
-								<button pButton type="button" (click)="removePhoto(i, true)">
-									<i class="ph-trash"></i>
-								</button>
-							</div>
+							<ng-template #error2>
+								<small id="name-help" class="p-error block">
+									Nome inválido
+								</small>
+							</ng-template>
 						</ng-container>
 					</div>
-				</div>
-			</section>
+
+					<div class="field">
+						<label for="category" class="block">Categoria do imóvel</label>
+						<p-dropdown
+							id="category"
+							[options]="propertyCategories"
+							formControlName="category"
+							aria-describedby="category-help"
+						></p-dropdown>
+						<ng-container *ngIf="checkHasError(f['category'])">
+							<small
+								id="category-help"
+								*ngIf="f['category'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o tipo de unidade
+							</small>
+							<ng-template #error2>
+								<small id="category-help" class="p-error block">
+									Tipo de unidade inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="cost-centre" class="block">N° do centro de custo</label>
+						<input
+							id="cost-centre"
+							type="text"
+							formControlName="costCentre"
+							aria-describedby="cost-centre-help"
+							mask="0*"
+							maxlength="20"
+							pInputText
+						/>
+						<ng-container *ngIf="checkHasError(f['costCentre'])">
+							<small
+								id="cost-centre-help"
+								*ngIf="f['costCentre'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o n° do centro de custo
+							</small>
+							<ng-template #error2>
+								<small id="cost-centre-help" class="p-error block">
+									N° do centro de custo inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="Cep" class="block">CEP</label>
+						<span class="p-input-icon-right w-full">
+							<i class="pi pi-spin pi-spinner" *ngIf="isLoadingCep"></i>
+							<input
+								id="Cep"
+								type="text"
+								formControlName="zipcode"
+								aria-describedby="cep-help"
+								pInputText
+								[dropSpecialCharacters]="false"
+								mask="00.000-000"
+								(blur)="setAddressByCEP($event)"
+							/>
+						</span>
+						<ng-container *ngIf="checkHasError(f['zipcode'])">
+							<small
+								id="cep-help"
+								*ngIf="f['zipcode'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o CEP do endereço
+							</small>
+							<ng-template #error2>
+								<small id="cep-help" class="p-error block">
+									CEP inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="Endereco" class="block">Endereço</label>
+						<input
+							id="Endereco"
+							type="text"
+							formControlName="street"
+							aria-describedby="Endereco-help"
+							pInputText
+							maxlength="100"
+						/>
+						<ng-container *ngIf="checkHasError(f['street'])">
+							<small
+								id="Endereco-help"
+								*ngIf="f['street'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o Endereco do cliente
+							</small>
+							<ng-template #error2>
+								<small id="Endereco-help" class="p-error block">
+									Endereco inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="Bairro" class="block">Bairro</label>
+						<input
+							id="Bairro"
+							type="text"
+							formControlName="neighborhood"
+							aria-describedby="Bairro-help"
+							pInputText
+							maxlength="50"
+						/>
+						<ng-container *ngIf="checkHasError(f['neighborhood'])">
+							<small
+								id="Bairro-help"
+								*ngIf="f['neighborhood'].hasError('required'); else error2"
+								class="p-Bairro block"
+							>
+								Informe o Bairro do cliente
+							</small>
+							<ng-template #error2>
+								<small id="Bairro-help" class="p-error block">
+									Bairro inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="Cidade" class="block">Cidade</label>
+						<input
+							id="Cidade"
+							type="text"
+							formControlName="city"
+							aria-describedby="Cidade-help"
+							pInputText
+							maxlength="50"
+						/>
+						<ng-container *ngIf="checkHasError(f['city'])">
+							<small
+								id="Cidade-help"
+								*ngIf="f['city'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o Cidade do cliente
+							</small>
+							<ng-template #error2>
+								<small id="Cidade-help" class="p-error block">
+									Cidade inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="Estado" class="block">Estado</label>
+						<p-dropdown
+							id="Estado"
+							[options]="dropdownUfList"
+							formControlName="state"
+							aria-describedby="Estado-help"
+						></p-dropdown>
+						<ng-container *ngIf="checkHasError(f['state'])">
+							<small
+								id="Estado-help"
+								*ngIf="f['state'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o Estado do cliente
+							</small>
+							<ng-template #error2>
+								<small id="Estado-help" class="p-error block">
+									Estado inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<h5 class="mb-5">Fotos do imóvel</h5>
+					<div class="property-photos">
+						<div class="photo-scroller">
+							<label for="addPhoto" class="add-photo-button">
+								<i class="ph-plus"></i>
+								<div>Adicionar foto</div>
+								<input
+									pButton
+									type="file"
+									id="addPhoto"
+									(change)="addPhoto($event)"
+									class="hidden"
+									multiple
+								/>
+							</label>
+							<ng-container *ngFor="let photo of propertyPhotos; index as i">
+								<div class="photo">
+									<img [src]="photo.data" [alt]="photo.name" />
+									<button pButton type="button" (click)="removePhoto(i)">
+										<i class="ph-trash"></i>
+									</button>
+								</div>
+							</ng-container>
+							<ng-container
+								*ngFor="let photo of addedPropertyPhotos; index as i"
+							>
+								<div class="photo">
+									<img [src]="photo.data" [alt]="photo.name" />
+									<button pButton type="button" (click)="removePhoto(i, true)">
+										<i class="ph-trash"></i>
+									</button>
+								</div>
+							</ng-container>
+						</div>
+					</div>
+				</section>
+			</ng-template>
 		</div>
 		<div class="form-actions">
 			<button
@@ -545,7 +408,23 @@
 	[draggable]="false"
 	[resizable]="false"
 	styleClass="form-modal"
+	*ngIf="!isMobile"
 >
+	<ng-container *ngTemplateOutlet="modalContentTemplate"></ng-container>
+</p-dialog>
+
+<p-sidebar
+	[(visible)]="displayModal"
+	position="bottom"
+	styleClass="form-modal"
+	*ngIf="isMobile"
+>
+	<ng-template pTemplate="content">
+		<ng-container *ngTemplateOutlet="modalContentTemplate"></ng-container>
+	</ng-template>
+</p-sidebar>
+
+<ng-template #modalContentTemplate>
 	<div *ngIf="!modalContent.isError; else error" class="modal-success">
 		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
 		<i class="ph-check-circle"></i>
@@ -568,7 +447,7 @@
 			<button pButton label="Continuar" (click)="closeModal()"></button>
 		</div>
 	</ng-template>
-</p-dialog>
+</ng-template>
 
 <p-dialog
 	[(visible)]="displayCropModal"
@@ -576,7 +455,23 @@
 	[draggable]="false"
 	[resizable]="false"
 	styleClass="crop-modal"
+	*ngIf="!isMobile"
 >
+	<ng-container *ngTemplateOutlet="cropModalContentTemplate"></ng-container>
+</p-dialog>
+
+<p-sidebar
+	[(visible)]="displayCropModal"
+	position="bottom"
+	styleClass="crop-modal"
+	*ngIf="isMobile"
+>
+	<ng-template pTemplate="content">
+		<ng-container *ngTemplateOutlet="cropModalContentTemplate"></ng-container>
+	</ng-template>
+</p-sidebar>
+
+<ng-template #cropModalContentTemplate>
 	<ng-template pTemplate="header"><h3>Nova capa</h3></ng-template>
 	<!-- <input type="file" (change)="fileChangeEvent($event)" /> -->
 
@@ -624,4 +519,4 @@
 			></button>
 		</div>
 	</ng-template>
-</p-dialog>
+</ng-template>

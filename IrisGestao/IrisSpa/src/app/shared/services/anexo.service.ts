@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
 import { environment as env } from '../../../environments/environment';
 import { ImovelUnidadeType } from '../models';
@@ -86,24 +86,119 @@ export class AnexoService {
 			| 'projeto'
 			| 'matricula'
 			| 'outrosdocs'
-	) {
-		return this.deleteFile(code)
-			.pipe(first())
-			.subscribe({
-				next: (response) => {
+	): Promise<{
+		classificacao: ArquivoClassificacoes;
+		response?: any;
+		err?: any;
+	}> {
+		const deletePromise = new Promise<ApiResponse>((res, rej) => {
+			this.deleteFile(code)
+				.pipe(first())
+				.subscribe({
+					next: (response) => {
+						console.debug('updateFile: ', response);
+
+						if (response.success) {
+							console.debug('file deleted');
+							res(response);
+							return response;
+						}
+
+						rej(response);
+						return response;
+					},
+					error(err) {
+						console.error('updateFile: ', err);
+						rej(err);
+						return err;
+					},
+				});
+		});
+
+		// return Promise.reject({ classificacao, err: 'mensagem erro teste 1' });
+
+		return new Promise<{
+			classificacao: ArquivoClassificacoes;
+			response?: any;
+			err?: any;
+		}>((res, rej) => {
+			deletePromise
+				.then((response) => {
 					if (response.success) {
 						console.debug('file deleted');
-						return this.registerFile(uid, formData, classificacao);
+						this.registerFile(uid, formData, classificacao)
+							.pipe(first())
+							.subscribe({
+								next(response) {
+									if (response.success) res({ classificacao, response });
+									else rej({ classificacao, response, err: response.message });
+								},
+								error(err) {
+									rej({ classificacao, err });
+								},
+							});
+					} else {
+						rej({ classificacao, err: response.message });
 					}
 
 					console.error('updateFile: ', response);
-					return response;
-				},
-				error(err) {
+				})
+				.catch((err) => {
 					console.error('updateFile: ', err);
-					return err;
-				},
+
+					rej({ classificacao, err });
+				});
+		});
+	}
+
+	registerUpdateFile(
+		attachmentsObj:
+			| Partial<{
+					capa: Attachment;
+					foto: Attachment[];
+					habitese: Attachment;
+					projeto: Attachment;
+					matricula: Attachment;
+					outrosdocs: Attachment[];
+			  }>
+			| undefined,
+		guid: string,
+		formData: FormData,
+		classificacao: ArquivoClassificacoes
+	): Promise<{
+		classificacao: ArquivoClassificacoes;
+		response?: any;
+		err?: any;
+	}> | null {
+		if (!attachmentsObj) return null;
+
+		if (classificacao === 'foto' || classificacao === 'outrosdocs') return null;
+
+		if (attachmentsObj[classificacao] != null) {
+			console.debug('updating');
+			return this.updateFile(
+				(attachmentsObj[classificacao] as Attachment).id,
+				guid,
+				formData,
+				classificacao
+			);
+		} else {
+			return new Promise((res, rej) => {
+				this.registerFile(guid, formData, classificacao)
+					.pipe(first())
+					.subscribe({
+						next(response) {
+							console.log('registerUpdateFile', response);
+							if (response.success) res({ classificacao, response });
+							else rej({ classificacao, response, err: response.message });
+						},
+						error(err) {
+							console.log('registerUpdateFile err', err);
+							rej({ classificacao, err });
+						},
+					});
 			});
+		}
 	}
 
 	deleteFile(code: number) {

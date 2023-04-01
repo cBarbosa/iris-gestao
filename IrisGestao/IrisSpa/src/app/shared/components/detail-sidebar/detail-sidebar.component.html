@@ -1,0 +1,10 @@
+<div class="details-data">
+	<ng-container *ngFor="let info of data">
+		<div [ngClass]="{ data: true, span: !!info.span }">
+			<div class="label">{{ info.label }}</div>
+			<div class="value">
+				{{ info.pipe ? info.pipe.transform(info.data) : info.data }}
+			</div>
+		</div>
+	</ng-container>
+</div>

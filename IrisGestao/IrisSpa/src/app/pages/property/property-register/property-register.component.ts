@@ -26,6 +26,7 @@ import {
 	AnexoService,
 	ArquivoClassificacoes,
 } from 'src/app/shared/services/anexo.service';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 
 type Step = {
 	label: string;
@@ -103,6 +104,8 @@ export class PropertyRegisterComponent {
 		message: '',
 	};
 
+	isMobile = false;
+
 	registerProprietaryVisible = false;
 
 	dropdownUfList: DropdownItem[] = [
@@ -144,7 +147,8 @@ export class PropertyRegisterComponent {
 		private clienteService: ClienteService,
 		private commonService: CommonService,
 		private router: Router,
-		private anexoService: AnexoService
+		private anexoService: AnexoService,
+		private responsiveService: ResponsiveService
 	) {}
 
 	ngOnInit() {
@@ -191,6 +195,10 @@ export class PropertyRegisterComponent {
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
 
 		this.registerProprietaryForm = this.fb.group({
 			name: ['', [Validators.required]],
@@ -510,8 +518,6 @@ export class PropertyRegisterComponent {
 		e: any,
 		classificacao: Exclude<ArquivoClassificacoes, 'capa' | 'foto'>
 	) {
-		// this.anexoService.registerFile()
-
 		this.selectedFiles[classificacao] = e.currentFiles[0];
 
 		console.log('selectedFiles', this.selectedFiles);

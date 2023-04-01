@@ -18,7 +18,7 @@ public partial class Anexo : BaseEntity<Anexo>
     [Unicode(false)]
     public Guid GuidReferencia { get; set; }
 
-    [StringLength(30)]
+    [StringLength(100)]
     [Unicode(false)]
     public string? MimeType { get; set; }
 

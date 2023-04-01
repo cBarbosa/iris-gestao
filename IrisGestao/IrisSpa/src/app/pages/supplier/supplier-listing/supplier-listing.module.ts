@@ -10,6 +10,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 import { SupplierListingRoutingModule } from './supplier-listing-routing.module';
 import { SupplierListingComponent } from './supplier-listing.component';
+import { CardItemComponent } from 'src/app/shared/components/card-item/card-item.component';
+import { SidebarModule } from 'primeng/sidebar';
 
 @NgModule({
 	declarations: [SupplierListingComponent],
@@ -25,7 +27,9 @@ import { SupplierListingComponent } from './supplier-listing.component';
 		SupplierListingRoutingModule,
 		CpfCnpjPipeModule,
 		SpinnerComponent,
-		TelefonePipeModule
+		TelefonePipeModule,
+		CardItemComponent,
+		SidebarModule,
 	],
 })
 export class SupplierListingModule {}
