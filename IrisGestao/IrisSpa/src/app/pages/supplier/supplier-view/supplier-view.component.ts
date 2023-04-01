@@ -1,24 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, OnInit, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api/menuitem';
 import { first } from 'rxjs';
 import { Contato } from 'src/app/shared/models';
+import { TelefonePipe } from 'src/app/shared/pipes/telefone.pipe';
 import { ContatoService, FornecedorService } from 'src/app/shared/services';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 
 @Component({
-  selector: 'app-supplier-view',
-  templateUrl: './supplier-view.component.html',
-  styleUrls: ['./supplier-view.component.scss']
+	selector: 'app-supplier-view',
+	templateUrl: './supplier-view.component.html',
+	styleUrls: ['./supplier-view.component.scss'],
 })
 export class SupplierViewComponent implements OnInit {
-  uid:string;
-  isLoadingView:boolean = false;
-  supplier: any;
-  tableMenu: MenuItem[];
-  isCnpj: boolean = false;
-  contacts: Contato[];
+	uid: string;
+	isLoadingView: boolean = false;
+	supplier: any;
+	tableMenu: MenuItem[];
+	isCnpj: boolean = false;
+	contacts: Contato[];
 	selectedContact: Contato | null = null;
-  modalContent: {
+	modalContent: {
 		isError?: boolean;
 		header?: string;
 		message: string;
@@ -26,27 +29,43 @@ export class SupplierViewComponent implements OnInit {
 		message: '',
 	};
 
-  displayModal:boolean = false;
-  isInativar:boolean = false;
-  contactDetailsVisible:boolean = false;
-	contactRegisterVisible:boolean = false;
-	contactEditVisible:boolean = false;
-  displayConfirmationModal:boolean = false;
+	isMobile: boolean = false;
+	displaySupplierDetails = false;
+	cardPipes: Record<string, PipeTransform>;
 
-  constructor(
+	displayModal: boolean = false;
+	isInativar: boolean = false;
+	contactDetailsVisible: boolean = false;
+	contactRegisterVisible: boolean = false;
+	contactEditVisible: boolean = false;
+	displayConfirmationModal: boolean = false;
+
+	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
-    private supplierService: FornecedorService,
-    private contatoService: ContatoService
+		private supplierService: FornecedorService,
+		private contatoService: ContatoService,
+		private responsiveService: ResponsiveService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
 		});
 	}
 
-  ngOnInit(): void {
+	ngOnInit(): void {
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
 
-    this.tableMenu = [
+		this.cardPipes = {
+			telefone: new TelefonePipe(),
+			date: new DatePipe('pt-BR', undefined, {
+				dateFormat: 'shortDate',
+				timezone: '',
+			}),
+		};
+
+		this.tableMenu = [
 			{
 				label: 'Detalhes',
 				icon: 'ph-eye',
@@ -64,54 +83,57 @@ export class SupplierViewComponent implements OnInit {
 			},
 		];
 
-    this.getByUuid();
+		this.getByUuid();
+	}
 
-  };
-
-  getByUuid = ():void => {
-    this.isLoadingView = true;
+	getByUuid = (): void => {
+		this.isLoadingView = true;
 		this.supplierService.getSupplierById(this.uid).subscribe((event) => {
 			this.supplier = event;
-      this.isCnpj = event.cpfCnpj.length > 11;
+			this.isCnpj = event.cpfCnpj.length > 11;
 			// this.properties = [...event.imovel];
 
-			 this.contacts = event.contato.map((contato: Contato) => {
-			 	  return {
-					  guidReferenciaContato: contato.guidReferenciaContato,
-					  nome: contato.nome,
-            cargo: contato.cargo,
-            email: contato.email,
-            telefone: contato.telefone,
-              dataNascimento: contato.dataNascimento != null ? new Date(
-                contato.dataNascimento as string
-              ).toLocaleDateString()
-              : null,
-          };
-			  });
+			this.contacts = event.contato.map((contato: Contato) => {
+				return {
+					guidReferenciaContato: contato.guidReferenciaContato,
+					nome: contato.nome,
+					cargo: contato.cargo,
+					email: contato.email,
+					telefone: contato.telefone,
+					dataNascimento:
+						contato.dataNascimento != null
+							? new Date(contato.dataNascimento as string).toLocaleDateString()
+							: null,
+				};
+			});
 
 			this.isLoadingView = false;
 		});
-  };
-
-  navigateTo(route: string) {
-		this.router.navigate([route]);
 	};
 
-  showContactRegister = ():void => {
+	toggleSupplierDetails() {
+		this.displaySupplierDetails = !this.displaySupplierDetails;
+	}
+
+	navigateTo(route: string) {
+		this.router.navigate([route]);
+	}
+
+	showContactRegister = (): void => {
 		this.contactDetailsVisible = false;
 		this.contactEditVisible = false;
 		this.contactRegisterVisible = true;
 	};
 
-  setCurrentContact = (item: Contato):void => {
+	setCurrentContact = (item: Contato): void => {
 		this.selectedContact = { ...item, guidClienteReferencia: this.uid };
 	};
 
-  hideContactRegister = ():void => {
+	hideContactRegister = (): void => {
 		this.contactRegisterVisible = false;
 	};
 
-  hideContactDetails = ():void => {
+	hideContactDetails = (): void => {
 		this.contactDetailsVisible = false;
 	};
 
@@ -119,7 +141,7 @@ export class SupplierViewComponent implements OnInit {
 		this.contactEditVisible = false;
 	};
 
-  showContactDetails() {
+	showContactDetails() {
 		this.contactDetailsVisible = true;
 		this.contactEditVisible = false;
 		this.contactRegisterVisible = false;
@@ -131,7 +153,7 @@ export class SupplierViewComponent implements OnInit {
 		this.contactRegisterVisible = false;
 	};
 
-  onUpdateContactList = (modalContent: {
+	onUpdateContactList = (modalContent: {
 		isError?: boolean;
 		header?: string;
 		message: string;
@@ -145,14 +167,13 @@ export class SupplierViewComponent implements OnInit {
 		this.displayModal = true;
 	};
 
-  getContactList = ():void => {
+	getContactList = (): void => {
 		this.contacts = [];
 		this.contatoService
 			.getContactsBySuppleirId(this.uid)
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
-
 					this.contacts = response.data.map((contato: Contato) => {
 						return {
 							guidReferenciaContato: contato.guidReferencia,
@@ -160,10 +181,12 @@ export class SupplierViewComponent implements OnInit {
 							cargo: contato.cargo,
 							email: contato.email,
 							telefone: contato.telefone,
-								dataNascimento: contato.dataNascimento != null ? new Date(
-									contato.dataNascimento as string
-								).toLocaleDateString()
-								: null,
+							dataNascimento:
+								contato.dataNascimento != null
+									? new Date(
+											contato.dataNascimento as string
+									  ).toLocaleDateString()
+									: null,
 						};
 					});
 				},
@@ -173,22 +196,22 @@ export class SupplierViewComponent implements OnInit {
 			});
 	};
 
-  closeConfirmationModal = ():void => {
+	closeConfirmationModal = (): void => {
 		this.displayConfirmationModal = false;
 	};
 
-  confirmDelete = ():void => {
+	confirmDelete = (): void => {
 		this.displayConfirmationModal = true;
 	};
 
-	closeModal = ():void => {
+	closeModal = (): void => {
 		this.displayModal = false;
 	};
 
-  deleteContact = ():void => {
+	deleteContact = (): void => {
 		this.closeConfirmationModal();
-		
-    if (this.selectedContact?.guidReferenciaContato) {
+
+		if (this.selectedContact?.guidReferenciaContato) {
 			this.contatoService
 				.deleteContact(this.selectedContact.guidReferenciaContato)
 				.subscribe({
@@ -216,7 +239,5 @@ export class SupplierViewComponent implements OnInit {
 					},
 				});
 		}
-
 	};
-
 }

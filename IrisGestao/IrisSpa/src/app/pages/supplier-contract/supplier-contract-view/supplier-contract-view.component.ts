@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
 import { Imovel } from 'src/app/shared/models';
+import { TelefonePipe } from 'src/app/shared/pipes/telefone.pipe';
 import {
 	AnexoService,
 	Attachment,
 } from 'src/app/shared/services/anexo.service';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { SupplierContractService } from 'src/app/shared/services/supplier-contract.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -21,6 +24,10 @@ export class SupplierContractViewComponent {
 	isLoadingView = false;
 	isCnpj: boolean = false;
 
+	isMobile: boolean = false;
+	displayContractDetails = false;
+	cardPipes: Record<string, PipeTransform>;
+
 	attachmentDocs: {
 		projeto?: Attachment;
 		matricula?: Attachment;
@@ -32,7 +39,8 @@ export class SupplierContractViewComponent {
 		private router: Router,
 		private route: ActivatedRoute,
 		private contractService: SupplierContractService,
-		private anexoService: AnexoService
+		private anexoService: AnexoService,
+		private responsiveService: ResponsiveService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.guid = paramMap.get('guid') ?? '';
@@ -41,16 +49,27 @@ export class SupplierContractViewComponent {
 
 	ngOnInit(): void {
 		this.getByIdContract();
-		this.getAtachs();
+		this.getAttachs();
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
+
+		this.cardPipes = {
+			telefone: new TelefonePipe(),
+			date: new DatePipe('pt-BR', undefined, {
+				dateFormat: 'shortDate',
+				timezone: '',
+			}),
+		};
 	}
 
-	getAtachs():void {
+	getAttachs(): void {
 		this.anexoService
 			.getFiles(this.guid)
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
-
 					response?.forEach((file) => {
 						const classificacao = file.classificacao;
 
@@ -67,7 +86,7 @@ export class SupplierContractViewComponent {
 					console.error(err);
 				},
 			});
-	};
+	}
 
 	getByIdContract() {
 		this.isLoadingView = true;
@@ -257,6 +276,10 @@ export class SupplierContractViewComponent {
 		// this.property = event.data[0].imovel as unknown as Imovel;
 
 		this.isLoadingView = false;
+	}
+
+	toggleClientDetails() {
+		this.displayContractDetails = !this.displayContractDetails;
 	}
 
 	async downloadFile(

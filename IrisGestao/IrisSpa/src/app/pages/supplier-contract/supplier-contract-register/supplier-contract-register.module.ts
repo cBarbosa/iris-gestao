@@ -15,6 +15,7 @@ import { NgxMaskModule } from 'ngx-mask';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { SidebarModule } from 'primeng/sidebar';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
 
 @NgModule({
 	declarations: [SupplierContractRegisterComponent],
@@ -34,6 +35,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 		SidebarModule,
 		NgxMaskModule.forChild(),
 		NgxCurrencyModule,
+		ResponsiveDialogComponent,
 	],
 })
 export class SupplierContractRegisterModule {}

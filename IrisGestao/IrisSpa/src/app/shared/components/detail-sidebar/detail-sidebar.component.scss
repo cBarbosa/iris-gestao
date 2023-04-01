@@ -1,0 +1,30 @@
+.details-data {
+	display: flex;
+	justify-content: space-between;
+	column-gap: 1rem;
+	flex-wrap: wrap;
+
+	.data {
+		@apply mb-6;
+		min-width: calc(50% - 0.5rem);
+
+		.label {
+			@apply text-sm mb-2;
+			display: block;
+			color: #646464;
+		}
+
+		.value {
+			@apply text-lg font-bold;
+			color: #262626;
+
+			&.large {
+				@apply text-3xl;
+			}
+		}
+
+		&.span {
+			@apply w-full;
+		}
+	}
+}

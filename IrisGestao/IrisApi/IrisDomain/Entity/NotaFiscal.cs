@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,24 +10,32 @@ public partial class NotaFiscal: BaseEntity<NotaFiscal>
 
     public int IdObra { get; set; }
 
-    [StringLength(50)]
+    public Guid? GuidReferencia { get; set; }
+
+    [StringLength(70)]
     [Unicode(false)]
     public string NumeroNota { get; set; } = null!;
 
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal ValorServico { get; set; }
+
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal? ValorOrcado { get; set; }
+
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal? ValorContratado { get; set; }
+
+    [Column(TypeName = "date")]
+    public DateTime? DataEmissao { get; set; }
+
+    [Column(TypeName = "date")]
+    public DateTime? DataVencimento { get; set; }
+
+    [Column(TypeName = "decimal(5, 2)")]
+    public decimal PercentualAdministracaoObra { get; set; }
+
     [Column(TypeName = "datetime")]
-    public DateTime DataEmissao { get; set; }
-
-    [Column(TypeName = "decimal(18, 0)")]
-    public decimal Valor { get; set; }
-
-    public int PercentualAdministracaoObra { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string GuidReferencia { get; set; } = null!;
-
-    [Column(TypeName = "datetime")]
-    public DateTime? DataCriacao { get; set; }
+    public DateTime DataCriacao { get; set; }
 
     [ForeignKey("IdObra")]
     [InverseProperty("NotaFiscal")]

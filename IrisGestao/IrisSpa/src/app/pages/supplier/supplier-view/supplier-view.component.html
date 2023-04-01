@@ -6,22 +6,26 @@
 	</div>
 </ng-container>
 <ng-template #details>
-	<div class="client-view">
+	<div class="supplier-view">
 		<div class="content">
-			<section class="client">
+			<section class="supplier">
 				<h2>Detalhe do prestador de serviço</h2>
 
 				<div class="main-card">
 					<header>
 						<h3>
 							{{ supplier?.nome }}
-							<!-- <span>{{ cliente?.idTipoClienteNavigation?.nome }}</span> -->
+							<!-- <span>{{ fornecedor?.idTipoFornecedorNavigation?.nome }}</span> -->
 						</h3>
 						<div class="actions">
 							<button
 								pButton
 								type="button"
-								class="p-element h-11 p-button p-component"
+								class="p-element p-button p-component"
+								[class.p-button-outlined]="isMobile"
+								[class.h-11]="!isMobile"
+								[class.p-button-outlined]="isMobile"
+								[class.h-9]="isMobile"
 								(click)="
 									navigateTo('supplier/register/' + supplier.guidReferencia)
 								"
@@ -37,69 +41,104 @@
 								Inativar
 							</button> -->
 							<!--button pButton type="button" class="p-button-outlined h-7"
-						(click)="navigateTo('client/register/'+ cliente.guidReferencia + '/Clone')">
+						(click)="navigateTo('supplier/register/'+ fornecedor.guidReferencia + '/Clone')">
 							Duplicar
 						</button-->
 						</div>
 					</header>
-					<div class="client-info">
-						<div class="client-data">
-							<div class="data-label">CPF/CNPJ</div>
-							<div class="data-value">{{ supplier?.cpfCnpj | cpfcnpj }}</div>
-						</div>
-                        <div class="client-data">
-							<div class="data-label">Cidade</div>
-							<div class="data-value">
-								{{ supplier?.cidade }} - {{ supplier?.estado }}
-							</div>
-						</div>
-						<div class="client-data" *ngIf="!isCnpj">
-							<div class="data-label">Aniversário</div>
-							<div class="data-value">
-								{{ supplier?.dataNascimento | date : "shortDate" }}
-							</div>
-						</div>
-                        <div class="client-data">
-							<div class="data-label">Telefone</div>
-							<div class="data-value">{{ supplier?.telefone | telefone }}</div>
-						</div>
-						<div class="client-data">
-							<div class="data-label">Email</div>
-							<div class="data-value">
-								<a>{{ supplier?.email }}</a>
-							</div>
-						</div>
 
-                        <div class="client-data">
-							<div class="data-label">Banco</div>
-							<div class="data-value">{{ supplier?.dadoBancario?.banco?.descricao }}</div>
-						</div>
-                        <div class="client-data">
-							<div class="data-label">Agência</div>
-							<div class="data-value">{{ supplier?.dadoBancario?.agencia }}</div>
-						</div>
-                        <div class="client-data">
-							<div class="data-label">Conta</div>
-							<div class="data-value">{{ supplier?.dadoBancario?.conta }}</div>
-						</div>
-                        <div class="client-data">
-							<div class="data-label">Chave PIX</div>
-							<div class="data-value">{{ supplier?.dadoBancario?.chavePix }}</div>
-						</div>
+					<p-panel
+						[header]="
+							displaySupplierDetails ? 'Menos Detalhes' : 'Mais detalhes'
+						"
+						[toggleable]="true"
+						[collapsed]="!displaySupplierDetails"
+						(onBeforeToggle)="toggleSupplierDetails()"
+						styleClass="mt-3"
+						*ngIf="isMobile"
+					>
+						<ng-container
+							*ngTemplateOutlet="supplierInfoTemplate"
+						></ng-container>
+					</p-panel>
 
-						<div class="client-data">
-							<div class="data-label">Endereço</div>
-							<div class="data-value">{{ supplier?.endereco }} - {{ supplier?.cep | cep }}</div>
+					<ng-container *ngIf="!isMobile">
+						<ng-container
+							*ngTemplateOutlet="supplierInfoTemplate"
+						></ng-container>
+					</ng-container>
+
+					<ng-template #supplierInfoTemplate>
+						<div class="supplier-info">
+							<div class="supplier-data">
+								<div class="data-label">CPF/CNPJ</div>
+								<div class="data-value">{{ supplier?.cpfCnpj | cpfcnpj }}</div>
+							</div>
+							<div class="supplier-data">
+								<div class="data-label">Cidade</div>
+								<div class="data-value">
+									{{ supplier?.cidade }} - {{ supplier?.estado }}
+								</div>
+							</div>
+							<div class="supplier-data" *ngIf="!isCnpj">
+								<div class="data-label">Aniversário</div>
+								<div class="data-value">
+									{{ supplier?.dataNascimento | date : "shortDate" }}
+								</div>
+							</div>
+							<div class="supplier-data">
+								<div class="data-label">Telefone</div>
+								<div class="data-value">
+									{{ supplier?.telefone | telefone }}
+								</div>
+							</div>
+							<div class="supplier-data">
+								<div class="data-label">Email</div>
+								<div class="data-value">
+									<a>{{ supplier?.email }}</a>
+								</div>
+							</div>
+
+							<div class="supplier-data">
+								<div class="data-label">Banco</div>
+								<div class="data-value">
+									{{ supplier?.dadoBancario?.banco?.descricao }}
+								</div>
+							</div>
+							<div class="supplier-data">
+								<div class="data-label">Agência</div>
+								<div class="data-value">
+									{{ supplier?.dadoBancario?.agencia }}
+								</div>
+							</div>
+							<div class="supplier-data">
+								<div class="data-label">Conta</div>
+								<div class="data-value">
+									{{ supplier?.dadoBancario?.conta }}
+								</div>
+							</div>
+							<div class="supplier-data">
+								<div class="data-label">Chave PIX</div>
+								<div class="data-value">
+									{{ supplier?.dadoBancario?.chavePix }}
+								</div>
+							</div>
+
+							<div class="supplier-data">
+								<div class="data-label">Endereço</div>
+								<div class="data-value">
+									{{ supplier?.endereco }} - {{ supplier?.cep | cep }}
+								</div>
+							</div>
 						</div>
-						
-					</div>
+					</ng-template>
 				</div>
 			</section>
 
-            <ng-container *ngIf="isCnpj">
+			<ng-container *ngIf="isCnpj">
 				<section class="contacts" *ngIf="contacts.length > 0; else addContact">
 					<header class="flex justify-between items-start">
-						<h2>Contatos cadastrados</h2>
+						<h2>Contatos</h2>
 						<button
 							pButton
 							type="button"
@@ -113,6 +152,7 @@
 					</header>
 
 					<p-table
+						*ngIf="!isMobile; else contactsCardListTemplate"
 						[value]="contacts"
 						styleClass="p-datatable-striped"
 						[tableStyle]="{ 'min-width': '50rem' }"
@@ -149,6 +189,53 @@
 							</tr>
 						</ng-template>
 					</p-table>
+
+					<ng-template #contactsCardListTemplate>
+						<div class="cardList">
+							<ng-container *ngFor="let contact of contacts">
+								<app-card-item
+									[card]="{
+										header: {
+											title: contact.nome,
+											hasMenu: true
+										},
+										infos: [
+											{
+												label: 'Cargo',
+												data: contact.cargo
+											},
+
+											{
+												label: 'Telefone',
+												data: contact.telefone,
+												pipe: cardPipes['telefone']
+											},
+
+											{
+												label: 'Email',
+												data: contact.email
+											},
+
+											{
+												label: 'Nascimento',
+												data: contact.dataNascimento
+											}
+										]
+									}"
+								>
+									<button
+										type="button"
+										pButton
+										icon="pi pi-ellipsis-v"
+										class="p-button-rounded p-button-text h-9 w-9"
+										(click)="
+											actionMenu.toggle($event); setCurrentContact(contact)
+										"
+									></button>
+								</app-card-item>
+							</ng-container>
+						</div>
+					</ng-template>
 				</section>
 
 				<ng-template #addContact>
@@ -250,7 +337,7 @@
 			*ngIf="isInativar"
 			pButton
 			label="Continuar"
-			(click)="navigateTo('/client/listing')"
+			(click)="navigateTo('/supplier/listing')"
 		></button>
 	</div>
 	<ng-template #error>
@@ -302,7 +389,7 @@
 	[resizable]="false"
 	styleClass="confirmation-modal"
 >
-	<h2>Deseja realmente inativar o cliente?</h2>
+	<h2>Deseja realmente inativar o fornecedor?</h2>
 	<p>
 		Ao inativar não será possível visualizá-la novamente. Caso queira continuar,
 		clique em confirmar.
@@ -319,7 +406,7 @@
 		<button
 			pButton
 			label="Continuar"
-			(click)="inativarCliente()"
+			(click)="inativarFornecedor()"
 			class="w-full"
 		></button>
 	</div>

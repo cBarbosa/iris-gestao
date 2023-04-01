@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/internal/operators/first';
 import { Imovel, ImovelUnidadeType } from 'src/app/shared/models';
 import { DominiosService, ImovelService } from 'src/app/shared/services';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 
 import { Utils } from 'src/app/shared/utils';
 
@@ -45,13 +46,16 @@ export class UnitRegisterComponent implements OnInit {
 		message: '',
 	};
 
+	isMobile = false;
+
 	constructor(
 		private fb: FormBuilder,
 		private route: ActivatedRoute,
 		private location: Location,
 		private imovelService: ImovelService,
 		private dominiosService: DominiosService,
-		private router: Router
+		private router: Router,
+		private responsiveService: ResponsiveService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
@@ -78,6 +82,10 @@ export class UnitRegisterComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.getData();
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
 	}
 
 	get f(): { [key: string]: AbstractControl<any, any> } {

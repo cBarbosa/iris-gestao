@@ -114,7 +114,7 @@
 	}
 }
 
-:host ::ng-deep {
+::ng-deep {
 	.p-sidebar-content {
 		height: 100%;
 	}
@@ -178,6 +178,42 @@
 			i {
 				color: #e24c4c;
 			}
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	.register-form {
+		margin: 0;
+		padding-top: 0.5rem;
+
+		.input-wrapper {
+			flex-direction: column;
+		}
+
+		.form-actions {
+			flex-wrap: wrap;
+
+			button {
+				flex-grow: 1;
+
+				&:first-child {
+					order: 3;
+					width: 100%;
+				}
+			}
+		}
+
+		::ng-deep {
+			button.add-proprietary-button {
+				margin: 0.5rem 0 0 -1rem;
+			}
+		}
+	}
+
+	::ng-deep {
+		.form-modal {
+			max-width: 100%;
 		}
 	}
 }

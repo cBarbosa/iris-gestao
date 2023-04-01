@@ -23,6 +23,7 @@ import {
 } from 'src/app/shared/validators/custom-validators';
 import { CommonService } from 'src/app/shared/services/common.service';
 import { Contato } from 'src/app/shared/models/contato.model';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 
 type Step = {
 	label: string;
@@ -61,6 +62,8 @@ export class ClientRegisterComponent implements OnInit {
 	cliente: any;
 	onInputDate: Function;
 	onBlurDate: Function;
+
+	isMobile = false;
 
 	linkedContact: {
 		dataCriacao: string;
@@ -120,7 +123,8 @@ export class ClientRegisterComponent implements OnInit {
 		private location: Location,
 		private clienteService: ClienteService,
 		private dominiosService: DominiosService,
-		private commonService: CommonService
+		private commonService: CommonService,
+		private responsiveService: ResponsiveService
 	) {}
 
 	ngOnInit() {
@@ -133,6 +137,10 @@ export class ClientRegisterComponent implements OnInit {
 		});
 
 		if (this.uid !== 'new') this.operacaoCriar = false;
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
 
 		this.registerForm = this.fb.group({
 			clientInfo: this.fb.group({
@@ -260,15 +268,25 @@ export class ClientRegisterComponent implements OnInit {
 
 	clientTypeChange() {
 		if (!this.isCnpj) {
-			this.clientInfoForm.controls['CpfCnpj'].setValidators([Validators.required, CpfValidator]);
-			this.clientInfoForm.controls['DataNascimento'].setValidators([PastDateValidator]);
+			this.clientInfoForm.controls['CpfCnpj'].setValidators([
+				Validators.required,
+				CpfValidator,
+			]);
+			this.clientInfoForm.controls['DataNascimento'].setValidators([
+				PastDateValidator,
+			]);
 		} else {
-			this.clientInfoForm.controls['CpfCnpj'].setValidators([Validators.required, CnpjValidator]);
-			this.clientInfoForm.controls['DataNascimento'].removeValidators([PastDateValidator]);
+			this.clientInfoForm.controls['CpfCnpj'].setValidators([
+				Validators.required,
+				CnpjValidator,
+			]);
+			this.clientInfoForm.controls['DataNascimento'].removeValidators([
+				PastDateValidator,
+			]);
 		}
 		this.clientInfoForm.controls['CpfCnpj'].updateValueAndValidity();
 		this.clientInfoForm.controls['DataNascimento'].updateValueAndValidity();
-	};
+	}
 
 	changeStep(step: number) {
 		this.stepList = this.stepList.map((entry: Step, i: number) => {
@@ -447,14 +465,14 @@ export class ClientRegisterComponent implements OnInit {
 			return;
 		}
 		let dataNascimento = null;
-		if (this.registerForm.value.clientInfo.tipoCliente === 'cpf')
-		{
+		if (this.registerForm.value.clientInfo.tipoCliente === 'cpf') {
 			dataNascimento: this.registerForm.value.clientInfo.DataNascimento != ''
 				? new Date(
-					this.registerForm.value.clientInfo.DataNascimento?.getTime() -
-						this.registerForm.value.clientInfo.DataNascimento?.getTimezoneOffset() *
-							60 *
-							1000)
+						this.registerForm.value.clientInfo.DataNascimento?.getTime() -
+							this.registerForm.value.clientInfo.DataNascimento?.getTimezoneOffset() *
+								60 *
+								1000
+				  )
 				: null;
 		}
 

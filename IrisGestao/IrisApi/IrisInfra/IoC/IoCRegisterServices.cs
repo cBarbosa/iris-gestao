@@ -36,6 +36,7 @@ public class IoCRegisterServices
         services.AddScoped<IContratoAluguelUnidadeService, ContratoAluguelUnidadeService>();
         services.AddScoped<IContratoFornecedorService, ContratoFornecedorService>();
         services.AddScoped<IAzureStorageService, AzureStorageService>();
+        services.AddScoped<IObraService, ObraService>();
 
         //External Services
         services.AddScoped<IRepublicaVirtualService, RepublicaVirtualService>();
@@ -65,5 +66,7 @@ public class IoCRegisterServices
         services.AddScoped<IContratoAluguelImovelRepository, Repository.Impl.ContratoAluguelImovelRepository>();
         services.AddScoped<IContratoAluguelUnidadeRepository, Repository.Impl.ContratoAluguelUnidadeRepository>();
         services.AddScoped<IContratoFornecedorRepository, Repository.Impl.ContratoFornecedorRepository>();
+        services.AddScoped<IObraRepository, Repository.Impl.ObraRepository>();
+        services.AddScoped<INotaFiscalRepository, Repository.Impl.NotaFiscalRepository>();
     }
 }
