@@ -1,0 +1,78 @@
+.upload-list {
+	@apply mt-5 mb-7;
+
+	.attachment {
+		@apply flex justify-between items-center text-sm rounded;
+		color: #641b1e;
+		padding: 0.4rem;
+
+		.buttons {
+			@apply text-xl;
+			white-space: nowrap;
+
+			button {
+				@apply mx-1 w-7 h-7 rounded-full;
+				font-size: 1rem;
+				padding: 0;
+				// padding-top: 0.1rem;
+				padding-left: 0.38rem;
+				text-align: center;
+
+				&:hover {
+					background-color: #f7ded3;
+				}
+			}
+		}
+
+		.info {
+			display: flex;
+			align-items: center;
+			flex-grow: 1;
+			overflow: hidden;
+
+			span.icon {
+				display: inline-flex;
+				justify-content: center;
+				align-items: center;
+				@apply w-6 h-6 mr-3 rounded;
+				background-color: #f7ded3;
+				background-position: center center;
+				background-repeat: no-repeat;
+
+				font-size: 1.25rem;
+			}
+
+			span.name {
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+		}
+
+		&:hover {
+			background-color: rgba(0, 0, 0, 0.02);
+		}
+
+		&.deleted {
+			.info {
+				opacity: 0.6;
+			}
+		}
+	}
+
+	.editing {
+		@apply m-2 mt-5;
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+
+		button {
+			font-size: 0.95rem;
+			width: 47%;
+			justify-content: center;
+		}
+	}
+	input[type="file"] {
+		visibility: hidden;
+	}
+}

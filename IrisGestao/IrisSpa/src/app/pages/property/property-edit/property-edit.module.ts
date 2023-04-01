@@ -12,6 +12,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
 import { TabViewModule } from 'primeng/tabview';
 import { SidebarModule } from 'primeng/sidebar';
 
@@ -29,6 +30,7 @@ import { SidebarModule } from 'primeng/sidebar';
 		SpinnerComponent,
 		NgxMaskModule.forChild(),
 		ImageCropperModule,
+		UploadListComponent,
 		TabViewModule,
 		SidebarModule,
 	],

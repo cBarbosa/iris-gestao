@@ -9,6 +9,8 @@ import {
 } from '@angular/core';
 import { Utils } from '../../utils';
 import { TooltipModule } from 'primeng/tooltip';
+import { AnexoService } from '../../services/anexo.service';
+import { first } from 'rxjs';
 
 @Component({
 	selector: 'app-attachment-list',
@@ -19,11 +21,45 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class AttachmentListComponent {
 	@Input()
-	attachmentList: { fileName: string; fileLocation: string }[];
+	guid: string;
 
 	@ViewChild('attachmentCard') attachmentCard: ElementRef<HTMLDivElement>;
 
-	constructor() {}
+	attachments: Array<{
+		fileName: string;
+		fileLocation: string;
+		code: number;
+	}> = [];
+
+	constructor(private anexoService: AnexoService) {}
+
+	ngOnInit() {
+		this.anexoService
+			.getFiles(this.guid)
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					this.attachments =
+						event
+							?.filter(
+								({ classificacao }) =>
+									classificacao !== 'capa' && classificacao !== 'foto'
+							)
+							.map(({ nome, local, id }) => {
+								return {
+									fileName: nome,
+									fileLocation: local,
+									code: id,
+								};
+							}) ?? [];
+
+					console.debug('attachmentList', this.attachments);
+				},
+				error: (error) => {
+					console.error('Erro: ', error);
+				},
+			});
+	}
 
 	ngAfterViewInit() {
 		this.onResize();
