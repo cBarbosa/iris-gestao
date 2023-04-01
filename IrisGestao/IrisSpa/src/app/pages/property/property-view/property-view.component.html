@@ -259,6 +259,15 @@
 			>
 				<h3>Anexos</h3>
 
+				<app-attachment-list
+					*ngIf="
+						attachmentDocs?.projeto ||
+						attachmentDocs?.matricula ||
+						attachmentDocs?.habitese
+					"
+					[attachmentList]="attachmentList"
+				></app-attachment-list>
+				<!--
 				<div
 					class="attachments-card"
 					*ngIf="
@@ -316,6 +325,7 @@
 						<span class="label">Habite-se</span>
 					</button>
 				</div>
+				-->
 			</section>
 
 			<ng-container *ngIf="imageList.length > 0">

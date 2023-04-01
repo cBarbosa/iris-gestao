@@ -33,6 +33,8 @@ export class PropertyViewComponent implements OnInit {
 		habitese?: Attachment;
 	} = {};
 
+	attachmentList: { fileName: string; fileLocation: string }[] = [];
+
 	unitCover: string | undefined | null;
 	unitDocs: {
 		projeto?: { name: string; uri: string } | undefined;
@@ -210,6 +212,12 @@ export class PropertyViewComponent implements OnInit {
 									this.attachmentDocs.matricula = file;
 								else if (classificacao === 'habitese')
 									this.attachmentDocs.habitese = file;
+
+								if (classificacao !== 'foto')
+									this.attachmentList.push({
+										fileName: file.nome,
+										fileLocation: file.local,
+									});
 							});
 
 							this.imageList =
