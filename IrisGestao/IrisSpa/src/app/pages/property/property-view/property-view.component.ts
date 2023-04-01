@@ -27,11 +27,8 @@ export class PropertyViewComponent implements OnInit {
 	unit: ImovelUnidade | undefined;
 	units: ImovelUnidade[] = [];
 	imageList: ImagemData[] = [];
-	attachmentDocs: {
-		projeto?: Attachment;
-		matricula?: Attachment;
-		habitese?: Attachment;
-	} = {};
+
+	hasAttachmentDocs: boolean = false;
 
 	attachmentList: { fileName: string; fileLocation: string }[] = [];
 
@@ -186,13 +183,19 @@ export class PropertyViewComponent implements OnInit {
 							response?.forEach((file) => {
 								const classificacao = file.classificacao;
 
-								if (classificacao === 'foto') photos.push(file);
-								else if (classificacao === 'projeto')
-									this.attachmentDocs.projeto = file;
-								else if (classificacao === 'matricula')
-									this.attachmentDocs.matricula = file;
-								else if (classificacao === 'habitese')
-									this.attachmentDocs.habitese = file;
+								switch (classificacao) {
+									case 'foto':
+										photos.push(file);
+										break;
+									case 'projeto':
+									case 'matricula':
+									case 'habitese':
+									case 'outrosdocs':
+										this.hasAttachmentDocs = true;
+										break;
+									default:
+										break;
+								}
 
 								if (classificacao !== 'foto')
 									this.attachmentList.push({
