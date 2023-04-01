@@ -31,13 +31,23 @@ export class UploadListComponent {
 		fileName: string;
 		file: File;
 	}> = [];
+	isUploading = false;
 
 	deletedAttachments: Set<number> = new Set();
 	isDeleting = false;
 
+	errorMessage: string = '';
+
 	constructor(private anexoService: AnexoService) {}
 
 	ngOnInit() {
+		this.listAttachments();
+	}
+
+	listAttachments() {
+		this.deletedAttachments.clear();
+		this.fileInput && (this.fileInput.nativeElement.value = '');
+
 		this.anexoService
 			.getFiles(this.guid)
 			.pipe(first())
@@ -56,7 +66,6 @@ export class UploadListComponent {
 									code: id,
 								};
 							}) ?? [];
-
 					console.debug('attachmentList', this.attachments);
 				},
 				error: (error) => {
@@ -69,20 +78,23 @@ export class UploadListComponent {
 		const fileList = (event?.target as HTMLInputElement)
 			?.files as ArrayLike<File>;
 
+		console.log('adding', fileList);
+
 		if (!fileList || fileList.length < 1) return;
 
-		const fileArray = Array.from(fileList);
-
-		this.newAttachments.concat(
-			fileArray.map((file: File) => ({
-				fileName: file.name,
-				file: file,
-			}))
-		);
+		for (let i = 0; i < fileList.length; i++) {
+			this.newAttachments.push({
+				fileName: fileList[i].name,
+				file: fileList[i],
+			});
+		}
+		console.log(this.newAttachments);
 	}
 
-	saveAttachment = () => {
+	saveAttachments = () => {
 		const formData = new FormData();
+
+		this.isUploading = true;
 
 		this.newAttachments.forEach((attach) => {
 			formData.append('files', attach.file);
@@ -93,19 +105,38 @@ export class UploadListComponent {
 				.registerFile(this.guid, formData, 'outrosdocs')
 				.pipe(first())
 				.subscribe({
-					next(response) {
-						if (response.success) res(response);
-						else rej(response);
+					next: (response) => {
+						if (response.success) {
+							res(response);
+							console.log(response);
+							this.newAttachments = [];
+							this.errorMessage = '';
+						} else {
+							rej(response);
+							this.errorMessage = response.message ?? 'Erro no upload.';
+						}
+						this.listAttachments();
+						this.isUploading = false;
 					},
-					error(err) {
+					error: (err) => {
 						rej(err);
+						console.log('error', err);
+						this.isUploading = false;
+						this.errorMessage = err.message;
 					},
 				});
 		});
 	};
 
+	removeNewAttachment(index: number) {
+		this.newAttachments.splice(index, 1);
+		this.fileInput.nativeElement.value = '';
+		this.clearError();
+	}
+
 	removeAttachment(code: number) {
 		this.deletedAttachments.add(code);
+		this.clearError();
 	}
 
 	deleteAttachments = () => {
@@ -128,10 +159,15 @@ export class UploadListComponent {
 									res(response);
 
 									this.deletedAttachments.delete(deletedCode);
-								} else rej(response);
+								} else {
+									rej(response);
+									this.errorMessage =
+										response.message ?? 'Erro ao deletar anexo.';
+								}
 							},
-							error(err) {
+							error: (err) => {
 								rej(err);
+								this.errorMessage = err.message ?? 'Erro ao deletar anexo.';
 							},
 						});
 				})
@@ -142,12 +178,19 @@ export class UploadListComponent {
 			.then((response) => {
 				console.log('resopnse', response);
 				this.isDeleting = false;
+				this.listAttachments();
 			})
 			.catch((err) => {
 				this.isDeleting = false;
 				console.error('Erro na deleção de anexos: ', err);
+				this.listAttachments();
 			});
 	};
+
+	clearError() {
+		if (this.newAttachments.length === 0 && this.deletedAttachments.size === 0)
+			this.errorMessage = '';
+	}
 
 	openFileSelect() {
 		this.fileInput.nativeElement.click();

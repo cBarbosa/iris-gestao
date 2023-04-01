@@ -18,7 +18,7 @@
 				padding-left: 0.38rem;
 				text-align: center;
 
-				&:hover {
+				&:not(:disabled):hover {
 					background-color: #f7ded3;
 				}
 			}
@@ -69,6 +69,7 @@
 		button {
 			font-size: 0.95rem;
 			width: 47%;
+			min-width: 10.5rem;
 			justify-content: center;
 		}
 	}
