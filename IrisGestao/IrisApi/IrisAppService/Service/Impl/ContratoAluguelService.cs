@@ -16,6 +16,8 @@ public class ContratoAluguelService: IContratoAluguelService
     private readonly IClienteRepository clienteRepository;
     private readonly IContratoAluguelImovelRepository contratoAluguelImovelRepository;
     private readonly IContratoAluguelUnidadeRepository contratoAluguelUnidadeRepository;
+    private readonly ITituloReceberService tituloReceberService;
+    private readonly IContratoAluguelHistoricorReajusteService contratoAluguelHistoricorReajusteService;
     private readonly ILogger<IContratoAluguelService> logger;
 
     public ContratoAluguelService(IContratoAluguelRepository ContratoAluguelRepository
@@ -24,6 +26,8 @@ public class ContratoAluguelService: IContratoAluguelService
                         , IClienteRepository ClienteRepository
                         , IContratoAluguelImovelRepository ContratoAluguelImovelRepository
                         , IContratoAluguelUnidadeRepository ContratoAluguelUnidadeRepository
+                        , ITituloReceberService TituloReceberService
+                        , IContratoAluguelHistoricorReajusteService contratoAluguelHistoricorReajusteService
                         , ILogger<IContratoAluguelService> logger)
     {
         this.contratoAluguelRepository = ContratoAluguelRepository;
@@ -32,6 +36,8 @@ public class ContratoAluguelService: IContratoAluguelService
         this.clienteRepository = ClienteRepository;
         this.contratoAluguelImovelRepository = ContratoAluguelImovelRepository;
         this.contratoAluguelUnidadeRepository = ContratoAluguelUnidadeRepository;
+        this.tituloReceberService = TituloReceberService;
+        this.contratoAluguelHistoricorReajusteService = contratoAluguelHistoricorReajusteService;
         this.logger = logger;
     }
 
@@ -83,7 +89,7 @@ public class ContratoAluguelService: IContratoAluguelService
         BindContratoAluguelData(cmd, contratoAluguel);
         contratoAluguel.IdCliente = cliente.Id;
 
-        if(contratoAluguel.DataOcupacao.Value > contratoAluguel.DataFimContrato)
+        if(contratoAluguel?.DataOcupacao.Value > contratoAluguel?.DataFimContrato)
         {
             return new CommandResult(false, "A data de ocupação do imóvel não pode ser maior que a data fim do contrato", null!);
         }
@@ -96,6 +102,9 @@ public class ContratoAluguelService: IContratoAluguelService
         {
             contratoAluguelRepository.Insert(contratoAluguel);
             await CriaContratoAluguelImovel(contratoAluguel.Id, cmd.lstImoveis);
+
+            //Criar Titulos Contas a Pagar
+            await tituloReceberService.InsertByContratoAluguel(contratoAluguel, cmd.lstImoveis);
 
             return new CommandResult(true, SuccessResponseEnums.Success_1000, contratoAluguel);
         }
@@ -128,6 +137,37 @@ public class ContratoAluguelService: IContratoAluguelService
             return new CommandResult(true, SuccessResponseEnums.Success_1001, ContratoAluguel);
         }
         catch (Exception e){
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+    }
+
+    public async Task<CommandResult> ReajusteContrato(Guid uuid, double novoPercentualReajuste)
+    {
+        if (uuid.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var contratoAluguel = await contratoAluguelRepository.GetByGuid(uuid);
+
+        if (contratoAluguel == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+
+        ContratoAluguelHistoricoReajusteCommand contratoAluguelHistoricoReajusteCommand = new ContratoAluguelHistoricoReajusteCommand();
+        BindContratoAluguelHistoricoReajusteData(novoPercentualReajuste, contratoAluguelHistoricoReajusteCommand, contratoAluguel);
+
+        try
+        {
+            contratoAluguelRepository.Update(contratoAluguel);
+            contratoAluguelHistoricorReajusteService.Insert(contratoAluguelHistoricoReajusteCommand);
+            tituloReceberService.AtualizarReajuste(contratoAluguel);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, contratoAluguel);
+        }
+        catch (Exception e)
+        {
             logger.LogError(e.Message);
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
@@ -186,24 +226,41 @@ public class ContratoAluguelService: IContratoAluguelService
                 ContratoAluguel.DataUltimaModificacao = DateTime.Now;
                 break;
         }
-        ContratoAluguel.IdCliente                   = ContratoAluguel.Id;
-        ContratoAluguel.IdTipoCreditoAluguel        = cmd.IdTipoCreditoAluguel;
-        ContratoAluguel.IdIndiceReajuste            = cmd.IdIndiceReajuste;
-        ContratoAluguel.IdTipoContrato              = cmd.IdTipoContrato;
-        ContratoAluguel.NumeroContrato              = cmd.NumeroContrato;
-        ContratoAluguel.ValorAluguel                = cmd.ValorAluguel;
-        ContratoAluguel.PercentualRetencaoImpostos  = cmd.PercentualRetencaoImpostos;
+        ContratoAluguel.IdCliente                       = ContratoAluguel.Id;
+        ContratoAluguel.IdTipoCreditoAluguel            = cmd.IdTipoCreditoAluguel;
+        ContratoAluguel.IdIndiceReajuste                = cmd.IdIndiceReajuste;
+        ContratoAluguel.IdTipoContrato                  = cmd.IdTipoContrato;
+        ContratoAluguel.NumeroContrato                  = cmd.NumeroContrato;
+        ContratoAluguel.ValorAluguel                    = cmd.ValorAluguel;
+        ContratoAluguel.PercentualRetencaoImpostos      = cmd.PercentualRetencaoImpostos;
+        ContratoAluguel.ValorAluguelLiquido             = valorLiquido;
+        ContratoAluguel.PercentualDescontoAluguel       = cmd.PercentualDescontoAluguel;
+        ContratoAluguel.CarenciaAluguel                 = cmd.CarenciaAluguel;
+        ContratoAluguel.PrazoCarencia                   = cmd.PrazoCarencia;
+        ContratoAluguel.DataInicioContrato              = cmd.DataInicioContrato;
+        ContratoAluguel.PrazoTotalContrato              = cmd.PrazoTotalContrato;
+        ContratoAluguel.DataFimContrato                 = cmd.DataInicioContrato.AddMonths(cmd.PrazoTotalContrato);
+        ContratoAluguel.DataOcupacao                    = cmd.DataOcupacao;
+        ContratoAluguel.DiaVencimentoAluguel            = cmd.DiaVencimentoAluguel;
+        ContratoAluguel.PeriodicidadeReajuste           = cmd.PeriodicidadeReajuste;
+        ContratoAluguel.DataVencimentoPrimeraParcela    = cmd.DataVencimentoPrimeraParcela;
+        ContratoAluguel.Status                          = true;
+    }
+
+    private static void BindContratoAluguelHistoricoReajusteData(double novoPercentualReajuste, ContratoAluguelHistoricoReajusteCommand cmd, ContratoAluguel ContratoAluguel)
+    {
+        double valorLiquido;
+        valorLiquido = calculaValorLiquido(ContratoAluguel.ValorAluguel, ContratoAluguel.PercentualDescontoAluguel, novoPercentualReajuste);
+
+        cmd.IdContratoAluguel                       = ContratoAluguel.Id;
+        cmd.PercentualReajusteAntigo                = ContratoAluguel.PercentualRetencaoImpostos;
+        cmd.PercentualReajusteNovo                  = novoPercentualReajuste;
+        cmd.ValorAluguelAnterior                    = ContratoAluguel.ValorAluguelLiquido;
+        cmd.ValorAluguelNovo                        = valorLiquido;
+
+        ContratoAluguel.DataUltimaModificacao       = DateTime.Now;
+        ContratoAluguel.PercentualRetencaoImpostos  = novoPercentualReajuste;
         ContratoAluguel.ValorAluguelLiquido         = valorLiquido;
-        ContratoAluguel.PercentualDescontoAluguel   = cmd.PercentualDescontoAluguel;
-        ContratoAluguel.CarenciaAluguel             = cmd.CarenciaAluguel;
-        ContratoAluguel.PrazoCarencia               = cmd.PrazoCarencia;
-        ContratoAluguel.DataInicioContrato          = cmd.DataInicioContrato;
-        ContratoAluguel.PrazoTotalContrato          = cmd.PrazoTotalContrato;
-        ContratoAluguel.DataFimContrato             = cmd.DataInicioContrato.AddMonths(cmd.PrazoTotalContrato);
-        ContratoAluguel.DataOcupacao                = cmd.DataOcupacao;
-        ContratoAluguel.DiaVencimentoAluguel        = cmd.DiaVencimentoAluguel;
-        ContratoAluguel.PeriodicidadeReajuste       = cmd.PeriodicidadeReajuste;
-        ContratoAluguel.Status                      = true;
     }
 
     private static double calculaValorLiquido(double valorAluguel, double? percentualDesconto, double percentualImpostos)
@@ -219,9 +276,9 @@ public class ContratoAluguelService: IContratoAluguelService
             valorComDesconto = valorAluguel - valorDescontos;
         }
 
-        valorImpostos = calcularPorcentagem(valorAluguel, percentualImpostos);
+        valorImpostos = calcularPorcentagem(valorComDesconto, percentualImpostos);
 
-        return valorComDesconto + valorImpostos;
+        return valorComDesconto - valorImpostos;
     }
 
     private static double calcularPorcentagem(double valor, double percentual)

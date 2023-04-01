@@ -17,6 +17,7 @@ namespace IrisGestao.Domain.Emuns
         public static string Error_1006 = "Para realizar essa operação é preciso informar o código";
         public static string Error_1007 = "Não é possível cadastrar o cliente, já existe um cadastro com esse CPF/CNPJ";
         public static string Error_1008 = "Periodo de Datas fora do permitido, informe um valor menor que {0} dias";
+        public static string Error_1009 = "Essa Fatura já está baixada";
     }
 
     public static class SuccessResponseEnums

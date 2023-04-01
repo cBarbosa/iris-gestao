@@ -80,5 +80,8 @@ public partial class Unidade: BaseEntity<Unidade>
     [ForeignKey("IdTipoUnidade")]
     [InverseProperty("Unidade")]
     public virtual TipoUnidade IdTipoUnidadeNavigation { get; set; } = null!;
+
+    [InverseProperty("IdUnidadeNavigation")]
+    public virtual ICollection<TituloUnidade> TituloUnidade { get; } = new List<TituloUnidade>();
 }
 

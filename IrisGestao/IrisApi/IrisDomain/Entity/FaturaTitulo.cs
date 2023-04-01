@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IrisGestao.Domain.Entity;
 
-public partial class FaturaTitulo: BaseEntity<FaturaTitulo>
+public partial class FaturaTitulo : BaseEntity<FaturaTitulo>
 {
     public int IdTitulo { get; set; }
 
@@ -15,10 +15,10 @@ public partial class FaturaTitulo: BaseEntity<FaturaTitulo>
     public string NumeroFatura { get; set; } = null!;
 
     [Column(TypeName = "decimal(10, 2)")]
-    public decimal? Valor { get; set; }
+    public double? Valor { get; set; }
 
     [Column(TypeName = "datetime")]
-    public DateTime DataEnvio { get; set; }
+    public DateTime? DataEnvio { get; set; }
 
     [Column(TypeName = "date")]
     public DateTime? DataPagamento { get; set; }
@@ -28,21 +28,31 @@ public partial class FaturaTitulo: BaseEntity<FaturaTitulo>
 
     public int? DiasAtraso { get; set; }
 
+    public bool Status { get; set; }
+
+    public string? StatusFatura { get; set; }
+
+    [Unicode(false)]
+    public Guid? GuidReferencia { get; set; }
+
+    [Column(TypeName = "decimal(10, 2)")]
+    public double? ValorRealPago { get; set; }
+
     [StringLength(255)]
     [Unicode(false)]
     public string? NumeroNotaFiscal { get; set; }
 
     [Column(TypeName = "date")]
-    public DateTime? DataEmissãoNotaFiscal { get; set; }
+    public DateTime? DataEmissaoNotaFiscal { get; set; }
 
     [Column(TypeName = "decimal(10, 2)")]
-    public decimal? ValorTaxaAdministracao { get; set; }
+    public double? PorcentagemImpostoRetido { get; set; }
 
     [Column(TypeName = "decimal(10, 2)")]
-    public decimal? PorcentagemImpostoRetido { get; set; }
+    public double? ValorLiquidoTaxaAdministracao { get; set; }
 
-    [Column(TypeName = "decimal(10, 2)")]
-    public decimal? ValorLiquidoTaxaAdministracao { get; set; }
+    [StringLength(1000)]
+    public string? DescricaoBaixaFatura { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime? DataCriacao { get; set; }
@@ -52,5 +62,5 @@ public partial class FaturaTitulo: BaseEntity<FaturaTitulo>
 
     [ForeignKey("IdTitulo")]
     [InverseProperty("FaturaTitulo")]
-    public virtual Titulo IdTituloNavigation { get; set; } = null!;
+    public virtual TituloReceber IdTituloReceberNavigation { get; set; } = null!;
 }
