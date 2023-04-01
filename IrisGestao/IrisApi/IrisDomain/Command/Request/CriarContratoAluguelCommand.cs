@@ -21,6 +21,7 @@ namespace IrisGestao.Domain.Command.Request
         public bool CarenciaAluguel { get; set; }
         public int? PrazoCarencia { get; set; }
         public DateTime DataInicioContrato { get; set; }
+        public DateTime? DataVencimentoPrimeraParcela { get; set; }
         public int PrazoTotalContrato { get; set; }
         public DateTime? DataOcupacao { get; set; }
         public int DiaVencimentoAluguel { get; set; }

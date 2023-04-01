@@ -21,5 +21,8 @@ public partial class IndiceReajuste: BaseEntity<IndiceReajuste>
     public virtual ICollection<ContratoAluguel> ContratoAluguel { get; } = new List<ContratoAluguel>();
 
     [InverseProperty("IdIndiceReajusteNavigation")]
+    public virtual ICollection<TituloReceber> TituloReceber { get; } = new List<TituloReceber>();
+
+    [InverseProperty("IdIndiceReajusteNavigation")]
     public virtual ICollection<ContratoFornecedor> ContratoFornecedor { get; } = new List<ContratoFornecedor>();
 }

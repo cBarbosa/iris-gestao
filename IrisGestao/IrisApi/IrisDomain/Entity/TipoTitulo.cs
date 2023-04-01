@@ -13,5 +13,5 @@ public partial class TipoTitulo: BaseEntity<TipoTitulo>
     public string Nome { get; set; } = null!;
 
     [InverseProperty("IdTipoTituloNavigation")]
-    public virtual ICollection<Titulo> Titulo { get; } = new List<Titulo>();
+    public virtual ICollection<TituloReceber> TituloReceber { get; } = new List<TituloReceber>();
 }
