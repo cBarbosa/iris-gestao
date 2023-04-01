@@ -249,24 +249,10 @@
 				</ng-template>
 			</section>
 
-			<section
-				class="attachments"
-				*ngIf="
-					attachmentDocs.projeto ||
-					attachmentDocs.matricula ||
-					attachmentDocs.habitese
-				"
-			>
+			<section class="attachments" *ngIf="hasAttachmentDocs">
 				<h3>Anexos</h3>
 
-				<app-attachment-list
-					*ngIf="
-						attachmentDocs?.projeto ||
-						attachmentDocs?.matricula ||
-						attachmentDocs?.habitese
-					"
-					[guid]="uid"
-				></app-attachment-list>
+				<app-attachment-list [guid]="uid"></app-attachment-list>
 			</section>
 
 			<ng-container *ngIf="imageList.length > 0">

@@ -26,6 +26,7 @@
 						pButton
 						type="button"
 						class="p-button-rounded p-button-text"
+						*ngIf="editable"
 						[disabled]="newAttachments.length > 0"
 						(click)="removeAttachment(attachment.code)"
 					>
