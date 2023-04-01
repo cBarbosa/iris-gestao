@@ -1,5 +1,11 @@
 import { identifierName } from '@angular/compiler';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import {
+	Component,
+	Input,
+	OnInit,
+	PipeTransform,
+	ViewChild,
+} from '@angular/core';
 import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { DatePipe } from '@angular/common';
 import { first } from 'rxjs';
@@ -8,6 +14,8 @@ import { Imovel } from 'src/app/shared/models';
 import { ClienteService } from '../../../shared/services/cliente.service';
 import { Contato } from 'src/app/shared/models/contato.model';
 import { ContatoService } from 'src/app/shared/services/contato.service';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
+import { TelefonePipe } from 'src/app/shared/pipes/telefone.pipe';
 
 @Component({
 	selector: 'app-client-view',
@@ -22,6 +30,12 @@ export class ClientViewComponent implements OnInit {
 	totalClientCount: number;
 	isLoadingView = false;
 	isInativar = false;
+
+	displayClientDetails = false;
+
+	isMobile: boolean = false;
+
+	cardPipes: Record<string, PipeTransform>;
 
 	displayModal = false;
 	displayConfirmationModal = false;
@@ -51,7 +65,8 @@ export class ClientViewComponent implements OnInit {
 		private router: Router,
 		private route: ActivatedRoute,
 		private clienteService: ClienteService,
-		private contatoService: ContatoService
+		private contatoService: ContatoService,
+		private responsiveService: ResponsiveService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
@@ -59,6 +74,18 @@ export class ClientViewComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
+
+		this.cardPipes = {
+			telefone: new TelefonePipe(),
+			date: new DatePipe('pt-BR', undefined, {
+				dateFormat: 'shortDate',
+				timezone: '',
+			}),
+		};
+
 		this.tableMenu = [
 			{
 				label: 'Detalhes',
@@ -111,6 +138,10 @@ export class ClientViewComponent implements OnInit {
 
 			this.isLoadingView = false;
 		});
+	}
+
+	toggleClientDetails() {
+		this.displayClientDetails = !this.displayClientDetails;
 	}
 
 	getContactList() {

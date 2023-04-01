@@ -18,6 +18,9 @@ import { ContactEditSidebarComponent } from '../contact-edit-sidebar/contact-edi
 import { CepPipeModule } from 'src/app/shared/pipes/cep.module';
 import { DialogModule } from 'primeng/dialog';
 import { ContactRegisterSidebarComponent } from '../contact-register-sidebar/contact-register-sidebar.component';
+import { PanelModule } from 'primeng/panel';
+import { CardItemComponent } from 'src/app/shared/components/card-item/card-item.component';
+import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
 
 @NgModule({
 	declarations: [ClientViewComponent],
@@ -38,6 +41,9 @@ import { ContactRegisterSidebarComponent } from '../contact-register-sidebar/con
 		ContactRegisterSidebarComponent,
 		TelefonePipeModule,
 		CepPipeModule,
+		PanelModule,
+		CardItemComponent,
+		ResponsiveDialogComponent,
 	],
 })
 export class ClientViewModule {}

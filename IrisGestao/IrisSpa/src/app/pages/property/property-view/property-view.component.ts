@@ -12,6 +12,7 @@ import {
 	AnexoService,
 	Attachment,
 } from 'src/app/shared/services/anexo.service';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
 @Component({
@@ -41,6 +42,9 @@ export class PropertyViewComponent implements OnInit {
 		habitese?: { name: string; uri: string } | undefined;
 	};
 
+	isMobile: boolean = false;
+	unitListAmount = 4;
+
 	coverImage: string | undefined;
 
 	isFavorite = true;
@@ -64,7 +68,8 @@ export class PropertyViewComponent implements OnInit {
 		private router: Router,
 		private route: ActivatedRoute,
 		private imovelService: ImovelService,
-		private anexoService: AnexoService
+		private anexoService: AnexoService,
+		private responsiveService: ResponsiveService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
@@ -97,6 +102,10 @@ export class PropertyViewComponent implements OnInit {
 		];
 
 		this.getData();
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
 	}
 
 	onUpdateUnitList = (modalContent: {
@@ -109,6 +118,13 @@ export class PropertyViewComponent implements OnInit {
 		this.modalContent = modalContent;
 		this.displayModal = true;
 	};
+
+	showMoreUnits() {
+		this.unitListAmount =
+			this.unitListAmount + 4 > this.units.length
+				? this.units.length
+				: this.unitListAmount + 4;
+	}
 
 	toggleFavorite() {
 		this.isFavorite = !this.isFavorite;

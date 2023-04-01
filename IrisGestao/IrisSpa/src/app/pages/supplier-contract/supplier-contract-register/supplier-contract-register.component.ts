@@ -18,6 +18,7 @@ import {
 	AnexoService,
 	ArquivoClassificacoes,
 } from 'src/app/shared/services/anexo.service';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { SupplierContractService } from 'src/app/shared/services/supplier-contract.service';
 import { SupplierService } from 'src/app/shared/services/supplier.service';
 import { Utils } from 'src/app/shared/utils';
@@ -58,6 +59,8 @@ export class SupplierContractRegisterComponent {
 
 	onInputDate: Function;
 	onBlurDate: Function;
+
+	isMobile = false;
 
 	displayModal = false;
 	modalContent: {
@@ -144,7 +147,8 @@ export class SupplierContractRegisterComponent {
 		private dominiosService: DominiosService,
 		private commonService: CommonService,
 		private imovelService: ImovelService,
-		private anexoService: AnexoService
+		private anexoService: AnexoService,
+		private responsiveService: ResponsiveService
 	) {}
 
 	ngOnInit() {
@@ -166,6 +170,10 @@ export class SupplierContractRegisterComponent {
 			},
 		];
 
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
+
 		this.registerForm = this.fb.group({
 			contractInfo: this.fb.group({
 				nome: ['', Validators.required],
@@ -180,7 +188,7 @@ export class SupplierContractRegisterComponent {
 				dataVencimento: [1, Validators.required],
 				pagamento: [null, Validators.required],
 				reajuste: [null, Validators.required],
-				periodicidade: [null, Validators.required]
+				periodicidade: [null, Validators.required],
 				// percentual: [null, Validators.required],
 			}),
 		});
@@ -428,7 +436,10 @@ export class SupplierContractRegisterComponent {
 		else this.goBack();
 	}
 
-	onSelect(e: any, classificacao: 'projeto' | 'matricula' | 'habitese' | 'outrosdocs') {
+	onSelect(
+		e: any,
+		classificacao: 'projeto' | 'matricula' | 'habitese' | 'outrosdocs'
+	) {
 		console.log('e', e);
 		this.attachments[classificacao] = e.currentFiles[0];
 	}

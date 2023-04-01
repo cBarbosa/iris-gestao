@@ -76,12 +76,14 @@
 						</ng-template>
 					</ng-container>
 				</div>
-				<div class="flex justify-between text-sm font-medium mb-6">
-					<a>Não encontrou proprietário?</a>
+				<div
+					class="flex flex-col md:flex-row justify-between text-sm font-medium mb-6"
+				>
+					<span>Não encontrou proprietário?</span>
 					<p-button
 						icon="pi pi-plus"
 						label="Adicionar novo proprietário"
-						styleClass="p-button-text text-sm"
+						styleClass="p-button-text text-sm add-proprietary-button"
 						(click)="registerProprietaryVisible = true"
 					></p-button>
 				</div>
@@ -181,7 +183,7 @@
 						<small
 							id="Bairro-help"
 							*ngIf="f['neighborhood'].hasError('required'); else error2"
-							class="p-Bairro block"
+							class="p-error block"
 						>
 							Informe o Bairro do cliente
 						</small>
@@ -688,7 +690,11 @@
 					mode="basic"
 					name="habitese"
 					accept="application/*"
-					chooseLabel="Arraste ou clique para fazer o upload"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer o upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
 					(onSelect)="onSelect($event, 'habitese')"
@@ -716,7 +722,11 @@
 					mode="basic"
 					name="projeto"
 					accept="application/*"
-					chooseLabel="Arraste ou clique para fazer o upload"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer o upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
 					(onSelect)="onSelect($event, 'projeto')"
@@ -744,7 +754,11 @@
 					mode="basic"
 					name="matricula"
 					accept="application/*"
-					chooseLabel="Arraste ou clique para fazer o upload"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer o upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
 					(onSelect)="onSelect($event, 'matricula')"
@@ -773,7 +787,11 @@
 					name="outrosdocs[]"
 					url="./upload"
 					accept="application/*"
-					chooseLabel="Arraste ou clique para fazer o upload"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer o upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
 					(onSelect)="onSelect($event, 'outrosdocs')"
@@ -1055,7 +1073,23 @@
 	[draggable]="false"
 	[resizable]="false"
 	styleClass="form-modal"
+	*ngIf="!isMobile"
 >
+	<ng-container *ngTemplateOutlet="modalContentTemplate"></ng-container>
+</p-dialog>
+
+<p-sidebar
+	[(visible)]="displayModal"
+	position="bottom"
+	styleClass="form-modal"
+	*ngIf="isMobile"
+>
+	<ng-template pTemplate="content">
+		<ng-container *ngTemplateOutlet="modalContentTemplate"></ng-container>
+	</ng-template>
+</p-sidebar>
+
+<ng-template #modalContentTemplate>
 	<div *ngIf="!modalContent.isError; else error" class="modal-success">
 		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
 		<i class="ph-check-circle"></i>
@@ -1089,4 +1123,4 @@
 			<button pButton label="Continuar" (click)="closeModal()"></button>
 		</div>
 	</ng-template>
-</p-dialog>
+</ng-template>

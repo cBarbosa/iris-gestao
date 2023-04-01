@@ -119,9 +119,9 @@ export class PropertyListComponent {
 		)
 			this.showPaginator = Math.floor(this.totalRecords / this.pageSize) > 1;
 
-		console.log('showPaginator', this.showPaginator);
-		console.log('totalRecords', this.totalRecords);
-		console.log('pageSize', this.pageSize);
+		console.debug('showPaginator', this.showPaginator);
+		console.debug('totalRecords', this.totalRecords);
+		console.debug('pageSize', this.pageSize);
 
 		this.showPaginator = this.startIndex = event.first;
 		this.endIndex = event.first + event.rows;

@@ -63,7 +63,7 @@ public class AnexoService: IAnexoService
     {
         #region valida extensões
         string[] fotoExtensoes = {".png", ".jpg", ".jpeg", ".svn", ".gif"};
-        string[] documentoExtensoes = {".xls", ".doc", ".pdf", ".xlsx", ".docx"};
+        string[] documentoExtensoes = {".xls", ".doc", ".pdf", ".xlsx", ".docx", ".dwg"};
 
         var validaFotos = cmd.Classificacao.Equals("capa")
                           || cmd.Classificacao.Equals("foto");

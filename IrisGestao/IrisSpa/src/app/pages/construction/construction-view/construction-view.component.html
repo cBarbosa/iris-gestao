@@ -1,0 +1,346 @@
+<ng-container *ngIf="isLoadingView; else details">
+	<div class="flex relative justify-center items-center w-full h-full pt-20">
+		<div class="w-full max-w-3xl">
+			<app-spinner text="Carregando"></app-spinner>
+		</div>
+	</div>
+</ng-container>
+<ng-template #details>
+	<div class="construction-view">
+		<div class="content">
+			<section class="construction">
+				<h2>Detalhe da obra</h2>
+
+				<div class="main-card">
+					<header>
+						<h3 class="mb-4">
+							{{ construction?.nomeObra }}
+						</h3>
+						<div class="actions">
+							<app-progress-bar
+								[title]="
+									'Obra ' + construction.porcentagemConclusao + '% concluída'
+								"
+								[value]="construction.porcentagemConclusao"
+								class="progress-bar"
+							></app-progress-bar>
+							<button
+								pButton
+								type="button"
+								class="p-element h-10 p-button p-component p-button-outlined"
+								(click)="
+									navigateTo('construction/edit/' + construction.guidReferencia)
+								"
+							>
+								Editar obra
+							</button>
+							<!--button pButton type="button" class="p-button-outlined h-7"
+						(click)="navigateTo('client/register/'+ cliente.guidReferencia + '/Clone')">
+							Duplicar
+						</button-->
+						</div>
+					</header>
+
+					<p-panel
+						[header]="
+							displayConstructionDetails ? 'Menos Detalhes' : 'Mais detalhes'
+						"
+						[toggleable]="true"
+						[collapsed]="!displayConstructionDetails"
+						(onBeforeToggle)="toggleServiceDetails()"
+						styleClass="mt-3"
+						*ngIf="isMobile"
+					>
+						<ng-container
+							*ngTemplateOutlet="constructionInfoTemplate"
+						></ng-container>
+					</p-panel>
+
+					<ng-container *ngIf="!isMobile">
+						<ng-container
+							*ngTemplateOutlet="constructionInfoTemplate"
+						></ng-container>
+					</ng-container>
+
+					<ng-template #constructionInfoTemplate>
+						<div class="construction-info">
+							<div class="construction-data">
+								<div class="data-label">Data de início</div>
+								<div class="data-value">
+									{{ construction?.['dataInicio'] | date : "shortDate" }}
+								</div>
+							</div>
+							<div class="construction-data">
+								<div class="data-label">Previsão de término</div>
+								<div class="data-value">
+									{{ construction?.['dataFim'] | date : "shortDate" }}
+								</div>
+							</div>
+							<div class="construction-data">
+								<div class="data-label">Orçamento</div>
+								<div class="data-value">
+									{{ construction?.['orcamento'] | currency }}
+								</div>
+							</div>
+						</div>
+					</ng-template>
+				</div>
+			</section>
+
+			<section class="property" *ngIf="property">
+				<h2>Imóvel vinculado na obra</h2>
+
+				<div class="flex flex-col gap-6">
+					<app-property-list [properties]="[property]"></app-property-list>
+				</div>
+			</section>
+
+			<section class="services" *ngIf="construction?.servicos?.length > 0">
+				<header class="flex justify-between flex-wrap items-start mb-5">
+					<h2 class="mb-2">Histórico de serviços</h2>
+				</header>
+
+				<p-table
+					*ngIf="!isMobile; else servicesCardListTemplate"
+					[value]="construction?.servicos"
+					styleClass="p-datatable-striped"
+					[tableStyle]="{ 'min-width': '50rem' }"
+				>
+					<ng-template pTemplate="header">
+						<tr>
+							<th>Serviço</th>
+							<th>Valores estimados orçados</th>
+							<th>Valores contratados</th>
+							<th>Saldo</th>
+							<th>Nota fiscal</th>
+							<th></th>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="body" let-service>
+						<tr>
+							<td>{{ service.nomeServico }}</td>
+							<td>{{ service.valorEstimado | currency }}</td>
+							<td>{{ service.valorContratado | currency }}</td>
+							<td>{{ service.saldo | currency }}</td>
+							<td>
+								<p-tag
+									value="Emitida"
+									[rounded]="true"
+									severity="success"
+									*ngIf="service.notaFiscal"
+								></p-tag>
+								<p-tag
+									value="Não emitida"
+									[rounded]="true"
+									severity="danger"
+									*ngIf="!service.notaFiscal"
+								></p-tag>
+							</td>
+							<td class="action w-48">
+								<button
+									pButton
+									type="button"
+									class="p-button-outlined h-9 w-full justify-center text-sm"
+									(click)="setCurrentService(service); showServiceDetails()"
+									*ngIf="service.notaFiscal"
+								>
+									Ver detalhes
+								</button>
+								<button
+									pButton
+									type="button"
+									class="p-button-filled h-9 w-full justify-center text-sm"
+									(click)="setCurrentService(service); showIssueInvoice()"
+									*ngIf="!service.notaFiscal"
+								>
+									Emitir nota fiscal
+								</button>
+							</td>
+						</tr>
+					</ng-template>
+				</p-table>
+
+				<ng-template #servicesCardListTemplate>
+					<div class="cardList">
+						<ng-container *ngFor="let service of construction?.servicos">
+							<app-card-item
+								[card]="{
+									infos: [
+										{
+											label: 'Serviço',
+											data: service.nomeServico
+										},
+										{
+											label: 'Valores estimados orçados',
+											data: service.valorEstimado,
+											pipe: cardPipes['currency']
+										},
+										{
+											label: 'Valores contratados',
+											data: service.valorContratado,
+											pipe: cardPipes['currency']
+										},
+										{
+											label: 'Saldo',
+											data: service.saldo,
+											pipe: cardPipes['currency']
+										}
+									],
+									tags: [
+										{
+											value: service.notaFiscal ? 'Emitida' : 'Não emitida',
+											severity: service.notaFiscal ? 'success' : 'danger'
+										}
+									]
+								}"
+							>
+								<button
+									pButton
+									type="button"
+									class="p-button-outlined h-9 w-full justify-center font-bold"
+									(click)="setCurrentService(service); showServiceDetails()"
+								>
+									Ver detalhes
+								</button>
+							</app-card-item>
+						</ng-container>
+					</div>
+				</ng-template>
+			</section>
+
+			<section class="attachments">
+				<h2>Anexos</h2>
+
+				<div class="attachments-card">
+					<button
+						type="button"
+						class="attachment"
+						*ngIf="attachmentDocs.projeto"
+						(click)="
+							downloadFile(
+								attachmentDocs.projeto.local,
+								attachmentDocs.projeto.nome
+							)
+						"
+					>
+						<span class="icon">
+							<app-icon name="att-proj" size="1.5rem"></app-icon>
+						</span>
+						<span class="label">Projeto</span>
+					</button>
+
+					<button
+						type="button"
+						class="attachment"
+						*ngIf="attachmentDocs.matricula"
+						(click)="
+							downloadFile(
+								attachmentDocs.matricula.local,
+								attachmentDocs.matricula.nome
+							)
+						"
+					>
+						<span class="icon">
+							<app-icon name="att-mat" size="1.5rem"></app-icon>
+						</span>
+						<span class="label">Matrícula</span>
+					</button>
+
+					<button
+						type="button"
+						class="attachment"
+						*ngIf="attachmentDocs.habitese"
+						(click)="
+							downloadFile(
+								attachmentDocs.habitese.local,
+								attachmentDocs.habitese.nome
+							)
+						"
+					>
+						<span class="icon">
+							<app-icon name="att-hab" size="1.5rem"></app-icon>
+						</span>
+						<span class="label">Habite-se</span>
+					</button>
+				</div>
+			</section>
+
+			<ng-container *ngIf="imageList.length > 0">
+				<section class="photos">
+					<h3>Fotos da evolução da obra</h3>
+					<app-photo-gallery [imageList]="imageList"></app-photo-gallery>
+				</section>
+			</ng-container>
+		</div>
+	</div>
+</ng-template>
+
+<p-sidebar [(visible)]="serviceDetailsVisible" position="right">
+	<app-detail-sidebar
+		[data]="[
+			{ label: 'Serviço', data: serviceSelected?.nomeServico, span: true },
+			{ label: 'Número da NF', data: serviceSelected?.numeroNF, span: true },
+			{
+				label: 'Data da emissão',
+				data: serviceSelected?.dataEmissao,
+				pipe: cardPipes['date'],
+				span: true
+			},
+			{
+				label: 'Valor orçado',
+				data: serviceSelected?.valorEstimado,
+				pipe: cardPipes['currency']
+			},
+			{
+				label: 'Valores contratados',
+				data: serviceSelected?.valorContratado,
+				pipe: cardPipes['currency']
+			},
+			{
+				label: 'Valor líquido',
+				data: serviceSelected?.valorLiquido,
+				pipe: cardPipes['currency']
+			},
+			{
+				label: 'T.A. da obra',
+				data: serviceSelected?.TAObra,
+				pipe: cardPipes['percent']
+			}
+		]"
+	></app-detail-sidebar>
+
+	<h3 class="mt-3 font-bold">Anexo nota fiscal</h3>
+
+	<div class="document-list">
+		<div class="document file" [class.empty]="!serviceSelected?.nfFile">
+			<span>Projeto</span>
+			<span class="buttons">
+				<button
+					pButton
+					type="button"
+					class="p-button-rounded p-button-text"
+					(click)="
+						downloadFile(
+							serviceSelected?.nfFile.url,
+							serviceSelected?.nfFile.name
+						)
+					"
+				>
+					<i class="ph-download-simple"></i>
+				</button>
+			</span>
+		</div>
+	</div>
+
+	<button
+		pButton
+		class="p-button-outlined w-full h-10 justify-center"
+		(click)="hideServiceDetails()"
+	>
+		Fechar
+	</button>
+</p-sidebar>
+
+<p-sidebar [(visible)]="issueInvoiceVisible" position="right">
+	<app-issue-invoice-sidebar></app-issue-invoice-sidebar>
+</p-sidebar>
