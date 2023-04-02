@@ -11,10 +11,16 @@ import { LoginService } from '../../shared/services';
 export class HomeComponent {
 	loggedUser: Usuario = this.loginService.usuarioLogado;
 
+	filesSelected: File[];
+
 	constructor(private loginService: LoginService, private router: Router) {}
 
 	sair(): void {
 		this.loginService.logout();
 		this.router.navigate(['/login']);
+	}
+
+	onFileSelect(fileList: File[]) {
+		console.log('parent event', fileList);
 	}
 }

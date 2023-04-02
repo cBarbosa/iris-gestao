@@ -1,0 +1,44 @@
+<div class="file-upload">
+	<p-fileUpload
+		mode="basic"
+		[name]="name"
+		[accept]="accept"
+		[chooseLabel]="
+			limitReached
+				? 'Máximo de ' + fileLimit + ' arquivos selecionados'
+				: isMobile
+				? 'Clique para fazer o upload'
+				: 'Arraste ou clique para fazer o upload'
+		"
+		chooseIcon="pi-upload"
+		[maxFileSize]="maxFileSize"
+		[multiple]="multiple"
+		(onSelect)="onSelect($event)"
+		[disabled]="disabled || limitReached"
+		#fileUpload
+	></p-fileUpload>
+
+	<div
+		class="attachment-list custom-scroll"
+		*ngIf="selectedAttachments.length > 0"
+	>
+		<ul>
+			<li *ngFor="let attachment of selectedAttachments; index as i">
+				<span class="info">
+					<span class="name" [title]="attachment.name">
+						{{ attachment.name }}
+					</span>
+					<span class="file-size">{{ humanFileSize(attachment.size) }}</span>
+				</span>
+				<button
+					pButton
+					type="button"
+					class="p-button-rounded p-button-text"
+					(click)="removeAttachment(i)"
+				>
+					<i class="ph ph-trash"></i>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>
