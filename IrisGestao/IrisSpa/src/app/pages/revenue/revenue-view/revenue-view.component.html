@@ -1,0 +1,340 @@
+<ng-container *ngIf="isLoadingView; else details">
+	<div class="flex relative justify-center items-center w-full h-full pt-20">
+		<div class="w-full max-w-3xl">
+			<app-spinner text="Carregando"></app-spinner>
+		</div>
+	</div>
+</ng-container>
+<ng-template #details>
+	<div class="revenue-view">
+		<div class="content">
+			<section class="revenue">
+				<h2>Detalhe da receita</h2>
+
+				<div class="main-card">
+					<header>
+						<h3 class="mb-4">
+							{{ revenue?.tipoRecebimento }}
+						</h3>
+						<div class="actions">
+							<button
+								pButton
+								type="button"
+								class="p-element h-10 p-button p-component p-button-outlined"
+								(click)="navigateTo('revenue/edit/' + revenue.guidReferencia)"
+							>
+								Editar obra
+							</button>
+							<!--button pButton type="button" class="p-button-outlined h-7"
+						(click)="navigateTo('client/register/'+ cliente.guidReferencia + '/Clone')">
+							Duplicar
+						</button-->
+						</div>
+					</header>
+
+					<p-panel
+						[header]="
+							displayRevenueDetails ? 'Menos Detalhes' : 'Mais detalhes'
+						"
+						[toggleable]="true"
+						[collapsed]="!displayRevenueDetails"
+						(onBeforeToggle)="toggleDetalheBaixa()"
+						styleClass="mt-3"
+						*ngIf="isMobile"
+					>
+						<ng-container
+							*ngTemplateOutlet="revenueInfoTemplate"
+						></ng-container>
+					</p-panel>
+
+					<ng-container *ngIf="!isMobile">
+						<ng-container
+							*ngTemplateOutlet="revenueInfoTemplate"
+						></ng-container>
+					</ng-container>
+
+					<ng-template #revenueInfoTemplate>
+						<div class="revenue-info">
+							<div class="revenue-data">
+								<div class="data-label">Número do título</div>
+								<div class="data-value">
+									{{ revenue?.['numeroTitulo'] }}
+								</div>
+							</div>
+							<div class="revenue-data">
+								<div class="data-label">Classificação da Receita</div>
+								<div class="data-value">
+									{{ revenue?.['classificacao'] }}
+								</div>
+							</div>
+							<div class="revenue-data">
+								<div class="data-label">Creditar para</div>
+								<div class="data-value">
+									{{ revenue?.['creditarPara'] }}
+								</div>
+							</div>
+							<div class="revenue-data">
+								<div class="data-label">Locatário</div>
+								<div class="data-value">
+									{{ revenue?.['locatario'] }}
+								</div>
+							</div>
+							<div class="revenue-data">
+								<div class="data-label">
+									Data de vencimento da primeira parcela
+								</div>
+								<div class="data-value">
+									{{ revenue?.['dataPagamento'] | date : "shortDate" }}
+								</div>
+							</div>
+							<div class="revenue-data">
+								<div class="data-label">Forma de pagamento</div>
+								<div class="data-value">
+									{{ revenue?.['formaPagamento'] }}
+								</div>
+							</div>
+							<div class="revenue-data">
+								<div class="data-label">Valor a pagar</div>
+								<div class="data-value">
+									{{ revenue?.['valor'] | currency }}
+								</div>
+							</div>
+						</div>
+					</ng-template>
+				</div>
+			</section>
+
+			<section class="fatura" *ngIf="revenue?.faturas?.length > 0">
+				<header class="flex justify-between flex-wrap items-start mb-5">
+					<h2 class="mb-2">Faturas</h2>
+				</header>
+
+				<p-table
+					*ngIf="!isMobile; else faturaCardListTemplate"
+					[value]="revenue?.faturas"
+					styleClass="p-datatable-striped"
+					[tableStyle]="{ 'min-width': '50rem' }"
+				>
+					<ng-template pTemplate="header">
+						<tr>
+							<th>Valor do aluguel pago</th>
+							<th>Data do pagamento</th>
+							<th>Dias de atraso</th>
+							<th>Data de Vencimento</th>
+							<th>Status do título</th>
+							<th></th>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="body" let-fatura>
+						<tr>
+							<td>{{ fatura.valorAluguel | currency }}</td>
+							<td>{{ fatura.dataPagamento | date : "shortDate" }}</td>
+							<td>
+								{{
+									fatura.diasAtraso
+										? fatura.diasAtraso > 1
+											? fatura.diasAtraso + " dias"
+											: fatura.diasAtraso + " dia"
+										: "0 dia"
+								}}
+							</td>
+							<td>{{ fatura.dataVencimento | date : "shortDate" }}</td>
+							<td>
+								<p-tag
+									value="Emitida"
+									[rounded]="true"
+									severity="success"
+									*ngIf="fatura.emitido"
+								></p-tag>
+								<p-tag
+									value="Não emitida"
+									[rounded]="true"
+									severity="danger"
+									*ngIf="!fatura.emitido"
+								></p-tag>
+							</td>
+							<td class="action w-48">
+								<button
+									pButton
+									type="button"
+									class="p-button-outlined h-9 w-full justify-center text-sm"
+									(click)="setCurrentFatura(fatura); showDetalheBaixa()"
+									*ngIf="fatura.emitido"
+								>
+									Ver detalhes
+								</button>
+								<button
+									pButton
+									type="button"
+									class="p-button-filled h-9 w-full justify-center text-sm"
+									(click)="setCurrentFatura(fatura); showBaixaTitulo()"
+									*ngIf="!fatura.emitido"
+								>
+									Emitir nota fiscal
+								</button>
+							</td>
+						</tr>
+					</ng-template>
+				</p-table>
+
+				<ng-template #faturaCardListTemplate>
+					<div class="cardList">
+						<ng-container *ngFor="let fatura of revenue?.faturas">
+							<app-card-item
+								[card]="{
+									infos: [
+										{
+											label: 'Valor do aluguel pago',
+											data: fatura.valorAluguel,
+											pipe: cardPipes['currency']
+										},
+										{
+											label: 'Data do pagamento',
+											data: fatura.dataPagamento,
+											pipe: cardPipes['date']
+										},
+										{
+											label: 'Dias de atraso',
+											data: fatura.diasAtraso
+												? fatura.diasAtraso > 1
+													? fatura.diasAtraso + ' dias'
+													: fatura.diasAtraso + ' dia'
+												: '0 dia'
+										},
+										{
+											label: 'Data de Vencimento',
+											data: fatura.dataVencimento,
+											pipe: cardPipes['date']
+										}
+									],
+									tags: [
+										{
+											value: fatura.emitido
+												? 'Título baixado'
+												: 'Baixa não efetuada',
+											severity: fatura.emitido ? 'success' : 'danger'
+										}
+									]
+								}"
+							>
+								<button
+									pButton
+									type="button"
+									class="p-button-outlined h-9 w-full justify-center text-sm"
+									(click)="setCurrentFatura(fatura); showDetalheBaixa()"
+									*ngIf="fatura.emitido"
+								>
+									Ver detalhes
+								</button>
+								<button
+									pButton
+									type="button"
+									class="p-button-filled h-9 w-full justify-center text-sm"
+									(click)="setCurrentFatura(fatura); showBaixaTitulo()"
+									*ngIf="!fatura.emitido"
+								>
+									Emitir nota fiscal
+								</button>
+							</app-card-item>
+						</ng-container>
+					</div>
+				</ng-template>
+			</section>
+
+			<section class="property" *ngIf="property">
+				<h2>Imóvel vinculado na conta</h2>
+
+				<div class="flex flex-col gap-6">
+					<app-property-list [properties]="[property]"></app-property-list>
+				</div>
+			</section>
+		</div>
+	</div>
+</ng-template>
+
+<p-sidebar [(visible)]="detalheBaixaVisible" position="right">
+	<ng-template pTemplate="header">
+		<h2 class="text-xl font-bold">Detalhes da Baixa da Fatura</h2>
+	</ng-template>
+	<app-detail-sidebar
+		[data]="[
+			{
+				label: 'Número da fatura',
+				data: faturaSelected?.numeroFatura,
+				span: true
+			},
+			{
+				label: 'Valor',
+				data: faturaSelected?.valor,
+				pipe: cardPipes['currency']
+			},
+			{
+				label: 'Dias de atraso',
+				data: faturaSelected?.diasAtraso
+					? (faturaSelected?.diasAtraso > 1
+							? faturaSelected?.diasAtraso + ' dias'
+							: faturaSelected?.diasAtraso) + ' dia'
+					: '0 dia',
+				span: true
+			},
+			{
+				label: '% de impostos retidos',
+				data: faturaSelected?.impostosRetidos,
+				pipe: cardPipes['percent']
+			},
+			{
+				label: 'Valor líquido',
+				data: faturaSelected?.valorLiquido,
+				pipe: cardPipes['currency']
+			},
+			{
+				label: 'Vencimento',
+				data: faturaSelected?.dataVencimento,
+				pipe: cardPipes['date']
+			},
+			{
+				label: 'Data de pagamento',
+				data: faturaSelected?.dataPagamento,
+				pipe: cardPipes['date']
+			}
+		]"
+	></app-detail-sidebar>
+
+	<h3 class="mt-3 font-bold">Anexo nota fiscal</h3>
+
+	<div class="document-list">
+		<div class="document file" [class.empty]="!faturaSelected?.nfFile">
+			<span>{{ faturaSelected?.nfFile.name }}</span>
+			<span class="buttons">
+				<button
+					pButton
+					type="button"
+					class="p-button-rounded p-button-text"
+					(click)="
+						downloadFile(
+							faturaSelected?.nfFile.url,
+							faturaSelected?.nfFile.name
+						)
+					"
+				>
+					<i class="ph-download-simple"></i>
+				</button>
+			</span>
+		</div>
+	</div>
+
+	<button
+		pButton
+		class="p-button-outlined w-full h-10 justify-center"
+		(click)="hideDetalheBaixa()"
+	>
+		Fechar
+	</button>
+</p-sidebar>
+
+<p-sidebar [(visible)]="baixaTituloVisible" position="right">
+	<ng-template pTemplate="header">
+		<h2 class="text-xl font-bold">Baixa de Título</h2>
+	</ng-template>
+	<app-baixa-titulo-sidebar></app-baixa-titulo-sidebar>
+</p-sidebar>

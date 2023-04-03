@@ -78,6 +78,16 @@ export class TopbarComponent {
 				id: route.startsWith('/supplier/') ? 'current' : '',
 				command: () => this.navigateTo('supplier/listing'),
 			},
+			{
+				label: 'Financeiro',
+				items: [
+					{
+						label: 'Receitas',
+						id: route.startsWith('/revenue/') ? 'current' : '',
+						command: () => this.navigateTo('revenue/listing'),
+					},
+				],
+			},
 			// {
 			// 	label: 'Prestador de serviços',
 			// },

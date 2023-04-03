@@ -1,0 +1,66 @@
+.file-upload {
+	.attachment-list {
+		@apply mt-4 shadow rounded-md;
+		width: 100%;
+		max-height: 25rem;
+		overflow-y: auto;
+
+		ul {
+			li {
+				@apply px-3 py-1 flex justify-between items-center gap-5 rounded-md;
+				width: 100%;
+
+				.info {
+					flex-grow: 1;
+					display: flex;
+					justify-content: flex-start;
+					align-items: center;
+					gap: 1rem;
+					color: #641b1e;
+					white-space: nowrap;
+					min-width: 0;
+
+					.name {
+						display: inline-block;
+						overflow: hidden;
+						text-overflow: ellipsis;
+					}
+
+					.file-size {
+						@apply text-xs text-slate-400;
+					}
+				}
+
+				button {
+					flex-grow: 0;
+					flex-shrink: 0;
+					flex-basis: 1.75rem;
+					@apply mx-1 w-7 h-7 rounded-full;
+					font-size: 1rem;
+					padding: 0;
+					// padding-top: 0.1rem;
+					padding-left: 0.38rem;
+					text-align: center;
+
+					&:not(:disabled):hover {
+						background-color: #f7ded3;
+					}
+				}
+
+				&:hover {
+					background-color: #f9f9f9;
+				}
+			}
+		}
+	}
+}
+
+:host ::ng-deep {
+	.p-fileupload {
+		.p-fileupload-choose {
+			.p-button-label {
+				max-width: 100%;
+			}
+		}
+	}
+}
