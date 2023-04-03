@@ -15,6 +15,7 @@ import { MatriculaPipeModule } from 'src/app/shared/pipes/matricula.module';
 import { DialogModule } from 'primeng/dialog';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 import { AttachmentListComponent } from 'src/app/shared/components/attachment-list/attachment-list.component';
+import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
 
 @NgModule({
 	declarations: [PropertyViewComponent],
@@ -34,6 +35,7 @@ import { AttachmentListComponent } from 'src/app/shared/components/attachment-li
 		DialogModule,
 		SpinnerComponent,
 		AttachmentListComponent,
+		UploadListComponent,
 	],
 })
 export class PropertyViewModule {}

@@ -10,12 +10,3 @@
 >
 	Sair
 </button>
-
-<div class="w-96 m-4">
-	<app-file-upload
-		name="uploadDoc"
-		[fileLimit]="5"
-		(selectEvent)="onFileSelect($event)"
-		accept=".xls, .doc, .pdf, .xlsx, .docx"
-	></app-file-upload>
-</div>

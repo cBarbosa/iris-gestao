@@ -15,6 +15,7 @@ import { NgxCurrencyModule } from 'ngx-currency';
 import { DropdownModule } from 'primeng/dropdown';
 import { TabViewModule } from 'primeng/tabview';
 import { SidebarModule } from 'primeng/sidebar';
+import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
 
 @NgModule({
 	declarations: [UnitEditComponent],
@@ -33,6 +34,7 @@ import { SidebarModule } from 'primeng/sidebar';
 		NgxMaskModule.forChild(),
 		TabViewModule,
 		SidebarModule,
+		UploadListComponent,
 	],
 })
 export class UnitEditModule {}

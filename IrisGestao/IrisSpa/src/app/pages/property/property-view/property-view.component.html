@@ -332,8 +332,13 @@
 						<span class="value">{{ unit.matriculaAgua ?? "" }}</span>
 					</div>
 				</div>
-				<div class="attachment-data">
-					<div class="document project" *ngIf="unitDocs.projeto">
+				<div class="attachment-data" *ngIf="unit.guidReferencia">
+					<app-upload-list
+						[editable]="false"
+						[guid]="unit.guidReferencia"
+					></app-upload-list>
+
+					<!-- <div class="document project" *ngIf="unitDocs.projeto">
 						<span>Projeto</span>
 						<span class="buttons">
 							<button
@@ -379,7 +384,7 @@
 								<i class="ph-download-simple"></i>
 							</button>
 						</span>
-					</div>
+					</div> -->
 				</div>
 			</p-tabPanel>
 			<p-tabPanel header="Histórico">

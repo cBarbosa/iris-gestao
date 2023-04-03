@@ -102,76 +102,10 @@
 
 				<h5>Documentos da unidade</h5>
 
-				<!--
-			<div class="document-list">
-				<div
-					class="document project"
-					*ngIf="propertyAttachments && propertyAttachments.projeto"
-				>
-					<span>Projeto</span>
-					<span class="buttons">
-						<button
-							pButton
-							type="button"
-							class="p-button-rounded p-button-text"
-							(click)="
-								downloadFile(
-									propertyAttachments.projeto.local,
-									propertyAttachments.projeto.nome
-								)
-							"
-						>
-							<i class="ph-download-simple"></i>
-						</button>
-					</span>
-				</div>
-				<div
-					class="document registration"
-					*ngIf="propertyAttachments && propertyAttachments.matricula"
-				>
-					<span>Matrícula</span>
-					<span class="buttons">
-						<button
-							pButton
-							type="button"
-							class="p-button-rounded p-button-text"
-							(click)="
-								downloadFile(
-									propertyAttachments.matricula.local,
-									propertyAttachments.matricula.nome
-								)
-							"
-						>
-							<i class="ph-download-simple"></i>
-						</button>
-					</span>
-				</div>
-				<div
-					class="document occupancy"
-					*ngIf="propertyAttachments && propertyAttachments.habitese"
-				>
-					<span>Habite-se</span>
-					<span class="buttons">
-						<button
-							pButton
-							type="button"
-							class="p-button-rounded p-button-text"
-							(click)="
-								downloadFile(
-									propertyAttachments.habitese.local,
-									propertyAttachments.habitese.nome
-								)
-							"
-						>
-							<i class="ph-download-simple"></i>
-						</button>
-					</span>
-				</div>
-			</div>
-			-->
-
 				<div class="document-list">
-					<div
+					<app-upload-list [guid]="uid"></app-upload-list>
+
+					<!-- <div
 						class="document project"
 						[class.empty]="!docs.projeto || deletedDocs.projeto"
 					>
@@ -328,7 +262,7 @@
 								</label>
 							</span>
 						</ng-template>
-					</div>
+					</div> -->
 				</div>
 			</section>
 		</ng-template>
