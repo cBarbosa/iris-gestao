@@ -20,8 +20,4 @@ export class HomeComponent {
 		this.loginService.logout();
 		this.router.navigate(['/login']);
 	}
-
-	onFileSelect(fileList: File[]) {
-		console.log('parent event', fileList);
-	}
 }

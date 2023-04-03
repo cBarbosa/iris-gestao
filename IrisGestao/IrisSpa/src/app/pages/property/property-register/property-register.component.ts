@@ -54,7 +54,7 @@ export class PropertyRegisterComponent {
 		habitese?: File;
 		projeto?: File;
 		matricula?: File;
-		outrosdocs?: File;
+		outrosdocs?: File[];
 	} = {};
 
 	unitTypes: DropdownItem[] = [
@@ -514,13 +514,17 @@ export class PropertyRegisterComponent {
 		this.legalInfoSalaPavForm.controls['copies'].updateValueAndValidity();
 	}
 
-	onSelect(
-		e: any,
-		classificacao: Exclude<ArquivoClassificacoes, 'capa' | 'foto'>
-	) {
-		this.selectedFiles[classificacao] = e.currentFiles[0];
+	// onSelect(
+	// 	e: any,
+	// 	classificacao: Exclude<ArquivoClassificacoes, 'capa' | 'foto'>
+	// ) {
+	// 	this.selectedFiles[classificacao] = e.currentFiles[0];
 
-		console.log('selectedFiles', this.selectedFiles);
+	// 	console.log('selectedFiles', this.selectedFiles);
+	// }
+
+	onFileSelect(fileList: File[]) {
+		this.selectedFiles['outrosdocs'] = fileList;
 	}
 
 	onSubmit(e: any = null) {
@@ -635,7 +639,13 @@ export class PropertyRegisterComponent {
 		const registerAttachments = (guid: string) => {
 			Object.entries(this.selectedFiles).forEach(([classificacao, file]) => {
 				const formData = new FormData();
-				formData.append('files', file as File);
+
+				if (!Array.isArray(file)) formData.append('files', file as File);
+				else {
+					file.forEach((file) => {
+						formData.append('files', file as File);
+					});
+				}
 
 				this.anexoService
 					.registerFile(guid, formData, classificacao as ArquivoClassificacoes)

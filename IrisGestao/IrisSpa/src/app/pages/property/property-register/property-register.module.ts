@@ -15,6 +15,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { NgxMaskModule } from 'ngx-mask';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { CalendarModule } from 'primeng/calendar';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
 
 @NgModule({
 	declarations: [PropertyRegisterComponent],
@@ -33,6 +34,7 @@ import { CalendarModule } from 'primeng/calendar';
 		CalendarModule,
 		NgxMaskModule.forChild(),
 		NgxCurrencyModule,
+		FileUploadComponent,
 	],
 })
 export class PropertyRegisterModule {}

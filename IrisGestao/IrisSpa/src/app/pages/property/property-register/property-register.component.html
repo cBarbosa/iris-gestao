@@ -683,6 +683,15 @@
 				cadastro do imóvel.
 			</p>
 
+			<app-file-upload
+				name="uploadDoc"
+				[fileLimit]="10"
+				(selectEvent)="onFileSelect($event)"
+				accept=".xls, .doc, .pdf, .xlsx, .docx"
+			></app-file-upload>
+
+			<!-- OLD FILEUPLOAD -->
+			<!-- 
 			<div class="field">
 				<label for="occupancy" class="block">Habite-se</label>
 				<p-fileUpload
@@ -810,7 +819,7 @@
 						</small>
 					</ng-template>
 				</ng-container>
-			</div>
+			</div> -->
 		</section>
 	</div>
 	<div class="form-actions">
