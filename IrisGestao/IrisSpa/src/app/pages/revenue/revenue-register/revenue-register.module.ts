@@ -12,6 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { NgxMaskModule } from 'ngx-mask';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
+import { LinkPropertyComponent } from 'src/app/shared/components/link-property/link-property.component';
 
 @NgModule({
 	declarations: [RevenueRegisterComponent],
@@ -25,11 +26,10 @@ import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-
 		ButtonModule,
 		CalendarModule,
 		InputTextModule,
-		// SidebarModule,
 		NgxMaskModule.forChild(),
 		NgxCurrencyModule,
 		ResponsiveDialogComponent,
-		// MultiSelectModule,
+		LinkPropertyComponent,
 	],
 })
 export class RevenueRegisterModule {}

@@ -23,6 +23,12 @@
 			formGroupName="infoImovel"
 		>
 			<h4>Selecione o imóvel</h4>
+
+			<app-link-property
+				(selectEvent)="onPropertySelect($event)"
+				[required]="true"
+				[linkedProperties]="linkedProperty ? [linkedProperty] : []"
+			></app-link-property>
 		</section>
 
 		<!-- ------------------------------------------------------------------------ -->

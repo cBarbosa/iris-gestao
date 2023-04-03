@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
+import { LinkedProperty } from 'src/app/shared/components/link-property/link-property.component';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { RevenueService } from 'src/app/shared/services/revenue.service';
 import { Utils } from 'src/app/shared/utils';
@@ -52,15 +53,7 @@ export class RevenueRegisterComponent {
 		message: '',
 	};
 
-	linkedProperty: {
-		nome: string;
-		guid: string;
-		tipo: string;
-		unidades: {
-			guid: string;
-			name: string;
-		}[];
-	};
+	linkedProperty: LinkedProperty;
 	linkedPropertyInvalid = false;
 
 	opcoesClassificacaoReceita: DropdownItem[] = [
@@ -156,6 +149,12 @@ export class RevenueRegisterComponent {
 
 	checkHasError(c: AbstractControl) {
 		return Utils.checkHasError(c);
+	}
+
+	onPropertySelect(linkedProperties: LinkedProperty[] | LinkedProperty) {
+		if (Array.isArray(linkedProperties))
+			this.linkedProperty = linkedProperties[0];
+		else this.linkedProperty = linkedProperties;
 	}
 
 	changeStep(step: number) {
