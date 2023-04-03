@@ -1,0 +1,350 @@
+<div class="alert-message" *ngIf="invalidGuid || isLoading; else content">
+	<div class="loading" *ngIf="isLoading">
+		<app-spinner></app-spinner>
+	</div>
+	<div
+		class="invalid flex justify-center items-center h-full"
+		*ngIf="invalidGuid"
+	>
+		<div class="bg-white rounded border border-slate-200">
+			<div class="text-center w-full text-xl font-bold p-20 text-red-600">
+				Não foi possível carregar dados da obra
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #content>
+	<div class="edit-form">
+		<h1 class="text-2xl font-bold mb-6">Editar contrato</h1>
+
+		<div class="input-wrapper">
+			<section class="revenue-data">
+				<h4>Edifício do contrato</h4>
+
+				<div class="field">
+					<label for="name" class="block">Tipo do imóvel</label>
+					<input
+						id="name"
+						type="text"
+						value="Edifício corporativo"
+						aria-describedby="name-help"
+						maxlength="100"
+						pInputText
+						[disabled]="true"
+					/>
+				</div>
+
+				<div class="field">
+					<label for="name" class="block">Edifício</label>
+					<input
+						id="name"
+						type="text"
+						value="Edi. José Maria Lopes"
+						aria-describedby="name-help"
+						maxlength="100"
+						pInputText
+						[disabled]="true"
+					/>
+				</div>
+
+				<div class="photo-input">
+					<img src="../../../../assets/images/imovel.png" alt="edit-photo" />
+				</div>
+
+				<h5 class="mt-4">Ed. José Maria Lopes</h5>
+				<p>SQS 415 Bloco C</p>
+				<p><span class="icon file mr-2">&nbsp;</span>Edifício corporativo</p>
+			</section>
+
+			<form [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
+				<section class="aditional-data">
+					<div class="field">
+						<label for="nomeConta" class="block">Nome da conta</label>
+						<input
+							id="nomeConta"
+							type="text"
+							formControlName="nomeConta"
+							aria-describedby="nomeConta-help"
+							maxlength="100"
+							pInputText
+						/>
+						<ng-container *ngIf="checkHasError(f['nomeConta'])">
+							<small
+								id="nomeConta-help"
+								*ngIf="f['nomeConta'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o nome da conta
+							</small>
+							<ng-template #error2>
+								<small id="nomeConta-help" class="p-error block">
+									Nome inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="numeroTitulo" class="block">Número do título</label>
+						<input
+							id="numeroTitulo"
+							type="text"
+							formControlName="numeroTitulo"
+							aria-describedby="numeroTitulo-help"
+							maxlength="100"
+							pInputText
+						/>
+						<ng-container *ngIf="checkHasError(f['numeroTitulo'])">
+							<small
+								id="numeroTitulo-help"
+								*ngIf="f['numeroTitulo'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o número do título
+							</small>
+							<ng-template #error2>
+								<small id="numeroTitulo-help" class="p-error block">
+									Número do título inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="planoContas" class="block">Plano de Contas</label>
+						<p-dropdown
+							id="planoContas"
+							[options]="opcoesPlanoContas"
+							filterBy="label"
+							formControlName="planoContas"
+							aria-describedby="planoContas-help"
+						></p-dropdown>
+						<ng-container *ngIf="checkHasError(f['planoContas'])">
+							<small
+								id="planoContas-help"
+								*ngIf="f['planoContas'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o plano de Contas
+							</small>
+							<ng-template #error2>
+								<small id="planoContas-help" class="p-error block">
+									Plano de Contas inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="creditarPara" class="block">Creditar para</label>
+						<p-dropdown
+							id="creditarPara"
+							[options]="opcoesCreditarPara"
+							filterBy="label"
+							formControlName="creditarPara"
+							aria-describedby="creditarPara-help"
+						></p-dropdown>
+						<ng-container *ngIf="checkHasError(f['creditarPara'])">
+							<small
+								id="creditarPara-help"
+								*ngIf="f['creditarPara'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe a quem creditar
+							</small>
+							<ng-template #error2>
+								<small id="creditarPara-help" class="p-error block">
+									Crédito inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="nomeLocador" class="block">Nome do Locador</label>
+						<p-dropdown
+							id="nomeLocador"
+							[options]="opcoesNomeLocador"
+							filterBy="label"
+							formControlName="nomeLocador"
+							aria-describedby="nomeLocador-help"
+						></p-dropdown>
+						<ng-container *ngIf="checkHasError(f['nomeLocador'])">
+							<small
+								id="nomeLocador-help"
+								*ngIf="f['nomeLocador'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o nome do Locador
+							</small>
+							<ng-template #error2>
+								<small id="nomeLocador-help" class="p-error block">
+									Nome do Locador inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="formaPagamento" class="block">
+							Forma de pagamento
+						</label>
+						<p-dropdown
+							id="formaPagamento"
+							[options]="opcoesFormaPagamento"
+							filterBy="label"
+							formControlName="formaPagamento"
+							aria-describedby="formaPagamento-help"
+						></p-dropdown>
+						<ng-container *ngIf="checkHasError(f['formaPagamento'])">
+							<small
+								id="formaPagamento-help"
+								*ngIf="f['formaPagamento'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe a forma de pagamento
+							</small>
+							<ng-template #error2>
+								<small id="formaPagamento-help" class="p-error block">
+									Forma de pagamento inválida
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="dataVencimento" class="block">Vencimento</label>
+						<p-calendar
+							id="dataVencimento"
+							formControlName="dataVencimento"
+							dateFormat="dd/mm/yy"
+							(onInput)="onInputDate($event)"
+							(onBlur)="onBlurDate()"
+							placeholder="dd/mm/aaaa"
+							aria-describedby="dataVencimento-help"
+							panelStyleClass="hidden"
+						></p-calendar>
+						<ng-container *ngIf="checkHasError(f['dataVencimento'])">
+							<small
+								id="dataVencimento-help"
+								*ngIf="f['dataVencimento'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe a data de vencimento
+							</small>
+							<ng-template #error2>
+								<small id="dataVencimento-help" class="p-error block">
+									Data de vencimento inválida
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="valorTitulo" class="block">Valor do título</label>
+						<input
+							id="valorTitulo"
+							type="text"
+							formControlName="valorTitulo"
+							aria-describedby="valorTitulo-help"
+							currencyMask
+							pInputText
+						/>
+						<ng-container *ngIf="checkHasError(f['valorTitulo'])">
+							<small
+								id="valorTitulo-help"
+								*ngIf="f['valorTitulo'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o valor do título
+							</small>
+							<ng-template #error2>
+								<small id="valorTitulo-help" class="p-error block">
+									Valor do título inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="valorPagar" class="block">Valor a pagar</label>
+						<input
+							id="valorPagar"
+							type="text"
+							formControlName="valorPagar"
+							aria-describedby="valorPagar-help"
+							currencyMask
+							pInputText
+						/>
+						<ng-container *ngIf="checkHasError(f['valorPagar'])">
+							<small
+								id="valorPagar-help"
+								*ngIf="f['valorPagar'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o valor a pagar
+							</small>
+							<ng-template #error2>
+								<small id="valorPagar-help" class="p-error block">
+									Valor a pagar inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+				</section>
+			</form>
+		</div>
+		<div class="form-actions">
+			<button
+				pButton
+				type="button"
+				label="Voltar"
+				class="p-button-text h-11"
+				(click)="goBack()"
+			></button>
+
+			<button
+				pButton
+				pRipple
+				type="button"
+				label="Cancelar"
+				class="p-button-outlined h-11"
+				(click)="navigateTo('revenue/details/' + revenueGuid)"
+			></button>
+
+			<button pButton type="submit" label="Continuar" class="h-11"></button>
+		</div>
+	</div>
+</ng-template>
+
+<p-dialog
+	[(visible)]="displayModal"
+	[modal]="true"
+	[draggable]="false"
+	[resizable]="false"
+	styleClass="form-modal"
+>
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+		<button
+			pButton
+			label="Continuar"
+			(click)="closeModal(navigateTo, 'revenue/details/' + revenueGuid)"
+		></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</p-dialog>

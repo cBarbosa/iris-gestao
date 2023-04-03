@@ -1,1 +1,199 @@
-<p>revenue-listing works!</p>
+<div class="header-background"></div>
+<div class="content-wrapper">
+	<div class="content">
+		<header class="list-header">
+			<div class="flex justify-between items-center" [class.mb-2]="isMobile">
+				<h3 class="text-2xl font-bold">
+					Receitas
+					<span class="ml-2 text-sm">{{ totalRevenueCount }}</span>
+				</h3>
+				<button
+					pButton
+					pRipple
+					type="button"
+					icon="pi pi-sliders-h"
+					class="p-button-rounded p-button-text white-theme"
+					*ngIf="isMobile"
+					(click)="openFilters()"
+				></button>
+			</div>
+
+			<div class="options">
+				<ng-container *ngIf="!isMobile">
+					<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+				</ng-container>
+
+				<button
+					pButton
+					type="button"
+					class="p-button-outlined h-9 white-theme addButton"
+					(click)="navigateTo('revenue/register')"
+				>
+					<i class="pi pi-plus pr-2"></i>
+					Nova Receita
+				</button>
+			</div>
+		</header>
+
+		<ng-template #filtersTemplate>
+			<span class="p-input-icon-left w-full md:w-52">
+				<i class="pi pi-search"></i>
+				<input
+					pInputText
+					class="w-full md:w-52"
+					[class.white-theme]="!isMobile"
+					[(ngModel)]="filterTitulo"
+					(ngModelChange)="filterRevenuesDebounce($event)"
+					type="text"
+					placeholder="Buscar por título"
+				/>
+			</span>
+
+			<p-dropdown
+				[styleClass]="'w-full md:w-[8rem]' + (isMobile ? '' : ' white-theme')"
+				placeholder="Locatário"
+				[options]="opcoesLocatario"
+				[(ngModel)]="filterLocatario"
+				(ngModelChange)="filterRevenuesDebounce($event)"
+			></p-dropdown>
+
+			<p-dropdown
+				[styleClass]="
+					'w-full md:w-[12.6rem]' + (isMobile ? '' : ' white-theme')
+				"
+				placeholder="Tipo de Recebimento"
+				[options]="opcoesRecebimento"
+				[(ngModel)]="filterRecebimento"
+				(ngModelChange)="filterRevenuesDebounce($event)"
+			></p-dropdown>
+		</ng-template>
+
+		<ng-container>
+			<ng-container *ngIf="isLoadingRevenues">
+				<app-spinner styleClass="mt-11"></app-spinner>
+			</ng-container>
+			<ng-container *ngIf="!isLoadingRevenues && noRestults">
+				<div class="no-results-warn">
+					<span>Nenhum resultado</span>
+				</div>
+			</ng-container>
+
+			<p-table
+				*ngIf="!isMobile"
+				[value]="revenueEntries"
+				styleClass="p-datatable-striped"
+				[tableStyle]="{ 'min-width': '50rem' }"
+				[paginator]="!noRestults && !isLoadingRevenues"
+				[rows]="rows"
+				[(first)]="first"
+				responsiveLayout="scroll"
+				[totalRecords]="totalRevenueCount"
+				[lazy]="true"
+				(onLazyLoad)="loadRevenuesPage($event)"
+			>
+				<ng-template pTemplate="header">
+					<tr *ngIf="!isLoadingRevenues && !noRestults">
+						<th>Tipo de recebimento</th>
+						<th>Imóvel</th>
+						<th>Número do Título</th>
+						<th>Locatário</th>
+						<th>Valor</th>
+						<th>Data Pagamento/Vencimento</th>
+						<th></th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-revenue>
+					<tr>
+						<td class="font-bold">{{ revenue.tipoRecebimento }}</td>
+						<td>{{ revenue.imovel }}</td>
+						<td>{{ revenue.numeroTitulo }}</td>
+						<td>{{ revenue.locatario }}</td>
+						<td>{{ revenue.valor | currency }}</td>
+						<td>{{ revenue.dataPagamento | date : "shortDate" }}</td>
+						<td class="action min-w-[10rem]">
+							<button
+								pButton
+								type="button"
+								class="p-button-text h-7 text-center"
+								(click)="
+									navigateTo('revenue/details/' + revenue.guidReferencia)
+								"
+							>
+								Ver detalhes
+							</button>
+						</td>
+					</tr>
+				</ng-template>
+			</p-table>
+
+			<ng-container *ngIf="isMobile">
+				<div class="cardList">
+					<ng-container *ngFor="let revenue of revenueEntries">
+						<app-card-item
+							[card]="{
+								infos: [
+									{
+										label: 'Tipo de recebimento',
+										data: revenue.tipoRecebimento
+									},
+									{
+										label: 'Imóvel',
+										data: revenue.imovel
+									},
+									{
+										label: 'Número do Título',
+										data: revenue.numeroTitulo
+									},
+									{
+										label: 'Locatário',
+										data: revenue.locatario
+									},
+									{
+										label: 'Valor',
+										data: revenue.valor,
+										pipe: cardPipes['currency']
+									},
+									{
+										label: 'Data Pagamento/Vencimento',
+										data: revenue.dataPagamento,
+										pipe: cardPipes['date']
+									}
+								]
+							}"
+						>
+							<button
+								pButton
+								type="button"
+								class="p-button-text h-7 font-bold"
+								(click)="
+									navigateTo('revenue/details/' + revenue.guidReferencia)
+								"
+							>
+								Ver detalhes
+							</button>
+						</app-card-item>
+					</ng-container>
+
+					<div class="mx-5 mt-5">
+						<button
+							pButton
+							type="button"
+							class="p-button-outlined h-9 justify-center w-full"
+							(click)="loadRevenueEntries()"
+							*ngIf="revenueEntries.length < totalRevenueCount"
+						>
+							Carregar mais
+						</button>
+					</div>
+				</div>
+			</ng-container>
+		</ng-container>
+	</div>
+</div>
+
+<p-sidebar [(visible)]="displayMobileFilters" position="bottom">
+	<ng-template pTemplate="header">Filtros</ng-template>
+	<ng-template pTemplate="content">
+		<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+	</ng-template>
+</p-sidebar>
