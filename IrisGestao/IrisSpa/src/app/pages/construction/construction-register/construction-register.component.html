@@ -249,7 +249,14 @@
 		<section *ngIf="currentStep === 3" class="form-data">
 			<h4>Anexos</h4>
 
-			<div class="field">
+			<app-file-upload
+				name="uploadDoc"
+				[fileLimit]="10"
+				(selectEvent)="onFileSelect($event)"
+				accept=".xls, .doc, .pdf, .xlsx, .docx"
+			></app-file-upload>
+
+			<!-- <div class="field">
 				<label for="projeto" class="block">Projeto</label>
 				<p-fileUpload
 					id="projeto"
@@ -301,7 +308,7 @@
 					[maxFileSize]="1000000"
 					(onSelect)="onSelect($event, 'habitese')"
 				></p-fileUpload>
-			</div>
+			</div> -->
 		</section>
 	</div>
 	<div class="form-actions">

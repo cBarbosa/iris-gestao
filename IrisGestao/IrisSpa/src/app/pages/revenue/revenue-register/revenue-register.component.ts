@@ -244,31 +244,75 @@ export class RevenueRegisterComponent {
 			return;
 		}
 
+		this.registerForm = this.fb.group({
+			infoImovel: this.fb.group({}),
+			infoCliente: this.fb.group({
+				proprietario: ['', Validators.required],
+			}),
+			infoFatura: this.fb.group({
+				classificacaoReceita: [null, Validators.required],
+				creditarPara: [null, Validators.required],
+				parcelas: [null, Validators.required],
+				valor: [null, Validators.required],
+				dataVencimento: [null, Validators.required],
+				impostos: [null, Validators.required],
+			}),
+		});
+
 		let formData: {
-			selecaoImovel: {
-				tipoImovel: number;
-				imovel: string;
+			infoCliente: {
+				// tipoImovel: number;
+				proprietario: string;
 			};
-			dadosObra: {
-				nome: string;
-				dataInicio: string;
-				dataFim: string;
-				valorOrcamento: number;
+			infoFatura: {
+				classificacaoReceita: number;
+				creditarPara: number;
+				parcelas: number;
+				valor: number;
+				dataVencimento: Date;
+				impostos: number;
 			};
 		} = this.registerForm.getRawValue();
 
 		const revenueObj: {
-			guidImovel: string;
-			nomeObra: string;
-			dataInicio: string;
-			dataFim: string;
-			valorOrcamento: number;
+			numeroTitulo: string;
+			idTipoTitulo: number;
+			idTipoCreditoAluguel: number;
+			guidCliente: string;
+			idIndiceReajuste: number;
+			idFormaPagamento: number;
+			dataVencimento: string;
+			dataPagamento: string;
+			valorTitulo: number;
+			porcentagemImpostoRetido: number;
+			parcelas: number;
+			lstImoveis: [
+				{
+					guidImovel: string;
+					lstUnidades: string[];
+				}
+			];
 		} = {
-			guidImovel: formData.selecaoImovel.imovel,
-			nomeObra: formData.dadosObra.nome,
-			dataInicio: formData.dadosObra.dataInicio,
-			dataFim: formData.dadosObra.dataFim,
-			valorOrcamento: formData.dadosObra.valorOrcamento,
+			numeroTitulo: '123123154/2023',
+			idTipoTitulo: 1,
+			idTipoCreditoAluguel: 1,
+			guidCliente: '657C89B1-25D1-402E-82F8-BD157D2E57A2',
+			idIndiceReajuste: 2,
+			idFormaPagamento: 1,
+			dataVencimento: '2023-04-10',
+			dataPagamento: '2023-04-10',
+			valorTitulo: 748.0,
+			porcentagemImpostoRetido: 0,
+			parcelas: 6,
+			lstImoveis: [
+				{
+					guidImovel: '05CA9F97-5A0C-45BE-B02C-91184F4769F6',
+					lstUnidades: [
+						'7d67b442-3f7c-46e8-b6b7-98343aed92c2',
+						'62e1366f-3292-4af6-85db-c23962c2b2a2',
+					],
+				},
+			],
 		};
 
 		this.revenueService

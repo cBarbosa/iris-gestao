@@ -85,6 +85,11 @@ export class RevenueEditComponent {
 		},
 	];
 
+	imovel = {
+		nome: '',
+		tipo: 'Edifício corporativo',
+		endereco: '',
+	};
 	constructor(
 		private fb: FormBuilder,
 		private location: Location,
@@ -127,21 +132,21 @@ export class RevenueEditComponent {
 					const data = event.data[0];
 					console.log(data);
 
-					this.editForm.patchValue({
-						nome: data.nomeObra,
-						dataInicio: new Date(data.dataInicio),
-						dataFim: new Date(data.dataFim),
-						valorOrcamento: data.orcamento,
-						porcentagemConclusao: data.porcentagemConclusao,
+					this.imovel.nome = data.imoveis[0].nome;
+					const { rua, bairro, cidade, uf } = data.imoveis[0].imovelEndereco[0];
+					this.imovel.endereco = `${rua}, ${bairro}, ${cidade} - ${uf}`;
 
-						nomeConta: data.tipoRecebimento,
+					this.editForm.patchValue({
+						nomeConta: data.numeroTitulo,
 						numeroTitulo: data.numeroTitulo,
-						planoContas: 1,
-						creditarPara: 1,
-						nomeLocador: 1,
-						formaPagamento: 1,
-						dataVencimento: data.dataPagamento,
-						valorTitulo: data.valor,
+						planoContas: data.tipoTituloReceber.id,
+						creditarPara: data.creditoAluguel.id,
+						nomeLocador: data.cliente.nome,
+						formaPagamento: data.formaPagamento.id,
+						dataVencimento: data.dataVencimento
+							? new Date(data.dataVencimento)
+							: null,
+						valorTitulo: data.valorTitulo,
 						valorPagar: data.valorTitulo,
 					});
 				} else {

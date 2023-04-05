@@ -88,12 +88,7 @@ export class ConstructionRegisterComponent {
 
 	opcoesUnidades: DropdownItem[] = [];
 
-	attachments: {
-		projeto?: File;
-		matricula?: File;
-		habitese?: File;
-		outrosdocs?: File;
-	} = {};
+	attachments: File[] = [];
 
 	constructor(
 		private fb: FormBuilder,
@@ -312,12 +307,9 @@ export class ConstructionRegisterComponent {
 		else this.goBack();
 	}
 
-	onSelect(
-		e: any,
-		classificacao: 'projeto' | 'matricula' | 'habitese' | 'outrosdocs'
-	) {
+	onFileSelect(e: any) {
 		console.log('e', e);
-		this.attachments[classificacao] = e.currentFiles[0];
+		this.attachments = e;
 	}
 
 	onSubmit(e: any = null) {
@@ -354,14 +346,13 @@ export class ConstructionRegisterComponent {
 		};
 
 		const registerAttachments = (guid: string) => {
-			Object.entries(this.attachments).forEach(([classificacao, file]) => {
-				const formData = new FormData();
-				formData.append('files', file);
+			const formData = new FormData();
 
-				this.anexoService
-					.registerFile(guid, formData, classificacao as ArquivoClassificacoes)
-					.subscribe();
+			this.attachments.forEach((file) => {
+				formData.append('files', file);
 			});
+
+			this.anexoService.registerFile(guid, formData, 'outrosdocs').subscribe();
 		};
 
 		this.constructionService

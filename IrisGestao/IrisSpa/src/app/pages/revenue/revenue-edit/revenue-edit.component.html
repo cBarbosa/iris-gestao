@@ -27,7 +27,7 @@
 					<input
 						id="name"
 						type="text"
-						value="Edifício corporativo"
+						[value]="imovel.tipo"
 						aria-describedby="name-help"
 						maxlength="100"
 						pInputText
@@ -40,7 +40,7 @@
 					<input
 						id="name"
 						type="text"
-						value="Edi. José Maria Lopes"
+						[value]="imovel.nome"
 						aria-describedby="name-help"
 						maxlength="100"
 						pInputText
@@ -53,7 +53,7 @@
 				</div>
 
 				<h5 class="mt-4">Ed. José Maria Lopes</h5>
-				<p>SQS 415 Bloco C</p>
+				<p>{{ imovel.endereco }}</p>
 				<p><span class="icon file mr-2">&nbsp;</span>Edifício corporativo</p>
 			</section>
 

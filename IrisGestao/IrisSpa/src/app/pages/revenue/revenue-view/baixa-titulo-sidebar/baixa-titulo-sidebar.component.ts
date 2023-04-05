@@ -11,8 +11,8 @@ import {
 import { NgxMaskModule } from 'ngx-mask';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
-import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
 import { Utils } from 'src/app/shared/utils';
 
 type DropdownItem = {
@@ -32,7 +32,7 @@ type DropdownItem = {
 		CalendarModule,
 		InputTextModule,
 		DropdownModule,
-		FileUploadModule,
+		FileUploadComponent,
 	],
 	templateUrl: './baixa-titulo-sidebar.component.html',
 	styleUrls: ['./baixa-titulo-sidebar.component.scss'],
@@ -59,12 +59,12 @@ export class BaixaTituloSidebarComponent {
 
 	@Input()
 	data: {
-		dataVencimento: Date;
+		dataVencimento: Date | null;
 		valorTotal: number;
 		valorAluguel: number;
-		dataPagamento: Date;
+		dataPagamento: Date | null;
 		diasAtraso: number;
-		dataVencimentoFatura: Date;
+		dataVencimentoFatura: Date | null;
 		observacoes: string;
 		anexoNf: string;
 	} | null;
@@ -152,7 +152,7 @@ export class BaixaTituloSidebarComponent {
 	}
 
 	onFileSelect(e: any) {
-		this.selectedFile = e.currentFiles[0];
+		this.selectedFile = e[0];
 	}
 
 	cancelEdit() {

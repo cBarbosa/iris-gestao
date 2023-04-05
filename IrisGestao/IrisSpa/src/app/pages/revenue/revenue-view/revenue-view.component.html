@@ -14,7 +14,7 @@
 				<div class="main-card">
 					<header>
 						<h3 class="mb-4">
-							{{ revenue?.tipoRecebimento }}
+							{{ revenue?.nomeTitulo }}
 						</h3>
 						<div class="actions">
 							<button
@@ -64,19 +64,19 @@
 							<div class="revenue-data">
 								<div class="data-label">Classificação da Receita</div>
 								<div class="data-value">
-									{{ revenue?.['classificacao'] }}
+									{{ revenue?.['indiceReajuste'].nome }}
 								</div>
 							</div>
 							<div class="revenue-data">
 								<div class="data-label">Creditar para</div>
 								<div class="data-value">
-									{{ revenue?.['creditarPara'] }}
+									{{ revenue?.['creditoAluguel'].nome }}
 								</div>
 							</div>
 							<div class="revenue-data">
 								<div class="data-label">Locatário</div>
 								<div class="data-value">
-									{{ revenue?.['locatario'] }}
+									{{ revenue?.['cliente'].nome }}
 								</div>
 							</div>
 							<div class="revenue-data">
@@ -84,19 +84,19 @@
 									Data de vencimento da primeira parcela
 								</div>
 								<div class="data-value">
-									{{ revenue?.['dataPagamento'] | date : "shortDate" }}
+									{{ revenue?.['dataVencimentoPrimeraParcela'] | date : "shortDate" }}
 								</div>
 							</div>
 							<div class="revenue-data">
 								<div class="data-label">Forma de pagamento</div>
 								<div class="data-value">
-									{{ revenue?.['formaPagamento'] }}
+									{{ revenue?.['formaPagamento'].nome }}
 								</div>
 							</div>
 							<div class="revenue-data">
 								<div class="data-label">Valor a pagar</div>
 								<div class="data-value">
-									{{ revenue?.['valor'] | currency }}
+									{{ revenue?.['valorTitulo'] | currency }}
 								</div>
 							</div>
 						</div>
@@ -127,8 +127,8 @@
 					</ng-template>
 					<ng-template pTemplate="body" let-fatura>
 						<tr>
-							<td>{{ fatura.valorAluguel | currency }}</td>
-							<td>{{ fatura.dataPagamento | date : "shortDate" }}</td>
+							<td>{{ fatura.valorFatura | currency }}</td>
+							<td>{{ fatura.dataCriacao | date : "shortDate" }}</td>
 							<td>
 								{{
 									fatura.diasAtraso
@@ -144,13 +144,13 @@
 									value="Emitida"
 									[rounded]="true"
 									severity="success"
-									*ngIf="fatura.emitido"
+									*ngIf="fatura.status"
 								></p-tag>
 								<p-tag
 									value="Não emitida"
 									[rounded]="true"
 									severity="danger"
-									*ngIf="!fatura.emitido"
+									*ngIf="!fatura.status"
 								></p-tag>
 							</td>
 							<td class="action w-48">
@@ -159,7 +159,7 @@
 									type="button"
 									class="p-button-outlined h-9 w-full justify-center text-sm"
 									(click)="setCurrentFatura(fatura); showDetalheBaixa()"
-									*ngIf="fatura.emitido"
+									*ngIf="fatura.status"
 								>
 									Ver detalhes
 								</button>
@@ -168,7 +168,7 @@
 									type="button"
 									class="p-button-filled h-9 w-full justify-center text-sm"
 									(click)="setCurrentFatura(fatura); showBaixaTitulo()"
-									*ngIf="!fatura.emitido"
+									*ngIf="!fatura.status"
 								>
 									Emitir nota fiscal
 								</button>
@@ -185,12 +185,12 @@
 									infos: [
 										{
 											label: 'Valor do aluguel pago',
-											data: fatura.valorAluguel,
+											data: fatura.valorFatura,
 											pipe: cardPipes['currency']
 										},
 										{
 											label: 'Data do pagamento',
-											data: fatura.dataPagamento,
+											data: fatura.dataCriacao,
 											pipe: cardPipes['date']
 										},
 										{
@@ -209,10 +209,10 @@
 									],
 									tags: [
 										{
-											value: fatura.emitido
+											value: fatura.status
 												? 'Título baixado'
 												: 'Baixa não efetuada',
-											severity: fatura.emitido ? 'success' : 'danger'
+											severity: fatura.status ? 'success' : 'danger'
 										}
 									]
 								}"
@@ -222,7 +222,7 @@
 									type="button"
 									class="p-button-outlined h-9 w-full justify-center text-sm"
 									(click)="setCurrentFatura(fatura); showDetalheBaixa()"
-									*ngIf="fatura.emitido"
+									*ngIf="fatura.status"
 								>
 									Ver detalhes
 								</button>
@@ -231,7 +231,7 @@
 									type="button"
 									class="p-button-filled h-9 w-full justify-center text-sm"
 									(click)="setCurrentFatura(fatura); showBaixaTitulo()"
-									*ngIf="!fatura.emitido"
+									*ngIf="!fatura.status"
 								>
 									Emitir nota fiscal
 								</button>
@@ -265,7 +265,7 @@
 			},
 			{
 				label: 'Valor',
-				data: faturaSelected?.valor,
+				data: faturaSelected?.valorFatura,
 				pipe: cardPipes['currency']
 			},
 			{
@@ -279,12 +279,12 @@
 			},
 			{
 				label: '% de impostos retidos',
-				data: faturaSelected?.impostosRetidos,
+				data: faturaSelected?.impostosRetidos ?? 0,
 				pipe: cardPipes['percent']
 			},
 			{
 				label: 'Valor líquido',
-				data: faturaSelected?.valorLiquido,
+				data: faturaSelected?.valorFatura,
 				pipe: cardPipes['currency']
 			},
 			{
@@ -294,7 +294,7 @@
 			},
 			{
 				label: 'Data de pagamento',
-				data: faturaSelected?.dataPagamento,
+				data: faturaSelected?.dataCriacao,
 				pipe: cardPipes['date']
 			}
 		]"
@@ -303,7 +303,11 @@
 	<h3 class="mt-3 font-bold">Anexo nota fiscal</h3>
 
 	<div class="document-list">
-		<div class="document file" [class.empty]="!faturaSelected?.nfFile">
+		<app-upload-list
+			[guid]="faturaSelected?.guidReferencia"
+			[editable]="false"
+		></app-upload-list>
+		<!-- <div class="document file" [class.empty]="!faturaSelected?.nfFile">
 			<span>{{ faturaSelected?.nfFile.name }}</span>
 			<span class="buttons">
 				<button
@@ -320,7 +324,7 @@
 					<i class="ph-download-simple"></i>
 				</button>
 			</span>
-		</div>
+		</div> -->
 	</div>
 
 	<button
@@ -336,5 +340,7 @@
 	<ng-template pTemplate="header">
 		<h2 class="text-xl font-bold">Baixa de Título</h2>
 	</ng-template>
-	<app-baixa-titulo-sidebar></app-baixa-titulo-sidebar>
+	<app-baixa-titulo-sidebar
+		[data]="getFaturaFormData(faturaSelected)"
+	></app-baixa-titulo-sidebar>
 </p-sidebar>

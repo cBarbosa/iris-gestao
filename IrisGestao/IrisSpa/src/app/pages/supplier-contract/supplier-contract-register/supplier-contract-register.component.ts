@@ -131,12 +131,7 @@ export class SupplierContractRegisterComponent {
 		},
 	];
 
-	attachments: {
-		projeto?: File;
-		matricula?: File;
-		habitese?: File;
-		outrosdocs?: File;
-	} = {};
+	attachments: File[] = [];
 
 	constructor(
 		private fb: FormBuilder,
@@ -436,12 +431,9 @@ export class SupplierContractRegisterComponent {
 		else this.goBack();
 	}
 
-	onSelect(
-		e: any,
-		classificacao: 'projeto' | 'matricula' | 'habitese' | 'outrosdocs'
-	) {
+	onFileSelect(e: any) {
 		console.log('e', e);
-		this.attachments[classificacao] = e.currentFiles[0];
+		this.attachments = e;
 	}
 
 	onSubmit(e: any = null) {
@@ -501,14 +493,11 @@ export class SupplierContractRegisterComponent {
 		};
 
 		const registerAttachments = (guid: string) => {
-			Object.entries(this.attachments).forEach(([classificacao, file]) => {
-				const formData = new FormData();
+			const formData = new FormData();
+			this.attachments.forEach((file) => {
 				formData.append('files', file);
-
-				this.anexoService
-					.registerFile(guid, formData, classificacao as ArquivoClassificacoes)
-					.subscribe();
 			});
+			this.anexoService.registerFile(guid, formData, 'outrosdocs').subscribe();
 		};
 
 		this.contractService

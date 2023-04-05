@@ -159,12 +159,7 @@ export class RentContractRegisterComponent {
 
 	units: DropdownItem[] = [];
 
-	attachments: {
-		projeto?: File;
-		matricula?: File;
-		habitese?: File;
-		outrosdocs?: File;
-	} = {};
+	attachments: File[] = [];
 
 	constructor(
 		private fb: FormBuilder,
@@ -577,14 +572,11 @@ export class RentContractRegisterComponent {
 			});
 
 		const registerAttachments = (guid: string) => {
-			Object.entries(this.attachments).forEach(([classificacao, file]) => {
-				const formData = new FormData();
+			const formData = new FormData();
+			this.attachments.forEach((file) => {
 				formData.append('files', file);
-
-				this.anexoService
-					.registerFile(guid, formData, classificacao as ArquivoClassificacoes)
-					.subscribe();
 			});
+			this.anexoService.registerFile(guid, formData, 'outrosdocs').subscribe();
 		};
 	}
 
@@ -829,11 +821,8 @@ export class RentContractRegisterComponent {
 		this.router.navigate([route]);
 	};
 
-	onSelect(
-		e: any,
-		classificacao: 'projeto' | 'matricula' | 'habitese' | 'outrosdocs'
-	) {
+	onFileSelect(e: any) {
 		console.log('e', e);
-		this.attachments[classificacao] = e.currentFiles[0];
+		this.attachments = e;
 	}
 }

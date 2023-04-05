@@ -15,6 +15,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
 
 @NgModule({
 	declarations: [ConstructionRegisterComponent],
@@ -34,6 +35,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 		NgxCurrencyModule,
 		ResponsiveDialogComponent,
 		MultiSelectModule,
+		FileUploadComponent,
 	],
 })
 export class ConstructionRegisterModule {}

@@ -36,7 +36,7 @@ export class RevenueListingComponent {
 		},
 	];
 
-	opcoesRecebimento = [
+	opcoesTipo = [
 		{
 			label: 'Tipo de Recebimento',
 			value: null,
@@ -44,8 +44,7 @@ export class RevenueListingComponent {
 	];
 
 	filterTitulo: string = '';
-	filterLocatario: number;
-	filterRecebimento: number;
+	filterTipo: number;
 
 	constructor(
 		private router: Router,
@@ -111,18 +110,12 @@ export class RevenueListingComponent {
 
 	setRevenueEntries(
 		page = 1,
-		numeroConstrucao?: string,
-		idLocatario?: number,
-		idRecebimento?: number
+		numeroTitulo?: string,
+		idTipoTitulo?: number
 	): Promise<any> {
 		this.revenueEntries = [];
 
-		return this.getRevenuePage(
-			page,
-			numeroConstrucao,
-			idLocatario,
-			idRecebimento
-		)
+		return this.getRevenuePage(page, numeroTitulo, idTipoTitulo)
 			.then((content) => {
 				this.totalRevenueCount = content.totalCount;
 				if (this.totalRevenueCount <= 0) this.noRestults = true;
@@ -155,15 +148,14 @@ export class RevenueListingComponent {
 
 	getRevenuePage(
 		page = 1,
-		titulo?: string,
-		idLocatario?: number,
-		idRecebimento?: number
+		numeroTitulo?: string,
+		idTipoTitulo?: number
 	): Promise<any> {
 		this.isLoadingRevenues = true;
 
 		return new Promise((res, rej) => {
 			this.revenueService
-				.getRevenues(this.rows, page, titulo, idLocatario, idRecebimento)
+				.getRevenues(this.rows, page, numeroTitulo, idTipoTitulo)
 				?.pipe(first())
 				.subscribe({
 					next: (event: any) => {
@@ -174,13 +166,13 @@ export class RevenueListingComponent {
 								totalCount: event.data.totalCount,
 								data: event.data.items.map((receita: any) => {
 									return {
-										tipoRecebimento: receita.tipoRecebimento,
+										tipoRecebimento: receita.tipoTituloReceber.nome,
 										numeroTitulo: receita.numeroTitulo,
-										imovel: receita.imovel.nome,
-										locatario: receita.locatario,
-										valor: receita.valor,
-										dataPagamento: receita.dataPagamento
-											? new Date(receita.dataPagamento)
+										imovel: receita.imovel?.nome,
+										locatario: receita.cliente?.nome,
+										valor: receita.valorTitulo,
+										dataPagamento: receita.dataVencimentoPrimeraParcela
+											? new Date(receita.dataVencimentoPrimeraParcela)
 											: null,
 										action: '',
 										guidReferencia: receita.guidReferencia,
@@ -206,19 +198,9 @@ export class RevenueListingComponent {
 		stack: boolean = false
 	): Promise<any> => {
 		if (stack)
-			return this.getRevenuePage(
-				page,
-				this.filterTitulo,
-				this.filterLocatario,
-				this.filterRecebimento
-			);
+			return this.getRevenuePage(page, this.filterTitulo, this.filterTipo);
 		else
-			return this.setRevenueEntries(
-				page,
-				this.filterTitulo,
-				this.filterLocatario,
-				this.filterRecebimento
-			);
+			return this.setRevenueEntries(page, this.filterTitulo, this.filterTipo);
 	};
 
 	filterRevenuesDebounce: Function = Utils.debounce(this.filterRevenues, 1000);
