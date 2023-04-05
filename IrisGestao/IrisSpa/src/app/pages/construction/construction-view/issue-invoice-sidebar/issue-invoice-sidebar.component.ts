@@ -18,6 +18,7 @@ import {
 } from 'src/app/shared/validators/custom-validators';
 import { Utils } from 'src/app/shared/utils';
 import { FileUploadModule } from 'primeng/fileupload';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
 
 type DropdownItem = {
 	label: string;
@@ -36,7 +37,7 @@ type DropdownItem = {
 		CalendarModule,
 		InputTextModule,
 		DropdownModule,
-		FileUploadModule,
+		FileUploadComponent,
 	],
 	templateUrl: './issue-invoice-sidebar.component.html',
 	styleUrls: ['./issue-invoice-sidebar.component.scss'],

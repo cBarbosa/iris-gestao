@@ -16,6 +16,7 @@ import { NgxCurrencyModule } from 'ngx-currency';
 import { SidebarModule } from 'primeng/sidebar';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
 
 @NgModule({
 	declarations: [SupplierContractRegisterComponent],
@@ -36,6 +37,7 @@ import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-
 		NgxMaskModule.forChild(),
 		NgxCurrencyModule,
 		ResponsiveDialogComponent,
+		FileUploadComponent,
 	],
 })
 export class SupplierContractRegisterModule {}

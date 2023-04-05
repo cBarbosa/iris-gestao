@@ -15,6 +15,7 @@ import { PhotoGalleryComponent } from 'src/app/shared/components/photo-gallery/p
 import { SidebarModule } from 'primeng/sidebar';
 import { DetailSidebarComponent } from 'src/app/shared/components/detail-sidebar/detail-sidebar.component';
 import { BaixaTituloSidebarComponent } from './baixa-titulo-sidebar/baixa-titulo-sidebar.component';
+import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
 
 @NgModule({
 	declarations: [RevenueViewComponent],
@@ -33,6 +34,7 @@ import { BaixaTituloSidebarComponent } from './baixa-titulo-sidebar/baixa-titulo
 		SidebarModule,
 		DetailSidebarComponent,
 		BaixaTituloSidebarComponent,
+		UploadListComponent,
 	],
 })
 export class RevenueViewModule {}

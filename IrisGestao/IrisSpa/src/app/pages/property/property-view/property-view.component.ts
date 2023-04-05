@@ -100,6 +100,25 @@ export class PropertyViewComponent implements OnInit {
 
 		this.getData();
 
+		this.anexoService
+			.getFiles(this.uid)
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					const cover = event?.find(
+						({ classificacao }: { classificacao: string }) =>
+							classificacao === 'capa'
+					);
+
+					if (cover) this.coverImage = cover.local;
+
+					console.log(this.coverImage);
+				},
+				error: (error) => {
+					console.error('Erro: ', error);
+				},
+			});
+
 		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
 			this.isMobile = screenWidth < 768;
 		});

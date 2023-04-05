@@ -197,7 +197,7 @@
 
 	<div class="field">
 		<label for="anexoNf" class="block">Anexo da NF</label>
-		<p-fileUpload
+		<!-- <p-fileUpload
 			id="anexoNf"
 			mode="basic"
 			name="anexoNf"
@@ -206,7 +206,14 @@
 			chooseIcon="pi-upload"
 			[maxFileSize]="1000000"
 			(onSelect)="onFileSelect($event)"
-		></p-fileUpload>
+		></p-fileUpload> -->
+
+		<app-file-upload
+			name="uploadDoc"
+			[fileLimit]="1"
+			(selectEvent)="onFileSelect($event)"
+			accept=".xls, .doc, .pdf, .xlsx, .docx"
+		></app-file-upload>
 		<ng-container *ngIf="checkHasError(f['anexoNf'])">
 			<small
 				id="anexoNf-help"

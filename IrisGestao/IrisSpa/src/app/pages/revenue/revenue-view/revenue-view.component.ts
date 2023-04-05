@@ -67,10 +67,11 @@ export class RevenueViewComponent {
 					console.log('event', event);
 					if (event.success) {
 						this.revenue = event.data[0];
-						this.imageList = event.imagens ?? [];
+						this.imageList ||= event.imagens ?? [];
 						//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
 						// this.properties = [...event.data.imovel];
-						this.property = event.data[0].imovel as unknown as Imovel;
+						event.data[0]?.imoveis &&
+							(this.property = event.data[0].imoveis[0] as unknown as Imovel);
 					} else {
 						this.revenue = null;
 					}
@@ -89,6 +90,23 @@ export class RevenueViewComponent {
 		console.log('Fatura Selecionado >> ', item);
 		this.faturaSelected = item;
 	};
+
+	getFaturaFormData(fatura: any) {
+		return {
+			dataVencimento: fatura?.dataVencimento
+				? new Date(fatura?.numeroFatura)
+				: null,
+			valorTotal: fatura?.valorFatura,
+			valorAluguel: fatura?.valorFatura,
+			dataPagamento: fatura?.dataCriacao ? new Date(fatura?.dataCriacao) : null,
+			diasAtraso: fatura?.diasAtraso ?? 0,
+			dataVencimentoFatura: fatura?.dataCriacao
+				? new Date(fatura?.dataCriacao)
+				: null,
+			observacoes: fatura?.descricaoBaixaFatura,
+			anexoNf: 'string',
+		};
+	}
 
 	showDetalheBaixa = (): void => {
 		this.detalheBaixaVisible = true;

@@ -49,21 +49,21 @@
 				/>
 			</span>
 
-			<p-dropdown
+			<!-- <p-dropdown
 				[styleClass]="'w-full md:w-[8rem]' + (isMobile ? '' : ' white-theme')"
 				placeholder="Locatário"
 				[options]="opcoesLocatario"
 				[(ngModel)]="filterLocatario"
 				(ngModelChange)="filterRevenuesDebounce($event)"
-			></p-dropdown>
+			></p-dropdown> -->
 
 			<p-dropdown
 				[styleClass]="
 					'w-full md:w-[12.6rem]' + (isMobile ? '' : ' white-theme')
 				"
 				placeholder="Tipo de Recebimento"
-				[options]="opcoesRecebimento"
-				[(ngModel)]="filterRecebimento"
+				[options]="opcoesTipo"
+				[(ngModel)]="filterTipo"
 				(ngModelChange)="filterRevenuesDebounce($event)"
 			></p-dropdown>
 		</ng-template>

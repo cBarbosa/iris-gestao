@@ -620,7 +620,14 @@
 				cadastro do contrato.
 			</p>
 
-			<div class="field">
+			<app-file-upload
+				name="uploadDoc"
+				[fileLimit]="10"
+				(selectEvent)="onFileSelect($event)"
+				accept=".xls, .doc, .pdf, .xlsx, .docx"
+			></app-file-upload>
+
+			<!-- <div class="field">
 				<label for="occupancy" class="block">Anexo</label>
 				<p-fileUpload
 					id="occupancy"
@@ -652,7 +659,7 @@
 						</small>
 					</ng-template>
 				</ng-container>
-			</div>
+			</div> -->
 		</section>
 	</div>
 	<div class="form-actions">
