@@ -60,6 +60,8 @@ public partial class FaturaTitulo : BaseEntity<FaturaTitulo>
     [Column(TypeName = "datetime")]
     public DateTime? DataUltimaModificacao { get; set; }
 
+    public int NumeroParcela { get; set; }
+
     [ForeignKey("IdTitulo")]
     [InverseProperty("FaturaTitulo")]
     public virtual TituloReceber IdTituloReceberNavigation { get; set; } = null!;

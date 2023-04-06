@@ -21,14 +21,21 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
         return await DbSet.FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
     }
     
-    public async Task<TituloReceber?> GetByContratoAluguelGuid(Guid guid)
+    public async Task<TituloReceber?> GetByContratoAluguelId(int idContratoAluguel)
     {
-        return await DbSet.FirstOrDefaultAsync(x => x.IdContratoAluguelNavigation.GuidReferencia.Equals(guid));
+        return await DbSet.FirstOrDefaultAsync(x => x.IdContratoAluguel.Equals(idContratoAluguel));
     }
 
     public async Task<int> GetNumeroTitulo()
     {
-        return await DbSet.Select(x=> x.Sequencial).MaxAsync();
+        try
+        {
+            return await DbSet.Select(x => x.Sequencial).MaxAsync();
+        }
+        catch (Exception)
+        {
+            return 100000;
+        }
     }
 
     public async Task<object?> GetByTituloReceberGuid(Guid guid)
@@ -85,6 +92,25 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                             Id = x.IdFormaPagamentoNavigation.Id,
                             Nome = x.IdFormaPagamentoNavigation.Nome
                         },
+                        ContratoAluguel = x.IdContratoAluguelNavigation == null ? null : new
+                        {
+                            GuidReferencia = x.IdContratoAluguelNavigation.GuidReferencia,
+                            NumeroContrato = x.IdContratoAluguelNavigation.NumeroContrato,
+                            ValorAluguel = x.IdContratoAluguelNavigation.ValorAluguel,
+                            PercentualRetencaoImpostos = x.IdContratoAluguelNavigation.PercentualRetencaoImpostos,
+                            ValorAluguelLiquido = x.IdContratoAluguelNavigation.ValorAluguelLiquido,
+                            PercentualDescontoAluguel = x.IdContratoAluguelNavigation.PercentualDescontoAluguel,
+                            CarenciaAluguel = x.IdContratoAluguelNavigation.CarenciaAluguel,
+                            PrazoCarencia = x.IdContratoAluguelNavigation.PrazoCarencia,
+                            DataInicioContrato = x.IdContratoAluguelNavigation.DataInicioContrato,
+                            PrazoTotalContrato = x.IdContratoAluguelNavigation.PrazoTotalContrato,
+                            DataFimContrato = x.IdContratoAluguelNavigation.DataFimContrato,
+                            DataOcupacao = x.IdContratoAluguelNavigation.DataOcupacao,
+                            DiaVencimentoAluguel = x.IdContratoAluguelNavigation.DiaVencimentoAluguel,
+                            PeriodicidadeReajuste = x.IdContratoAluguelNavigation.PeriodicidadeReajuste,
+                            DataCriacao = x.IdContratoAluguelNavigation.DataCriacao,
+                            DataAtualização = x.IdContratoAluguelNavigation.DataUltimaModificacao,
+                        },
                         Faturas = x.FaturaTitulo.Select(x => new
                         {
                             GuidReferencia = x.GuidReferencia,
@@ -98,6 +124,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                             DataUltimaModificacao = x.DataUltimaModificacao,
                             DataEmissaoNotaFiscal = x.DataEmissaoNotaFiscal,
                             Status = x.Status,
+                            NumeroParcela = x.NumeroParcela,
                             StatusFatura = ((x.Status && x.DataPagamento == null && x.DataVencimento > DateTime.Now) ? FaturaTituloEnum.A_VENCER :
                             (x.Status && x.DataPagamento == null && x.DataVencimento < DateTime.Now) ? FaturaTituloEnum.VENCIDO : 
                             (x.Status && x.DataPagamento != null) ? FaturaTituloEnum.PAGO : FaturaTituloEnum.INATIVO),
@@ -214,6 +241,32 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                                 Id = x.IdFormaPagamentoNavigation.Id,
                                 Nome = x.IdFormaPagamentoNavigation.Nome
                             },
+                            Imoveil = x.TituloImovel.Select(y => new
+                            {
+                                Nome = y.IdImovelNavigation.Nome,
+                                guidReferencia = y.IdImovelNavigation.GuidReferencia,
+                                NroUnidades = y.IdImovelNavigation.Unidade.Where(x => x.Status).Count(),
+                                AreaTotal = y.IdImovelNavigation.Unidade.Where(x => x.Status).Sum(x => x.AreaTotal),
+                                AreaUtil = y.IdImovelNavigation.Unidade.Where(x => x.Status).Sum(x => x.AreaUtil),
+                                AreaHabitese = y.IdImovelNavigation.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
+                                NumCentroCusto = y.IdImovelNavigation.NumCentroCusto,
+                                ImgCapa = "../../../../assets/images/imovel.png",
+                                Imagens = ImagemListFake,
+                                Anexos = AnexoListFake,
+                                ImovelEndereco = y.IdImovelNavigation.ImovelEndereco,
+                                Ativo = y.IdImovelNavigation.Status,
+                                IdCategoriaImovelNavigation = y.IdImovelNavigation.IdCategoriaImovelNavigation == null ? null : new
+                                {
+                                    Id = y.IdImovelNavigation.IdCategoriaImovelNavigation.Id,
+                                    Nome = y.IdImovelNavigation.IdCategoriaImovelNavigation.Nome
+                                },
+                                IdClienteProprietarioNavigation = y.IdImovelNavigation.IdClienteProprietarioNavigation == null ? null : new
+                                {
+                                    CpfCnpj = y.IdImovelNavigation.IdClienteProprietarioNavigation.CpfCnpj,
+                                    Nome = y.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
+                                    Telefone = y.IdImovelNavigation.IdClienteProprietarioNavigation.Telefone
+                                },
+                            }),
                         }).OrderByDescending(x=> x.DataCriacao).ToListAsync();
 
             var totalCount = contratos.Count();
