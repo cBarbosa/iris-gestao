@@ -134,6 +134,7 @@ public class ContratoAluguelService: IContratoAluguelService
         try
         {
             contratoAluguelRepository.Update(ContratoAluguel);
+            await tituloReceberService.InativarTitulo(ContratoAluguel);
             return new CommandResult(true, SuccessResponseEnums.Success_1001, ContratoAluguel);
         }
         catch (Exception e){
@@ -163,7 +164,7 @@ public class ContratoAluguelService: IContratoAluguelService
         {
             contratoAluguelRepository.Update(contratoAluguel);
             contratoAluguelHistoricorReajusteService.Insert(contratoAluguelHistoricoReajusteCommand);
-            tituloReceberService.AtualizarReajuste(contratoAluguel);
+            await tituloReceberService.AtualizarReajuste(contratoAluguel);
             return new CommandResult(true, SuccessResponseEnums.Success_1001, contratoAluguel);
         }
         catch (Exception e)

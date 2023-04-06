@@ -50,7 +50,7 @@ public class ContratoAluguelController : Controller
 
     [HttpPost("{guid}/{percentual}/reajustar-contrato")]
     [Produces("application/json")]
-    public async Task<IActionResult> ReajsutarContrato(
+    public async Task<IActionResult> ReajustarContrato(
     Guid guid,
     double percentual)
     {

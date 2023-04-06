@@ -12,4 +12,5 @@ public interface ITituloReceberService
     Task<CommandResult> Insert(CriarTituloReceberCommand cmd);
     Task<CommandResult> Update(Guid uuid, CriarTituloReceberCommand cmd);
     Task<CommandResult> AtualizarReajuste(ContratoAluguel contratoAluguel);
+    Task<CommandResult> InativarTitulo(ContratoAluguel contratoAluguel);
 }

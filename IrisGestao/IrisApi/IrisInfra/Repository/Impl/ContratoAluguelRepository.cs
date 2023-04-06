@@ -5,6 +5,7 @@ using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Security.Cryptography.X509Certificates;
 
 namespace IrisGestao.Infraestructure.Repository.Impl;
 
@@ -184,6 +185,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 {
                                     GuidReferencia = x.GuidReferencia,
                                     NumeroFatura = x.NumeroFatura,
+                                    NumeroParcela = x.NumeroParcela,
                                     ValorFatura = x.Valor,
                                     DataEnvio = x.DataEnvio,
                                     DataPagamento = x.DataPagamento,
@@ -288,7 +290,21 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                     Nome = x.IdImovelNavigation.IdCategoriaImovelNavigation.Nome
                                 }
                             }),
-                        }).ToListAsync();
+                            TituloReceber = x.TituloReceber.Select(x => new
+                            {
+                                NumeroTitulo = x.NumeroTitulo,
+                                NomeTitulo = x.NomeTitulo,
+                                GuidReferencia = x.GuidReferencia,
+                                Status = x.Status,
+                                Parcelas = x.Parcelas,
+                                ValorTitulo = x.ValorTitulo,
+                                ValorTotalTitulo = x.ValorTitulo,
+                                DataCriacao = x.DataCriacao,
+                                DataAtualização = x.DataUltimaModificacao,
+                                DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,
+                                PorcentagemTaxaAdministracao = x.PorcentagemTaxaAdministracao
+                            }),
+                        }).OrderByDescending(x=> x.DataCriacao).ToListAsync();
 
             var totalCount = contratos.Count();
 

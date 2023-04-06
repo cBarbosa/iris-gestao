@@ -10,6 +10,7 @@ namespace IrisGestao.ApplicationService.Service.Impl;
 
 public class TituloReceberService: ITituloReceberService
 {
+    private readonly IContratoAluguelRepository contratoAluguelRepository;
     private readonly ITituloReceberRepository tituloReceberRepository;
     private readonly ITituloImovelRepository tituloImovelRepository;
     private readonly ITituloUnidadeRepository tituloUnidadeRepository;
@@ -26,6 +27,7 @@ public class TituloReceberService: ITituloReceberService
                         , IImovelRepository ImovelRepository
                         , IUnidadeRepository UnidadeRepository
                         , IClienteRepository ClienteRepository
+                        , IContratoAluguelRepository ContratoAluguelRepository
                         , ILogger<ITituloReceberService> logger)
     {
         this.tituloReceberRepository = TituloReceberRepository;
@@ -35,6 +37,7 @@ public class TituloReceberService: ITituloReceberService
         this.imovelRepository = ImovelRepository;
         this.unidadeRepository = UnidadeRepository;
         this.clienteRepository = ClienteRepository;
+        this.contratoAluguelRepository = ContratoAluguelRepository;
         this.logger = logger;
     }
 
@@ -174,7 +177,7 @@ public class TituloReceberService: ITituloReceberService
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
-        var tituloReceber = await tituloReceberRepository.GetByContratoAluguelGuid(contratoAluguel.GuidReferencia.Value);
+        var tituloReceber = await tituloReceberRepository.GetByContratoAluguelId(contratoAluguel.Id);
 
         if (tituloReceber == null)
         {
@@ -187,6 +190,41 @@ public class TituloReceberService: ITituloReceberService
         {
             tituloReceberRepository.Update(tituloReceber);
             await CriarFaturaTituloReceber(tituloReceber.Id, lstFaturaTitulo);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, tituloReceber);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+    }
+
+    public async Task<CommandResult> InativarTitulo(ContratoAluguel contratoAluguel)
+    {
+        List<FaturaTitulo> lstFaturaTitulo = new List<FaturaTitulo>();
+        if (contratoAluguel == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var tituloReceber = await tituloReceberRepository.GetByContratoAluguelId(contratoAluguel.Id);
+        var lstFaturasTitulo = await faturaTituloRepository.GetFaturasByTitulo(tituloReceber.Id);
+        if (lstFaturasTitulo == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+
+        try
+        {
+            tituloReceber.Status = false;
+            foreach (var fatura in lstFaturasTitulo)
+            {
+                fatura.Status = false;
+                fatura.StatusFatura = FaturaTituloEnum.INATIVO;
+                fatura.DescricaoBaixaFatura = "Fatura cancelada devido cancelamento do contrato de aluguel";
+                faturaTituloRepository.Update(fatura);
+            }
+            tituloReceberRepository.Update(tituloReceber);
             return new CommandResult(true, SuccessResponseEnums.Success_1001, tituloReceber);
         }
         catch (Exception e)
@@ -287,6 +325,7 @@ public class TituloReceberService: ITituloReceberService
 
             FaturaTitulo faturaTitulo           = new FaturaTitulo();
             faturaTitulo.StatusFatura           = FaturaTituloEnum.A_VENCER;
+            faturaTitulo.NumeroParcela          = i+1;
             faturaTitulo.Status                 = true;
             faturaTitulo.DataCriacao            = DateTime.Now;
             faturaTitulo.DataUltimaModificacao  = DateTime.Now;
@@ -348,6 +387,7 @@ public class TituloReceberService: ITituloReceberService
             int diaVencimento = dataVencimento.Day > 28 ? 28 : tituloReceber.DataVencimentoPrimeraParcela.Value.Day;
 
             FaturaTitulo faturaTitulo                   = new FaturaTitulo();
+            faturaTitulo.NumeroParcela                  = i+1;
             faturaTitulo.Status                         = true;
             faturaTitulo.StatusFatura                   = FaturaTituloEnum.A_VENCER;
             faturaTitulo.DataCriacao                    = DateTime.Now;
@@ -379,10 +419,12 @@ public class TituloReceberService: ITituloReceberService
     {
         for (int i = 12; i < 24; i++)
         {
+            int diaVencimento = tituloReceber.DataVencimentoPrimeraParcela.Value.Day;
             DateTime dataVencimento = tituloReceber.DataVencimentoPrimeraParcela.Value.AddMonths(i);
-            int diaVencimento = dataVencimento.Day > 28 ? 28 : tituloReceber.DataVencimentoPrimeraParcela.Value.Day;
 
             FaturaTitulo faturaTitulo = new FaturaTitulo();
+            faturaTitulo.IdTitulo = tituloReceber.Id;
+            faturaTitulo.NumeroParcela = i+1;
             faturaTitulo.Status = true;
             faturaTitulo.StatusFatura = FaturaTituloEnum.A_VENCER;
             faturaTitulo.DataCriacao = DateTime.Now;
@@ -390,7 +432,7 @@ public class TituloReceberService: ITituloReceberService
             faturaTitulo.GuidReferencia = Guid.NewGuid();
             faturaTitulo.NumeroFatura = tituloReceber.NumeroTitulo + "/" + (i + 1).ToString("D2");
             faturaTitulo.Valor = tituloReceber.ValorTitulo;
-            faturaTitulo.DataVencimento = new DateTime(dataVencimento.Year, dataVencimento.Month, diaVencimento);
+            faturaTitulo.DataVencimento = new DateTime(dataVencimento.Year, dataVencimento.Month, dataVencimento.Day);
 
             lstFaturaTitulo.Add(faturaTitulo);
         }
