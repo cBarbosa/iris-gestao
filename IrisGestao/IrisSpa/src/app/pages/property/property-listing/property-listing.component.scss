@@ -10,6 +10,12 @@
 
 	.list-header {
 		@apply flex justify-between pt-4 pb-9;
+
+		.options {
+			.addButton {
+				@apply leading-4;
+			}
+		}
 	}
 
 	.no-results-warn {

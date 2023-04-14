@@ -7,7 +7,7 @@ import {
 	Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ConstructionService } from 'src/app/shared/services/construcao.service';
+import { ConstructionService } from 'src/app/shared/services/obra.service';
 import {
 	AnexoService,
 	ArquivoClassificacoes,
@@ -15,6 +15,8 @@ import {
 } from 'src/app/shared/services/anexo.service';
 import { Utils } from 'src/app/shared/utils';
 import { first } from 'rxjs';
+import { IImovel } from 'src/app/shared/models';
+import { ImovelService } from 'src/app/shared/services';
 
 type DropdownItem = {
 	label: string;
@@ -41,6 +43,8 @@ export class ConstructionEditComponent {
 	constructionGuid: string;
 	isLoading = false;
 	invalidGuid = false;
+
+	constructionProperty: IImovel | null = null;
 
 	displayModal = false;
 	modalContent: {
@@ -96,6 +100,7 @@ export class ConstructionEditComponent {
 		private location: Location,
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
+		private imovelService: ImovelService,
 		private constructionService: ConstructionService,
 		private anexoService: AnexoService
 	) {}
@@ -139,11 +144,21 @@ export class ConstructionEditComponent {
 					console.log(data);
 
 					this.editForm.controls['constructionInfo'].patchValue({
-						nome: data.nomeObra,
+						nome: data.nome,
 						dataInicio: new Date(data.dataInicio),
-						dataFim: new Date(data.dataFim),
-						valorOrcamento: data.orcamento,
-						porcentagemConclusao: data.porcentagemConclusao,
+						dataFim: new Date(data.dataPrevistaTermino),
+						valorOrcamento: data.valorOrcamento,
+						porcentagemConclusao: data.percentual * 100,
+					});
+
+					this.imovelService.getProperty(data.imovel.guidReferencia).subscribe({
+						next: (response) => {
+							console.log('==>>', response);
+							this.constructionProperty = response;
+						},
+						error(err) {
+							console.error(err);
+						},
 					});
 				} else {
 					this.invalidGuid = true;
@@ -151,81 +166,81 @@ export class ConstructionEditComponent {
 				this.isLoading = false;
 			});
 
-		this.anexoService
-			.getFiles(this.constructionGuid)
-			.pipe(first())
-			.subscribe({
-				next: (event) => {
-					this.attachmentsObj = {
-						capa: event?.find(
-							({ classificacao }: { classificacao: string }) =>
-								classificacao === 'capa'
-						),
-						foto: event?.filter(
-							({ classificacao }: { classificacao: string }) =>
-								classificacao === 'foto'
-						),
-						habitese: event?.find(
-							({ classificacao }: { classificacao: string }) =>
-								classificacao === 'habitese'
-						),
-						projeto: event?.find(
-							({ classificacao }: { classificacao: string }) =>
-								classificacao === 'projeto'
-						),
-						matricula: event?.find(
-							({ classificacao }: { classificacao: string }) =>
-								classificacao === 'matricula'
-						),
-						outrosdocs: event?.filter(
-							({ classificacao }: { classificacao: string }) =>
-								classificacao === 'outrosdocs'
-						),
-					};
+		// this.anexoService
+		// 	.getFiles(this.constructionGuid)
+		// 	.pipe(first())
+		// 	.subscribe({
+		// 		next: (event) => {
+		// 			this.attachmentsObj = {
+		// 				capa: event?.find(
+		// 					({ classificacao }: { classificacao: string }) =>
+		// 						classificacao === 'capa'
+		// 				),
+		// 				foto: event?.filter(
+		// 					({ classificacao }: { classificacao: string }) =>
+		// 						classificacao === 'foto'
+		// 				),
+		// 				habitese: event?.find(
+		// 					({ classificacao }: { classificacao: string }) =>
+		// 						classificacao === 'habitese'
+		// 				),
+		// 				projeto: event?.find(
+		// 					({ classificacao }: { classificacao: string }) =>
+		// 						classificacao === 'projeto'
+		// 				),
+		// 				matricula: event?.find(
+		// 					({ classificacao }: { classificacao: string }) =>
+		// 						classificacao === 'matricula'
+		// 				),
+		// 				outrosdocs: event?.filter(
+		// 					({ classificacao }: { classificacao: string }) =>
+		// 						classificacao === 'outrosdocs'
+		// 				),
+		// 			};
 
-					console.debug('attachmentsObj', this.attachmentsObj);
+		// 			console.debug('attachmentsObj', this.attachmentsObj);
 
-					// if (this.attachmentsObj?.capa)
-					// 	this.defaultCoverImage = this.attachmentsObj.capa.local;
+		// 			// if (this.attachmentsObj?.capa)
+		// 			// 	this.defaultCoverImage = this.attachmentsObj.capa.local;
 
-					if (this.attachmentsObj?.foto?.length)
-						this.constructionPhotos = this.attachmentsObj.foto.map((foto) => {
-							return {
-								name: foto.nome,
-								mimetype: foto.mimeType,
-								data: foto.local,
-								id: foto.id,
-							};
-						});
+		// 			if (this.attachmentsObj?.foto?.length)
+		// 				this.constructionPhotos = this.attachmentsObj.foto.map((foto) => {
+		// 					return {
+		// 						name: foto.nome,
+		// 						mimetype: foto.mimeType,
+		// 						data: foto.local,
+		// 						id: foto.id,
+		// 					};
+		// 				});
 
-					if (this.attachmentsObj?.projeto)
-						this.docs.projeto = {
-							name: this.attachmentsObj.projeto.nome,
-							mimetype: this.attachmentsObj.projeto.mimeType,
-							data: this.attachmentsObj.projeto.local,
-							isNew: false,
-						};
+		// 			if (this.attachmentsObj?.projeto)
+		// 				this.docs.projeto = {
+		// 					name: this.attachmentsObj.projeto.nome,
+		// 					mimetype: this.attachmentsObj.projeto.mimeType,
+		// 					data: this.attachmentsObj.projeto.local,
+		// 					isNew: false,
+		// 				};
 
-					if (this.attachmentsObj?.matricula)
-						this.docs.matricula = {
-							name: this.attachmentsObj.matricula.nome,
-							mimetype: this.attachmentsObj.matricula.mimeType,
-							data: this.attachmentsObj.matricula.local,
-							isNew: false,
-						};
+		// 			if (this.attachmentsObj?.matricula)
+		// 				this.docs.matricula = {
+		// 					name: this.attachmentsObj.matricula.nome,
+		// 					mimetype: this.attachmentsObj.matricula.mimeType,
+		// 					data: this.attachmentsObj.matricula.local,
+		// 					isNew: false,
+		// 				};
 
-					if (this.attachmentsObj?.habitese)
-						this.docs.habitese = {
-							name: this.attachmentsObj.habitese.nome,
-							mimetype: this.attachmentsObj.habitese.mimeType,
-							data: this.attachmentsObj.habitese.local,
-							isNew: false,
-						};
-				},
-				error: (error) => {
-					console.error('Erro: ', error);
-				},
-			});
+		// 			if (this.attachmentsObj?.habitese)
+		// 				this.docs.habitese = {
+		// 					name: this.attachmentsObj.habitese.nome,
+		// 					mimetype: this.attachmentsObj.habitese.mimeType,
+		// 					data: this.attachmentsObj.habitese.local,
+		// 					isNew: false,
+		// 				};
+		// 		},
+		// 		error: (error) => {
+		// 			console.error('Erro: ', error);
+		// 		},
+		// 	});
 	}
 
 	get constructionInfo() {

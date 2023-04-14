@@ -90,6 +90,19 @@
 			}
 
 			&.attachments {
+				::ng-deep {
+					.upload-list {
+						.attachment {
+							@apply text-lg font-bold;
+
+							.buttons {
+								i {
+									@apply text-lg;
+								}
+							}
+						}
+					}
+				}
 				.document-list {
 					@apply mt-5 mb-7;
 

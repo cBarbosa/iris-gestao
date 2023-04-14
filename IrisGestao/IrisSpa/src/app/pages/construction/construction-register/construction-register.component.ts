@@ -13,7 +13,7 @@ import {
 	AnexoService,
 	ArquivoClassificacoes,
 } from 'src/app/shared/services/anexo.service';
-import { ConstructionService } from 'src/app/shared/services/construcao.service';
+import { ConstructionService } from 'src/app/shared/services/obra.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -332,17 +332,17 @@ export class ConstructionRegisterComponent {
 		} = this.registerForm.getRawValue();
 
 		const constructionObj: {
-			guidImovel: string;
-			nomeObra: string;
-			dataInicio: string;
-			dataFim: string;
-			valorOrcamento: number;
+			IdImovel: string;
+			Nome: string;
+			DataInicio: string;
+			DataPrevistaTermino: string;
+			ValorOrcamento: number;
 		} = {
-			guidImovel: formData.selecaoImovel.imovel,
-			nomeObra: formData.dadosObra.nome,
-			dataInicio: formData.dadosObra.dataInicio,
-			dataFim: formData.dadosObra.dataFim,
-			valorOrcamento: formData.dadosObra.valorOrcamento,
+			IdImovel: formData.selecaoImovel.imovel,
+			Nome: formData.dadosObra.nome,
+			DataInicio: formData.dadosObra.dataInicio,
+			DataPrevistaTermino: formData.dadosObra.dataFim,
+			ValorOrcamento: formData.dadosObra.valorOrcamento,
 		};
 
 		const registerAttachments = (guid: string) => {

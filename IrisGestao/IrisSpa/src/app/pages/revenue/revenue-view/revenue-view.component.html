@@ -159,25 +159,30 @@
 									*ngIf="fatura.statusFatura === 'Inativo'"
 								></p-tag>
 							</td>
-							<td class="action w-48">
-								<button
-									pButton
-									type="button"
-									class="p-button-outlined h-9 w-full justify-center text-sm"
-									(click)="setCurrentFatura(fatura); showDetalheBaixa()"
-									*ngIf="fatura.statusFatura"
-								>
-									Ver detalhes
-								</button>
+							<td class="action w-[13rem]">
 								<button
 									pButton
 									type="button"
 									class="p-button-filled h-9 w-full justify-center text-sm"
 									(click)="setCurrentFatura(fatura); showBaixaTitulo()"
-									*ngIf="!fatura.statusFatura"
+									*ngIf="
+										fatura.statusFatura === 'Vencido' ||
+											fatura.statusFatura === 'A vencer';
+										else detalhesBtn
+									"
 								>
-									Emitir nota fiscal
+									Dar baixa na Fatura
 								</button>
+								<ng-template #detalhesBtn>
+									<button
+										pButton
+										type="button"
+										class="p-button-outlined h-9 w-full justify-center text-sm"
+										(click)="setCurrentFatura(fatura); showDetalheBaixa()"
+									>
+										Ver detalhes
+									</button>
+								</ng-template>
 							</td>
 						</tr>
 					</ng-template>
@@ -305,10 +310,6 @@
 				label: 'Data de pagamento',
 				data: faturaSelected?.dataPagamento,
 				pipe: cardPipes['date']
-			},
-			{
-				label: 'Observação da baixa',
-				data: faturaSelected?.descricaoBaixaFatura
 			}
 		]"
 	></app-detail-sidebar>

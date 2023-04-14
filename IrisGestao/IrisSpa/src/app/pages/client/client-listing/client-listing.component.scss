@@ -35,6 +35,12 @@
 				color: #ffffff;
 			}
 		}
+
+		.options {
+			.addButton {
+				@apply leading-4;
+			}
+		}
 	}
 
 	::ng-deep {
