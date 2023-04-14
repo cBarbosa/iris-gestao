@@ -5,7 +5,6 @@ import { ConstructionViewRoutingModule } from './construction-view-routing.modul
 import { ConstructionViewComponent } from './construction-view.component';
 import { ButtonModule } from 'primeng/button';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
-import { PropertyListComponent } from 'src/app/shared/components/property-list/property-list.component';
 import { IconModule } from 'src/app/shared/components/custom-ui/icon/icon.module';
 import { PanelModule } from 'primeng/panel';
 import { CardItemComponent } from 'src/app/shared/components/card-item/card-item.component';
@@ -16,6 +15,9 @@ import { ProgressBarComponent } from 'src/app/shared/components/progress-bar/pro
 import { SidebarModule } from 'primeng/sidebar';
 import { DetailSidebarComponent } from 'src/app/shared/components/detail-sidebar/detail-sidebar.component';
 import { IssueInvoiceSidebarComponent } from './issue-invoice-sidebar/issue-invoice-sidebar.component';
+import { AttachmentListComponent } from 'src/app/shared/components/attachment-list/attachment-list.component';
+import { PropertyItemModule } from 'src/app/shared/components/property-item/property-item.module';
+import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
 
 @NgModule({
 	declarations: [ConstructionViewComponent],
@@ -24,7 +26,7 @@ import { IssueInvoiceSidebarComponent } from './issue-invoice-sidebar/issue-invo
 		ConstructionViewRoutingModule,
 		ButtonModule,
 		SpinnerComponent,
-		PropertyListComponent,
+		PropertyItemModule,
 		IconModule,
 		PanelModule,
 		CardItemComponent,
@@ -35,6 +37,8 @@ import { IssueInvoiceSidebarComponent } from './issue-invoice-sidebar/issue-invo
 		SidebarModule,
 		DetailSidebarComponent,
 		IssueInvoiceSidebarComponent,
+		AttachmentListComponent,
+		UploadListComponent,
 	],
 })
 export class ConstructionViewModule {}

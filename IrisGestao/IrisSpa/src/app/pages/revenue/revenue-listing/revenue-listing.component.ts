@@ -166,11 +166,11 @@ export class RevenueListingComponent {
 								totalCount: event.data.totalCount,
 								data: event.data.items.map((receita: any) => {
 									return {
-										tipoRecebimento: receita.tipoTituloReceber.nome,
+										tipoRecebimento: receita.nomeTitulo,
 										numeroTitulo: receita.numeroTitulo,
-										imovel: receita.imovel?.nome,
+										imovel: receita.imoveil?.[0].nome,
 										locatario: receita.cliente?.nome,
-										valor: receita.valorTitulo,
+										valor: receita.valorTotalTitulo,
 										dataPagamento: receita.dataVencimentoPrimeraParcela
 											? new Date(receita.dataVencimentoPrimeraParcela)
 											: null,

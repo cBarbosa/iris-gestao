@@ -27,7 +27,7 @@
 					<input
 						id="name"
 						type="text"
-						value="Edifício corporativo"
+						[value]="constructionProperty?.unidade?.[0]?.idTipoUnidadeNavigation?.nome ?? ''"
 						aria-describedby="name-help"
 						maxlength="100"
 						pInputText
@@ -40,7 +40,7 @@
 					<input
 						id="name"
 						type="text"
-						value="Edi. José Maria Lopes"
+						[value]="constructionProperty?.unidade?.[0]?.tipo ?? ''"
 						aria-describedby="name-help"
 						maxlength="100"
 						pInputText
@@ -282,7 +282,7 @@
 
 						<p-accordionTab header="Anexos">
 							<section formGroupName="attachments" class="attachments">
-								<div class="document-list">
+								<!-- <div class="document-list">
 									<div
 										class="document project"
 										[class.empty]="!docs.projeto || deletedDocs.projeto"
@@ -450,7 +450,9 @@
 											</span>
 										</ng-template>
 									</div>
-								</div>
+								</div> -->
+
+								<app-upload-list [guid]="constructionGuid"></app-upload-list>
 							</section>
 						</p-accordionTab>
 

@@ -14,14 +14,14 @@
 				<div class="main-card">
 					<header>
 						<h3 class="mb-4">
-							{{ construction?.nomeObra }}
+							{{ construction?.nome }}
 						</h3>
 						<div class="actions">
 							<app-progress-bar
 								[title]="
-									'Obra ' + construction.porcentagemConclusao + '% concluída'
+									'Obra ' + construction?.percentual * 100 + '% concluída'
 								"
-								[value]="construction.porcentagemConclusao"
+								[value]="construction?.percentual * 100"
 								class="progress-bar"
 							></app-progress-bar>
 							<button
@@ -73,13 +73,13 @@
 							<div class="construction-data">
 								<div class="data-label">Previsão de término</div>
 								<div class="data-value">
-									{{ construction?.['dataFim'] | date : "shortDate" }}
+									{{ construction?.['dataPrevistaTermino'] | date : "shortDate" }}
 								</div>
 							</div>
 							<div class="construction-data">
 								<div class="data-label">Orçamento</div>
 								<div class="data-value">
-									{{ construction?.['orcamento'] | currency }}
+									{{ construction?.['valorOrcamento'] | currency }}
 								</div>
 							</div>
 						</div>
@@ -87,22 +87,22 @@
 				</div>
 			</section>
 
-			<section class="property" *ngIf="property">
+			<section class="property" *ngIf="propertyGuid">
 				<h2>Imóvel vinculado na obra</h2>
 
 				<div class="flex flex-col gap-6">
-					<app-property-list [properties]="[property]"></app-property-list>
+					<app-property-item [propertyGuid]="propertyGuid"></app-property-item>
 				</div>
 			</section>
 
-			<section class="services" *ngIf="construction?.servicos?.length > 0">
+			<section class="services" *ngIf="construction?.notasFiscais?.length > 0">
 				<header class="flex justify-between flex-wrap items-start mb-5">
 					<h2 class="mb-2">Histórico de serviços</h2>
 				</header>
 
 				<p-table
 					*ngIf="!isMobile; else servicesCardListTemplate"
-					[value]="construction?.servicos"
+					[value]="construction?.notasFiscais"
 					styleClass="p-datatable-striped"
 					[tableStyle]="{ 'min-width': '50rem' }"
 				>
@@ -118,22 +118,22 @@
 					</ng-template>
 					<ng-template pTemplate="body" let-service>
 						<tr>
-							<td>{{ service.nomeServico }}</td>
-							<td>{{ service.valorEstimado | currency }}</td>
+							<td>{{ service.idTipoServico }}</td>
+							<td>{{ service.valorOrcado | currency }}</td>
 							<td>{{ service.valorContratado | currency }}</td>
-							<td>{{ service.saldo | currency }}</td>
+							<td>{{ service.valorServico | currency }}</td>
 							<td>
 								<p-tag
 									value="Emitida"
 									[rounded]="true"
 									severity="success"
-									*ngIf="service.notaFiscal"
+									*ngIf="service.numeroNota"
 								></p-tag>
 								<p-tag
 									value="Não emitida"
 									[rounded]="true"
 									severity="danger"
-									*ngIf="!service.notaFiscal"
+									*ngIf="!service.numeroNota"
 								></p-tag>
 							</td>
 							<td class="action w-48">
@@ -142,7 +142,7 @@
 									type="button"
 									class="p-button-outlined h-9 w-full justify-center text-sm"
 									(click)="setCurrentService(service); showServiceDetails()"
-									*ngIf="service.notaFiscal"
+									*ngIf="service.numeroNota"
 								>
 									Ver detalhes
 								</button>
@@ -151,7 +151,7 @@
 									type="button"
 									class="p-button-filled h-9 w-full justify-center text-sm"
 									(click)="setCurrentService(service); showIssueInvoice()"
-									*ngIf="!service.notaFiscal"
+									*ngIf="!service.numeroNota"
 								>
 									Emitir nota fiscal
 								</button>
@@ -168,11 +168,11 @@
 									infos: [
 										{
 											label: 'Serviço',
-											data: service.nomeServico
+											data: service.idTipoServico
 										},
 										{
 											label: 'Valores estimados orçados',
-											data: service.valorEstimado,
+											data: service.valorOrcado,
 											pipe: cardPipes['currency']
 										},
 										{
@@ -182,14 +182,14 @@
 										},
 										{
 											label: 'Saldo',
-											data: service.saldo,
+											data: service.valorContratado,
 											pipe: cardPipes['currency']
 										}
 									],
 									tags: [
 										{
-											value: service.notaFiscal ? 'Emitida' : 'Não emitida',
-											severity: service.notaFiscal ? 'success' : 'danger'
+											value: service.numeroNota ? 'Emitida' : 'Não emitida',
+											severity: service.numeroNota ? 'success' : 'danger'
 										}
 									]
 								}"
@@ -208,61 +208,10 @@
 				</ng-template>
 			</section>
 
-			<section class="attachments">
+			<section class="attachments" *ngIf="hasDocs">
 				<h2>Anexos</h2>
 
-				<div class="attachments-card">
-					<button
-						type="button"
-						class="attachment"
-						*ngIf="attachmentDocs.projeto"
-						(click)="
-							downloadFile(
-								attachmentDocs.projeto.local,
-								attachmentDocs.projeto.nome
-							)
-						"
-					>
-						<span class="icon">
-							<app-icon name="att-proj" size="1.5rem"></app-icon>
-						</span>
-						<span class="label">Projeto</span>
-					</button>
-
-					<button
-						type="button"
-						class="attachment"
-						*ngIf="attachmentDocs.matricula"
-						(click)="
-							downloadFile(
-								attachmentDocs.matricula.local,
-								attachmentDocs.matricula.nome
-							)
-						"
-					>
-						<span class="icon">
-							<app-icon name="att-mat" size="1.5rem"></app-icon>
-						</span>
-						<span class="label">Matrícula</span>
-					</button>
-
-					<button
-						type="button"
-						class="attachment"
-						*ngIf="attachmentDocs.habitese"
-						(click)="
-							downloadFile(
-								attachmentDocs.habitese.local,
-								attachmentDocs.habitese.nome
-							)
-						"
-					>
-						<span class="icon">
-							<app-icon name="att-hab" size="1.5rem"></app-icon>
-						</span>
-						<span class="label">Habite-se</span>
-					</button>
-				</div>
+				<app-attachment-list [guid]="guid"></app-attachment-list>
 			</section>
 
 			<ng-container *ngIf="imageList.length > 0">
@@ -278,8 +227,8 @@
 <p-sidebar [(visible)]="serviceDetailsVisible" position="right">
 	<app-detail-sidebar
 		[data]="[
-			{ label: 'Serviço', data: serviceSelected?.nomeServico, span: true },
-			{ label: 'Número da NF', data: serviceSelected?.numeroNF, span: true },
+			{ label: 'Serviço', data: serviceSelected?.idTipoServico, span: true },
+			{ label: 'Número da NF', data: serviceSelected?.numeroNota, span: true },
 			{
 				label: 'Data da emissão',
 				data: serviceSelected?.dataEmissao,
@@ -288,7 +237,7 @@
 			},
 			{
 				label: 'Valor orçado',
-				data: serviceSelected?.valorEstimado,
+				data: serviceSelected?.valorOrcado,
 				pipe: cardPipes['currency']
 			},
 			{
@@ -298,12 +247,12 @@
 			},
 			{
 				label: 'Valor líquido',
-				data: serviceSelected?.valorLiquido,
+				data: serviceSelected?.valorServico,
 				pipe: cardPipes['currency']
 			},
 			{
 				label: 'T.A. da obra',
-				data: serviceSelected?.TAObra,
+				data: serviceSelected?.percentualAdministracaoObra,
 				pipe: cardPipes['percent']
 			}
 		]"
@@ -311,26 +260,10 @@
 
 	<h3 class="mt-3 font-bold">Anexo nota fiscal</h3>
 
-	<div class="document-list">
-		<div class="document file" [class.empty]="!serviceSelected?.nfFile">
-			<span>{{ serviceSelected?.nfFile.name }}</span>
-			<span class="buttons">
-				<button
-					pButton
-					type="button"
-					class="p-button-rounded p-button-text"
-					(click)="
-						downloadFile(
-							serviceSelected?.nfFile.url,
-							serviceSelected?.nfFile.name
-						)
-					"
-				>
-					<i class="ph-download-simple"></i>
-				</button>
-			</span>
-		</div>
-	</div>
+	<app-upload-list
+		[guid]="serviceSelected?.guidReferencia"
+		[editable]="false"
+	></app-upload-list>
 
 	<button
 		pButton

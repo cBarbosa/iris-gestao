@@ -13,6 +13,7 @@ import { NgxCurrencyModule } from 'ngx-currency';
 import { ButtonModule } from 'primeng/button';
 import { AccordionModule } from 'primeng/accordion';
 import { CalendarModule } from 'primeng/calendar';
+import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
 
 @NgModule({
 	declarations: [ConstructionEditComponent],
@@ -30,6 +31,7 @@ import { CalendarModule } from 'primeng/calendar';
 		ButtonModule,
 		AccordionModule,
 		CalendarModule,
+		UploadListComponent,
 	],
 })
 export class ConstructionEditModule {}

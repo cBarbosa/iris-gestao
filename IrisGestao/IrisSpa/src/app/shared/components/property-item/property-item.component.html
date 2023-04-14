@@ -1,7 +1,7 @@
 <div class="property-item">
 	<div class="property-image">
 		<div class="image">
-			<img src="{{ propertyData.imgCapa }}" alt="" />
+			<img [src]="propertyData.imgCapa ?? ''" alt="" />
 		</div>
 		<!-- <div class="property-category">{{propertyData.idCategoriaImovelNavigation?.nome}}</div> -->
 		<!-- <p-tag
@@ -23,7 +23,13 @@
 		<div class="property-features">
 			<span class="feature">
 				<app-icon name="door" styleClass="mr-1"></app-icon>
-				{{ propertyData.nroUnidades ? propertyData.nroUnidades > 1 ? propertyData.nroUnidades + " unidades" : "1 unidade" : "0 unidade" }}
+				{{
+					propertyData.nroUnidades
+						? propertyData.nroUnidades > 1
+							? propertyData.nroUnidades + " unidades"
+							: "1 unidade"
+						: "0 unidade"
+				}}
 			</span>
 			<span class="feature">
 				<app-icon name="area" styleClass="mr-1"></app-icon>
