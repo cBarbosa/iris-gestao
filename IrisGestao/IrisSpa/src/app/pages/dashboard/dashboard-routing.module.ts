@@ -18,10 +18,10 @@ const routes: Routes = [
     },
     {
         path: 'receiving-performance',
-        // loadChildren: () =>
-		// 	import('./dashboard/receiving-performance.module').then(
-		// 		(m) => m.ReceivingPerformanceModule
-		// 	),
+        loadChildren: () =>
+		 	import('./receiving-performance/receiving-performance.module').then(
+		 		(m) => m.ReceivingPerformanceModule
+		 	),
 		data: {
 			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 		}
