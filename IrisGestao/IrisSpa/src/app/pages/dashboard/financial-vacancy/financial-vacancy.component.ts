@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
+import {
+    Component,
+    OnInit
+} from '@angular/core';
 
 @Component({
 	selector: 'app-financial-vacancy',
 	templateUrl: './financial-vacancy.component.html',
 	styleUrls: ['./financial-vacancy.component.scss'],
 })
-export class FinancialVacancyComponent {
+export class FinancialVacancyComponent implements OnInit{
 	data: any
 	options: any;
 

@@ -26,26 +26,26 @@ const routes: Routes = [
 			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 		}
     },
-    {
-        path: 'price-per-meter',
-        // loadChildren: () =>
-		// 	import('./dashboard/price-per-meter.module').then(
-		// 		(m) => m.PricePerMeterModule
-		// 	),
-		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-		}
-    },
-    {
-        path: 'total-managed',
-        // loadChildren: () =>
-		// 	import('./dashboard/total-managed.module').then(
-		// 		(m) => m.TotalManagedModule
-		// 	),
-		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-		}
-    }
+    // {
+    //     path: 'price-per-meter',
+    //     // loadChildren: () =>
+	// 	// 	import('./dashboard/price-per-meter.module').then(
+	// 	// 		(m) => m.PricePerMeterModule
+	// 	// 	),
+	// 	data: {
+	// 		role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+	// 	}
+    // },
+    // {
+    //     path: 'total-managed',
+    //     // loadChildren: () =>
+	// 	// 	import('./dashboard/total-managed.module').then(
+	// 	// 		(m) => m.TotalManagedModule
+	// 	// 	),
+	// 	data: {
+	// 		role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+	// 	}
+    // }
 ];
 
 @NgModule({
