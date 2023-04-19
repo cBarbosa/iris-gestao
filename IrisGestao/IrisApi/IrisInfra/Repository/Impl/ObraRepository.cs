@@ -71,6 +71,7 @@ public class ObraRepository : Repository<Obra>, IObraRepository
         return await DbSet
             .Include(x => x.IdImovelNavigation)
             .Include(x => x.NotaFiscal)
+            .ThenInclude(x => x.IdTipoServicoNavigation)
             .Where(x => x.GuidReferencia.Equals(uuid))
             .Select(x => new
             {
