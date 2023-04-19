@@ -9,6 +9,7 @@ import {
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
 import { LinkedProperty } from 'src/app/shared/components/link-property/link-property.component';
+import { ClienteService, DominiosService } from 'src/app/shared/services';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { RevenueService } from 'src/app/shared/services/revenue.service';
 import { Utils } from 'src/app/shared/utils';
@@ -56,11 +57,26 @@ export class RevenueRegisterComponent {
 	linkedProperty: LinkedProperty;
 	linkedPropertyInvalid = false;
 
+	opcoesProprietario: DropdownItem[] = [
+		{
+			label: 'Selecione',
+			value: null,
+			disabled: true,
+		},
+	];
 	opcoesClassificacaoReceita: DropdownItem[] = [
 		{
 			label: 'Selecione',
 			value: null,
 			disabled: true,
+		},
+		{
+			label: 'Reembolso',
+			value: 1,
+		},
+		{
+			label: 'Outro',
+			value: 'outro',
 		},
 	];
 	opcoesCreditarPara: DropdownItem[] = [
@@ -77,13 +93,22 @@ export class RevenueRegisterComponent {
 			disabled: true,
 		},
 	];
+	opcoesFormaPagamento: DropdownItem[] = [
+		{
+			label: 'Selecione',
+			value: null,
+			disabled: true,
+		},
+	];
 
 	constructor(
 		private fb: FormBuilder,
 		private location: Location,
 		private router: Router,
+		private dominiosService: DominiosService,
 		private revenueService: RevenueService,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private clienteService: ClienteService
 	) {}
 
 	ngOnInit() {
@@ -116,7 +141,9 @@ export class RevenueRegisterComponent {
 			}),
 			infoFatura: this.fb.group({
 				classificacaoReceita: [null, Validators.required],
+				nomeTitulo: [{ value: '', disabled: true }],
 				creditarPara: [null, Validators.required],
+				formaPagamento: [null, Validators.required],
 				parcelas: [null, Validators.required],
 				valor: [null, Validators.required],
 				dataVencimento: [null, Validators.required],
@@ -127,6 +154,64 @@ export class RevenueRegisterComponent {
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
+
+		for (let i = 1; i <= 12; i++) {
+			this.opcoesParcelas.push({
+				label: i + (i === 1 ? ' vez' : ' vezes'),
+				value: i,
+			});
+		}
+
+		this.dominiosService
+			.getFormasPagamento()
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					response.data.forEach((forma: any) => {
+						this.opcoesFormaPagamento.push({
+							label: forma.nome,
+							value: forma.id,
+						});
+					});
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+
+		this.dominiosService
+			.getTiposCreditoAluguel()
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					response?.data.forEach((forma: any) => {
+						this.opcoesCreditarPara.push({
+							label: forma.nome,
+							value: forma.id,
+						});
+					});
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+
+		this.clienteService
+			.getListaProprietarios()
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					response?.data.forEach((forma: any) => {
+						this.opcoesProprietario.push({
+							label: forma.nome,
+							value: forma.guidReferencia,
+						});
+					});
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
 	}
 
 	get infoImovelForm() {
@@ -244,21 +329,6 @@ export class RevenueRegisterComponent {
 			return;
 		}
 
-		this.registerForm = this.fb.group({
-			infoImovel: this.fb.group({}),
-			infoCliente: this.fb.group({
-				proprietario: ['', Validators.required],
-			}),
-			infoFatura: this.fb.group({
-				classificacaoReceita: [null, Validators.required],
-				creditarPara: [null, Validators.required],
-				parcelas: [null, Validators.required],
-				valor: [null, Validators.required],
-				dataVencimento: [null, Validators.required],
-				impostos: [null, Validators.required],
-			}),
-		});
-
 		let formData: {
 			infoCliente: {
 				// tipoImovel: number;
@@ -266,25 +336,26 @@ export class RevenueRegisterComponent {
 			};
 			infoFatura: {
 				classificacaoReceita: number;
+				nomeTitulo: string;
 				creditarPara: number;
 				parcelas: number;
 				valor: number;
 				dataVencimento: Date;
+				formaPagamento: number;
 				impostos: number;
 			};
 		} = this.registerForm.getRawValue();
 
 		const revenueObj: {
-			numeroTitulo: string;
+			NomeTitulo: string;
 			idTipoTitulo: number;
 			idTipoCreditoAluguel: number;
 			guidCliente: string;
-			idIndiceReajuste: number;
+			idIndiceReajuste: number | null;
 			idFormaPagamento: number;
-			dataVencimento: string;
-			dataPagamento: string;
+			DataVencimentoPrimeraParcela: string;
 			valorTitulo: number;
-			porcentagemImpostoRetido: number;
+			PorcentagemTaxaAdministracao: number;
 			parcelas: number;
 			lstImoveis: [
 				{
@@ -293,24 +364,21 @@ export class RevenueRegisterComponent {
 				}
 			];
 		} = {
-			numeroTitulo: '123123154/2023',
-			idTipoTitulo: 1,
-			idTipoCreditoAluguel: 1,
-			guidCliente: '657C89B1-25D1-402E-82F8-BD157D2E57A2',
-			idIndiceReajuste: 2,
-			idFormaPagamento: 1,
-			dataVencimento: '2023-04-10',
-			dataPagamento: '2023-04-10',
-			valorTitulo: 748.0,
-			porcentagemImpostoRetido: 0,
-			parcelas: 6,
+			NomeTitulo: formData.infoFatura.nomeTitulo,
+			idTipoTitulo: formData.infoFatura.classificacaoReceita,
+			idTipoCreditoAluguel: formData.infoFatura.creditarPara,
+			guidCliente: formData.infoCliente.proprietario,
+			idIndiceReajuste: null,
+			idFormaPagamento: formData.infoFatura.formaPagamento,
+			DataVencimentoPrimeraParcela:
+				formData.infoFatura.dataVencimento.toISOString(),
+			valorTitulo: formData.infoFatura.valor,
+			PorcentagemTaxaAdministracao: formData.infoFatura.impostos,
+			parcelas: formData.infoFatura.parcelas,
 			lstImoveis: [
 				{
-					guidImovel: '05CA9F97-5A0C-45BE-B02C-91184F4769F6',
-					lstUnidades: [
-						'7d67b442-3f7c-46e8-b6b7-98343aed92c2',
-						'62e1366f-3292-4af6-85db-c23962c2b2a2',
-					],
+					guidImovel: this.linkedProperty.guid,
+					lstUnidades: this.linkedProperty.unidades.map((unit) => unit.guid),
 				},
 			],
 		};
@@ -346,6 +414,14 @@ export class RevenueRegisterComponent {
 					this.openModal();
 				},
 			});
+	}
+
+	changeClassificacao(event: any) {
+		if (event.value === 'outro') {
+			this.infoFaturaForm.controls['nomeTitulo'].enable();
+		} else {
+			this.infoFaturaForm.controls['nomeTitulo'].disable();
+		}
 	}
 
 	openModal() {

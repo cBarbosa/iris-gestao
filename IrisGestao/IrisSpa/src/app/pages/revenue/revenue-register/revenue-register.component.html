@@ -45,13 +45,13 @@
 
 			<div class="field">
 				<label for="proprietario" class="block">Proprietário</label>
-				<input
+				<p-dropdown
 					id="proprietario"
-					type="text"
+					[options]="opcoesProprietario"
+					filterBy="label"
 					formControlName="proprietario"
 					aria-describedby="proprietario-help"
-					pInputText
-				/>
+				></p-dropdown>
 				<ng-container *ngIf="checkHasError(f['proprietario'])">
 					<small
 						id="proprietario-help"
@@ -91,6 +91,7 @@
 					filterBy="label"
 					formControlName="classificacaoReceita"
 					aria-describedby="classificacaoReceita-help"
+					(onChange)="changeClassificacao($event)"
 				></p-dropdown>
 				<ng-container *ngIf="checkHasError(f['classificacaoReceita'])">
 					<small
@@ -103,6 +104,32 @@
 					<ng-template #error2>
 						<small id="classificacaoReceita-help" class="p-error block">
 							Classificação da Receita inválida
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field" *ngIf="!f['nomeTitulo'].disabled">
+				<label for="nomeTitulo" class="block">Classificação da Receita</label>
+				<input
+					id="nomeTitulo"
+					type="text"
+					formControlName="nomeTitulo"
+					aria-describedby="nomeTitulo-help"
+					maxlength="100"
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['nomeTitulo'])">
+					<small
+						id="nomeTitulo-help"
+						*ngIf="f['nomeTitulo'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a classificação da receita
+					</small>
+					<ng-template #error2>
+						<small id="nomeTitulo-help" class="p-error block">
+							Classificação da receita inválido
 						</small>
 					</ng-template>
 				</ng-container>
@@ -128,6 +155,31 @@
 					<ng-template #error2>
 						<small id="creditarPara-help" class="p-error block">
 							Crédito inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="formaPagamento" class="block">Forma de pagamento</label>
+				<p-dropdown
+					id="formaPagamento"
+					[options]="opcoesFormaPagamento"
+					filterBy="label"
+					formControlName="formaPagamento"
+					aria-describedby="formaPagamento-help"
+				></p-dropdown>
+				<ng-container *ngIf="checkHasError(f['formaPagamento'])">
+					<small
+						id="formaPagamento-help"
+						*ngIf="f['formaPagamento'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a forma de pagamento
+					</small>
+					<ng-template #error2>
+						<small id="formaPagamento-help" class="p-error block">
+							Forma de pagamento inválida
 						</small>
 					</ng-template>
 				</ng-container>

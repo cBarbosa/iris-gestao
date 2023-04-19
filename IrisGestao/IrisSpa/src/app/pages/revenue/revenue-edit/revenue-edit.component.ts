@@ -137,14 +137,14 @@ export class RevenueEditComponent {
 					this.imovel.endereco = `${rua}, ${bairro}, ${cidade} - ${uf}`;
 
 					this.editForm.patchValue({
-						nomeConta: data.numeroTitulo,
+						nomeConta: data.nomeTitulo,
 						numeroTitulo: data.numeroTitulo,
 						planoContas: data.tipoTituloReceber.id,
 						creditarPara: data.creditoAluguel.id,
 						nomeLocador: data.cliente.nome,
 						formaPagamento: data.formaPagamento.id,
-						dataVencimento: data.dataVencimento
-							? new Date(data.dataVencimento)
+						dataVencimento: data.dataVencimentoPrimeraParcela
+							? new Date(data.dataVencimentoPrimeraParcela)
 							: null,
 						valorTitulo: data.valorTitulo,
 						valorPagar: data.valorTitulo,

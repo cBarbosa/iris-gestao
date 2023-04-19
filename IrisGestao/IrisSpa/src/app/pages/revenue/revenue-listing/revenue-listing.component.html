@@ -109,7 +109,13 @@
 						<td>{{ revenue.numeroTitulo }}</td>
 						<td>{{ revenue.locatario }}</td>
 						<td>{{ revenue.valor | currency }}</td>
-						<td>{{ revenue.dataPagamento | date : "shortDate" }}</td>
+						<td>
+							{{
+								revenue.dataPagamento
+									? (revenue.dataPagamento | date : "shortDate")
+									: "-"
+							}}
+						</td>
 						<td class="action min-w-[10rem]">
 							<button
 								pButton

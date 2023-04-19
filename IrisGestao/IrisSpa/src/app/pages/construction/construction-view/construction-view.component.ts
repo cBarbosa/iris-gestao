@@ -11,7 +11,7 @@ import {
 	AnexoService,
 	Attachment,
 } from 'src/app/shared/services/anexo.service';
-import { ConstructionService } from 'src/app/shared/services/construcao.service';
+import { ConstructionService } from 'src/app/shared/services/obra.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -21,22 +21,16 @@ import { Utils } from 'src/app/shared/utils';
 	styleUrls: ['./construction-view.component.scss'],
 })
 export class ConstructionViewComponent {
-	property: Imovel | null = null;
+	propertyGuid: string | null = null;
 	guid: string;
 	construction: any;
 	imageList: ImageData[] = [];
+	hasDocs: boolean;
 	isLoadingView = true;
 
 	isMobile: boolean = false;
 	displayConstructionDetails = false;
 	cardPipes: Record<string, PipeTransform>;
-
-	attachmentDocs: {
-		projeto?: Attachment;
-		matricula?: Attachment;
-		habitese?: Attachment;
-		outros?: Attachment;
-	} = {};
 
 	serviceSelected: any;
 
@@ -57,7 +51,7 @@ export class ConstructionViewComponent {
 
 	ngOnInit(): void {
 		this.getByIdConstruction();
-		// this.getAttachs();
+		this.getAttachs();
 
 		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
 			this.isMobile = screenWidth < 768;
@@ -85,14 +79,7 @@ export class ConstructionViewComponent {
 						const classificacao = file.classificacao;
 
 						if (classificacao === 'foto') photos.push(file);
-						else if (classificacao === 'projeto')
-							this.attachmentDocs.projeto = file;
-						else if (classificacao === 'matricula')
-							this.attachmentDocs.matricula = file;
-						else if (classificacao === 'habitese')
-							this.attachmentDocs.habitese = file;
-						else if (classificacao === 'outrosdocs')
-							this.attachmentDocs.outros = file;
+						else if (!this.hasDocs) this.hasDocs = true;
 
 						this.imageList =
 							photos?.map((photo) => {
@@ -124,7 +111,7 @@ export class ConstructionViewComponent {
 						this.imageList = event.imagens ?? [];
 						//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
 						// this.properties = [...event.data.imovel];
-						this.property = event.data[0].imovel as unknown as Imovel;
+						this.propertyGuid = event.data[0].imovel?.guidReferencia as string;
 					} else {
 						this.construction = null;
 					}

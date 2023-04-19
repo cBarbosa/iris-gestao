@@ -6,7 +6,7 @@ import { ResponsiveService } from 'src/app/shared/services/responsive-service.se
 import { first } from 'rxjs';
 import { Utils } from 'src/app/shared/utils';
 import { LazyLoadEvent } from 'primeng/api';
-import { ConstructionService } from 'src/app/shared/services/construcao.service';
+import { ConstructionService } from 'src/app/shared/services/obra.service';
 
 @Component({
 	selector: 'app-construction-listing',
@@ -119,20 +119,13 @@ export class ConstructionListingComponent {
 
 	setConstructionEntries(
 		page = 1,
-		numeroConstrucao?: string,
-		idTipoConta?: number,
-		idTipoImovel?: number,
-		idStatus?: number
+		nome?: string,
+		idCategoria?: number,
+		idProprietario?: number
 	): Promise<any> {
 		this.constructionEntries = [];
 
-		return this.getConstructionPage(
-			page,
-			numeroConstrucao,
-			idTipoConta,
-			idTipoImovel,
-			idStatus
-		)
+		return this.getConstructionPage(page, nome, idCategoria, idProprietario)
 			.then((content) => {
 				this.totalConstructionCount = content.totalCount;
 				if (this.totalConstructionCount <= 0) this.noRestults = true;
@@ -168,23 +161,15 @@ export class ConstructionListingComponent {
 
 	getConstructionPage(
 		page = 1,
-		numeroConstrucao?: string,
-		idTipoConta?: number,
-		idTipoImovel?: number,
-		idStatus?: number
+		nome?: string,
+		idCategoria?: number,
+		idProprietario?: number
 	): Promise<any> {
 		this.isLoadingConstructions = true;
 
 		return new Promise((res, rej) => {
 			this.constructionService
-				.getConstructions(
-					this.rows,
-					page,
-					numeroConstrucao,
-					idTipoConta,
-					idTipoImovel,
-					idStatus
-				)
+				.getConstructions(this.rows, page, nome, idCategoria, idProprietario)
 				?.pipe(first())
 				.subscribe({
 					next: (event: any) => {
@@ -195,16 +180,16 @@ export class ConstructionListingComponent {
 								totalCount: event.data.totalCount,
 								data: event.data.items.map((construcao: any) => {
 									return {
-										nomeObra: construcao.nomeObra,
+										nomeObra: construcao.nome,
 										predio: construcao.imovel.nome,
 										imovel: construcao.imovel.nome,
 										unidade: 'UNIDADE',
-										valor: construcao.orcamento,
+										valor: construcao.valorOrcamento,
 										dataInicio: construcao.dataInicio
 											? new Date(construcao.dataInicio)
 											: null,
-										dataFim: construcao.dataFim
-											? new Date(construcao.dataFim)
+										dataFim: construcao.dataPrevistaTermino
+											? new Date(construcao.dataPrevistaTermino)
 											: null,
 										action: '',
 										guidReferencia: construcao.guidReferencia,
@@ -234,16 +219,14 @@ export class ConstructionListingComponent {
 				page,
 				this.filterText,
 				this.filterAccountType,
-				this.filterPropertyType,
-				this.filterStatus
+				this.filterPropertyType
 			);
 		else
 			return this.setConstructionEntries(
 				page,
 				this.filterText,
 				this.filterAccountType,
-				this.filterPropertyType,
-				this.filterStatus
+				this.filterPropertyType
 			);
 	};
 

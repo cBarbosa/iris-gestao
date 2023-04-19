@@ -94,15 +94,14 @@ export class RevenueViewComponent {
 	getFaturaFormData(fatura: any) {
 		return {
 			dataVencimento: fatura?.dataVencimento
-				? new Date(fatura?.numeroFatura)
+				? new Date(fatura?.dataVencimento)
 				: null,
 			valorTotal: fatura?.valorFatura,
-			valorAluguel: fatura?.valorFatura,
-			dataPagamento: fatura?.dataCriacao ? new Date(fatura?.dataCriacao) : null,
-			diasAtraso: fatura?.diasAtraso ?? 0,
-			dataVencimentoFatura: fatura?.dataCriacao
-				? new Date(fatura?.dataCriacao)
+			valorAluguel: fatura?.valorRealPago,
+			dataPagamento: fatura?.dataPagamento
+				? new Date(fatura?.dataPagamento)
 				: null,
+			diasAtraso: fatura?.diasAtraso ?? 0,
 			observacoes: fatura?.descricaoBaixaFatura,
 			anexoNf: 'string',
 		};

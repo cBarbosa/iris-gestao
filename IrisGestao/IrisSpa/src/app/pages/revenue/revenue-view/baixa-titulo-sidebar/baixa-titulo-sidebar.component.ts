@@ -64,7 +64,7 @@ export class BaixaTituloSidebarComponent {
 		valorAluguel: number;
 		dataPagamento: Date | null;
 		diasAtraso: number;
-		dataVencimentoFatura: Date | null;
+		// dataVencimentoFatura: Date | null;
 		observacoes: string;
 		anexoNf: string;
 	} | null;
@@ -104,12 +104,8 @@ export class BaixaTituloSidebarComponent {
 			dataVencimento: [this.data?.dataVencimento ?? null, Validators.required],
 			valorTotal: [this.data?.valorTotal ?? '', Validators.required],
 			valorAluguel: [this.data?.valorAluguel ?? '', Validators.required],
-			dataPagamento: [this.data?.dataPagamento ?? '', Validators.required],
+			dataPagamento: [this.data?.dataPagamento ?? null, Validators.required],
 			diasAtraso: [this.data?.diasAtraso ?? '', Validators.required],
-			dataVencimentoFatura: [
-				this.data?.dataVencimentoFatura ?? '',
-				Validators.required,
-			],
 			observacoes: [this.data?.observacoes ?? '', Validators.required],
 			anexoNf: [this.data?.anexoNf ?? null, Validators.required],
 		});

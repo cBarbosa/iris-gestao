@@ -6,6 +6,9 @@
 				[value]="tag.value"
 				[rounded]="true"
 				[severity]="tag.severity"
+				[style]="
+					tag.severity === 'neutral' ? { background: '#b2b2b2' } : undefined
+				"
 				styleClass="w-auto"
 			></p-tag>
 		</ng-container>
