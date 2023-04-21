@@ -70,14 +70,6 @@ export class RevenueRegisterComponent {
 			value: null,
 			disabled: true,
 		},
-		{
-			label: 'Reembolso',
-			value: 1,
-		},
-		{
-			label: 'Outro',
-			value: 'outro',
-		},
 	];
 	opcoesCreditarPara: DropdownItem[] = [
 		{
@@ -190,6 +182,25 @@ export class RevenueRegisterComponent {
 							value: forma.id,
 						});
 					});
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+
+		this.dominiosService
+			.getTiposTitulo()
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					response?.data
+						.filter(({ id }: any) => id !== 1)
+						.forEach((forma: any) => {
+							this.opcoesClassificacaoReceita.push({
+								label: forma.nome,
+								value: forma.id,
+							});
+						});
 				},
 				error: (err) => {
 					console.error(err);

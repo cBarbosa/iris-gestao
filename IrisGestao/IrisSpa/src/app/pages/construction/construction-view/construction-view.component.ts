@@ -7,6 +7,7 @@ import {
 	Construcao,
 	IConstrucao,
 } from 'src/app/shared/models/construcao.model';
+import { DominiosService } from 'src/app/shared/services';
 import {
 	AnexoService,
 	Attachment,
@@ -32,15 +33,19 @@ export class ConstructionViewComponent {
 	displayConstructionDetails = false;
 	cardPipes: Record<string, PipeTransform>;
 
+	tiposServicos: string[] = [];
+
 	serviceSelected: any;
 
 	serviceDetailsVisible = false;
 	issueInvoiceVisible = false;
+	registerInvoiceVisible = false;
 
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
 		private constructionService: ConstructionService,
+		private dominiosService: DominiosService,
 		private anexoService: AnexoService,
 		private responsiveService: ResponsiveService
 	) {
@@ -65,6 +70,21 @@ export class ConstructionViewComponent {
 			currency: new CurrencyPipe('pt-BR', 'R$'),
 			percent: new PercentPipe('pt-BR'),
 		};
+
+		this.dominiosService
+			.getTiposServico()
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					response?.data.forEach((servico: any) => {
+						this.tiposServicos[servico.id] = servico.nome;
+					});
+					console.log(this.tiposServicos);
+				},
+				error(err) {
+					console.error(err);
+				},
+			});
 	}
 
 	getAttachs(): void {
@@ -133,12 +153,19 @@ export class ConstructionViewComponent {
 
 	showServiceDetails = (): void => {
 		this.serviceDetailsVisible = true;
+		this.registerInvoiceVisible = false;
 		this.issueInvoiceVisible = false;
 	};
 
 	showIssueInvoice = (): void => {
 		this.serviceDetailsVisible = false;
+		this.registerInvoiceVisible = false;
 		this.issueInvoiceVisible = true;
+	};
+	showRegisterInvoice = (): void => {
+		this.serviceDetailsVisible = false;
+		this.issueInvoiceVisible = false;
+		this.registerInvoiceVisible = true;
 	};
 
 	hideServiceDetails = () => {
@@ -149,9 +176,105 @@ export class ConstructionViewComponent {
 		this.issueInvoiceVisible = false;
 	};
 
+	hideRegisterInvoice = () => {
+		this.registerInvoiceVisible = false;
+	};
+
 	toggleServiceDetails() {
 		this.displayConstructionDetails = !this.displayConstructionDetails;
 	}
+
+	onInvoiceEditSubmit = (values: any) => {
+		const formObj: {
+			IdTipoServico: number;
+			NumeroNota: string;
+			DataEmissao: string;
+			DataVencimento: string;
+			ValorServico: number;
+			ValorOrcado: number;
+			ValorContratado: number;
+			Percentual: number;
+		} = {
+			IdTipoServico: values.formValues.descricao,
+			NumeroNota: values.formValues.numeroNota,
+			DataEmissao: values.formValues.dataEmissao?.toISOString(),
+			DataVencimento: values.formValues.dataVencimentoFatura?.toISOString(),
+			ValorServico: values.formValues.valorServico,
+			ValorOrcado: values.formValues.valorOrcamento,
+			ValorContratado: values.formValues.valorContratado,
+			Percentual: values.formValues.porcentagemAdm,
+		};
+
+		console.log('formObj', formObj);
+
+		this.constructionService
+			.updateConstructionInvoice(this.serviceSelected?.guidReferencia, formObj)
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					console.log('invoice response', response);
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+
+		const formData = new FormData();
+
+		formData.append('files', values.invoiceFile);
+
+		this.anexoService.registerFile(
+			this.serviceSelected.guidReferencia,
+			formData,
+			'outrosdocs'
+		);
+	};
+
+	onInvoiceRegisterSubmit = (values: any) => {
+		const formObj: {
+			IdTipoServico: number;
+			NumeroNota: string;
+			DataEmissao: string;
+			DataVencimento: string;
+			ValorServico: number;
+			ValorOrcado: number;
+			ValorContratado: number;
+			Percentual: number;
+		} = {
+			IdTipoServico: values.formValues.descricao,
+			NumeroNota: values.formValues.numeroNota,
+			DataEmissao: values.formValues.dataEmissao?.toISOString(),
+			DataVencimento: values.formValues.dataVencimentoFatura?.toISOString(),
+			ValorServico: values.formValues.valorServico,
+			ValorOrcado: values.formValues.valorOrcamento,
+			ValorContratado: values.formValues.valorContratado,
+			Percentual: values.formValues.porcentagemAdm,
+		};
+
+		console.log('formObj', formObj);
+
+		this.constructionService
+			.registerConstructionInvoice(this.guid, formObj)
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					console.log('invoice register response', response);
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+
+		const formData = new FormData();
+
+		formData.append('files', values.invoiceFile);
+
+		this.anexoService.registerFile(
+			this.serviceSelected.guidReferencia,
+			formData,
+			'outrosdocs'
+		);
+	};
 
 	async downloadFile(
 		file: File | string | ArrayBuffer | null,

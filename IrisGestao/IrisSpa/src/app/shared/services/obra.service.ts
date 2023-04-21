@@ -78,4 +78,56 @@ export class ConstructionService {
 			httpOptions
 		);
 	}
+
+	registerConstructionInvoice(
+		constructionGuid: string,
+		invoiceObj: {
+			IdTipoServico: number;
+			NumeroNota: string;
+			DataEmissao: string;
+			DataVencimento: string;
+			ValorServico: number;
+			ValorOrcado: number;
+			ValorContratado: number;
+			Percentual: number;
+		}
+	) {
+		return this.http.post<ApiResponse>(
+			`${env.config.apiUrl}Obra/${constructionGuid}/notafiscal`,
+			JSON.stringify(invoiceObj, null, 2),
+			httpOptions
+		);
+	}
+
+	updateConstructionInvoice(
+		guid: string,
+		invoiceObj: {
+			IdTipoServico: number;
+			NumeroNota: string;
+			DataEmissao: string;
+			DataVencimento: string;
+			ValorServico: number;
+			ValorOrcado: number;
+			ValorContratado: number;
+			Percentual: number;
+		}
+	) {
+		return this.http.put<ApiResponse>(
+			`${env.config.apiUrl}Obra/notafiscal/${guid}`,
+			JSON.stringify(invoiceObj, null, 2),
+			httpOptions
+		);
+	}
+
+	getConstructionInvoiceByGuid(invoiceGuid: string) {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Obra/notafiscal/${invoiceGuid}`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getConstructionInvoiceByGuid: ${response.message}`);
+					return response;
+				})
+			);
+	}
 }
