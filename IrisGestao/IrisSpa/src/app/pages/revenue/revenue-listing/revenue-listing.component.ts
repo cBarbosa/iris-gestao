@@ -3,7 +3,7 @@ import { Component, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api';
 import { first } from 'rxjs';
-import { CommonService } from 'src/app/shared/services';
+import { CommonService, DominiosService } from 'src/app/shared/services';
 import { RevenueService } from 'src/app/shared/services/revenue.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
@@ -50,6 +50,7 @@ export class RevenueListingComponent {
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private commonService: CommonService,
+		private dominiosService: DominiosService,
 		private revenueService: RevenueService,
 		private responsiveService: ResponsiveService
 	) {}
@@ -84,6 +85,27 @@ export class RevenueListingComponent {
 				next: (e: any) => {
 					if (e.success) {
 						this.opcoesLocatario.push(
+							...e.data.map((item: any) => {
+								return {
+									label: item.nome,
+									value: item.id,
+								};
+							})
+						);
+					} else console.error(e.message);
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+
+		this.dominiosService
+			.getTiposTitulo()
+			.pipe(first())
+			.subscribe({
+				next: (e: any) => {
+					if (e.success) {
+						this.opcoesTipo.push(
 							...e.data.map((item: any) => {
 								return {
 									label: item.nome,

@@ -166,81 +166,57 @@ export class ConstructionEditComponent {
 				this.isLoading = false;
 			});
 
-		// this.anexoService
-		// 	.getFiles(this.constructionGuid)
-		// 	.pipe(first())
-		// 	.subscribe({
-		// 		next: (event) => {
-		// 			this.attachmentsObj = {
-		// 				capa: event?.find(
-		// 					({ classificacao }: { classificacao: string }) =>
-		// 						classificacao === 'capa'
-		// 				),
-		// 				foto: event?.filter(
-		// 					({ classificacao }: { classificacao: string }) =>
-		// 						classificacao === 'foto'
-		// 				),
-		// 				habitese: event?.find(
-		// 					({ classificacao }: { classificacao: string }) =>
-		// 						classificacao === 'habitese'
-		// 				),
-		// 				projeto: event?.find(
-		// 					({ classificacao }: { classificacao: string }) =>
-		// 						classificacao === 'projeto'
-		// 				),
-		// 				matricula: event?.find(
-		// 					({ classificacao }: { classificacao: string }) =>
-		// 						classificacao === 'matricula'
-		// 				),
-		// 				outrosdocs: event?.filter(
-		// 					({ classificacao }: { classificacao: string }) =>
-		// 						classificacao === 'outrosdocs'
-		// 				),
-		// 			};
+		this.anexoService
+			.getFiles(this.constructionGuid)
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					this.attachmentsObj = {
+						// capa: event?.find(
+						// 	({ classificacao }: { classificacao: string }) =>
+						// 		classificacao === 'capa'
+						// ),
+						foto: event?.filter(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'foto'
+						),
+						// habitese: event?.find(
+						// 	({ classificacao }: { classificacao: string }) =>
+						// 		classificacao === 'habitese'
+						// ),
+						// projeto: event?.find(
+						// 	({ classificacao }: { classificacao: string }) =>
+						// 		classificacao === 'projeto'
+						// ),
+						// matricula: event?.find(
+						// 	({ classificacao }: { classificacao: string }) =>
+						// 		classificacao === 'matricula'
+						// ),
+						// outrosdocs: event?.filter(
+						// 	({ classificacao }: { classificacao: string }) =>
+						// 		classificacao === 'outrosdocs'
+						// ),
+					};
 
-		// 			console.debug('attachmentsObj', this.attachmentsObj);
+					console.debug('attachmentsObj', this.attachmentsObj);
 
-		// 			// if (this.attachmentsObj?.capa)
-		// 			// 	this.defaultCoverImage = this.attachmentsObj.capa.local;
+					// if (this.attachmentsObj?.capa)
+					// 	this.defaultCoverImage = this.attachmentsObj.capa.local;
 
-		// 			if (this.attachmentsObj?.foto?.length)
-		// 				this.constructionPhotos = this.attachmentsObj.foto.map((foto) => {
-		// 					return {
-		// 						name: foto.nome,
-		// 						mimetype: foto.mimeType,
-		// 						data: foto.local,
-		// 						id: foto.id,
-		// 					};
-		// 				});
-
-		// 			if (this.attachmentsObj?.projeto)
-		// 				this.docs.projeto = {
-		// 					name: this.attachmentsObj.projeto.nome,
-		// 					mimetype: this.attachmentsObj.projeto.mimeType,
-		// 					data: this.attachmentsObj.projeto.local,
-		// 					isNew: false,
-		// 				};
-
-		// 			if (this.attachmentsObj?.matricula)
-		// 				this.docs.matricula = {
-		// 					name: this.attachmentsObj.matricula.nome,
-		// 					mimetype: this.attachmentsObj.matricula.mimeType,
-		// 					data: this.attachmentsObj.matricula.local,
-		// 					isNew: false,
-		// 				};
-
-		// 			if (this.attachmentsObj?.habitese)
-		// 				this.docs.habitese = {
-		// 					name: this.attachmentsObj.habitese.nome,
-		// 					mimetype: this.attachmentsObj.habitese.mimeType,
-		// 					data: this.attachmentsObj.habitese.local,
-		// 					isNew: false,
-		// 				};
-		// 		},
-		// 		error: (error) => {
-		// 			console.error('Erro: ', error);
-		// 		},
-		// 	});
+					if (this.attachmentsObj?.foto?.length)
+						this.constructionPhotos = this.attachmentsObj.foto.map((foto) => {
+							return {
+								name: foto.nome,
+								mimetype: foto.mimeType,
+								data: foto.local,
+								id: foto.id,
+							};
+						});
+				},
+				error: (error) => {
+					console.error('Erro: ', error);
+				},
+			});
 	}
 
 	get constructionInfo() {
@@ -250,214 +226,6 @@ export class ConstructionEditComponent {
 	checkHasError(c: AbstractControl) {
 		return Utils.checkHasError(c);
 	}
-
-	/* DOC UPLOAD */
-
-	addDoc(event: Event, type: 'projeto' | 'matricula' | 'habitese') {
-		const file = (event?.target as HTMLInputElement)?.files?.[0];
-
-		if (!file) return;
-
-		switch (type) {
-			case 'projeto':
-				this.docs.projeto = {
-					name: file.name,
-					mimetype: file.type,
-					data: file,
-					isNew: true,
-				};
-				this.deletedDocs.projeto = false;
-				break;
-
-			case 'matricula':
-				this.docs.matricula = {
-					name: file.name,
-					mimetype: file.type,
-					data: file,
-					isNew: true,
-				};
-				this.deletedDocs.matricula = false;
-				break;
-
-			case 'habitese':
-				this.docs.habitese = {
-					name: file.name,
-					mimetype: file.type,
-					data: file,
-					isNew: true,
-				};
-				this.deletedDocs.habitese = false;
-				break;
-
-			default:
-				break;
-		}
-	}
-
-	saveDocs() {
-		const promises: Promise<{
-			classificacao: ArquivoClassificacoes;
-			response?: any;
-			err?: any;
-		}>[] = [];
-
-		const saveDoc = (classificacao: 'projeto' | 'matricula' | 'habitese') => {
-			if (
-				!this.deletedDocs[classificacao] &&
-				this.docs[classificacao] &&
-				this.docs[classificacao]!.isNew &&
-				this.docs[classificacao]!.data !== null
-			) {
-				const formData = new FormData();
-
-				console.debug('adding file of class', classificacao);
-
-				promises.push(
-					new Promise((res, rej) => {
-						if (this.docs[classificacao] && this.docs[classificacao]!.data) {
-							if (!(this.docs[classificacao]!.data instanceof File)) {
-								Utils.dataUrlToFile(
-									//@ts-ignore
-									this.docs[classificacao]!.data,
-									this.docs[classificacao]!.name,
-									this.docs[classificacao]!.mimetype
-								)
-									.then((file) => {
-										formData.append('files', file);
-										// this.anexoService
-										// 	.registerFile(this.constructionGuid, formData, classificacao)
-										// 	.subscribe();
-
-										console.debug('creating file');
-
-										const registerUpdatePromise =
-											this.anexoService.registerUpdateFile(
-												this.attachmentsObj,
-												this.constructionGuid,
-												formData,
-												classificacao
-											);
-
-										if (registerUpdatePromise)
-											registerUpdatePromise
-												.then((obj) => {
-													if (obj === null) return rej(obj);
-
-													if (obj?.err) {
-														rej(obj);
-													}
-
-													if (obj.response.success) res(obj);
-													else rej(obj);
-												})
-												.catch((err) => {
-													console.error('1. Erro ao atualizar anexos');
-													rej({ err });
-												});
-									})
-									.catch((err) => {
-										console.error('2. Erro ao atualizar anexos');
-										rej({ err });
-									});
-							} else {
-								// @ts-ignore
-								formData.append('files', this.docs[classificacao]!.data);
-								// this.anexoService
-								// 	.registerFile(this.constructionGuid, formData, classificacao)
-								// 	.subscribe();
-								this.anexoService
-									.registerUpdateFile(
-										this.attachmentsObj,
-										this.constructionGuid,
-										formData,
-										classificacao
-									)
-									?.then((obj) => {
-										if (obj === null) return;
-
-										if (obj?.err) {
-											rej(obj);
-										}
-
-										if (obj.response.success) res(obj);
-										else rej(obj);
-									})
-									.catch((err) => {
-										console.error('2. Erro ao atualizar anexos');
-										rej({ err });
-									});
-							}
-						}
-					})
-				);
-			}
-		};
-
-		saveDoc('projeto');
-		saveDoc('matricula');
-		saveDoc('habitese');
-
-		return Promise.all(promises);
-	}
-
-	removeDoc(doc: 'projeto' | 'matricula' | 'habitese') {
-		this.deletedDocs[doc] = true;
-	}
-
-	deleteDocs() {
-		const promises: Promise<{ response?: any; err?: any }>[] = [];
-
-		promises.concat(
-			(
-				['projeto', 'matricula', 'habitese'] as [
-					'projeto',
-					'matricula',
-					'habitese'
-				]
-			).map((classificacao) => {
-				return new Promise((res, rej) => {
-					if (
-						this.deletedDocs[classificacao] &&
-						this.attachmentsObj?.[classificacao]
-					) {
-						console.debug(
-							'deleting doc',
-							this.attachmentsObj[classificacao]!.id
-						);
-						this.anexoService
-							.deleteFile(this.attachmentsObj[classificacao]!.id)
-							.pipe(first())
-							.subscribe({
-								next(response) {
-									if (response.success) res({ response });
-									else rej({ response, err: response.message });
-								},
-								error(err) {
-									rej({ err });
-								},
-							});
-					}
-				});
-			})
-		);
-
-		return Promise.all(promises);
-	}
-
-	async downloadFile(
-		file: File | string | ArrayBuffer | null,
-		filename: string
-	) {
-		if (file instanceof File) {
-			file = (await Utils.fileToDataUrl(file)).data;
-		}
-
-		if (file === null) return;
-
-		Utils.saveAs(file, filename);
-	}
-
-	/* END DOC UPLOAD */
 
 	/* PHOTO UPLOAD */
 
@@ -550,7 +318,83 @@ export class ConstructionEditComponent {
 	}
 	/* END PHOTO UPLOAD */
 
-	onSubmit(e: Event) {}
+	onSubmit(e: Event) {
+		if (this.editForm.invalid) {
+			this.editForm.markAllAsTouched();
+			//return;
+		}
+
+		const editFormData =
+			this.editForm.controls['constructionInfo'].getRawValue();
+
+		const constructionObj: {
+			Nome: string;
+			DataInicio: string;
+			DataPrevistaTermino: string;
+			Percentual: number;
+			ValorOrcamento: number;
+		} = {
+			Nome: editFormData.nome,
+			DataInicio: editFormData.dataInicio
+				? editFormData.dataInicio.toISOString()
+				: '',
+			DataPrevistaTermino: editFormData.dataFim
+				? editFormData.dataFim.toISOString()
+				: '',
+			Percentual: +editFormData.valorOrcamento,
+			ValorOrcamento: editFormData.porcentagemConclusao,
+		};
+
+		console.log('constructionObj', constructionObj);
+
+		Promise.all([this.deletePhotos(), this.savePhotos()])
+			.then((result) => {
+				this.constructionService
+					.updateConstruction(this.constructionGuid, constructionObj)
+					.pipe(first())
+					.subscribe({
+						next: (response: any) => {
+							if (response.success) {
+								this.modalContent = {
+									header: 'Atualização realizada com sucesso',
+									message: response.message,
+								};
+							} else {
+								this.modalContent = {
+									header: 'Atualização não realizada',
+									message: response.message,
+									isError: true,
+								};
+							}
+
+							this.openModal();
+						},
+						error: (error: any) => {
+							console.error(error);
+							this.modalContent = {
+								header: 'Atualização não realizada',
+								message: 'Erro no envio de dados do formulário',
+								isError: true,
+							};
+
+							this.openModal();
+						},
+					});
+			})
+			.catch((error) => {
+				console.error('Erro no envio do batch de anexos:', error);
+				this.modalContent = {
+					header: 'Atualização não realizada',
+					message:
+						error.err?.err ??
+						error.err ??
+						'Os arquivos podem estar com o mesmo nome. Para corrigir verifique os arquivos e teste novamente.',
+					isError: true,
+				};
+
+				this.openModal();
+			});
+	}
 
 	openModal() {
 		this.displayModal = true;

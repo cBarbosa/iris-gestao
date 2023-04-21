@@ -98,6 +98,16 @@
 			<section class="services" *ngIf="construction?.notasFiscais?.length > 0">
 				<header class="flex justify-between flex-wrap items-start mb-5">
 					<h2 class="mb-2">Histórico de serviços</h2>
+					<button
+						pButton
+						type="button"
+						icon="pi pi-plus"
+						iconPos="left"
+						class="p-button-outlined icon-left h-9"
+						(click)="showRegisterInvoice()"
+					>
+						Novo serviço
+					</button>
 				</header>
 
 				<p-table
@@ -118,7 +128,7 @@
 					</ng-template>
 					<ng-template pTemplate="body" let-service>
 						<tr>
-							<td>{{ service.idTipoServico }}</td>
+							<td>{{ tiposServicos[service.idTipoServico] }}</td>
 							<td>{{ service.valorOrcado | currency }}</td>
 							<td>{{ service.valorContratado | currency }}</td>
 							<td>{{ service.valorServico | currency }}</td>
@@ -275,5 +285,18 @@
 </p-sidebar>
 
 <p-sidebar [(visible)]="issueInvoiceVisible" position="right">
-	<app-issue-invoice-sidebar></app-issue-invoice-sidebar>
+	<ng-template pTemplate="content">
+		<app-issue-invoice-sidebar
+			[guidInvoice]="serviceSelected?.guidReferencia"
+			[onSubmitForm]="onInvoiceEditSubmit"
+		></app-issue-invoice-sidebar
+	></ng-template>
+</p-sidebar>
+
+<p-sidebar [(visible)]="registerInvoiceVisible" position="right">
+	<ng-template pTemplate="content">
+		<app-issue-invoice-sidebar
+			[onSubmitForm]="onInvoiceRegisterSubmit"
+		></app-issue-invoice-sidebar
+	></ng-template>
 </p-sidebar>

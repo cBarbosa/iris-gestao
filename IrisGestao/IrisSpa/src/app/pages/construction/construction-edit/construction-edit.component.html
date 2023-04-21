@@ -18,46 +18,46 @@
 	<div class="edit-form">
 		<h1 class="text-2xl font-bold mb-6">Editar contrato</h1>
 
-		<div class="input-wrapper">
-			<section class="construction-data">
-				<h4>Edifício do contrato</h4>
+		<form [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
+			<div class="input-wrapper">
+				<section class="construction-data">
+					<h4>Edifício do contrato</h4>
 
-				<div class="field">
-					<label for="name" class="block">Tipo do imóvel</label>
-					<input
-						id="name"
-						type="text"
-						[value]="constructionProperty?.unidade?.[0]?.idTipoUnidadeNavigation?.nome ?? ''"
-						aria-describedby="name-help"
-						maxlength="100"
-						pInputText
-						[disabled]="true"
-					/>
-				</div>
+					<div class="field">
+						<label for="name" class="block">Tipo do imóvel</label>
+						<input
+							id="name"
+							type="text"
+							[value]="constructionProperty?.unidade?.[0]?.idTipoUnidadeNavigation?.nome ?? ''"
+							aria-describedby="name-help"
+							maxlength="100"
+							pInputText
+							[disabled]="true"
+						/>
+					</div>
 
-				<div class="field">
-					<label for="name" class="block">Edifício</label>
-					<input
-						id="name"
-						type="text"
-						[value]="constructionProperty?.unidade?.[0]?.tipo ?? ''"
-						aria-describedby="name-help"
-						maxlength="100"
-						pInputText
-						[disabled]="true"
-					/>
-				</div>
+					<div class="field">
+						<label for="name" class="block">Edifício</label>
+						<input
+							id="name"
+							type="text"
+							[value]="constructionProperty?.unidade?.[0]?.tipo ?? ''"
+							aria-describedby="name-help"
+							maxlength="100"
+							pInputText
+							[disabled]="true"
+						/>
+					</div>
 
-				<div class="photo-input">
-					<img src="../../../../assets/images/imovel.png" alt="edit-photo" />
-				</div>
+					<div class="photo-input">
+						<img src="../../../../assets/images/imovel.png" alt="edit-photo" />
+					</div>
 
-				<h5>Ed. José Maria Lopes</h5>
-				<p>SQS 415 Bloco C</p>
-				<p><span class="icon file mr-2">&nbsp;</span>Edifício corporativo</p>
-			</section>
+					<h5>Ed. José Maria Lopes</h5>
+					<p>SQS 415 Bloco C</p>
+					<p><span class="icon file mr-2">&nbsp;</span>Edifício corporativo</p>
+				</section>
 
-			<form [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
 				<section class="aditional-data">
 					<p-accordion
 						[multiple]="false"
@@ -207,7 +207,7 @@
 										type="text"
 										formControlName="porcentagemConclusao"
 										aria-describedby="porcentagemConclusao-help"
-										mask="percent.2"
+										mask="percent"
 										suffix="%"
 										pInputText
 									/>
@@ -282,176 +282,6 @@
 
 						<p-accordionTab header="Anexos">
 							<section formGroupName="attachments" class="attachments">
-								<!-- <div class="document-list">
-									<div
-										class="document project"
-										[class.empty]="!docs.projeto || deletedDocs.projeto"
-									>
-										<span>Projeto</span>
-										<span
-											class="buttons"
-											*ngIf="
-												docs.projeto && !deletedDocs.projeto;
-												else uploadProjeto
-											"
-										>
-											<button
-												pButton
-												type="button"
-												class="p-button-rounded p-button-text"
-												(click)="
-													downloadFile(docs.projeto.data, docs.projeto.name)
-												"
-											>
-												<i class="ph-download-simple"></i>
-											</button>
-											<button
-												pButton
-												type="button"
-												class="p-button-rounded p-button-text"
-												(click)="removeDoc('projeto')"
-											>
-												<i class="ph-trash"></i>
-											</button>
-										</span>
-
-										<ng-template #uploadProjeto>
-											<span class="buttons">
-												<button
-													pButton
-													type="button"
-													class="p-button-rounded p-button-text"
-													*ngIf="deletedDocs.projeto"
-													(click)="deletedDocs.projeto = false"
-												>
-													<i class="ph-arrow-u-up-left"></i>
-												</button>
-												<label for="inputProjeto">
-													<i class="ph-upload-simple"></i>
-													<input
-														pButton
-														type="file"
-														id="inputProjeto"
-														(change)="addDoc($event, 'projeto')"
-													/>
-												</label>
-											</span>
-										</ng-template>
-									</div>
-
-									<div
-										class="document registration"
-										[class.empty]="!docs.matricula || deletedDocs.matricula"
-									>
-										<span>Matrícula</span>
-										<span
-											class="buttons"
-											*ngIf="
-												docs.matricula && !deletedDocs.matricula;
-												else uploadMatricula
-											"
-										>
-											<button
-												pButton
-												type="button"
-												class="p-button-rounded p-button-text"
-												(click)="
-													downloadFile(docs.matricula.data, docs.matricula.name)
-												"
-											>
-												<i class="ph-download-simple"></i>
-											</button>
-											<button
-												pButton
-												type="button"
-												class="p-button-rounded p-button-text"
-												(click)="removeDoc('matricula')"
-											>
-												<i class="ph-trash"></i>
-											</button>
-										</span>
-
-										<ng-template #uploadMatricula>
-											<span class="buttons">
-												<button
-													pButton
-													type="button"
-													class="p-button-rounded p-button-text"
-													*ngIf="deletedDocs.matricula"
-													(click)="deletedDocs.matricula = false"
-												>
-													<i class="ph-arrow-u-up-left"></i>
-												</button>
-												<label for="inputMatricula">
-													<i class="ph-upload-simple"></i>
-													<input
-														pButton
-														type="file"
-														id="inputMatricula"
-														(change)="addDoc($event, 'matricula')"
-													/>
-												</label>
-											</span>
-										</ng-template>
-									</div>
-
-									<div
-										class="document occupancy"
-										[class.empty]="!docs.habitese || deletedDocs.habitese"
-									>
-										<span>Habite-se</span>
-										<span
-											class="buttons"
-											*ngIf="
-												docs.habitese && !deletedDocs.habitese;
-												else uploadHabitese
-											"
-										>
-											<button
-												pButton
-												type="button"
-												class="p-button-rounded p-button-text"
-												(click)="
-													downloadFile(docs.habitese.data, docs.habitese.name)
-												"
-											>
-												<i class="ph-download-simple"></i>
-											</button>
-											<button
-												pButton
-												type="button"
-												class="p-button-rounded p-button-text"
-												(click)="removeDoc('habitese')"
-											>
-												<i class="ph-trash"></i>
-											</button>
-										</span>
-
-										<ng-template #uploadHabitese>
-											<span class="buttons">
-												<button
-													pButton
-													type="button"
-													class="p-button-rounded p-button-text"
-													*ngIf="deletedDocs.habitese"
-													(click)="deletedDocs.habitese = false"
-												>
-													<i class="ph-arrow-u-up-left"></i>
-												</button>
-												<label for="inputHabitese">
-													<i class="ph-upload-simple"></i>
-													<input
-														pButton
-														type="file"
-														id="inputHabitese"
-														(change)="addDoc($event, 'habitese')"
-													/>
-												</label>
-											</span>
-										</ng-template>
-									</div>
-								</div> -->
-
 								<app-upload-list [guid]="constructionGuid"></app-upload-list>
 							</section>
 						</p-accordionTab>
@@ -502,28 +332,28 @@
 						</p-accordionTab>
 					</p-accordion>
 				</section>
-			</form>
-		</div>
-		<div class="form-actions">
-			<button
-				pButton
-				type="button"
-				label="Voltar"
-				class="p-button-text h-11"
-				(click)="goBack()"
-			></button>
+			</div>
+			<div class="form-actions">
+				<button
+					pButton
+					type="button"
+					label="Voltar"
+					class="p-button-text h-11"
+					(click)="goBack()"
+				></button>
 
-			<button
-				pButton
-				pRipple
-				type="button"
-				label="Cancelar"
-				class="p-button-outlined h-11"
-				(click)="navigateTo('construction/details/' + constructionGuid)"
-			></button>
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Cancelar"
+					class="p-button-outlined h-11"
+					(click)="navigateTo('construction/details/' + constructionGuid)"
+				></button>
 
-			<button pButton type="submit" label="Continuar" class="h-11"></button>
-		</div>
+				<button pButton type="submit" label="Continuar" class="h-11"></button>
+			</div>
+		</form>
 	</div>
 </ng-template>
 

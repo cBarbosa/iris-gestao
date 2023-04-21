@@ -106,26 +106,26 @@
 	</div>
 
 	<div class="field">
-		<label for="dataEmissão" class="block">Data de emissão</label>
+		<label for="dataEmissao" class="block">Data de emissão</label>
 		<p-calendar
-			id="dataEmissão"
-			formControlName="dataEmissão"
+			id="dataEmissao"
+			formControlName="dataEmissao"
 			dateFormat="dd/mm/yy"
 			(onInput)="onInputDate($event)"
 			(onBlur)="onBlurDate()"
 			placeholder="dd/mm/aaaa"
-			aria-describedby="dataEmissão-help"
+			aria-describedby="dataEmissao-help"
 		></p-calendar>
-		<ng-container *ngIf="checkHasError(f['dataEmissão'])">
+		<ng-container *ngIf="checkHasError(f['dataEmissao'])">
 			<small
-				id="dataEmissão-help"
-				*ngIf="f['dataEmissão'].hasError('required'); else error2"
+				id="dataEmissao-help"
+				*ngIf="f['dataEmissao'].hasError('required'); else error2"
 				class="p-error block"
 			>
 				Informe a data de emissão
 			</small>
 			<ng-template #error2>
-				<small id="dataEmissão-help" class="p-error block">
+				<small id="dataEmissao-help" class="p-error block">
 					Data de emissão inválida
 				</small>
 			</ng-template>
@@ -137,7 +137,6 @@
 		<input
 			id="numeroNota"
 			type="text"
-			mask="0*"
 			formControlName="numeroNota"
 			aria-describedby="numeroNota-help"
 			pInputText
@@ -159,26 +158,26 @@
 	</div>
 
 	<div class="field">
-		<label for="dataEmissão" class="block">Data de Vencimento da Fatura</label>
+		<label for="dataEmissao" class="block">Data de Vencimento da Fatura</label>
 		<p-calendar
-			id="dataEmissão"
-			formControlName="dataEmissão"
+			id="dataEmissao"
+			formControlName="dataEmissao"
 			dateFormat="dd/mm/yy"
 			(onInput)="onInputDate($event)"
 			(onBlur)="onBlurDate()"
 			placeholder="dd/mm/aaaa"
-			aria-describedby="dataEmissão-help"
+			aria-describedby="dataEmissao-help"
 		></p-calendar>
-		<ng-container *ngIf="checkHasError(f['dataEmissão'])">
+		<ng-container *ngIf="checkHasError(f['dataEmissao'])">
 			<small
-				id="dataEmissão-help"
-				*ngIf="f['dataEmissão'].hasError('required'); else error2"
+				id="dataEmissao-help"
+				*ngIf="f['dataEmissao'].hasError('required'); else error2"
 				class="p-error block"
 			>
 				Informe a data de vencimento
 			</small>
 			<ng-template #error2>
-				<small id="dataEmissão-help" class="p-error block">
+				<small id="dataEmissao-help" class="p-error block">
 					Data de vencimento inválida
 				</small>
 			</ng-template>
@@ -187,12 +186,16 @@
 
 	<div class="field">
 		<label for="porcentagemAdm" class="block">% de administração de obra</label>
-		<p-dropdown
+
+		<input
 			id="porcentagemAdm"
-			[options]="opcoesPorcentagemAdm"
+			type="text"
 			formControlName="porcentagemAdm"
 			aria-describedby="porcentagemAdm-help"
-		></p-dropdown>
+			mask="percent"
+			suffix="%"
+			pInputText
+		/>
 		<ng-container *ngIf="checkHasError(f['porcentagemAdm'])">
 			<small
 				id="porcentagemAdm-help"
@@ -210,17 +213,7 @@
 	</div>
 
 	<div class="field">
-		<label for="anexoNf" class="block">Anexo da NF</label>
-		<!-- <p-fileUpload
-			id="anexoNf"
-			mode="basic"
-			name="anexoNf"
-			accept="application/*"
-			chooseLabel="Clique para fazer o upload"
-			chooseIcon="pi-upload"
-			[maxFileSize]="1000000"
-			(onSelect)="onFileSelect($event)"
-		></p-fileUpload> -->
+		<label class="block">Anexo da NF</label>
 
 		<app-file-upload
 			name="uploadDoc"
@@ -228,19 +221,6 @@
 			(selectEvent)="onFileSelect($event)"
 			accept=".xls, .doc, .pdf, .xlsx, .docx"
 		></app-file-upload>
-
-		<ng-container *ngIf="checkHasError(f['anexoNf'])">
-			<small
-				id="anexoNf-help"
-				*ngIf="f['anexoNf'].hasError('required'); else error2"
-				class="p-error block"
-			>
-				Informe o anexo
-			</small>
-			<ng-template #error2>
-				<small id="anexoNf-help" class="p-error block"> Anexo inválido </small>
-			</ng-template>
-		</ng-container>
 	</div>
 
 	<div class="flex justify-between gap-4 pb-5">

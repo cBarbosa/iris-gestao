@@ -19,6 +19,9 @@ import {
 import { Utils } from 'src/app/shared/utils';
 import { FileUploadModule } from 'primeng/fileupload';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
+import { ConstructionService } from 'src/app/shared/services/obra.service';
+import { first } from 'rxjs';
+import { DominiosService } from 'src/app/shared/services';
 
 type DropdownItem = {
 	label: string;
@@ -54,10 +57,7 @@ export class IssueInvoiceSidebarComponent {
 	registerOnSubmit: boolean = false;
 
 	@Input()
-	guidClient: string | null;
-
-	@Input()
-	guidSupplier: string | null;
+	guidInvoice: string | null;
 
 	@Input()
 	cancel: Function;
@@ -90,18 +90,14 @@ export class IssueInvoiceSidebarComponent {
 		},
 	];
 
-	opcoesPorcentagemAdm: DropdownItem[] = [
-		{
-			label: 'Selecione',
-			value: null,
-			disabled: true,
-		},
-	];
-
-	constructor(private fb: FormBuilder) {}
+	constructor(
+		private fb: FormBuilder,
+		private constructionService: ConstructionService,
+		private dominiosService: DominiosService
+	) {}
 
 	ngOnInit() {
-		if (this.registerOnSubmit && !this.guidClient && !this.guidSupplier)
+		if (this.registerOnSubmit && !this.guidInvoice)
 			throw new Error(
 				"contact-register-sidebar: O Guid de cliente deve ser informado caso o parâmetro 'registerOnSubmit' seja verdadeiro."
 			);
@@ -118,12 +114,52 @@ export class IssueInvoiceSidebarComponent {
 				Validators.required,
 			],
 			porcentagemAdm: [this.data?.porcentagemAdm ?? null, Validators.required],
-			anexoNf: [this.data?.anexoNf ?? null, Validators.required],
+			anexoNf: [this.data?.anexoNf ?? null],
 		});
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
+
+		if (this.guidInvoice)
+			this.constructionService
+				.getConstructionInvoiceByGuid(this.guidInvoice)
+				.pipe(first())
+				.subscribe({
+					next: (response) => {
+						const [data] = response.data;
+
+						this.registerForm.patchValue({
+							descricao: data.tipoServico?.idTipoServico,
+							valorOrcamento: data.valorOrcado,
+							valorContratado: data.valorContratado,
+							valorServico: data.valorServico,
+							dataEmissao: data.dataEmissao ? new Date(data.dataEmissao) : '',
+							numeroNota: data.numeroNota,
+							dataVencimentoFatura: data.dataVencimento
+								? new Date(data.dataVencimento)
+								: '',
+							porcentagemAdm: data.percentualAdministracaoObra,
+						});
+					},
+				});
+
+		this.dominiosService
+			.getTiposServico()
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					response?.data.forEach((servico: any) => {
+						this.opcoesDescricao.push({
+							label: servico.nome,
+							value: servico.id,
+						});
+					});
+				},
+				error(err) {
+					console.error(err);
+				},
+			});
 	}
 
 	get f(): { [key: string]: AbstractControl<any, any> } {
@@ -140,26 +176,22 @@ export class IssueInvoiceSidebarComponent {
 			return;
 		}
 
-		const editFormData = this.registerForm.getRawValue();
+		const formObj = this.registerForm.getRawValue();
 
-		const contactObj = {
-			idFornecedor: null,
-			nome: editFormData.name,
-			email: editFormData.email,
-			telefone: editFormData.telephone,
-			cargo: editFormData.role,
-			dataNascimento: editFormData.birthday,
+		const valuesObj = {
+			formValues: formObj,
+			invoiceFile: this.selectedFile,
 		};
 
-		console.log('on register', contactObj);
+		console.log('on register', valuesObj);
 
-		if (this.onSubmitForm) this.onSubmitForm(contactObj);
+		if (this.onSubmitForm) this.onSubmitForm(valuesObj);
 
 		// if (this.registerOnSubmit) this.registerContact();
 	}
 
 	onFileSelect(e: any) {
-		this.selectedFile = e.currentFiles[0];
+		this.selectedFile = e[0];
 	}
 
 	cancelEdit() {

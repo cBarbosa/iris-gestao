@@ -93,6 +93,7 @@ export class RevenueViewComponent {
 
 	getFaturaFormData(fatura: any) {
 		return {
+			numeroFatura: fatura?.numeroParcela,
 			dataVencimento: fatura?.dataVencimento
 				? new Date(fatura?.dataVencimento)
 				: null,

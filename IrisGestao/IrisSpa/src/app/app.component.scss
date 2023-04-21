@@ -715,9 +715,14 @@
 					}
 				}
 
-				&.no-popup {
+				&.no-picker {
 					.p-datepicker {
 						display: none;
+					}
+				}
+				&.small-picker {
+					.p-datepicker {
+						transform: scale(0.85);
 					}
 				}
 			}

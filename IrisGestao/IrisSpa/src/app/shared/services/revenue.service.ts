@@ -65,4 +65,22 @@ export class RevenueService {
 			httpOptions
 		);
 	}
+
+	baixarParcela(
+		guid: string,
+		baixaObj: {
+			numeroNotaFiscal: string;
+			DataEmissaoNotaFiscal: string;
+			dataVencimento: string;
+			dataPagamento: string;
+			valorRealPago: number;
+			DescricaoBaixaFatura: string;
+		}
+	) {
+		return this.http.put<ApiResponse>(
+			`${env.config.apiUrl}FaturaTitulo/${guid}/atualizar`,
+			JSON.stringify(baixaObj, null, 2),
+			httpOptions
+		);
+	}
 }

@@ -8,12 +8,18 @@ import {
 	ReactiveFormsModule,
 	Validators,
 } from '@angular/forms';
+import { NgxCurrencyModule } from 'ngx-currency';
 import { NgxMaskModule } from 'ngx-mask';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
 import { Utils } from 'src/app/shared/utils';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { RevenueService } from 'src/app/shared/services/revenue.service';
+import { first } from 'rxjs';
+import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
+import { AnexoService } from 'src/app/shared/services/anexo.service';
 
 type DropdownItem = {
 	label: string;
@@ -33,6 +39,9 @@ type DropdownItem = {
 		InputTextModule,
 		DropdownModule,
 		FileUploadComponent,
+		NgxCurrencyModule,
+		InputTextareaModule,
+		ResponsiveDialogComponent,
 	],
 	templateUrl: './baixa-titulo-sidebar.component.html',
 	styleUrls: ['./baixa-titulo-sidebar.component.scss'],
@@ -49,16 +58,14 @@ export class BaixaTituloSidebarComponent {
 	registerOnSubmit: boolean = false;
 
 	@Input()
-	guidClient: string | null;
-
-	@Input()
-	guidSupplier: string | null;
+	guidRevenue: string | null;
 
 	@Input()
 	cancel: Function;
 
 	@Input()
 	data: {
+		numeroFatura: string | null;
 		dataVencimento: Date | null;
 		valorTotal: number;
 		valorAluguel: number;
@@ -84,6 +91,16 @@ export class BaixaTituloSidebarComponent {
 		},
 	];
 
+	displayModal: boolean = false;
+
+	modalContent: {
+		isError?: boolean;
+		header?: string;
+		message: string;
+	} = {
+		message: '',
+	};
+
 	opcoesPorcentagemAdm: DropdownItem[] = [
 		{
 			label: 'Selecione',
@@ -92,20 +109,42 @@ export class BaixaTituloSidebarComponent {
 		},
 	];
 
-	constructor(private fb: FormBuilder) {}
+	constructor(
+		private fb: FormBuilder,
+		private revenueService: RevenueService,
+		private anexoService: AnexoService
+	) {}
 
 	ngOnInit() {
-		if (this.registerOnSubmit && !this.guidClient && !this.guidSupplier)
+		if (this.registerOnSubmit && !this.guidRevenue)
 			throw new Error(
-				"contact-register-sidebar: O Guid de cliente deve ser informado caso o parâmetro 'registerOnSubmit' seja verdadeiro."
+				"contact-register-sidebar: O Guid de receita deve ser informado caso o parâmetro 'registerOnSubmit' seja verdadeiro."
 			);
 
+		const dateDiff = this.data
+			? Utils.dateDiffInDays(
+					this.data.dataPagamento ?? undefined,
+					this.data.dataVencimento ?? undefined
+			  )
+			: 0;
+		const diasAtraso = dateDiff && dateDiff > 0 ? dateDiff : '0';
+
 		this.registerForm = this.fb.group({
+			numeroFatura: [this.data?.numeroFatura ?? null, Validators.required],
 			dataVencimento: [this.data?.dataVencimento ?? null, Validators.required],
-			valorTotal: [this.data?.valorTotal ?? '', Validators.required],
+			valorTotal: [
+				{ value: this.data?.valorTotal ?? '', disabled: true },
+				Validators.required,
+			],
 			valorAluguel: [this.data?.valorAluguel ?? '', Validators.required],
 			dataPagamento: [this.data?.dataPagamento ?? null, Validators.required],
-			diasAtraso: [this.data?.diasAtraso ?? '', Validators.required],
+			diasAtraso: [
+				{
+					value: diasAtraso,
+					disabled: true,
+				},
+				Validators.required,
+			],
 			observacoes: [this.data?.observacoes ?? '', Validators.required],
 			anexoNf: [this.data?.anexoNf ?? null, Validators.required],
 		});
@@ -131,20 +170,96 @@ export class BaixaTituloSidebarComponent {
 
 		const editFormData = this.registerForm.getRawValue();
 
-		const contactObj = {
-			idFornecedor: null,
-			nome: editFormData.name,
-			email: editFormData.email,
-			telefone: editFormData.telephone,
-			cargo: editFormData.role,
-			dataNascimento: editFormData.birthday,
+		const baixaObj = {
+			numeroNotaFiscal: editFormData.numeroFatura,
+			DataEmissaoNotaFiscal: new Date().toISOString(), // ??  COMO PREENCHER
+			dataVencimento: editFormData.dataVencimento
+				? editFormData.dataVencimento.toISOString()
+				: '',
+			dataPagamento: editFormData.dataPagamento
+				? editFormData.dataPagamento.toISOString()
+				: '',
+			valorRealPago: editFormData.valorTotal, // ??
+			DescricaoBaixaFatura: editFormData.observacoes,
 		};
 
-		console.log('on register', contactObj);
+		console.log('on register', baixaObj);
 
-		if (this.onSubmitForm) this.onSubmitForm(contactObj);
+		// if (this.onSubmitForm) this.onSubmitForm(contactObj);
 
-		// if (this.registerOnSubmit) this.registerContact();
+		if (this.registerOnSubmit && this.guidRevenue)
+			this.registerInvoice(baixaObj)
+				.then(() => {
+					this.openModal();
+					if (this.onSubmitForm) this.onSubmitForm(baixaObj);
+				})
+				.catch((err) => {
+					this.openModal();
+					console.error(err);
+				});
+		else {
+			if (this.onSubmitForm) this.onSubmitForm(baixaObj);
+		}
+	}
+
+	registerInvoice(baixaObj: {
+		numeroNotaFiscal: string;
+		DataEmissaoNotaFiscal: string;
+		dataVencimento: string;
+		dataPagamento: string;
+		valorRealPago: number;
+		DescricaoBaixaFatura: string;
+	}): Promise<unknown> {
+		return new Promise((res, rej) => {
+			this.revenueService
+				.baixarParcela(this.guidRevenue!, baixaObj)
+				.pipe(first())
+				.subscribe({
+					next: (response) => {
+						if (response.success) {
+							this.modalContent = {
+								header: 'Cadastro realizado com sucesso',
+								message: response.message ?? '',
+								isError: false,
+							};
+							res(response);
+
+							const formData = new FormData();
+
+							formData.append('files', this.selectedFile);
+
+							this.anexoService.registerFile(
+								response.data.guidReferencia,
+								formData,
+								'outrosdocs'
+							);
+						} else {
+							this.modalContent = {
+								header: 'Cadastro não realizado',
+								message: response.message ?? '',
+								isError: true,
+							};
+							rej(response);
+						}
+					},
+					error: (err) => {
+						this.modalContent = {
+							header: 'Cadastro não realizado',
+							message: 'Houve um erro no envio de dados',
+							isError: true,
+						};
+						rej(err);
+					},
+				});
+		});
+	}
+
+	openModal() {
+		this.displayModal = true;
+	}
+
+	closeModal() {
+		this.displayModal = false;
 	}
 
 	onFileSelect(e: any) {

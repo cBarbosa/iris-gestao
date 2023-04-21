@@ -10,13 +10,13 @@
 	max-width: 1155px;
 	margin: 0 2rem;
 
+	form {
+		width: 100%;
+	}
+
 	.input-wrapper {
 		display: flex;
 		@apply mb-7;
-
-		form {
-			width: 100%;
-		}
 
 		section {
 			@apply p-6;

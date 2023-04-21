@@ -23,7 +23,7 @@
 								class="p-element h-10 p-button p-component p-button-outlined"
 								(click)="navigateTo('revenue/edit/' + revenue.guidReferencia)"
 							>
-								Editar obra
+								Editar Título
 							</button>
 							<!--button pButton type="button" class="p-button-outlined h-7"
 						(click)="navigateTo('client/register/'+ cliente.guidReferencia + '/Clone')">
@@ -140,24 +140,28 @@
 							</td>
 							<td>{{ fatura.dataVencimento | date : "shortDate" }}</td>
 							<td>
-								<p-tag
-									value="Emitida"
-									[rounded]="true"
-									severity="success"
-									*ngIf="fatura.statusFatura === 'Título Baixado'"
-								></p-tag>
-								<p-tag
-									value="Não emitida"
-									[rounded]="true"
-									severity="danger"
-									*ngIf="fatura.statusFatura === 'Baixa não efetuada'"
-								></p-tag>
-								<p-tag
-									value="Não emitida"
-									[rounded]="true"
-									[style]="{ background: '#b2b2b2' }"
-									*ngIf="fatura.statusFatura === 'Inativo'"
-								></p-tag>
+								<!-- A vencer, Vencido-, Pago -->
+								<ng-container
+									*ngIf="
+										fatura.statusFatura === 'Vencido' ||
+											fatura.statusFatura === 'A vencer';
+										else tagSuccess
+									"
+								>
+									<p-tag
+										[value]="fatura.statusFatura"
+										[rounded]="true"
+										severity="danger"
+									></p-tag>
+								</ng-container>
+
+								<ng-template #tagSuccess>
+									<p-tag
+										[value]="fatura.statusFatura"
+										[rounded]="true"
+										severity="success"
+									></p-tag>
+								</ng-template>
 							</td>
 							<td class="action w-[13rem]">
 								<button
@@ -352,11 +356,15 @@
 
 <p-sidebar [(visible)]="baixaTituloVisible" position="right">
 	<ng-template pTemplate="header">
-		<h2 class="text-xl font-bold">Baixa de Título</h2>
+		<h2 class="text-xl font-bold">Baixa de Fatura</h2>
 	</ng-template>
 	<ng-template pTemplate="content">
 		<app-baixa-titulo-sidebar
 			[data]="getFaturaFormData(faturaSelected)"
+			[cancel]="hideBaixaTitulo"
+			[onSubmitForm]="hideBaixaTitulo"
+			[registerOnSubmit]="true"
+			[guidRevenue]="guid"
 		></app-baixa-titulo-sidebar>
 	</ng-template>
 </p-sidebar>
