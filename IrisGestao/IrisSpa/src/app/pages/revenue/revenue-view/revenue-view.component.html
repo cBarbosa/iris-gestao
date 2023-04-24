@@ -96,6 +96,12 @@
 							<div class="revenue-data">
 								<div class="data-label">Valor a pagar</div>
 								<div class="data-value">
+									{{ revenue?.['valorTitulo'] | currency }}
+								</div>
+							</div>
+							<div class="revenue-data">
+								<div class="data-label">Valor total do contrato</div>
+								<div class="data-value">
 									{{ revenue?.['valorTotalTitulo'] | currency }}
 								</div>
 							</div>
