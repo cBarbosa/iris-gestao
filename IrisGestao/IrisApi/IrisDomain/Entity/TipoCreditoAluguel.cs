@@ -17,4 +17,7 @@ public partial class TipoCreditoAluguel: BaseEntity<TipoCreditoAluguel>
 
     [InverseProperty("IdTipoCreditoAluguelNavigation")]
     public virtual ICollection<TituloReceber> TituloReceber { get; } = new List<TituloReceber>();
+
+    [InverseProperty("IdTipoCreditoAluguelNavigation")]
+    public virtual ICollection<TituloPagar> TituloPagar { get; } = new List<TituloPagar>();
 }

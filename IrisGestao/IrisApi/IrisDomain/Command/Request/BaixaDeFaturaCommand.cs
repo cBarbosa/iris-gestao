@@ -9,8 +9,8 @@ namespace IrisGestao.Domain.Command.Request
     public class BaixaDeFaturaCommand
     {
         public Guid GuidFatura { get; set; }
-        public string NumeroNotaFiscal { get; set; }
-        public DateTime DataEmissaoNotaFiscal { get; set; }
+        public string? NumeroNotaFiscal { get; set; }
+        public DateTime? DataEmissaoNotaFiscal { get; set; }
         public DateTime DataVencimento { get; set; }
         public DateTime DataPagamento { get; set; }
         public double ValorRealPago { get; set; }
