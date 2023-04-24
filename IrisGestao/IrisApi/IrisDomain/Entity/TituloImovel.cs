@@ -22,6 +22,10 @@ public partial class TituloImovel : BaseEntity<TituloImovel>
     [InverseProperty("TituloImovel")]
     public virtual TituloReceber IdTituloReceberNavigation { get; set; } = null!;
 
+    [ForeignKey("IdTituloPagar")]
+    [InverseProperty("TituloImovel")]
+    public virtual TituloPagar IdTituloPagarNavigation { get; set; } = null!;
+
     [ForeignKey("IdImovel")]
     [InverseProperty("TituloImovel")]
     public virtual Imovel IdImovelNavigation { get; set; } = null!;

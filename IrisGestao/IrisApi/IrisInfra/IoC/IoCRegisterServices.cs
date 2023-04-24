@@ -36,10 +36,12 @@ public class IoCRegisterServices
         services.AddScoped<IContratoAluguelImovelService, ContratoAluguelImovelService>();
         services.AddScoped<IContratoAluguelUnidadeService, ContratoAluguelUnidadeService>();
         services.AddScoped<IContratoFornecedorService, ContratoFornecedorService>();
+        services.AddScoped<ITituloPagarService, TituloPagarService>();
         services.AddScoped<ITituloReceberService, TituloReceberService>();
         services.AddScoped<ITituloImovelService, TituloImovelService>();
         services.AddScoped<ITituloUnidadeService, TituloUnidadeService>();
         services.AddScoped<IFaturaTituloService, FaturaTituloService>();
+        services.AddScoped<IFaturaTituloPagarService, FaturaTituloPagarService>();
         services.AddScoped<IAzureStorageService, AzureStorageService>();
         services.AddScoped<IObraService, ObraService>();
 
@@ -72,6 +74,8 @@ public class IoCRegisterServices
         services.AddScoped<IContratoAluguelImovelRepository, Repository.Impl.ContratoAluguelImovelRepository>();
         services.AddScoped<IContratoAluguelUnidadeRepository, Repository.Impl.ContratoAluguelUnidadeRepository>();
         services.AddScoped<IContratoFornecedorRepository, Repository.Impl.ContratoFornecedorRepository>();
+        services.AddScoped<IFaturaTituloPagarRepository, Repository.Impl.FaturaTituloPagarRepository>();
+        services.AddScoped<ITituloPagarRepository, Repository.Impl.TituloPagarRepository>();
         services.AddScoped<IFaturaTituloRepository, Repository.Impl.FaturaTituloRepository>();
         services.AddScoped<ITituloReceberRepository, Repository.Impl.TituloReceberRepository>();
         services.AddScoped<ITituloImovelRepository, Repository.Impl.TituloImovelRepository>();

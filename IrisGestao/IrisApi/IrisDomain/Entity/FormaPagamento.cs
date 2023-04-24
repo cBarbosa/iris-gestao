@@ -18,4 +18,7 @@ public partial class FormaPagamento: BaseEntity<FormaPagamento>
 
     [InverseProperty("IdFormaPagamentoNavigation")]
     public virtual ICollection<TituloReceber> TituloReceber { get; } = new List<TituloReceber>();
+
+    [InverseProperty("IdFormaPagamentoNavigation")]
+    public virtual ICollection<TituloPagar> TituloPagar { get; } = new List<TituloPagar>();
 }

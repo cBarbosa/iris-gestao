@@ -48,6 +48,8 @@ public partial class IrisContext : DbContext
 
     public virtual DbSet<FaturaTitulo> FaturaTitulo { get; set; } = null!;
 
+    public virtual DbSet<FaturaTituloPagar> FaturaTituloPagar { get; set; } = null!;
+
     public virtual DbSet<FormaPagamento> FormaPagamento { get; set; } = null!;
 
     public virtual DbSet<Fornecedor> Fornecedor { get; set; } = null!;
@@ -81,6 +83,7 @@ public partial class IrisContext : DbContext
     public virtual DbSet<TipoUnidade> TipoUnidade { get; set; } = null!;
 
     public virtual DbSet<TituloReceber> TituloReceber { get; set; } = null!;
+    public virtual DbSet<TituloPagar> TituloPagar { get; set; } = null!;
 
     public virtual DbSet<TituloImovel> TituloImovel { get; set; }
     
@@ -296,6 +299,16 @@ public partial class IrisContext : DbContext
                 .HasConstraintName("fk_Titulo_FaturaTitulo");
         });
 
+        modelBuilder.Entity<FaturaTituloPagar>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__FaturaTiPag__3214EC07D65B2553");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
+
+            entity.HasOne(d => d.IdTituloPagarNavigation).WithMany(p => p.FaturaTituloPagar)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_TituloPagar_FaturaTituloPagar");
+        });
 
         modelBuilder.Entity<TituloImovel>(entity =>
         {
@@ -304,6 +317,10 @@ public partial class IrisContext : DbContext
             entity.HasOne(d => d.IdTituloReceberNavigation).WithMany(p => p.TituloImovel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_TituloImovel_TituloReceber");
+
+            entity.HasOne(d => d.IdTituloPagarNavigation).WithMany(p => p.TituloImovel)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_TituloImovel_TituloPagar");
 
             entity.HasOne(d => d.IdImovelNavigation).WithMany(p => p.TituloImovel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -484,6 +501,37 @@ public partial class IrisContext : DbContext
             entity.HasOne(d => d.IdFormaPagamentoNavigation).WithMany(p => p.TituloReceber)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_FormaPagamento_TituloReceber");
+        });
+
+        modelBuilder.Entity<TituloPagar>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__TituloPagar__3214EC078550CE76");
+
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
+
+            entity.HasOne(d => d.IdTipoTituloNavigation).WithMany(p => p.TituloPagar)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_TipoTitulo_Titulo");
+
+            entity.HasOne(d => d.IdContratoAluguelNavigation).WithMany(p => p.TituloPagar)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_ContratoAluguel_TituloPagar");
+
+            entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.TituloPagar)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Cliente_TituloPagar");
+
+            entity.HasOne(d => d.IdIndiceReajusteNavigation).WithMany(p => p.TituloPagar)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_IndiceReajuste_ContratoAluguel");
+
+            entity.HasOne(d => d.IdTipoCreditoAluguelNavigation).WithMany(p => p.TituloPagar)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_TipoCreditoAluguel_ContratoAluguel");
+
+            entity.HasOne(d => d.IdFormaPagamentoNavigation).WithMany(p => p.TituloPagar)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_FormaPagamento_TituloPagar");
         });
 
         modelBuilder.Entity<Unidade>(entity =>
