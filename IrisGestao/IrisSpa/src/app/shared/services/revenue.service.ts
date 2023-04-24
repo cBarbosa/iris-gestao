@@ -69,8 +69,6 @@ export class RevenueService {
 	baixarParcela(
 		guid: string,
 		baixaObj: {
-			numeroNotaFiscal: string;
-			DataEmissaoNotaFiscal: string;
 			dataVencimento: string;
 			dataPagamento: string;
 			valorRealPago: number;

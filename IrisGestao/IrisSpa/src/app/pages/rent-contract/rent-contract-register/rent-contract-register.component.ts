@@ -205,7 +205,8 @@ export class RentContractRegisterComponent {
 				dataInicio: [null, Validators.required],
 				// dataFim: [null, Validators.required],
 				dataOcupacao: [null, Validators.required],
-				dataVencimento: [1, Validators.required],
+				//dataVencimento: [1, Validators.required],
+				dataVencimentoPrimeraParcela: [null, Validators.required],
 			}),
 			valuesInfo: this.fb.group({
 				valor: ['', Validators.required],
@@ -493,6 +494,7 @@ export class RentContractRegisterComponent {
 				// dataFim: string;
 				dataOcupacao: string; // x
 				dataVencimento: number; // x
+				dataVencimentoPrimeraParcela: string;
 			};
 			valuesInfo: {
 				valor: number; // x
@@ -526,6 +528,7 @@ export class RentContractRegisterComponent {
 			prazoTotalContrato: +formData.valuesInfo.descontoPrazo, //???
 			dataOcupacao: formData.contractInfo.dataOcupacao,
 			diaVencimentoAluguel: formData.contractInfo.dataVencimento,
+			dataVencimentoPrimeraParcela: formData.contractInfo.dataVencimentoPrimeraParcela,
 			periodicidadeReajuste: +formData.valuesInfo.periodicidade,
 			lstImoveis: this.linkedProperties.map((p) => {
 				return {

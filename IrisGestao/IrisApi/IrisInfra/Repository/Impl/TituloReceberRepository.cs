@@ -58,7 +58,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                         Status = x.Status,
                         Parcelas = x.Parcelas,
                         ValorTitulo = x.ValorTitulo,
-                        ValorTotalTitulo = x.ValorTitulo,
+                        ValorTotalTitulo = x.ValorTotalTitulo,
                         DataCriacao = x.DataCriacao,
                         DataAtualização = x.DataUltimaModificacao,
                         DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,

@@ -65,6 +65,7 @@ export class BaixaTituloSidebarComponent {
 
 	@Input()
 	data: {
+		guidFatura: string | null;
 		numeroFatura: string | null;
 		dataVencimento: Date | null;
 		valorTotal: number;
@@ -116,6 +117,8 @@ export class BaixaTituloSidebarComponent {
 	) {}
 
 	ngOnInit() {
+		console.log('Fatura detalhes: >> ' + JSON.stringify(this.data));
+
 		if (this.registerOnSubmit && !this.guidRevenue)
 			throw new Error(
 				"contact-register-sidebar: O Guid de receita deve ser informado caso o parâmetro 'registerOnSubmit' seja verdadeiro."
@@ -127,11 +130,11 @@ export class BaixaTituloSidebarComponent {
 					this.data.dataVencimento ?? undefined
 			  )
 			: 0;
-		const diasAtraso = dateDiff && dateDiff > 0 ? dateDiff : '0';
+		const diasAtraso = dateDiff && dateDiff < 0 ? dateDiff : '0';
 
 		this.registerForm = this.fb.group({
-			numeroFatura: [this.data?.numeroFatura ?? null, Validators.required],
-			dataVencimento: [this.data?.dataVencimento ?? null, Validators.required],
+			numeroFatura: [{ value: this.data?.numeroFatura ?? null, disabled: true}, Validators.required],
+			dataVencimento: [{ value: this.data?.dataVencimento ?? null, disabled: true}, Validators.required],
 			valorTotal: [
 				{ value: this.data?.valorTotal ?? '', disabled: true },
 				Validators.required,
@@ -171,8 +174,6 @@ export class BaixaTituloSidebarComponent {
 		const editFormData = this.registerForm.getRawValue();
 
 		const baixaObj = {
-			numeroNotaFiscal: editFormData.numeroFatura,
-			DataEmissaoNotaFiscal: new Date().toISOString(), // ??  COMO PREENCHER
 			dataVencimento: editFormData.dataVencimento
 				? editFormData.dataVencimento.toISOString()
 				: '',
@@ -203,8 +204,6 @@ export class BaixaTituloSidebarComponent {
 	}
 
 	registerInvoice(baixaObj: {
-		numeroNotaFiscal: string;
-		DataEmissaoNotaFiscal: string;
 		dataVencimento: string;
 		dataPagamento: string;
 		valorRealPago: number;
