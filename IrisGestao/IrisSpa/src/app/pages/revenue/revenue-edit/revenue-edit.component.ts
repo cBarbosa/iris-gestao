@@ -7,6 +7,8 @@ import {
 	Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { first } from 'rxjs';
+import { DominiosService } from 'src/app/shared/services';
 import { RevenueService } from 'src/app/shared/services/revenue.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -46,20 +48,12 @@ export class RevenueEditComponent {
 			value: null,
 			disabled: true,
 		},
-		{
-			label: 'IPTU',
-			value: 1,
-		},
 	];
 	opcoesCreditarPara: DropdownItem[] = [
 		{
 			label: 'Selecione',
 			value: null,
 			disabled: true,
-		},
-		{
-			label: 'Administradora',
-			value: 1,
 		},
 	];
 	opcoesNomeLocador: DropdownItem[] = [
@@ -79,10 +73,6 @@ export class RevenueEditComponent {
 			value: null,
 			disabled: true,
 		},
-		{
-			label: 'Boleto',
-			value: 1,
-		},
 	];
 
 	imovel = {
@@ -95,7 +85,8 @@ export class RevenueEditComponent {
 		private location: Location,
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
-		private revenueService: RevenueService
+		private revenueService: RevenueService,
+		private dominiosService: DominiosService
 	) {}
 
 	ngOnInit() {
@@ -139,10 +130,10 @@ export class RevenueEditComponent {
 					this.editForm.patchValue({
 						nomeConta: data.nomeTitulo,
 						numeroTitulo: data.numeroTitulo,
-						planoContas: data.tipoTituloReceber.id,
-						creditarPara: data.creditoAluguel.id,
+						planoContas: +data.tipoTituloReceber.id,
+						creditarPara: +data.creditoAluguel.id,
 						nomeLocador: data.cliente.nome,
-						formaPagamento: data.formaPagamento.id,
+						formaPagamento: +data.formaPagamento.id,
 						dataVencimento: data.dataVencimentoPrimeraParcela
 							? new Date(data.dataVencimentoPrimeraParcela)
 							: null,
@@ -153,6 +144,61 @@ export class RevenueEditComponent {
 					this.invalidGuid = true;
 				}
 				this.isLoading = false;
+			});
+
+		this.dominiosService
+			.getTiposTitulo()
+			.pipe(first())
+			.subscribe({
+				next: (e: any) => {
+					if (e.success) {
+						this.opcoesPlanoContas.push(
+							...e.data.map((item: any) => {
+								return {
+									label: item.nome,
+									value: item.id,
+								};
+							})
+						);
+					} else console.error(e.message);
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+
+		this.dominiosService
+			.getTiposCreditoAluguel()
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					response?.data.forEach((forma: any) => {
+						this.opcoesCreditarPara.push({
+							label: forma.nome,
+							value: forma.id,
+						});
+					});
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+
+		this.dominiosService
+			.getFormasPagamento()
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					response.data.forEach((forma: any) => {
+						this.opcoesFormaPagamento.push({
+							label: forma.nome,
+							value: forma.id,
+						});
+					});
+				},
+				error: (err) => {
+					console.error(err);
+				},
 			});
 	}
 
