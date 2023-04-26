@@ -133,7 +133,7 @@ export class RevenueRegisterComponent {
 			}),
 			infoFatura: this.fb.group({
 				classificacaoReceita: [null, Validators.required],
-				nomeTitulo: [{ value: '', disabled: true }],
+				nomeTitulo: [{ value: '', disabled: true }, Validators.required],
 				creditarPara: [null, Validators.required],
 				formaPagamento: [null, Validators.required],
 				parcelas: [null, Validators.required],
@@ -428,7 +428,8 @@ export class RevenueRegisterComponent {
 	}
 
 	changeClassificacao(event: any) {
-		if (event.value === 'outro') {
+		console.log(this.opcoesClassificacaoReceita);
+		if (event.value === 7) {
 			this.infoFaturaForm.controls['nomeTitulo'].enable();
 		} else {
 			this.infoFaturaForm.controls['nomeTitulo'].disable();
