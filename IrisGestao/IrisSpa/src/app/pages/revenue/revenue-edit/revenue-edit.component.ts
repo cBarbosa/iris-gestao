@@ -130,16 +130,51 @@ export class RevenueEditComponent {
 					this.editForm.patchValue({
 						nomeConta: data.nomeTitulo,
 						numeroTitulo: data.numeroTitulo,
-						planoContas: +data.tipoTituloReceber.id,
-						creditarPara: +data.creditoAluguel.id,
-						nomeLocador: data.cliente.nome,
-						formaPagamento: +data.formaPagamento.id,
+						planoContas: +data.tipoTituloReceber?.id ?? null,
+						creditarPara: +data.creditoAluguel?.id ?? null,
+						nomeLocador: data.cliente?.nome ?? null,
+						formaPagamento: +data.formaPagamento?.id ?? null,
 						dataVencimento: data.dataVencimentoPrimeraParcela
 							? new Date(data.dataVencimentoPrimeraParcela)
 							: null,
 						valorTitulo: data.valorTitulo,
 						valorPagar: data.valorTitulo,
 					});
+
+					// this.editForm = this.fb.group({
+					// 	nomeConta: [data.nomeTitulo, Validators.required],
+					// 	numeroTitulo: [data.numeroTitulo, [Validators.required]],
+					// 	planoContas: [
+					// 		+data.tipoTituloReceber.id ?? null,
+					// 		[Validators.required],
+					// 	],
+					// 	creditarPara: [
+					// 		+data.creditoAluguel.id ?? null,
+					// 		[Validators.required],
+					// 	],
+					// 	nomeLocador: [data.cliente.nome ?? null, Validators.required],
+					// 	formaPagamento: [
+					// 		+data.formaPagamento.id ?? null,
+					// 		Validators.required,
+					// 	],
+					// 	dataVencimento: [
+					// 		data.dataVencimentoPrimeraParcela
+					// 			? new Date(data.dataVencimentoPrimeraParcela)
+					// 			: null,
+					// 		Validators.required,
+					// 	],
+					// 	valorTitulo: [data.valorTitulo, Validators.required],
+					// 	valorPagar: [data.valorTitulo, Validators.required],
+					// });
+
+					setTimeout(() => {
+						this.editForm.patchValue({
+							planoContas: +data.tipoTituloReceber?.id ?? null,
+							creditarPara: +data.creditoAluguel?.id ?? null,
+							nomeLocador: data.cliente?.nome ?? null,
+							formaPagamento: +data.formaPagamento?.id ?? null,
+						});
+					}, 40);
 				} else {
 					this.invalidGuid = true;
 				}
