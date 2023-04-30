@@ -1,17 +1,15 @@
-name: Azure Static Web Apps CI/CD (staging)
+name: Azure Static Web Apps CI/CD (main)
 
 on:
   push:
     branches:
-      - staging
+      - main
     paths:
       - IrisGestao/IrisSpa/**
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
-      - staging
-    paths:
-      - IrisGestao/IrisSpa/**
+      - main
 
 jobs:
   build_and_deploy_job:
