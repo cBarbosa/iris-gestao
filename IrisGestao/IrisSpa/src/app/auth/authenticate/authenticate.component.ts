@@ -24,6 +24,13 @@ export class AuthenticateComponent implements OnInit {
 		this.accessToken = new URLSearchParams(this.pLocation.hash).get(
 			'#id_token'
 		);
+
+		if(!this.accessToken) {
+			this.accessToken = new URLSearchParams(this.pLocation.hash).get(
+				'#access_token'
+			);
+		};
+
 		this.error = new URLSearchParams(this.pLocation.hash).get('#error');
 
 		if (this.accessToken) {
