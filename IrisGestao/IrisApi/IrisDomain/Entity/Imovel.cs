@@ -57,9 +57,12 @@ public partial class Imovel: BaseEntity<Imovel>
     [InverseProperty("IdImovelNavigation")]
     public virtual ICollection<Obra> Obra { get; } = new List<Obra>();
 
-    [InverseProperty("IdImovelNavigation")]
-    public virtual ICollection<Titulo> Titulo { get; } = new List<Titulo>();
+    /*[InverseProperty("IdImovelNavigation")]
+    public virtual ICollection<TituloReceber> TituloReceber { get; } = new List<TituloReceber>();*/
 
     [InverseProperty("IdImovelNavigation")]
     public virtual ICollection<Unidade> Unidade { get; } = new List<Unidade>();
+
+    [InverseProperty("IdImovelNavigation")]
+    public virtual ICollection<TituloImovel> TituloImovel { get; } = new List<TituloImovel>();
 }

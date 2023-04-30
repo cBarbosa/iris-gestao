@@ -22,11 +22,12 @@
 ::ng-deep {
 	.p-sidebar.p-sidebar-right {
 		width: 26rem;
+		max-width: 100vw;
 	}
 
 	.p-dialog {
 		&.confirmation-modal {
-			@apply w-[25rem];
+			@apply w-[25rem] max-w-[100vw];
 
 			.p-dialog-content {
 				text-align: center;

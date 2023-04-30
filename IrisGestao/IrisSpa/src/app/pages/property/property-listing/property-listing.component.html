@@ -1,48 +1,65 @@
 <div class="content-wrapper">
-	<div class="flex justify-between py-9">
-		<h3 class="text-2xl font-bold">
-			Lista de Imóveis
-			<span class="ml-2 text-sm text-slate-600">{{ totalListCount }}</span>
-		</h3>
+	<header class="list-header">
+		<div class="flex justify-between items-center" [class.mb-2]="isMobile">
+			<h3 class="text-2xl font-bold">
+				Lista de Imóveis
+				<span class="ml-2 text-sm text-slate-600">{{ totalListCount }}</span>
+			</h3>
+			<button
+				pButton
+				pRipple
+				type="button"
+				icon="pi pi-sliders-h"
+				class="p-button-rounded p-button-text"
+				*ngIf="isMobile"
+				(click)="openFilters()"
+			></button>
+		</div>
 
 		<div class="options">
-			<span class="p-input-icon-left mx-2">
-				<i class="pi pi-search"></i>
-				<input
-					pInputText
-					[(ngModel)]="filterText"
-					(ngModelChange)="filterPropertiesDebounce($event)"
-					type="text"
-					placeholder="Buscar imóvel"
-				/>
-			</span>
-			<p-dropdown
-				class="mx-2"
-				styleClass="w-[14.5rem]"
-				placeholder="Tipo de imóvel"
-				[options]="categoryOptions"
-				[(ngModel)]="filterCategory"
-				(ngModelChange)="filterProperties($event)"
-			></p-dropdown>
-			<p-dropdown
-				class="mx-2 mr-4"
-				styleClass="w-52"
-				placeholder="Proprietário"
-				[options]="proprietaryOptions"
-				[(ngModel)]="filterProprietary"
-				(ngModelChange)="filterProperties($event)"
-			></p-dropdown>
+			<ng-container *ngIf="!isMobile">
+				<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+			</ng-container>
 			<button
 				pButton
 				type="button"
-				class="p-button-outlined h-9"
+				class="p-button-outlined h-9 addButton"
 				(click)="navigateTo('property/register')"
 			>
 				<i class="pi pi-plus mr-3"></i>
 				Adicionar imóvel
 			</button>
 		</div>
-	</div>
+	</header>
+
+	<ng-template #filtersTemplate>
+		<span class="p-input-icon-left mx-2">
+			<i class="pi pi-search"></i>
+			<input
+				pInputText
+				[(ngModel)]="filterText"
+				(ngModelChange)="filterPropertiesDebounce($event)"
+				type="text"
+				placeholder="Buscar imóvel"
+			/>
+		</span>
+		<p-dropdown
+			class="mx-2"
+			styleClass="w-[14.5rem]"
+			placeholder="Tipo de imóvel"
+			[options]="categoryOptions"
+			[(ngModel)]="filterCategory"
+			(ngModelChange)="filterProperties($event)"
+		></p-dropdown>
+		<p-dropdown
+			class="mx-2 mr-4"
+			styleClass="w-52"
+			placeholder="Proprietário"
+			[options]="proprietaryOptions"
+			[(ngModel)]="filterProprietary"
+			(ngModelChange)="filterProperties($event)"
+		></p-dropdown>
+	</ng-template>
 
 	<ng-container *ngIf="!noRestults; else noResults">
 		<app-property-list
@@ -61,3 +78,10 @@
 		</div>
 	</ng-template>
 </div>
+
+<p-sidebar [(visible)]="displayMobileFilters" position="bottom">
+	<ng-template pTemplate="header">Filtros</ng-template>
+	<ng-template pTemplate="content">
+		<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+	</ng-template>
+</p-sidebar>

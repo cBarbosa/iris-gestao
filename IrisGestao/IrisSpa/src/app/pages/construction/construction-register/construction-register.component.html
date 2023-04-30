@@ -1,0 +1,477 @@
+<form
+	class="register-form"
+	[formGroup]="registerForm"
+	(ngSubmit)="onSubmit($event)"
+>
+	<div class="input-wrapper">
+		<section class="form-details">
+			<h4>Adicionar novo contrato</h4>
+			<app-form-steps
+				[list]="stepList"
+				[callback]="changeStepCb"
+			></app-form-steps>
+		</section>
+
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- STEP 1 -->
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- ------------------------------------------------------------------------ -->
+		<section *ngIf="currentStep === 1" class="form-data">
+			<h4>Selecione o imóvel</h4>
+
+			<div formGroupName="selecaoImovel">
+				<div class="field">
+					<label for="tipoImovel" class="block">Tipo de imóvel</label>
+					<p-dropdown
+						id="tipoImovel"
+						[options]="opcoesTipoImovel"
+						[filter]="true"
+						filterBy="label"
+						optionValue="value"
+						formControlName="tipoImovel"
+						aria-describedby="tipoImovel-help"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['tipoImovel'])">
+						<small
+							id="tipoImovel-help"
+							*ngIf="f['tipoImovel'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o tipo de imóvel
+						</small>
+						<ng-template #error2>
+							<small id="tipoImovel-help" class="p-error block">
+								Tipo de imóvel inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div
+					class="add-property-alert"
+					[class.invalid]="linkedPropertiesInvalid"
+					*ngIf="linkedProperties.length === 0; else properties"
+				>
+					<span>
+						Você precisa atribuir pelo menos um imóvel ao seu contrato
+					</span>
+					<button
+						type="button"
+						class="min-w-[6.5rem]"
+						(click)="showAddProperty()"
+						pButton
+					>
+						Adicionar
+					</button>
+				</div>
+
+				<ng-template #properties>
+					<div
+						class="properties-data"
+						*ngFor="let property of linkedProperties; let i = index"
+					>
+						<h4>Imóvel {{ i + 1 }}</h4>
+						<div class="top-data">
+							<span>{{ property.nome }}</span>
+							<span class="flex-inline justify-between gap-3">
+								<button
+									pButton
+									type="button"
+									class="p-button-text"
+									label="Editar"
+									(click)="editLinkedProperty(property)"
+								></button>
+								<button
+									pButton
+									type="button"
+									class="p-button-text"
+									label="Excluir"
+									(click)="removeLinkedProperty(property.guid)"
+								></button>
+							</span>
+						</div>
+						<div
+							class="text-sm flex flex-wrap flex-col gap-4 max-h-24 justify-center"
+						>
+							<div *ngIf="property.tipo" class="basis-0 max-w-[50%]">
+								{{ property.tipo }}
+							</div>
+							<div *ngIf="property.unidades.length > 0" class="basis-0">
+								Unidade(s):
+								<ng-container
+									*ngFor="let unit of property.unidades; index as i"
+								>
+									<ng-container *ngIf="i !== 0">, </ng-container>
+									{{ unit.name }}
+								</ng-container>
+							</div>
+						</div>
+					</div>
+
+					<div class="add-property-button">
+						<button
+							pButton
+							type="button"
+							class="p-button-text text-sm"
+							label="Vincular um imóvel"
+							icon="pi pi-plus"
+							iconPos="left"
+							(click)="showAddProperty()"
+						></button>
+					</div>
+				</ng-template>
+			</div>
+		</section>
+
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- STEP 2 -->
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- ------------------------------------------------------------------------ -->
+		<section *ngIf="currentStep === 2" class="form-data">
+			<div formGroupName="dadosObra">
+				<h4>Dados da obra</h4>
+
+				<div class="field">
+					<label for="nome" class="block"> Nome da Obra </label>
+					<input
+						id="nome"
+						type="text"
+						formControlName="nome"
+						aria-describedby="nome-help"
+						pInputText
+					/>
+					<ng-container *ngIf="checkHasError(f['nome'])">
+						<small
+							id="nome-help"
+							*ngIf="f['nome'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o nome da obra
+						</small>
+						<ng-template #error2>
+							<small id="nome-help" class="p-error block">
+								Nome da obra inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="dataInicio" class="block"> Data de início </label>
+					<p-calendar
+						id="dataInicio"
+						formControlName="dataInicio"
+						dateFormat="dd/mm/yy"
+						(onInput)="onInputDate($event)"
+						(onBlur)="onBlurDate()"
+						placeholder="dd/mm/aaaa"
+						aria-describedby="dataInicio-help"
+					></p-calendar>
+					<ng-container *ngIf="checkHasError(f['dataInicio'])">
+						<small
+							id="dataInicio-help"
+							*ngIf="f['dataInicio'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe a data de início
+						</small>
+						<ng-template #error2>
+							<small id="dataInicio-help" class="p-error block">
+								Data de início inválida
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="dataFim" class="block"> Previsão de término </label>
+					<p-calendar
+						id="dataFim"
+						formControlName="dataFim"
+						dateFormat="dd/mm/yy"
+						(onInput)="onInputDate($event)"
+						(onBlur)="onBlurDate()"
+						placeholder="dd/mm/aaaa"
+						aria-describedby="dataFim-help"
+					></p-calendar>
+					<ng-container *ngIf="checkHasError(f['dataFim'])">
+						<small
+							id="dataFim-help"
+							*ngIf="f['dataFim'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe a previsão de término
+						</small>
+						<ng-template #error2>
+							<small id="dataFim-help" class="p-error block">
+								Previsão de término inválida
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="valorOrcamento" class="block">Orçamento</label>
+					<input
+						id="valorOrcamento"
+						type="text"
+						formControlName="valorOrcamento"
+						aria-describedby="valorOrcamento-help"
+						maxlength="20"
+						currencyMask
+						pInputText
+					/>
+					<ng-container *ngIf="checkHasError(f['valorOrcamento'])">
+						<small
+							id="valorOrcamento-help"
+							*ngIf="f['valorOrcamento'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o orçamento
+						</small>
+						<ng-template #error2>
+							<small id="valorOrcamento-help" class="p-error block">
+								Orçamento inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+			</div>
+		</section>
+
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- STEP 3 -->
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- ------------------------------------------------------------------------ -->
+		<section *ngIf="currentStep === 3" class="form-data">
+			<h4>Anexos</h4>
+
+			<app-file-upload
+				name="uploadDoc"
+				[fileLimit]="10"
+				(selectEvent)="onFileSelect($event)"
+				accept=".xls, .doc, .pdf, .xlsx, .docx"
+			></app-file-upload>
+
+			<!-- <div class="field">
+				<label for="projeto" class="block">Projeto</label>
+				<p-fileUpload
+					id="projeto"
+					mode="basic"
+					name="projeto"
+					accept="application/*"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
+					chooseIcon="pi-upload"
+					[maxFileSize]="1000000"
+					(onSelect)="onSelect($event, 'outrosdocs')"
+				></p-fileUpload>
+			</div>
+
+			<div class="field">
+				<label for="matricula" class="block">Matrícula</label>
+				<p-fileUpload
+					id="matricula"
+					mode="basic"
+					name="matricula"
+					accept="application/*"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
+					chooseIcon="pi-upload"
+					[maxFileSize]="1000000"
+					(onSelect)="onSelect($event, 'matricula')"
+				></p-fileUpload>
+			</div>
+
+			<div class="field">
+				<label for="habitese" class="block">Habite-se</label>
+				<p-fileUpload
+					id="habitese"
+					mode="basic"
+					name="habitese"
+					accept="application/*"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
+					chooseIcon="pi-upload"
+					[maxFileSize]="1000000"
+					(onSelect)="onSelect($event, 'habitese')"
+				></p-fileUpload>
+			</div> -->
+		</section>
+	</div>
+	<div class="form-actions">
+		<button
+			pButton
+			type="button"
+			label="Voltar"
+			class="p-button-text h-11"
+			(click)="prevStep()"
+		></button>
+
+		<button
+			pButton
+			pRipple
+			type="button"
+			label="Cancelar"
+			(click)="navigateTo('supplier-contract/listing')"
+			class="p-button-outlined h-11"
+		></button>
+
+		<button
+			pButton
+			type="button"
+			label="Continuar"
+			class="h-11"
+			(click)="nextStep()"
+		></button>
+	</div>
+</form>
+
+<!-- ------------------------------------------------------------------------ -->
+<!-- ------------------------------------------------------------------------ -->
+<!-- REGISTRO DE PROPRIEDADE (SIDEBAR) -->
+<!-- ------------------------------------------------------------------------ -->
+<!-- ------------------------------------------------------------------------ -->
+
+<form [formGroup]="propertyAddForm" *ngIf="propertyAddVisible">
+	<p-sidebar [(visible)]="propertyAddVisible" position="right">
+		<ng-template pTemplate="header">
+			<h4 *ngIf="editingLinkedProperty === null; else editingHeader">
+				Adicionar novo Edifício
+			</h4>
+			<ng-template #editingHeader
+				><h4>Editar Edifício vinculado</h4></ng-template
+			>
+		</ng-template>
+		<ng-template pTemplate="content">
+			<div class="register-property-form">
+				<div class="field">
+					<label for="edificio">Edifício</label>
+					<p-dropdown
+						id="edificio"
+						[options]="opcoesPropriedades"
+						formControlName="edificio"
+						aria-describedby="edificio-help"
+						(ngModelChange)="onChangeBuilding($event)"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['edificio'])">
+						<small
+							id="edificio-help"
+							*ngIf="f['edificio'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o edificio
+						</small>
+						<ng-template #error2>
+							<small id="edificio-help" class="p-error block">
+								Edifício inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="unidade" class="block">Unidade</label>
+					<p-multiSelect
+						[options]="opcoesUnidades"
+						formControlName="unidade"
+						defaultLabel="Selecione a(s) unidade(s)"
+						[showToggleAll]="false"
+						[showClear]="false"
+					></p-multiSelect>
+
+					<ng-container
+						*ngIf="checkHasError(propertyAddForm.controls['unidade'])"
+					>
+						<small
+							id="unidade-help"
+							*ngIf="
+								propertyAddForm.controls['unidade'].hasError('required');
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe a unidade
+						</small>
+						<ng-template #error2>
+							<small id="unidade-help" class="p-error block">
+								Unidade inválida
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="footer">
+			<div class="flex justify-between gap-4">
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Cancelar"
+					class="p-button-outlined h-9 w-full"
+					(click)="hideAddProperty()"
+				></button>
+
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Continuar"
+					class="h-9 w-full"
+					(click)="onProprietarySubmit()"
+				></button>
+			</div>
+		</ng-template>
+	</p-sidebar>
+</form>
+
+<!-- <app-responsive-dialog
+	[isMobile]="isMobile"
+	[visible]="displayModal"
+	styleClass="form-modal"
+>
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+
+		<button
+			pButton
+			label="Continuar"
+			(click)="closeModal(setNewSupplier); registerSupplierVisible = false"
+			*ngIf="registerSupplierVisible"
+		></button>
+
+		<button
+			pButton
+			label="Continuar"
+			*ngIf="!registerSupplierVisible"
+			(click)="closeModal(navigateTo, 'supplier-contract/listing')"
+		></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</app-responsive-dialog> -->

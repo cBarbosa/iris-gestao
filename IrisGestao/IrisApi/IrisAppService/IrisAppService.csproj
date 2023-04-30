@@ -8,11 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Class1.cs" />
+      <ProjectReference Include="..\IrisDomain\IrisDomain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\IrisDomain\IrisDomain.csproj" />
+      <PackageReference Include="Azure.Storage.Blobs" Version="12.15.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
     </ItemGroup>
 
 </Project>

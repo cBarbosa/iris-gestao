@@ -92,8 +92,9 @@ export class ImovelService {
 			.pipe(
 				map((response) => {
 					console.log('response', response);
-					if (response.success) return response.data;
-					else return console.error(`getProperty: ${response.message}`);
+					if (!response.success)
+						console.error(`getProperty: ${response.message}`);
+					return response.data;
 				})
 			);
 	}
@@ -167,7 +168,7 @@ export class ImovelService {
 			httpOptions
 		);
 	}
-	
+
 	inactiveImovel(uid: string, status: boolean) {
 		return this.http.put<ApiResponse>(
 			`${env.config.apiUrl}Imovel/${uid}/${status}/alterar-status`,

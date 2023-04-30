@@ -1,0 +1,6 @@
+ng generate module pages/supplier/supplier-view/supplier-view --routing --flat
+ng generate component pages/supplier/supplier-view/supplier-view  --flat
+
+
+ng generate module pages/supplier/supplier-register/supplier-register --routing --flat
+ng generate component pages/supplier/supplier-register/supplier-register  --flat

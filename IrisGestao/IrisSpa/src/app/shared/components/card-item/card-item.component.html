@@ -1,0 +1,40 @@
+<div class="card">
+	<div class="tags" *ngIf="card.tags">
+		<ng-container *ngFor="let tag of card.tags">
+			<p-tag
+				*ngIf="tag"
+				[value]="tag.value"
+				[rounded]="true"
+				[severity]="tag.severity"
+				[style]="
+					tag.severity === 'neutral' ? { background: '#b2b2b2' } : undefined
+				"
+				styleClass="w-auto"
+			></p-tag>
+		</ng-container>
+	</div>
+	<header *ngIf="card.header">
+		<h4>{{ card.header.title }}</h4>
+
+		<div class="menu" *ngIf="card.header.hasMenu">
+			<ng-container *ngTemplateOutlet="content"></ng-container>
+		</div>
+	</header>
+	<div class="infos">
+		<ng-container *ngFor="let info of card.infos">
+			<div class="info" *ngIf="info.data">
+				<div class="label">{{ info.label }}</div>
+				<div class="data">
+					{{ info.pipe ? info.pipe.transform(info.data) : info.data }}
+				</div>
+			</div>
+		</ng-container>
+	</div>
+	<div class="actions" *ngIf="!card.header?.hasMenu">
+		<ng-container *ngTemplateOutlet="content"></ng-container>
+	</div>
+
+	<ng-template #content>
+		<ng-content></ng-content>
+	</ng-template>
+</div>

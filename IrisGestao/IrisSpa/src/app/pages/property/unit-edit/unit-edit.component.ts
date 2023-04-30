@@ -10,6 +10,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/internal/operators/first';
 import { ImovelUnidade, ImovelUnidadeType } from 'src/app/shared/models';
 import { DominiosService, ImovelService } from 'src/app/shared/services';
+import {
+	AnexoService,
+	ArquivoClassificacoes,
+	Attachment,
+} from 'src/app/shared/services/anexo.service';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 
 import { Utils } from 'src/app/shared/utils';
 
@@ -17,6 +23,14 @@ type DropdownItem = {
 	label: string;
 	value: any;
 	disabled?: boolean;
+};
+
+type Base64Metadata = {
+	name: string;
+	data: File | string | ArrayBuffer | null;
+	mimetype: string;
+	isNew?: boolean;
+	id?: number | string;
 };
 
 @Component({
@@ -43,6 +57,8 @@ export class UnitEditComponent implements OnInit {
 		message: '',
 	};
 
+	isMobile = false;
+
 	unitTypes: DropdownItem[] = [
 		{
 			label: 'Selecione',
@@ -51,13 +67,51 @@ export class UnitEditComponent implements OnInit {
 		},
 	];
 
+	propertyAttachments: {
+		capa: Attachment | undefined;
+		projeto: Attachment | undefined;
+		matricula: Attachment | undefined;
+		habitese: Attachment | undefined;
+	};
+
+	attachmentsObj:
+		| Partial<{
+				capa: Attachment;
+				foto: Attachment[];
+				habitese: Attachment;
+				projeto: Attachment;
+				matricula: Attachment;
+				outrosdocs: Attachment[];
+		  }>
+		| undefined;
+
+	docs: {
+		projeto?: Base64Metadata;
+		matricula?: Base64Metadata;
+		habitese?: Base64Metadata;
+	} = {};
+
+	deletedDocs = {
+		projeto: false,
+		matricula: false,
+		habitese: false,
+	};
+
+	unitPhotos: Base64Metadata[] = [];
+
+	addedUnitPhotos: Base64Metadata[] = [];
+
+	deletedUnitPhotos: number[] = [];
+
 	constructor(
 		private fb: FormBuilder,
 		private route: ActivatedRoute,
 		private router: Router,
 		private location: Location,
 		private imovelService: ImovelService,
-		private dominiosService: DominiosService
+		private dominiosService: DominiosService,
+		private anexoService: AnexoService,
+		private responsiveService: ResponsiveService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
@@ -95,6 +149,83 @@ export class UnitEditComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.getData();
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
+
+		this.anexoService
+			.getFiles(this.uid)
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					this.attachmentsObj = {
+						capa: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'capa'
+						),
+						foto: event?.filter(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'foto'
+						),
+						habitese: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'habitese'
+						),
+						projeto: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'projeto'
+						),
+						matricula: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'matricula'
+						),
+						outrosdocs: event?.filter(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'outrosdocs'
+						),
+					};
+
+					console.debug('attachmentsObj', this.attachmentsObj);
+
+					if (this.attachmentsObj?.foto?.length)
+						this.unitPhotos = this.attachmentsObj.foto.map((foto) => {
+							return {
+								name: foto.nome,
+								mimetype: foto.mimeType,
+								data: foto.local,
+								id: foto.id,
+							};
+						});
+
+					if (this.attachmentsObj?.projeto)
+						this.docs.projeto = {
+							name: this.attachmentsObj.projeto.nome,
+							mimetype: this.attachmentsObj.projeto.mimeType,
+							data: this.attachmentsObj.projeto.local,
+							isNew: false,
+						};
+
+					if (this.attachmentsObj?.matricula)
+						this.docs.matricula = {
+							name: this.attachmentsObj.matricula.nome,
+							mimetype: this.attachmentsObj.matricula.mimeType,
+							data: this.attachmentsObj.matricula.local,
+							isNew: false,
+						};
+
+					if (this.attachmentsObj?.habitese)
+						this.docs.habitese = {
+							name: this.attachmentsObj.habitese.nome,
+							mimetype: this.attachmentsObj.habitese.mimeType,
+							data: this.attachmentsObj.habitese.local,
+							isNew: false,
+						};
+				},
+				error: (error) => {
+					console.error('Erro: ', error);
+				},
+			});
 	}
 
 	get propertyInfoForm() {
@@ -136,12 +267,18 @@ export class UnitEditComponent implements OnInit {
 					if (unidade) {
 						this.unit = unidade;
 						this.isLoadingView = false;
-						this.propertyGuid = unidade.idImovelNavigation?.guidReferencia ?? '';
+						this.propertyGuid =
+							unidade.idImovelNavigation?.guidReferencia ?? '';
+
+						this.getPropertyAttachments();
 
 						this.propertyInfoForm.patchValue({
-							proprietary : unidade.idImovelNavigation?.idClienteProprietarioNavigation?.nome,
+							proprietary:
+								unidade.idImovelNavigation?.idClienteProprietarioNavigation
+									?.nome,
 							propertyName: unidade.idImovelNavigation?.nome,
-							category: unidade.idImovelNavigation?.idCategoriaImovelNavigation?.nome,
+							category:
+								unidade.idImovelNavigation?.idCategoriaImovelNavigation?.nome,
 							typeStr: unidade.idTipoUnidadeNavigation?.nome,
 						});
 
@@ -173,6 +310,39 @@ export class UnitEditComponent implements OnInit {
 			});
 	}
 
+	getPropertyAttachments() {
+		this.anexoService
+			.getFiles(this.propertyGuid)
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					this.propertyAttachments = {
+						capa: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'capa'
+						),
+						habitese: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'habitese'
+						),
+						projeto: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'projeto'
+						),
+						matricula: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'matricula'
+						),
+					};
+
+					console.log(this.propertyAttachments);
+				},
+				error: (error) => {
+					console.error('Erro: ', error);
+				},
+			});
+	}
+
 	saveChanges(): void {
 		if (this.editUnitForm.invalid) {
 			this.editUnitForm.markAllAsTouched();
@@ -197,40 +367,151 @@ export class UnitEditComponent implements OnInit {
 			UnidadeLocada: this.unit.unidadeAlocada,
 		} as ImovelUnidadeType;
 
-		const save = this.imovelService
-			.saveUnit(this.uid, data)
-			?.pipe(first())
-			.subscribe({
-				next: (response: any) => {
-					if (response.success) {
-						this.modalContent = {
-							header: 'Atualização realizada com sucesso',
-							message: response.message,
-						};
-					} else {
-						this.modalContent = {
-							header: 'Atualização não realizada',
-							message: response.message,
-							isError: true,
-						};
-					}
+		Promise.all([
+			this.savePhotos(),
+			this.deletePhotos(),
+			this.saveDocs(),
+			this.deleteDocs(),
+		])
+			.then((result) => {
+				this.imovelService
+					.saveUnit(this.uid, data)
+					?.pipe(first())
+					.subscribe({
+						next: (response: any) => {
+							if (response.success) {
+								this.modalContent = {
+									header: 'Atualização realizada com sucesso',
+									message: response.message,
+								};
+							} else {
+								this.modalContent = {
+									header: 'Atualização não realizada',
+									message: response.message,
+									isError: true,
+								};
+							}
 
-					this.editUnitForm.enable();
-					this.isLoadingView = false;
+							this.editUnitForm.enable();
+							this.isLoadingView = false;
+							this.openModal();
+						},
+						error: (error: any) => {
+							console.error(error);
+							this.modalContent = {
+								header: 'Atualização não realizada',
+								message: 'Erro no envio de dados do formulário',
+								isError: true,
+							};
 
-					this.openModal();
-				},
-				error: (error: any) => {
-					console.error(error);
-					this.modalContent = {
-						header: 'Atualização não realizada',
-						message: 'Erro no envio de dados',
-						isError: true,
-					};
+							this.editUnitForm.enable();
+							this.isLoadingView = false;
+							this.openModal();
+						},
+					});
+			})
+			.catch((error) => {
+				console.error('Erro no envio do batch de anexos:', error);
+				this.modalContent = {
+					header: 'Atualização não realizada',
+					message:
+						error.err?.err ??
+						error.err ??
+						'Os arquivos podem estar com o mesmo nome. Para corrigir verifique os arquivos e teste novamente.',
+					isError: true,
+				};
 
-					this.openModal();
-				},
+				this.editUnitForm.enable();
+				this.isLoadingView = false;
+				this.openModal();
 			});
+	}
+
+	addPhoto(event: any) {
+		const files = event.target.files;
+
+		const base64promises = [...files].map((file: File) => {
+			return Utils.fileToDataUrl(file);
+		});
+
+		Promise.all(base64promises).then((base64files) => {
+			base64files.forEach((base64file) => {
+				this.addedUnitPhotos.push(base64file);
+			});
+		});
+	}
+
+	async savePhotos() {
+		if (this.addedUnitPhotos.length === 0) return;
+
+		const filesPromises = this.addedUnitPhotos.map((file) => {
+			return Utils.dataUrlToFile(file.data as string, file.name, file.mimetype);
+		});
+
+		const files = await Promise.all(filesPromises);
+
+		const formData = new FormData();
+
+		files.forEach((file) => {
+			formData.append('files', file);
+		});
+
+		console.debug('sending', formData);
+
+		return new Promise<{
+			classificacao: ArquivoClassificacoes;
+			response?: any;
+			err?: any;
+		}>((res, rej) => {
+			this.anexoService
+				.registerFile(this.uid, formData, 'foto')
+				.pipe(first())
+				.subscribe({
+					next(response) {
+						if (response.success) res({ classificacao: 'foto', response });
+						else
+							rej({ classificacao: 'foto', response, err: response.message });
+					},
+					error(err) {
+						rej({ classificacao: 'foto', err });
+					},
+				});
+		});
+	}
+
+	removePhoto(index: number, newPhoto = false) {
+		if (newPhoto) {
+			this.addedUnitPhotos.splice(index, 1);
+			return;
+		}
+
+		const removedId: number = this.unitPhotos.splice(index, 1)[0].id as number;
+		this.deletedUnitPhotos.push(removedId);
+	}
+
+	deletePhotos() {
+		const promises: Promise<{ response?: any; err?: any }>[] = [];
+
+		this.deletedUnitPhotos.forEach((photoId) => {
+			promises.push(
+				new Promise((res, rej) => {
+					this.anexoService
+						.deleteFile(photoId)
+						.pipe(first())
+						.subscribe({
+							next(response) {
+								if (response.success) res({ response });
+								else rej({ response, err: response.message });
+							},
+							error(err) {
+								rej({ err });
+							},
+						});
+				})
+			);
+		});
+
+		return Promise.all(promises);
 	}
 
 	openModal() {
@@ -251,7 +532,7 @@ export class UnitEditComponent implements OnInit {
 		this.router.navigate([route]);
 	};
 
-	getListTypes() : void {
+	getListTypes(): void {
 		this.dominiosService.getTipoUnidade().subscribe((event) => {
 			if (event) {
 				event.data.forEach((item: any) => {
@@ -266,5 +547,207 @@ export class UnitEditComponent implements OnInit {
 				);
 			}
 		});
+	}
+
+	addDoc(event: Event, type: 'projeto' | 'matricula' | 'habitese') {
+		const file = (event?.target as HTMLInputElement)?.files?.[0];
+
+		if (!file) return;
+
+		switch (type) {
+			case 'projeto':
+				this.docs.projeto = {
+					name: file.name,
+					mimetype: file.type,
+					data: file,
+					isNew: true,
+				};
+				this.deletedDocs.projeto = false;
+				break;
+
+			case 'matricula':
+				this.docs.matricula = {
+					name: file.name,
+					mimetype: file.type,
+					data: file,
+					isNew: true,
+				};
+				this.deletedDocs.matricula = false;
+				break;
+
+			case 'habitese':
+				this.docs.habitese = {
+					name: file.name,
+					mimetype: file.type,
+					data: file,
+					isNew: true,
+				};
+				this.deletedDocs.habitese = false;
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	saveDocs() {
+		const promises: Promise<{
+			classificacao: ArquivoClassificacoes;
+			response?: any;
+			err?: any;
+		}>[] = [];
+
+		const saveDoc = (classificacao: 'projeto' | 'matricula' | 'habitese') => {
+			if (
+				!this.deletedDocs[classificacao] &&
+				this.docs[classificacao] &&
+				this.docs[classificacao]!.isNew &&
+				this.docs[classificacao]!.data !== null
+			) {
+				const formData = new FormData();
+
+				console.debug('adding file of class', classificacao);
+
+				promises.push(
+					new Promise((res, rej) => {
+						if (this.docs[classificacao] && this.docs[classificacao]!.data) {
+							if (!(this.docs[classificacao]!.data instanceof File)) {
+								Utils.dataUrlToFile(
+									//@ts-ignore
+									this.docs[classificacao]!.data,
+									this.docs[classificacao]!.name,
+									this.docs[classificacao]!.mimetype
+								)
+									.then((file) => {
+										formData.append('files', file);
+										// this.anexoService
+										// 	.registerFile(this.propertyGuid, formData, classificacao)
+										// 	.subscribe();
+
+										console.debug('creating file');
+
+										const registerUpdatePromise =
+											this.anexoService.registerUpdateFile(
+												this.attachmentsObj,
+												this.uid,
+												formData,
+												classificacao
+											);
+
+										if (registerUpdatePromise)
+											registerUpdatePromise
+												.then((obj) => {
+													if (obj === null) return rej(obj);
+
+													if (obj?.err) {
+														rej(obj);
+													}
+
+													if (obj.response.success) res(obj);
+													else rej(obj);
+												})
+												.catch((err) => {
+													console.error('1. Erro ao atualizar anexos');
+													rej({ err });
+												});
+									})
+									.catch((err) => {
+										console.error('2. Erro ao atualizar anexos');
+										rej({ err });
+									});
+							} else {
+								// @ts-ignore
+								formData.append('files', this.docs[classificacao]!.data);
+
+								this.anexoService
+									.registerUpdateFile(
+										this.attachmentsObj,
+										this.uid,
+										formData,
+										classificacao
+									)
+									?.then((obj) => {
+										if (obj === null) return;
+
+										if (obj?.err) {
+											rej(obj);
+										}
+
+										if (obj.response.success) res(obj);
+										else rej(obj);
+									})
+									.catch((err) => {
+										console.error('2. Erro ao atualizar anexos');
+										rej({ err });
+									});
+							}
+						}
+					})
+				);
+			}
+		};
+
+		saveDoc('projeto');
+		saveDoc('matricula');
+		saveDoc('habitese');
+
+		return Promise.all(promises);
+	}
+
+	removeDoc(doc: 'projeto' | 'matricula' | 'habitese') {
+		this.deletedDocs[doc] = true;
+	}
+
+	deleteDocs() {
+		const promises: Promise<{ response?: any; err?: any }>[] = [];
+
+		promises.concat(
+			(
+				['projeto', 'matricula', 'habitese'] as [
+					'projeto',
+					'matricula',
+					'habitese'
+				]
+			).map((classificacao) => {
+				return new Promise((res, rej) => {
+					if (
+						this.deletedDocs[classificacao] &&
+						this.attachmentsObj?.[classificacao]
+					) {
+						console.debug(
+							'deleting doc',
+							this.attachmentsObj[classificacao]!.id
+						);
+						this.anexoService
+							.deleteFile(this.attachmentsObj[classificacao]!.id)
+							.pipe(first())
+							.subscribe({
+								next(response) {
+									if (response.success) res({ response });
+									else rej({ response, err: response.message });
+								},
+								error(err) {
+									rej({ err });
+								},
+							});
+					}
+				});
+			})
+		);
+
+		return Promise.all(promises);
+	}
+
+	async downloadFile(
+		file: File | string | ArrayBuffer | null,
+		filename: string
+	) {
+		if (file instanceof File) {
+			file = (await Utils.fileToDataUrl(file)).data;
+		}
+
+		if (file === null) return;
+
+		Utils.saveAs(file, filename);
 	}
 }

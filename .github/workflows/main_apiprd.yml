@@ -1,4 +1,4 @@
-name:  Build and deploy - iris-gestao-apistg (main)
+name:  Build and deploy - iris-gestao-apiprd (main)
 
 on:
   push:

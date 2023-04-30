@@ -1,0 +1,15 @@
+<div class="attachments-card" #attachmentCard>
+	<ng-container *ngFor="let attachment of attachments">
+		<button
+			type="button"
+			class="attachment"
+			(click)="downloadFile(attachment.fileLocation, attachment.fileName)"
+			[title]="attachment.fileName"
+		>
+			<span class="icon">
+				<i class="ph ph-file-text"></i>
+			</span>
+			<span class="label">{{ attachment.fileName }}</span>
+		</button>
+	</ng-container>
+</div>

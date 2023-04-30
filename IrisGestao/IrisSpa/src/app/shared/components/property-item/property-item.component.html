@@ -1,7 +1,7 @@
 <div class="property-item">
 	<div class="property-image">
 		<div class="image">
-			<img src="{{ propertyData.imgCapa }}" alt="" />
+			<img [src]="propertyData.imgCapa ?? ''" alt="" />
 		</div>
 		<!-- <div class="property-category">{{propertyData.idCategoriaImovelNavigation?.nome}}</div> -->
 		<!-- <p-tag
@@ -23,45 +23,33 @@
 		<div class="property-features">
 			<span class="feature">
 				<app-icon name="door" styleClass="mr-1"></app-icon>
-				{{ propertyData.nroUnidades ?? 0 }} unidades
+				{{
+					propertyData.nroUnidades
+						? propertyData.nroUnidades > 1
+							? propertyData.nroUnidades + " unidades"
+							: "1 unidade"
+						: "0 unidade"
+				}}
 			</span>
 			<span class="feature">
 				<app-icon name="area" styleClass="mr-1"></app-icon>
-				{{ propertyData.areaTotal ?? 0 | area }}
+				{{ propertyData.areaTotal ?? 0 | area }} Total
 			</span>
 			<span class="feature">
 				<app-icon name="area" styleClass="mr-1"></app-icon>
-				{{ propertyData.areaHabitese ?? 0 | area }}
+				{{ propertyData.areaHabitese ?? 0 | area }} Habite-se
 			</span>
 			<span class="feature">
 				<app-icon name="area" styleClass="mr-1"></app-icon>
-				{{ propertyData.areaUtil ?? 0 | area }}
+				{{ propertyData.areaUtil ?? 0 | area }} Útil
 			</span>
 		</div>
 	</div>
 	<div class="proprietary-info">
-		<div class="content">
+		<div class="content" *ngIf="!isMobile; else mobProprietary">
 			<div>
 				<h6>Proprietário</h6>
-				<ul>
-					<li>
-						<a
-							[routerLink]="[
-								'/client/details/' +
-									propertyData.idClienteProprietarioNavigation?.guidReferencia
-							]"
-						>
-							{{ propertyData.idClienteProprietarioNavigation?.nome }}
-						</a>
-					</li>
-					<li>
-						{{
-							propertyData.idClienteProprietarioNavigation?.cpfCnpj ?? ""
-								| cpfcnpj
-						}}
-					</li>
-					<li>{{ propertyData.idClienteProprietarioNavigation?.telefone ?? '' | telefone }}</li>
-				</ul>
+				<ng-container *ngTemplateOutlet="proprietaryTemplate"></ng-container>
 			</div>
 			<button
 				pButton
@@ -70,5 +58,53 @@
 				title="detalhes do imóvel"
 			></button>
 		</div>
+
+		<ng-template #mobProprietary>
+			<div class="content mobile">
+				<p-panel
+					header="Detalhes do proprietário"
+					[collapsed]="true"
+					[toggleable]="true"
+				>
+					<ng-container *ngTemplateOutlet="proprietaryTemplate"></ng-container>
+				</p-panel>
+				<button
+					pButton
+					(click)="
+						navigateTo('property/details/' + propertyData.guidReferencia)
+					"
+					label="Ver detalhes"
+					title="detalhes do imóvel"
+				></button>
+			</div>
+		</ng-template>
+
+		<ng-template #proprietaryTemplate>
+			<ul>
+				<li>
+					<a
+						[routerLink]="[
+							'/client/details/' +
+								propertyData.idClienteProprietarioNavigation?.guidReferencia
+						]"
+						[title]="propertyData.idClienteProprietarioNavigation?.nome"
+					>
+						{{ propertyData.idClienteProprietarioNavigation?.nome }}
+					</a>
+				</li>
+				<li>
+					{{
+						propertyData.idClienteProprietarioNavigation?.cpfCnpj ?? ""
+							| cpfcnpj
+					}}
+				</li>
+				<li>
+					{{
+						propertyData.idClienteProprietarioNavigation?.telefone ?? ""
+							| telefone
+					}}
+				</li>
+			</ul>
+		</ng-template>
 	</div>
 </div>

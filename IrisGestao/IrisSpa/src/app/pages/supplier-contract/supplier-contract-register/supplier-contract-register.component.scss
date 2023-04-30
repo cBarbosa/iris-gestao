@@ -1,0 +1,270 @@
+:host {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+}
+.register-form {
+	@apply pt-12;
+	width: 100%;
+	max-width: 1155px;
+	margin: 0 2rem;
+
+	.input-wrapper {
+		display: flex;
+
+		section {
+			@apply p-6;
+			flex-grow: 1;
+
+			h4 {
+				@apply text-2xl font-bold mb-8;
+				color: #262626;
+			}
+
+			p {
+				@apply mb-8;
+				color: #646464;
+
+				.form-step-value {
+					@apply rounded-full p-2 mr-2 text-sm font-medium;
+					color: #ffffff;
+					background-color: #641b1e;
+				}
+			}
+
+			&.form-details {
+				max-width: 445px;
+				width: 100%;
+				height: fit-content;
+				// background-color: #f8f9fa;
+			}
+		}
+
+		.add-property-alert {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			font-weight: 700;
+			width: 100%;
+			padding: 1rem;
+			margin-bottom: 1.5rem;
+			background-color: #f8f8f8;
+
+			span {
+			}
+
+			button {
+				@apply text-sm h-9;
+			}
+
+			&.invalid {
+				background-color: #fae5e5;
+			}
+		}
+
+		.properties-data {
+			background-color: #f8f8f8;
+			max-height: 190px;
+			padding: 1rem;
+			margin-bottom: 0.5rem;
+
+			h4 {
+				@apply text-base mb-1;
+			}
+
+			> .top-data {
+				border-bottom: solid 1px #eaeaea;
+				@apply flex justify-between py-2 mb-3;
+				color: #262626;
+			}
+			> :last-child {
+				color: #646464;
+			}
+
+			::ng-deep {
+				.p-button {
+					@apply h-9;
+					margin-top: -0.4rem;
+				}
+			}
+		}
+
+		.add-property-button {
+			margin: 1rem 0 1rem -1rem;
+			padding: 0;
+		}
+	}
+
+	.form-actions {
+		display: flex;
+		gap: 1rem;
+		width: 100%;
+		border-top: 1px solid #eaeaea;
+		@apply py-8 px-6;
+
+		button {
+			&:first-child {
+				margin-right: auto;
+			}
+		}
+	}
+}
+
+.field {
+	margin-bottom: 1.7rem;
+
+	label {
+		@apply text-sm mb-2;
+		color: #262626;
+	}
+
+	input {
+		width: 100%;
+	}
+
+	.p-error {
+		position: absolute;
+	}
+
+	&:last-child {
+		margin-bottom: 0.7rem;
+	}
+}
+
+:host ::ng-deep {
+	.p-inputwrapper {
+		width: 100%;
+
+		.p-component {
+			&.p-dropdown {
+				width: 100%;
+			}
+		}
+	}
+
+	.p-calendar {
+		width: 100%;
+
+		.p-inputtext {
+			width: 100%;
+		}
+	}
+
+	.p-multiselect {
+		width: 100%;
+	}
+
+	.p-button {
+		&.text-sm {
+			height: 1rem;
+			font-size: 0.875rem;
+		}
+	}
+
+	.form-modal {
+		text-align: center;
+		max-width: 25rem;
+
+		h2 {
+			@apply font-bold;
+			font-size: 2rem;
+			color: #353635;
+		}
+
+		i {
+			@apply mt-4;
+			font-size: 5rem;
+			color: #319016;
+		}
+
+		p {
+			@apply text-lg mt-4;
+			color: #262626;
+		}
+
+		.p-button {
+			@apply mt-10;
+			width: 100%;
+		}
+
+		.modal-error {
+			i {
+				color: #e24c4c;
+			}
+		}
+	}
+}
+
+::ng-deep {
+	.p-sidebar.p-sidebar-right {
+		width: 25rem;
+
+		.p-sidebar-header {
+			h4 {
+				@apply text-2xl font-bold;
+			}
+		}
+
+		.p-sidebar-content {
+			height: 100%;
+
+			.register-property-form {
+				@apply mx-2;
+				height: 100%;
+
+				.p-dropdown {
+					position: relative;
+					max-width: 100%;
+
+					.p-dropdown-panel {
+						max-width: 21.5rem;
+					}
+				}
+			}
+		}
+
+		.p-sidebar-footer {
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	.register-form {
+		margin: 0;
+		padding-top: 0.5rem;
+
+		.input-wrapper {
+			flex-direction: column;
+		}
+
+		.form-actions {
+			flex-wrap: wrap;
+
+			button {
+				flex-grow: 1;
+
+				&:first-child {
+					order: 3;
+					width: 100%;
+				}
+			}
+		}
+
+		.add-property-alert {
+			span {
+			}
+
+			button.p-button {
+			}
+		}
+
+		::ng-deep {
+		}
+	}
+
+	::ng-deep {
+		.form-modal {
+			max-width: 100%;
+		}
+	}
+}

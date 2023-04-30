@@ -8,14 +8,23 @@
 <ng-template #details>
 	<div class="contract-view">
 		<div class="content-wrapper">
-			<div class="flex justify-between items-center py-6 h-[7.5rem]">
-				<h2 class="text-2xl font-bold">Detalhe do contrato</h2>
+			<div
+				class="flex max-md:flex-col justify-between md:items-center gap-y-3 py-6 md:h-[7.5rem]"
+			>
+				<h2 class="text-2xl font-bold max-md:mx-4">Detalhe do contrato</h2>
 				<div
 					class="ending-contract-alert"
 					*ngIf="contract.exibirAlertaVencimento"
 				>
-					<span>O contrato está próximo do fim.</span>
-					<button type="button" pButton class="h-9">Comunicar locatário</button>
+					<span class="min-w-[5rem]">O contrato está próximo do fim.</span>
+					<button
+						type="button"
+						pButton
+						class="h-9 min-w-[11rem]"
+						(click)="showContacts()"
+					>
+						Comunicar locatário
+					</button>
 				</div>
 			</div>
 			<div class="content">
@@ -51,7 +60,7 @@
 							<button
 								pButton
 								type="button"
-								class="p-button-outlined h-7"
+								class="p-button-outlined h-8"
 								(click)="navigateTo('contract/edit/' + contract.guidReferencia)"
 								disabled
 							>
@@ -100,7 +109,7 @@
 									<div class="data-label">Centro de custo</div>
 									<div class="data-value">{{ imovel.numCentroCusto }}</div>
 								</div>
-								<div class="data">
+								<div class="data text-right">
 									<button
 										pButton
 										type="button"
@@ -195,7 +204,7 @@
 								<div class="data">
 									<div class="data-label">Valor líquido</div>
 									<div class="data-value">
-										{{ contract.valorAluguelLiquido }}
+										{{ contract.valorAluguelLiquido | currency }}
 									</div>
 								</div>
 								<div class="data">
@@ -248,8 +257,7 @@
 
 						<!-- Anexos -->
 						<p-accordionTab header="Anexos">
-							<!-- \/ ?? cada imovel tem seus anexos -->
-							<div class="attachments">
+							<!-- <div class="attachments">
 								<a
 									[href]="contract.anexos?.[0]?.uri"
 									target="_blank"
@@ -280,6 +288,58 @@
 									</span>
 									<span class="label">Habite-se</span>
 								</a>
+							</div> -->
+							<div class="attachments-card">
+								<button
+									type="button"
+									class="attachment"
+									*ngIf="attachmentDocs.projeto"
+									(click)="
+										downloadFile(
+											attachmentDocs.projeto.local,
+											attachmentDocs.projeto.nome
+										)
+									"
+								>
+									<span class="icon">
+										<app-icon name="att-proj" size="1.5rem"></app-icon>
+									</span>
+									<span class="label">Projeto</span>
+								</button>
+
+								<button
+									type="button"
+									class="attachment"
+									*ngIf="attachmentDocs.matricula"
+									(click)="
+										downloadFile(
+											attachmentDocs.matricula.local,
+											attachmentDocs.matricula.nome
+										)
+									"
+								>
+									<span class="icon">
+										<app-icon name="att-mat" size="1.5rem"></app-icon>
+									</span>
+									<span class="label">Matrícula</span>
+								</button>
+
+								<button
+									type="button"
+									class="attachment"
+									*ngIf="attachmentDocs.habitese"
+									(click)="
+										downloadFile(
+											attachmentDocs.habitese.local,
+											attachmentDocs.habitese.nome
+										)
+									"
+								>
+									<span class="icon">
+										<app-icon name="att-hab" size="1.5rem"></app-icon>
+									</span>
+									<span class="label">Habite-se</span>
+								</button>
 							</div>
 						</p-accordionTab>
 					</p-accordion>
@@ -288,3 +348,42 @@
 		</div>
 	</div>
 </ng-template>
+
+<p-sidebar [(visible)]="contactsVisible" position="right">
+	<ng-template pTemplate="header">
+		<h4>Lista de contatos</h4>
+	</ng-template>
+	<ng-template pTemplate="content">
+		<div *ngIf="contactList?.length === 0" class="text-center">
+			<span>Não há contatos cadastrados</span>
+		</div>
+		<div class="contact-data" *ngFor="let contato of contactList; index as i">
+			<div class="flex justify-between font-bold">
+				<span>{{ contato.nome }}</span>
+			</div>
+			<div
+				class="text-sm flex flex-wrap flex-col gap-x-4 gap-y-2 justify-center"
+			>
+				<div *ngIf="contato.cargo">Cargo: {{ contato.cargo }}</div>
+				<div *ngIf="contato.email">Email: {{ contato.email }}</div>
+				<div *ngIf="contato.nascimento">
+					Nascimento:
+					{{ contato.nascimento | date : "shortDate" }}
+				</div>
+				<div *ngIf="contato.telefone">
+					Telefone: {{ contato.telefone | telefone }}
+				</div>
+			</div>
+		</div>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<button
+			pButton
+			pRipple
+			type="button"
+			label="Fechar"
+			class="p-button h-9 w-full"
+			(click)="hideContacts()"
+		></button
+	></ng-template>
+</p-sidebar>

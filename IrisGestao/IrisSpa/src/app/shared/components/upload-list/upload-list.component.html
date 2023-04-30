@@ -1,0 +1,109 @@
+<div class="upload-list">
+	<ng-container *ngFor="let attachment of attachments">
+		<div
+			class="attachment"
+			[class.deleted]="deletedAttachments.has(attachment.code)"
+		>
+			<span class="info">
+				<span class="icon"><i class="ph ph-file-text"></i></span>
+				<span class="name" [title]="attachment.fileName">{{
+					attachment.fileName
+				}}</span>
+			</span>
+			<span class="buttons">
+				<ng-container
+					*ngIf="!deletedAttachments.has(attachment.code); else undoDelete"
+				>
+					<button
+						pButton
+						type="button"
+						class="p-button-rounded p-button-text"
+						(click)="downloadFile(attachment.fileLocation, attachment.fileName)"
+					>
+						<i class="ph-download-simple"></i>
+					</button>
+					<button
+						pButton
+						type="button"
+						class="p-button-rounded p-button-text"
+						*ngIf="editable"
+						[disabled]="newAttachments.length > 0"
+						(click)="removeAttachment(attachment.code)"
+					>
+						<i class="ph-trash"></i>
+					</button>
+				</ng-container>
+
+				<ng-template #undoDelete>
+					<button
+						pButton
+						type="button"
+						class="p-button-rounded p-button-text"
+						(click)="deletedAttachments.delete(attachment.code)"
+					>
+						<i class="ph-arrow-u-up-left"></i>
+					</button>
+				</ng-template>
+			</span>
+		</div>
+	</ng-container>
+
+	<ng-container *ngIf="newAttachments.length > 0">
+		<h5 class="mt-3 ml-2 font-bold">Novos anexos</h5>
+		<!---->
+		<ng-container *ngFor="let attachment of newAttachments; index as i">
+			<div class="attachment">
+				<span class="info">
+					<span class="icon"><i class="ph ph-file-text"></i></span>
+					<span class="name" [title]="attachment.fileName">{{
+						attachment.fileName
+					}}</span>
+				</span>
+				<span class="buttons">
+					<button
+						pButton
+						type="button"
+						class="p-button-rounded p-button-text"
+						(click)="removeNewAttachment(i)"
+					>
+						<i class="ph-trash"></i>
+					</button>
+				</span>
+			</div>
+		</ng-container>
+	</ng-container>
+
+	<div class="editing" *ngIf="editable">
+		<button
+			type="button"
+			class="p-button-outlined"
+			pButton
+			(click)="openFileSelect()"
+			[disabled]="deletedAttachments.size > 0"
+		>
+			Selecionar anexos
+		</button>
+
+		<button
+			type="button"
+			pButton
+			(click)="saveAttachments()"
+			*ngIf="newAttachments.length > 0"
+		>
+			{{ isDeleting ? "..." : "Fazer upload" }}
+		</button>
+
+		<button
+			type="button"
+			pButton
+			(click)="deleteAttachments()"
+			*ngIf="deletedAttachments.size > 0"
+		>
+			{{ isDeleting ? "..." : "Deletar anexos" }}
+		</button>
+	</div>
+	<div *ngIf="errorMessage.length > 0" class="mx-3 mt-4 text-sm text-red-700">
+		{{ errorMessage }}
+	</div>
+	<input type="file" (change)="addAttachment($event)" multiple #fileInput />
+</div>

@@ -1,37 +1,65 @@
 <div class="header-background"></div>
 <div class="content-wrapper">
 	<div class="content">
-		<header>
-			<h3 class="text-2xl font-bold">
-				Contratos
-				<span class="ml-2 text-sm text-slate-600">{{
-					totalContractCount
-				}}</span>
-			</h3>
+		<header class="list-header">
+			<div class="flex justify-between items-center" [class.mb-2]="isMobile">
+				<h3 class="text-2xl font-bold">
+					Contratos
+					<span class="ml-2 text-sm">{{ totalContractCount }}</span>
+				</h3>
+				<button
+					pButton
+					pRipple
+					type="button"
+					icon="pi pi-sliders-h"
+					class="p-button-rounded p-button-text white-theme"
+					*ngIf="isMobile"
+					(click)="openFilters()"
+				></button>
+			</div>
 
 			<div class="options">
-				<span class="p-input-icon-left">
-					<i class="pi pi-search"></i>
-					<input
-						pInputText
-						class="w-44 white-theme"
-						[(ngModel)]="filterText"
-						(ngModelChange)="filterContractsDebounce($event)"
-						type="text"
-						placeholder="Buscar contrato"
-					/>
-				</span>
+				<ng-container *ngIf="!isMobile">
+					<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+				</ng-container>
 
-				<p-dropdown
-					class=""
-					styleClass="w-[10.8rem] white-theme small"
-					placeholder="Base de reajuste"
-					[options]="basesReajuste"
-					[(ngModel)]="filterBase"
+				<button
+					pButton
+					type="button"
+					class="p-button-outlined h-9 white-theme addButton"
+					(click)="navigateTo('rent-contract/register')"
+				>
+					<i class="pi pi-plus"></i>
+					Adicionar Contrato
+				</button>
+			</div>
+		</header>
+
+		<ng-template #filtersTemplate>
+			<span class="p-input-icon-left w-full md:w-44">
+				<i class="pi pi-search"></i>
+				<input
+					pInputText
+					class="w-full md:w-44"
+					[class.white-theme]="!isMobile"
+					[(ngModel)]="filterText"
 					(ngModelChange)="filterContractsDebounce($event)"
-				></p-dropdown>
+					type="text"
+					placeholder="Buscar contrato"
+				/>
+			</span>
 
-				<p-dropdown
+			<p-dropdown
+				[styleClass]="
+					'w-full md:w-[11.2rem]' + (isMobile ? '' : ' white-theme')
+				"
+				placeholder="Base de reajuste"
+				[options]="basesReajuste"
+				[(ngModel)]="filterBase"
+				(ngModelChange)="filterContractsDebounce($event)"
+			></p-dropdown>
+
+			<!-- <p-dropdown
 					class=""
 					styleClass="w-44 white-theme small"
 					placeholder="Tipo de contrato"
@@ -39,33 +67,33 @@
 					aria-describedby="contract-type-help"
 					[(ngModel)]="filterType"
 					(ngModelChange)="filterContractsDebounce($event)"
-				></p-dropdown>
+				></p-dropdown> -->
 
-				<p-calendar
-					dateFormat="dd/mm/yy"
-					class=""
-					styleClass="w-32"
-					(onInput)="onInputDate($event)"
-					(onBlur)="onBlurDate()"
-					placeholder="Data de início"
-					panelStyleClass="hidden"
-					[(ngModel)]="filterStart"
-					(ngModelChange)="filterContractsDebounce($event)"
-				></p-calendar>
+			<p-calendar
+				dateFormat="dd/mm/yy"
+				class=""
+				[styleClass]="'w-full md:w-32' + (isMobile ? '' : ' white-theme')"
+				(onInput)="onInputDate($event)"
+				(onBlur)="onBlurDate()"
+				placeholder="Data de início"
+				panelStyleClass="hidden"
+				[(ngModel)]="filterStart"
+				(ngModelChange)="filterContractsDebounce($event)"
+			></p-calendar>
 
-				<p-calendar
-					dateFormat="dd/mm/yy"
-					class=""
-					styleClass="w-32"
-					(onInput)="onInputDate($event)"
-					(onBlur)="onBlurDate()"
-					placeholder="Data de fim"
-					panelStyleClass="hidden"
-					[(ngModel)]="filterEnd"
-					(ngModelChange)="filterContractsDebounce($event)"
-				></p-calendar>
+			<p-calendar
+				dateFormat="dd/mm/yy"
+				class=""
+				[styleClass]="'w-full md:w-32' + (isMobile ? '' : ' white-theme')"
+				(onInput)="onInputDate($event)"
+				(onBlur)="onBlurDate()"
+				placeholder="Data de fim"
+				panelStyleClass="hidden"
+				[(ngModel)]="filterEnd"
+				(ngModelChange)="filterContractsDebounce($event)"
+			></p-calendar>
 
-				<!-- <p-dropdown
+			<!-- <p-dropdown
 					class="mx-2"
 					styleClass="w-36 white-theme"
 					placeholder="Vencimento"
@@ -73,18 +101,8 @@
 					[(ngModel)]="filterDue"
 					(ngModelChange)="filterContractsDebounce($event)"
 				></p-dropdown> -->
+		</ng-template>
 
-				<button
-					pButton
-					type="button"
-					class="p-button-outlined h-9 white-theme"
-					(click)="navigateTo('rent-contract/register')"
-				>
-					<i class="pi pi-plus"></i>
-					Novo Contrato
-				</button>
-			</div>
-		</header>
 		<ng-container>
 			<ng-container *ngIf="isLoadingContracts">
 				<app-spinner styleClass="mt-11"></app-spinner>
@@ -96,6 +114,7 @@
 			</ng-container>
 
 			<p-table
+				*ngIf="!isMobile"
 				[value]="contractEntries"
 				styleClass="p-datatable-striped"
 				[tableStyle]="{ 'min-width': '50rem' }"
@@ -115,14 +134,14 @@
 						<th>Início do contrato</th>
 						<th>Próximo reajuste</th>
 						<th>Vencimento do contrato</th>
-						<th>Base de reajuste</th>
+						<th>Índice de reajuste</th>
 						<th></th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-contract>
 					<tr>
-
-						<td class="font-bold">{{ contract.numeroContrato }}</td>						<!-- \/ ?? -->
+						<td class="font-bold">{{ contract.numeroContrato }}</td>
+						<!-- \/ ?? -->
 						<td class="font-bold">{{ contract.locatario }}</td>
 						<!-- \/ ?? multiplos imoveis com multiplas unidades-->
 						<!-- <td>{{ contract.unidade }}</td> -->
@@ -132,7 +151,7 @@
 						<td>{{ contract.dataFimContrato | date : "shortDate" }}</td>
 						<!-- \/ ?? -->
 						<td>{{ contract.baseReajuste }}</td>
-						<td class="action w-40">
+						<td class="action min-w-[10rem]">
 							<!-- <button
 								type="button"
 								pButton
@@ -146,7 +165,7 @@
 							<button
 								pButton
 								type="button"
-								class="p-button-text h-7"
+								class="p-button-text h-7 text-center"
 								(click)="
 									navigateTo('rent-contract/details/' + contract.guidReferencia)
 								"
@@ -157,6 +176,75 @@
 					</tr>
 				</ng-template>
 			</p-table>
+
+			<ng-container *ngIf="isMobile">
+				<div class="cardList">
+					<ng-container *ngFor="let contract of contractEntries">
+						<app-card-item
+							[card]="{
+								infos: [
+									{
+										label: 'Número do Contrato',
+										data: contract.numeroContrato
+									},
+									{
+										label: 'Nome do locatário',
+										data: contract.locatario
+									},
+									{
+										label: 'Início do contrato',
+										data: contract.dataInicioContrato,
+										pipe: cardPipes['date']
+									},
+									{
+										label: 'Próximo reajuste',
+										data: contract.proxAjuste
+									},
+									{
+										label: 'Vencimento do contrato',
+										data: contract.dataFimContrato,
+										pipe: cardPipes['date']
+									},
+									{
+										label: 'Índice de reajuste',
+										data: contract.baseReajuste
+									}
+								]
+							}"
+						>
+							<button
+								pButton
+								type="button"
+								class="p-button-text h-7 font-bold"
+								(click)="
+									navigateTo('rent-contract/details/' + contract.guidReferencia)
+								"
+							>
+								Ver detalhes
+							</button>
+						</app-card-item>
+					</ng-container>
+
+					<div class="mx-5 mt-5">
+						<button
+							pButton
+							type="button"
+							class="p-button-outlined h-9 justify-center w-full"
+							(click)="loadContractEntries()"
+							*ngIf="contractEntries.length < totalContractCount"
+						>
+							Carregar mais
+						</button>
+					</div>
+				</div>
+			</ng-container>
 		</ng-container>
 	</div>
 </div>
+
+<p-sidebar [(visible)]="displayMobileFilters" position="bottom">
+	<ng-template pTemplate="header">Filtros</ng-template>
+	<ng-template pTemplate="content">
+		<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+	</ng-template>
+</p-sidebar>

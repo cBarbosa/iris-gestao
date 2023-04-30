@@ -13,6 +13,70 @@ export class Utils {
 		};
 	}
 
+	static humanFileSize(size: number) {
+		const i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
+		return (
+			(size / Math.pow(1024, i)).toFixed(2) +
+			' ' +
+			['B', 'kB', 'MB', 'GB', 'TB'][i]
+		);
+	}
+
+	static async dataUrlToFile(
+		dataUrl: string | ArrayBuffer,
+		fileName: string,
+		mimeType: string
+	): Promise<File> {
+		if (dataUrl instanceof ArrayBuffer) {
+			dataUrl = this.arrayBufferToBase64(dataUrl);
+		}
+		const res: Response = await fetch(dataUrl);
+		const blob: Blob = await res.blob();
+		return new File([blob], fileName, { type: mimeType });
+	}
+
+	static async fileToDataUrl(file: File): Promise<{
+		name: string;
+		mimetype: string;
+		data: string | ArrayBuffer | null;
+	}> {
+		return new Promise((res, rej) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+
+			reader.onload = () =>
+				res({ name: file.name, mimetype: file.type, data: reader.result });
+			reader.onerror = (error) => rej(error);
+		});
+	}
+
+	static saveAs(uri: string | ArrayBuffer, filename: string) {
+		if (uri instanceof ArrayBuffer) {
+			uri = this.arrayBufferToBase64(uri);
+		}
+
+		const linkNode = document.createElement('a');
+		if (typeof linkNode.download === 'string') {
+			document.body.appendChild(linkNode); // Firefox requires the linkNode to be in the body
+			linkNode.download = filename;
+			linkNode.href = uri;
+			linkNode.click();
+			document.body.removeChild(linkNode); // remove the linkNode when done
+		} else {
+			location.replace(uri);
+		}
+	}
+
+	static arrayBufferToBase64(buffer: ArrayBuffer) {
+		var binary = '';
+		var bytes = new Uint8Array(buffer);
+		var len = bytes.byteLength;
+		for (var i = 0; i < len; i++) {
+			binary += String.fromCharCode(bytes[i]);
+		}
+		return window.btoa(binary);
+	}
+
 	static calendarMaskHandlers(): any {
 		// TO MASK CALENDAR INPUT
 		let calendarDateMask: string;
@@ -77,5 +141,16 @@ export class Utils {
 		// END MASK CALENDAR
 
 		return { onInputDate, onBlurDate };
+	}
+
+	static dateDiffInDays(a: Date = new Date(), b: Date = new Date()) {
+		if (!a || !b) return;
+
+		const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+		// Discard the time and time-zone information.
+		const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+		const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+		return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 	}
 }

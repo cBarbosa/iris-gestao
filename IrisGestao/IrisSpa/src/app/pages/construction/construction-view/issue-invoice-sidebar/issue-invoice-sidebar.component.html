@@ -1,0 +1,244 @@
+<form
+	[formGroup]="registerForm"
+	class="flex flex-col justify-between h-full"
+	(ngSubmit)="onSubmit($event)"
+>
+	<div class="field">
+		<label for="descricao" class="block">Descrição dos serviços</label>
+		<p-dropdown
+			id="descricao"
+			[options]="opcoesDescricao"
+			formControlName="descricao"
+			aria-describedby="descricao-help"
+		></p-dropdown>
+		<ng-container *ngIf="checkHasError(f['descricao'])">
+			<small
+				id="descricao-help"
+				*ngIf="f['descricao'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe a descrição
+			</small>
+			<ng-template #error2>
+				<small id="descricao-help" class="p-error block">
+					Descrição dos serviços inválida
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
+		<label for="valorOrcamento" class="block">Valor orçado</label>
+		<input
+			id="valorOrcamento"
+			type="text"
+			formControlName="valorOrcamento"
+			aria-describedby="valorOrcamento-help"
+			currencyMask
+			pInputText
+		/>
+		<ng-container *ngIf="checkHasError(f['valorOrcamento'])">
+			<small
+				id="valorOrcamento-help"
+				*ngIf="f['valorOrcamento'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe o valor orçado
+			</small>
+			<ng-template #error2>
+				<small id="valorOrcamento-help" class="p-error block">
+					Valor orçado inválido
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
+		<label for="valorContratado" class="block">Valor contratado</label>
+		<input
+			id="valorContratado"
+			type="text"
+			formControlName="valorContratado"
+			aria-describedby="valorContratado-help"
+			currencyMask
+			pInputText
+		/>
+		<ng-container *ngIf="checkHasError(f['valorContratado'])">
+			<small
+				id="valorContratado-help"
+				*ngIf="f['valorContratado'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe o valor contratado
+			</small>
+			<ng-template #error2>
+				<small id="valorContratado-help" class="p-error block">
+					Valor contratado inválido
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
+		<label for="valorServico" class="block">Valor do serviço</label>
+		<input
+			id="valorServico"
+			type="text"
+			formControlName="valorServico"
+			aria-describedby="valorServico-help"
+			currencyMask
+			pInputText
+		/>
+		<ng-container *ngIf="checkHasError(f['valorServico'])">
+			<small
+				id="valorServico-help"
+				*ngIf="f['valorServico'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe o valor do serviço
+			</small>
+			<ng-template #error2>
+				<small id="valorServico-help" class="p-error block">
+					Valor do serviço inválido
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
+		<label for="dataEmissao" class="block">Data de emissão</label>
+		<p-calendar
+			id="dataEmissao"
+			formControlName="dataEmissao"
+			dateFormat="dd/mm/yy"
+			(onInput)="onInputDate($event)"
+			(onBlur)="onBlurDate()"
+			placeholder="dd/mm/aaaa"
+			aria-describedby="dataEmissao-help"
+		></p-calendar>
+		<ng-container *ngIf="checkHasError(f['dataEmissao'])">
+			<small
+				id="dataEmissao-help"
+				*ngIf="f['dataEmissao'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe a data de emissão
+			</small>
+			<ng-template #error2>
+				<small id="dataEmissao-help" class="p-error block">
+					Data de emissão inválida
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
+		<label for="numeroNota" class="block">Número da nota</label>
+		<input
+			id="numeroNota"
+			type="text"
+			formControlName="numeroNota"
+			aria-describedby="numeroNota-help"
+			pInputText
+		/>
+		<ng-container *ngIf="checkHasError(f['numeroNota'])">
+			<small
+				id="numeroNota-help"
+				*ngIf="f['numeroNota'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe o número da nota
+			</small>
+			<ng-template #error2>
+				<small id="numeroNota-help" class="p-error block">
+					Número da nota inválido
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
+		<label for="dataEmissao" class="block">Data de Vencimento da Fatura</label>
+		<p-calendar
+			id="dataEmissao"
+			formControlName="dataEmissao"
+			dateFormat="dd/mm/yy"
+			(onInput)="onInputDate($event)"
+			(onBlur)="onBlurDate()"
+			placeholder="dd/mm/aaaa"
+			aria-describedby="dataEmissao-help"
+		></p-calendar>
+		<ng-container *ngIf="checkHasError(f['dataEmissao'])">
+			<small
+				id="dataEmissao-help"
+				*ngIf="f['dataEmissao'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe a data de vencimento
+			</small>
+			<ng-template #error2>
+				<small id="dataEmissao-help" class="p-error block">
+					Data de vencimento inválida
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
+		<label for="porcentagemAdm" class="block">% de administração de obra</label>
+
+		<input
+			id="porcentagemAdm"
+			type="text"
+			formControlName="porcentagemAdm"
+			aria-describedby="porcentagemAdm-help"
+			mask="percent"
+			suffix="%"
+			pInputText
+		/>
+		<ng-container *ngIf="checkHasError(f['porcentagemAdm'])">
+			<small
+				id="porcentagemAdm-help"
+				*ngIf="f['porcentagemAdm'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe a porcentagem
+			</small>
+			<ng-template #error2>
+				<small id="porcentagemAdm-help" class="p-error block">
+					Porcentagem inválida
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
+		<label class="block">Anexo da NF</label>
+
+		<app-file-upload
+			name="uploadDoc"
+			[fileLimit]="1"
+			(selectEvent)="onFileSelect($event)"
+			accept=".xls, .doc, .pdf, .xlsx, .docx"
+		></app-file-upload>
+	</div>
+
+	<div class="flex justify-between gap-4 pb-5">
+		<button
+			pButton
+			pRipple
+			type="button"
+			label="Cancelar"
+			class="p-button-outlined h-11 w-full"
+			(click)="cancelEdit()"
+		></button>
+
+		<button
+			pButton
+			pRipple
+			type="submit"
+			label="Continuar"
+			class="h-11 w-full"
+		></button>
+	</div>
+</form>

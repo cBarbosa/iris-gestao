@@ -65,6 +65,9 @@ public partial class Unidade: BaseEntity<Unidade>
     public virtual ICollection<ContratoAluguelUnidade> ContratoAluguelUnidade { get; } = new List<ContratoAluguelUnidade>();
 
     [InverseProperty("IdUnidadeNavigation")]
+    public virtual ICollection<ContratoFornecedor> ContratoFornecedor { get; } = new List<ContratoFornecedor>();
+
+    [InverseProperty("IdUnidadeNavigation")]
     public virtual ICollection<DespesaLocatario> DespesaLocatario { get; } = new List<DespesaLocatario>();
 
     [InverseProperty("IdUnidadeNavigation")]
@@ -77,4 +80,8 @@ public partial class Unidade: BaseEntity<Unidade>
     [ForeignKey("IdTipoUnidade")]
     [InverseProperty("Unidade")]
     public virtual TipoUnidade IdTipoUnidadeNavigation { get; set; } = null!;
+
+    [InverseProperty("IdUnidadeNavigation")]
+    public virtual ICollection<TituloUnidade> TituloUnidade { get; } = new List<TituloUnidade>();
 }
+

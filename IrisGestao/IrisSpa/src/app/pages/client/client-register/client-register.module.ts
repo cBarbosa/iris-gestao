@@ -15,6 +15,7 @@ import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/sp
 import { SidebarModule } from 'primeng/sidebar';
 import { ContactRegisterSidebarComponent } from '../contact-register-sidebar/contact-register-sidebar.component';
 import { TelefonePipeModule } from 'src/app/shared/pipes/telefone.module';
+import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
 
 @NgModule({
 	declarations: [ClientRegisterComponent],
@@ -33,6 +34,7 @@ import { TelefonePipeModule } from 'src/app/shared/pipes/telefone.module';
 		SidebarModule,
 		ContactRegisterSidebarComponent,
 		TelefonePipeModule,
+		ResponsiveDialogComponent,
 	],
 })
 export class ClientRegisterModule {}

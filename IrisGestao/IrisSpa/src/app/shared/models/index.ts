@@ -19,3 +19,5 @@ export * from './imovel-unidade-tipo.model';
 export * from './cliente.model';
 
 export * from './cliente-tipo.model';
+
+export * from './contato.model';

@@ -1,0 +1,391 @@
+<div class="alert-message" *ngIf="invalidGuid || isLoading; else content">
+	<div class="loading" *ngIf="isLoading">
+		<app-spinner></app-spinner>
+	</div>
+	<div
+		class="invalid flex justify-center items-center h-full"
+		*ngIf="invalidGuid"
+	>
+		<div class="bg-white rounded border border-slate-200">
+			<div class="text-center w-full text-xl font-bold p-20 text-red-600">
+				Não foi possível carregar dados da obra
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #content>
+	<div class="edit-form">
+		<h1 class="text-2xl font-bold mb-6">Editar contrato</h1>
+
+		<form [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
+			<div class="input-wrapper">
+				<section class="construction-data">
+					<h4>Edifício do contrato</h4>
+
+					<div class="field">
+						<label for="name" class="block">Tipo do imóvel</label>
+						<input
+							id="name"
+							type="text"
+							[value]="constructionProperty?.unidade?.[0]?.idTipoUnidadeNavigation?.nome ?? ''"
+							aria-describedby="name-help"
+							maxlength="100"
+							pInputText
+							[disabled]="true"
+						/>
+					</div>
+
+					<div class="field">
+						<label for="name" class="block">Edifício</label>
+						<input
+							id="name"
+							type="text"
+							[value]="constructionProperty?.unidade?.[0]?.tipo ?? ''"
+							aria-describedby="name-help"
+							maxlength="100"
+							pInputText
+							[disabled]="true"
+						/>
+					</div>
+
+					<div class="photo-input">
+						<img src="../../../../assets/images/imovel.png" alt="edit-photo" />
+					</div>
+
+					<h5>Ed. José Maria Lopes</h5>
+					<p>SQS 415 Bloco C</p>
+					<p><span class="icon file mr-2">&nbsp;</span>Edifício corporativo</p>
+				</section>
+
+				<section class="aditional-data">
+					<p-accordion
+						[multiple]="false"
+						expandIcon="pi pi-fw pi-chevron-down"
+						collapseIcon="pi pi-fw pi-chevron-up"
+					>
+						<p-accordionTab
+							header="Informações da obra"
+							[selected]="true"
+							styleClass="teste_nome"
+						>
+							<section formGroupName="constructionInfo">
+								<div class="field">
+									<label for="nome" class="block">Nome da obra</label>
+									<input
+										id="nome"
+										type="text"
+										formControlName="nome"
+										aria-describedby="nome-help"
+										maxlength="100"
+										pInputText
+									/>
+									<ng-container *ngIf="checkHasError(constructionInfo['nome'])">
+										<small
+											id="nome-help"
+											*ngIf="
+												constructionInfo['nome'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o nome da obra
+										</small>
+										<ng-template #error2>
+											<small id="nome-help" class="p-error block">
+												Nome inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="dataInicio" class="block"> Data de início </label>
+									<p-calendar
+										id="dataInicio"
+										formControlName="dataInicio"
+										dateFormat="dd/mm/yy"
+										(onInput)="onInputDate($event)"
+										(onBlur)="onBlurDate()"
+										placeholder="dd/mm/aaaa"
+										aria-describedby="dataInicio-help"
+										panelStyleClass="hidden"
+									></p-calendar>
+									<ng-container
+										*ngIf="checkHasError(constructionInfo['dataInicio'])"
+									>
+										<small
+											id="dataInicio-help"
+											*ngIf="
+												constructionInfo['dataInicio'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe a data de início
+										</small>
+										<ng-template #error2>
+											<small id="dataInicio-help" class="p-error block">
+												Data de início inválida
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="dataFim" class="block">
+										Data de fim do contrato
+									</label>
+									<p-calendar
+										id="dataFim"
+										formControlName="dataFim"
+										dateFormat="dd/mm/yy"
+										(onInput)="onInputDate($event)"
+										(onBlur)="onBlurDate()"
+										placeholder="dd/mm/aaaa"
+										aria-describedby="dataFim-help"
+										panelStyleClass="hidden"
+									></p-calendar>
+									<ng-container
+										*ngIf="checkHasError(constructionInfo['dataFim'])"
+									>
+										<small
+											id="dataFim-help"
+											*ngIf="
+												constructionInfo['dataFim'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe a data de fim
+										</small>
+										<ng-template #error2>
+											<small id="dataFim-help" class="p-error block">
+												Data de fim inválida
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="valorOrcamento" class="block">Orçamento</label>
+									<input
+										id="valorOrcamento"
+										type="text"
+										formControlName="valorOrcamento"
+										aria-describedby="valorOrcamento-help"
+										currencyMask
+										pInputText
+									/>
+									<ng-container
+										*ngIf="checkHasError(constructionInfo['valorOrcamento'])"
+									>
+										<small
+											id="valorOrcamento-help"
+											*ngIf="
+												constructionInfo['valorOrcamento'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o orçamento
+										</small>
+										<ng-template #error2>
+											<small id="valorOrcamento-help" class="p-error block">
+												Orçamento inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="porcentagemConclusao" class="block"
+										>% de conclusão da obra</label
+									>
+									<input
+										id="porcentagemConclusao"
+										type="text"
+										formControlName="porcentagemConclusao"
+										aria-describedby="porcentagemConclusao-help"
+										mask="percent"
+										suffix="%"
+										pInputText
+									/>
+									<ng-container
+										*ngIf="
+											checkHasError(constructionInfo['porcentagemConclusao'])
+										"
+									>
+										<small
+											id="porcentagemConclusao-help"
+											*ngIf="
+												constructionInfo['porcentagemConclusao'].hasError(
+													'required'
+												);
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o orçamento
+										</small>
+										<ng-template #error2>
+											<small
+												id="porcentagemConclusao-help"
+												class="p-error block"
+											>
+												Orçamento inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<!-- <div class="field">
+									<label for="porcentagemConclusao" class="block">
+										% de conclusão da obra
+									</label>
+									<p-dropdown
+										id="porcentagemConclusao"
+										[options]="opcoesPorcentagemConclusao"
+										filterBy="label"
+										formControlName="porcentagemConclusao"
+										aria-describedby="porcentagemConclusao-help"
+									></p-dropdown>
+									<ng-container
+										*ngIf="
+											checkHasError(constructionInfo['porcentagemConclusao'])
+										"
+									>
+										<small
+											id="porcentagemConclusao-help"
+											*ngIf="
+												constructionInfo['porcentagemConclusao'].hasError(
+													'required'
+												);
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe a porcentagem de conclusão
+										</small>
+										<ng-template #error2>
+											<small
+												id="porcentagemConclusao-help"
+												class="p-error block"
+											>
+												Porcentagem inválida
+											</small>
+										</ng-template>
+									</ng-container>
+								</div> -->
+							</section>
+						</p-accordionTab>
+
+						<p-accordionTab header="Anexos">
+							<section formGroupName="attachments" class="attachments">
+								<app-upload-list [guid]="constructionGuid"></app-upload-list>
+							</section>
+						</p-accordionTab>
+
+						<p-accordionTab header="Fotos da evolução da obra">
+							<section formGroupName="photos" class="photos">
+								<div class="construction-photos">
+									<div class="photo-scroller">
+										<label for="addPhoto" class="add-photo-button">
+											<i class="ph-plus"></i>
+											<div>Adicionar foto</div>
+											<input
+												pButton
+												type="file"
+												id="addPhoto"
+												(change)="addPhoto($event)"
+												class="hidden"
+												multiple
+											/>
+										</label>
+										<ng-container
+											*ngFor="let photo of constructionPhotos; index as i"
+										>
+											<div class="photo">
+												<img [src]="photo.data" [alt]="photo.name" />
+												<button pButton type="button" (click)="removePhoto(i)">
+													<i class="ph-trash"></i>
+												</button>
+											</div>
+										</ng-container>
+										<ng-container
+											*ngFor="let photo of addedConstructionPhotos; index as i"
+										>
+											<div class="photo">
+												<img [src]="photo.data" [alt]="photo.name" />
+												<button
+													pButton
+													type="button"
+													(click)="removePhoto(i, true)"
+												>
+													<i class="ph-trash"></i>
+												</button>
+											</div>
+										</ng-container>
+									</div>
+								</div>
+							</section>
+						</p-accordionTab>
+					</p-accordion>
+				</section>
+			</div>
+			<div class="form-actions">
+				<button
+					pButton
+					type="button"
+					label="Voltar"
+					class="p-button-text h-11"
+					(click)="goBack()"
+				></button>
+
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Cancelar"
+					class="p-button-outlined h-11"
+					(click)="navigateTo('construction/details/' + constructionGuid)"
+				></button>
+
+				<button pButton type="submit" label="Continuar" class="h-11"></button>
+			</div>
+		</form>
+	</div>
+</ng-template>
+
+<p-dialog
+	[(visible)]="displayModal"
+	[modal]="true"
+	[draggable]="false"
+	[resizable]="false"
+	styleClass="form-modal"
+>
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+		<button
+			pButton
+			label="Continuar"
+			(click)="
+				closeModal(navigateTo, 'construction/details/' + constructionGuid)
+			"
+		></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</p-dialog>

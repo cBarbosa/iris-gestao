@@ -6,12 +6,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IrisGestao.Domain.Entity;
 
-public partial class TipoTitulo: BaseEntity<TipoTitulo>
+public partial class TipoTitulo : BaseEntity<TipoTitulo>
 {
     [StringLength(50)]
     [Unicode(false)]
     public string Nome { get; set; } = null!;
 
     [InverseProperty("IdTipoTituloNavigation")]
-    public virtual ICollection<Titulo> Titulo { get; } = new List<Titulo>();
+    public virtual ICollection<TituloReceber> TituloReceber { get; } = new List<TituloReceber>();
+
+    [InverseProperty("IdTipoTituloNavigation")]
+    public virtual ICollection<TituloPagar> TituloPagar { get; } = new List<TituloPagar>();
 }

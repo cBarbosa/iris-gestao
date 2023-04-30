@@ -25,12 +25,20 @@
 	margin-right: 2px;
 	@apply pb-8;
 
-	header {
+	header.list-header {
+		@apply flex justify-between pt-4 pb-9 px-5;
+
 		h3 {
 			color: #ffffff;
 
 			span {
 				color: #ffffff;
+			}
+		}
+
+		.options {
+			.addButton {
+				@apply leading-4;
 			}
 		}
 	}
@@ -128,6 +136,73 @@
 		.p-tag {
 			&.p-tag-danger {
 				color: #ff4f4c;
+			}
+		}
+
+		.p-sidebar {
+			&.p-sidebar-bottom {
+				height: auto;
+
+				.p-sidebar-header {
+					@apply items-center font-bold;
+
+					padding-bottom: 0.5rem;
+				}
+
+				.p-sidebar-content {
+					overflow-y: visible;
+
+					.p-input-icon-left {
+						width: 100%;
+						margin: 0.5rem 0;
+
+						.p-inputtext {
+							width: 100%;
+						}
+					}
+
+					.p-inputwrapper {
+						margin: 0.5rem 0;
+
+						.p-dropdown {
+							margin: 0.5rem 0;
+							width: 100%;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	.header-background {
+		display: none;
+	}
+	.content-wrapper {
+		padding: 0;
+		top: 0;
+
+		.content {
+			min-width: auto;
+			width: 100%;
+			margin: 0;
+
+			.list-header {
+				@apply flex-col;
+				background-color: #6b7c36;
+				width: 100%;
+			}
+
+			.options {
+				.addButton {
+					@apply w-full justify-center;
+				}
+			}
+
+			.cardList {
+				& > button.p-button {
+				}
 			}
 		}
 	}

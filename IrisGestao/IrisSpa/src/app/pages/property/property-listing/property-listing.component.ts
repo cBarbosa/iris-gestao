@@ -9,12 +9,14 @@ import {
 } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 import { first } from 'rxjs';
-import { Imovel } from 'src/app/shared/models';
+import { IImovel, Imovel } from 'src/app/shared/models';
 import {
 	ImovelService,
 	ClienteService,
 	CommonService,
 } from 'src/app/shared/services';
+import { AnexoService } from 'src/app/shared/services/anexo.service';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
 @Component({
@@ -23,7 +25,7 @@ import { Utils } from 'src/app/shared/utils';
 	styleUrls: ['./property-listing.component.scss'],
 })
 export class PropertyListingComponent implements OnInit {
-	properties: Imovel[] = [];
+	properties: IImovel[] = [];
 
 	totalListCount: number;
 	isLoadingList = true;
@@ -38,6 +40,9 @@ export class PropertyListingComponent implements OnInit {
 	filterText: string;
 	filterCategory: number;
 	filterProprietary: number;
+
+	isMobile: boolean = false;
+	displayMobileFilters: boolean = false;
 
 	proprietaryOptions: {
 		label: string;
@@ -54,7 +59,9 @@ export class PropertyListingComponent implements OnInit {
 		private clienteService: ClienteService,
 		private commonService: CommonService,
 		private router: Router,
-		private activatedRoute: ActivatedRoute
+		private activatedRoute: ActivatedRoute,
+		private anexoService: AnexoService,
+		private responsiveService: ResponsiveService
 	) {}
 
 	ngOnInit(): void {
@@ -134,6 +141,10 @@ export class PropertyListingComponent implements OnInit {
 					console.error(err);
 				},
 			});
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
 	}
 
 	loadClientsPage(event: LazyLoadEvent) {
@@ -162,16 +173,10 @@ export class PropertyListingComponent implements OnInit {
 					this.showPaginator =
 						this.pageCount > 1 || this.pageIndex > this.pageCount;
 
-					if (event.data.items.length > 0) {
-						event.data.items.forEach((imovel: Imovel) => {
-							// console.debug('Imovel Data >> ' + JSON.stringify(imovel));
-							this.properties.push(imovel);
-						});
-						this.noRestults = false;
-					} else {
-						this.properties = [];
-						this.noRestults = true;
-					}
+					this.properties = event.data.items;
+
+					if (event.data.items.length > 0) this.noRestults = false;
+					else this.noRestults = true;
 				} else {
 					this.showPaginator = true;
 					this.pageCount = 1;
@@ -218,18 +223,26 @@ export class PropertyListingComponent implements OnInit {
 		// this.getPagingData(page + 1);
 	};
 
+	openFilters() {
+		this.displayMobileFilters = true;
+	}
+
+	closeFilters() {
+		this.displayMobileFilters = false;
+	}
+
 	navigateTo(route: string) {
 		this.router.navigate([route]);
 	}
 
 	truncateChar(text: string): string {
 		const charlimit = 48;
-		if(!text || text.length <= charlimit ) {
+		if (!text || text.length <= charlimit) {
 			return text;
 		}
-	
-	  	const without_html = text.replace(/<(?:.|\n)*?>/gm, '');
-	  	const shortened = without_html.substring(0, charlimit) + "...";
-	  	return shortened;
+
+		const without_html = text.replace(/<(?:.|\n)*?>/gm, '');
+		const shortened = without_html.substring(0, charlimit) + '...';
+		return shortened;
 	}
 }

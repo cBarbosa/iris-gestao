@@ -8,6 +8,16 @@
 	margin: 0 auto;
 	@apply pb-8;
 
+	.list-header {
+		@apply flex justify-between pt-4 pb-9;
+
+		.options {
+			.addButton {
+				@apply leading-4;
+			}
+		}
+	}
+
 	.no-results-warn {
 		background-color: #ffffff;
 		padding: 3rem 3rem;
@@ -78,6 +88,58 @@
 		}
 		&.p-inputtext.ng-valid {
 			@apply border-slate-200;
+		}
+
+		.p-sidebar {
+			&.p-sidebar-bottom {
+				height: auto;
+
+				.p-sidebar-header {
+					@apply items-center font-bold;
+
+					padding-bottom: 0.5rem;
+				}
+
+				.p-sidebar-content {
+					overflow-y: visible;
+
+					.p-input-icon-left {
+						width: 100%;
+						margin: 0.5rem 0;
+
+						.p-inputtext {
+							width: 100%;
+						}
+					}
+
+					.p-inputwrapper {
+						margin: 0.5rem 0;
+
+						.p-dropdown {
+							margin: 0.5rem 0;
+							width: 100%;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	:host {
+		@apply px-3;
+	}
+
+	.content-wrapper {
+		.list-header {
+			@apply flex-col;
+		}
+
+		.options {
+			.addButton {
+				@apply w-full justify-center;
+			}
 		}
 	}
 }

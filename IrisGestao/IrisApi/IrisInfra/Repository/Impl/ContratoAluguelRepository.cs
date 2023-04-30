@@ -1,9 +1,11 @@
 ﻿using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Command.Result;
+using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Security.Cryptography.X509Certificates;
 
 namespace IrisGestao.Infraestructure.Repository.Impl;
 
@@ -81,7 +83,18 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 {
                                     Id                      = x.IdClienteNavigation.IdTipoClienteNavigation.Id,
                                     Nome                    = x.IdClienteNavigation.IdTipoClienteNavigation.Nome,
-                                }
+                                },
+                                Contato = x.IdClienteNavigation.Contato.Select(x => new
+                                {
+                                    Nome                    = x.Nome,
+                                    Cargo                   = x.Cargo,
+                                    Email                   = x.Email,
+                                    Telefone                = x.Telefone,
+                                    DataNascimento          = x.DataNascimento,
+                                    DataCriacao             = x.DataCriacao,
+                                    DataAtualização         = x.DataUltimaModificacao,
+                                    guidReferenciaContato   = x.GuidReferencia,
+                                })
                             },
                             ImovelAlugado                   = x.ContratoAluguelImovel.Select(x => new
                             {
@@ -126,6 +139,82 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                     }
                                 }).Where(y => y.Ativo)
                             }),
+                            TituloReceber                   = x.TituloReceber.Select(x => new
+                            {
+                                NumeroTitulo = x.NumeroTitulo,
+                                NomeTitulo = x.NomeTitulo,
+                                GuidReferencia = x.GuidReferencia,
+                                Status = x.Status,
+                                Parcelas = x.Parcelas,
+                                ValorTitulo = x.ValorTitulo,
+                                ValorTotalTitulo = x.ValorTitulo,
+                                DataCriacao = x.DataCriacao,
+                                DataAtualização = x.DataUltimaModificacao,
+                                DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,
+                                PorcentagemTaxaAdministracao = x.PorcentagemTaxaAdministracao,
+                                TipoTituloReceber = x.IdTipoTituloNavigation == null ? null : new
+                                {
+                                    Id = x.IdTipoTituloNavigation.Id,
+                                    Nome = x.IdTipoTituloNavigation.Nome
+                                },
+                                IndiceReajuste = x.IdIndiceReajusteNavigation == null ? null : new
+                                {
+                                    Id = x.IdIndiceReajusteNavigation.Id,
+                                    Nome = x.IdIndiceReajusteNavigation.Nome,
+                                    Percentual = x.IdIndiceReajusteNavigation.Percentual,
+                                    DataAtualizacao = x.IdIndiceReajusteNavigation.DataAtualizacao,
+                                },
+                                CreditoAluguel = x.IdTipoCreditoAluguelNavigation == null ? null : new
+                                {
+                                    Id = x.IdTipoCreditoAluguelNavigation.Id,
+                                    Nome = x.IdTipoCreditoAluguelNavigation.Nome
+                                },
+                                Cliente = x.IdClienteNavigation == null ? null : new
+                                {
+                                    CpfCnpj = x.IdClienteNavigation.CpfCnpj,
+                                    GuidReferencia = x.IdClienteNavigation.GuidReferencia,
+                                    Nome = x.IdClienteNavigation.Nome,
+                                    RazaoSocial = x.IdClienteNavigation.RazaoSocial,
+                                },
+                                FormaPagamento = x.IdFormaPagamentoNavigation == null ? null : new
+                                {
+                                    Id = x.IdFormaPagamentoNavigation.Id,
+                                    Nome = x.IdFormaPagamentoNavigation.Nome
+                                },
+                                Faturas = x.FaturaTitulo.Select(x => new
+                                {
+                                    GuidReferencia = x.GuidReferencia,
+                                    NumeroFatura = x.NumeroFatura,
+                                    NumeroParcela = x.NumeroParcela,
+                                    ValorFatura = x.Valor,
+                                    DataEnvio = x.DataEnvio,
+                                    DataPagamento = x.DataPagamento,
+                                    DataVencimento = x.DataVencimento,
+                                    DiasAtraso = x.DiasAtraso,
+                                    DataCriacao = x.DataCriacao,
+                                    DataUltimaModificacao = x.DataUltimaModificacao,
+                                    DataEmissaoNotaFiscal = x.DataEmissaoNotaFiscal,
+                                    Status = x.Status,
+                                    StatusFatura = ((x.Status && x.DataPagamento == null && x.DataVencimento > DateTime.Now) ? FaturaTituloEnum.A_VENCER :
+                                    (x.Status && x.DataPagamento == null && x.DataVencimento < DateTime.Now) ? FaturaTituloEnum.VENCIDO :
+                                    (x.Status && x.DataPagamento != null) ? FaturaTituloEnum.PAGO : FaturaTituloEnum.INATIVO),
+                                    NumeroNotaFiscal = x.NumeroNotaFiscal,
+                                    PorcentagemImpostoRetido = x.PorcentagemImpostoRetido,
+                                    ValorLiquidoTaxaAdministracao = x.ValorLiquidoTaxaAdministracao,
+                                    ValorRealPago = x.ValorRealPago,
+                                    DescricaoBaixaFatura = String.IsNullOrEmpty(x.DescricaoBaixaFatura) ? "" : x.DescricaoBaixaFatura,
+                                }),
+                            }),
+                            HistoricoReajuste = x.ContratoAluguelHistoricoReajuste.Select(x => new
+                            {
+                                Id = x.Id,
+                                GuidReferencia = x.GuidReferencia,
+                                DataCriacao = x.DataCriacao,
+                                PercentualReajusteAntigo = x.PercentualReajusteAnterior,
+                                PercentualReajusteNovo = x.PercentualReajusteNovo,
+                                ValorAluguelAnterior = x.ValorAluguelAnterior,
+                                ValorAluguelNovo = x.ValorAluguelNovo,
+                            }),
                         }).ToListAsync();
     }
 
@@ -141,14 +230,15 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                         .Include(x => x.ContratoAluguelImovel)
                             .ThenInclude(x => x.ContratoAluguelUnidade)
                         .Include(x => x.IdIndiceReajusteNavigation)
-                        .Where(x => (idBaseReajuste.HasValue
+                        .Where(x =>  x.Status
+                                    && (idBaseReajuste.HasValue
                                         ? x.IdIndiceReajuste.Equals(idBaseReajuste.Value)
                                         : true)
                                     && (!string.IsNullOrEmpty(numeroContrato)
                                         ? x.NumeroContrato.Contains(numeroContrato!)
                                         : true)
                                    && ((dthInicioVigencia.HasValue && dthFimVigencia.HasValue)
-                                        ? (x.DataInicioContrato >= dthInicioVigencia && x.DataFimContrato <= dthFimVigencia) : true)
+                                        ? (x.DataInicioContrato >= dthInicioVigencia.Value && x.DataFimContrato <= dthFimVigencia.Value) : true)
                         )
                         .Select(x => new
                         {
@@ -200,7 +290,21 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                     Nome = x.IdImovelNavigation.IdCategoriaImovelNavigation.Nome
                                 }
                             }),
-                        }).ToListAsync();
+                            TituloReceber = x.TituloReceber.Select(x => new
+                            {
+                                NumeroTitulo = x.NumeroTitulo,
+                                NomeTitulo = x.NomeTitulo,
+                                GuidReferencia = x.GuidReferencia,
+                                Status = x.Status,
+                                Parcelas = x.Parcelas,
+                                ValorTitulo = x.ValorTitulo,
+                                ValorTotalTitulo = x.ValorTitulo,
+                                DataCriacao = x.DataCriacao,
+                                DataAtualização = x.DataUltimaModificacao,
+                                DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,
+                                PorcentagemTaxaAdministracao = x.PorcentagemTaxaAdministracao
+                            }),
+                        }).OrderByDescending(x=> x.DataCriacao).ToListAsync();
 
             var totalCount = contratos.Count();
 

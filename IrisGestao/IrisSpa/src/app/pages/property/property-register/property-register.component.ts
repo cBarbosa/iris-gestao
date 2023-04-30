@@ -22,6 +22,11 @@ import {
 	CpfValidator,
 	CnpjValidator,
 } from 'src/app/shared/validators/custom-validators';
+import {
+	AnexoService,
+	ArquivoClassificacoes,
+} from 'src/app/shared/services/anexo.service';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 
 type Step = {
 	label: string;
@@ -45,6 +50,12 @@ type DropdownItem = {
 export class PropertyRegisterComponent {
 	registerForm: FormGroup;
 	registerProprietaryForm: FormGroup;
+	selectedFiles: {
+		habitese?: File;
+		projeto?: File;
+		matricula?: File;
+		outrosdocs?: File[];
+	} = {};
 
 	unitTypes: DropdownItem[] = [
 		{
@@ -93,6 +104,8 @@ export class PropertyRegisterComponent {
 		message: '',
 	};
 
+	isMobile = false;
+
 	registerProprietaryVisible = false;
 
 	dropdownUfList: DropdownItem[] = [
@@ -133,7 +146,9 @@ export class PropertyRegisterComponent {
 		private dominiosService: DominiosService,
 		private clienteService: ClienteService,
 		private commonService: CommonService,
-		private router: Router
+		private router: Router,
+		private anexoService: AnexoService,
+		private responsiveService: ResponsiveService
 	) {}
 
 	ngOnInit() {
@@ -180,6 +195,10 @@ export class PropertyRegisterComponent {
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
 
 		this.registerProprietaryForm = this.fb.group({
 			name: ['', [Validators.required]],
@@ -495,7 +514,18 @@ export class PropertyRegisterComponent {
 		this.legalInfoSalaPavForm.controls['copies'].updateValueAndValidity();
 	}
 
-	onUpload(e: any) {}
+	// onSelect(
+	// 	e: any,
+	// 	classificacao: Exclude<ArquivoClassificacoes, 'capa' | 'foto'>
+	// ) {
+	// 	this.selectedFiles[classificacao] = e.currentFiles[0];
+
+	// 	console.log('selectedFiles', this.selectedFiles);
+	// }
+
+	onFileSelect(fileList: File[]) {
+		this.selectedFiles['outrosdocs'] = fileList;
+	}
 
 	onSubmit(e: any = null) {
 		if (
@@ -606,7 +636,24 @@ export class PropertyRegisterComponent {
 				});
 		};
 
-		const registerPropertyAndUnity = (propertyObj: any, unitObj: any) => {
+		const registerAttachments = (guid: string) => {
+			Object.entries(this.selectedFiles).forEach(([classificacao, file]) => {
+				const formData = new FormData();
+
+				if (!Array.isArray(file)) formData.append('files', file as File);
+				else {
+					file.forEach((file) => {
+						formData.append('files', file as File);
+					});
+				}
+
+				this.anexoService
+					.registerFile(guid, formData, classificacao as ArquivoClassificacoes)
+					.subscribe();
+			});
+		};
+
+		const registerPropertyAndUnit = (propertyObj: any, unitObj: any) => {
 			this.imovelService
 				.registerProperty(propertyObj)
 				.pipe(first())
@@ -614,6 +661,7 @@ export class PropertyRegisterComponent {
 					next: (response: any) => {
 						if (response.success) {
 							registerUnit(unitObj, response.data.guidReferencia);
+							registerAttachments(response.data.guidReferencia);
 						} else {
 							this.modalContent = {
 								header: 'Cadastro não realizado',
@@ -637,7 +685,7 @@ export class PropertyRegisterComponent {
 				});
 		};
 
-		registerPropertyAndUnity(propertyObj, unitObj);
+		registerPropertyAndUnit(propertyObj, unitObj);
 	}
 
 	onProprietarySubmit() {
@@ -651,9 +699,10 @@ export class PropertyRegisterComponent {
 		const proprietaryObj = {
 			nome: proprietaryFormData.name,
 			cpfCnpj: proprietaryFormData.cpfCnpj.toString(),
-			dataNascimento: proprietaryFormData?.birthday != ''
-				? (proprietaryFormData?.birthday as Date)?.toISOString?.()
-				: null,
+			dataNascimento:
+				proprietaryFormData?.birthday != ''
+					? (proprietaryFormData?.birthday as Date)?.toISOString?.()
+					: null,
 			email: proprietaryFormData.email,
 			telefone: proprietaryFormData.telephone.toString(),
 			idTipoCliente: 1,

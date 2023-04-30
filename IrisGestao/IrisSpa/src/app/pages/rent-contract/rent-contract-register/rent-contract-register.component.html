@@ -32,8 +32,7 @@
 						type="text"
 						formControlName="numero"
 						aria-describedby="numero-help"
-						maxlength="100"
-						mask="0*"
+						maxlength="18"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['numero'])">
@@ -86,7 +85,12 @@
 					<span>
 						Você precisa atribuir pelo menos um imóvel ao seu contrato
 					</span>
-					<button type="button" (click)="showAddProperty()" pButton>
+					<button
+						type="button"
+						class="min-w-[6.5rem]"
+						(click)="showAddProperty()"
+						pButton
+					>
 						Adicionar
 					</button>
 				</div>
@@ -174,6 +178,15 @@
 					</ng-container>
 				</div>
 
+				<div class="flex justify-end text-sm font-medium mb-6">
+					<p-button
+						icon="pi pi-plus"
+						label="Adicionar novo locatário"
+						styleClass="p-button-text text-sm"
+						(click)="registerRenterVisible = true"
+					></p-button>
+				</div>
+
 				<!-- <div class="field">
 					<label for="locatario" class="block">Nome do locatário</label>
 					<input
@@ -257,7 +270,9 @@
 				</div> -->
 
 				<div class="field">
-					<label for="dataOcupacao" class="block"> Data da ocupação </label>
+					<label for="dataOcupacao" class="block">
+						Data de entrega do imóvel
+					</label>
 					<p-calendar
 						id="dataOcupacao"
 						formControlName="dataOcupacao"
@@ -284,26 +299,29 @@
 				</div>
 
 				<div class="field">
-					<label for="dataVencimento" class="block"
-						>Data do vencimento da parcela</label
-					>
-					<p-dropdown
-						id="dataVencimento"
-						[options]="dueDates"
-						formControlName="dataVencimento"
-						aria-describedby="dataVencimento-help"
-					></p-dropdown>
-					<ng-container *ngIf="checkHasError(f['dataVencimento'])">
+					<label for="dataVencimentoPrimeraParcela" class="block">
+						Data de vencimento da primeira parcela
+					</label>
+					<p-calendar
+						id="dataVencimentoPrimeraParcela"
+						formControlName="dataVencimentoPrimeraParcela"
+						dateFormat="dd/mm/yy"
+						(onInput)="onInputDate($event)"
+						(onBlur)="onBlurDate()"
+						placeholder="dd/mm/aaaa"
+						aria-describedby="dataVencimentoPrimeraParcela-help"
+					></p-calendar>
+					<ng-container *ngIf="checkHasError(f['dataVencimentoPrimeraParcela'])">
 						<small
-							id="dataVencimento-help"
-							*ngIf="f['dataVencimento'].hasError('required'); else error2"
+							id="dataVencimentoPrimeraParcela-help"
+							*ngIf="f['dataVencimentoPrimeraParcela'].hasError('required'); else error2"
 							class="p-error block"
 						>
-							Informe a data de vencimento
+							Informe a data de vencimento da primeira parcela
 						</small>
 						<ng-template #error2>
-							<small id="dataVencimento-help" class="p-error block">
-								Data de vencimento inválida
+							<small id="dataVencimentoPrimeraParcela-help" class="p-error block">
+								Data de vencimento da primeira parcela inválida
 							</small>
 						</ng-template>
 					</ng-container>
@@ -577,11 +595,11 @@
 							*ngIf="f['creditarPara'].hasError('required'); else error2"
 							class="p-error block"
 						>
-							Informe o prazo da carência
+							Informe a quem creditar
 						</small>
 						<ng-template #error2>
 							<small id="creditarPara-help" class="p-error block">
-								Prazo da carência inválida
+								Crédito inválida
 							</small>
 						</ng-template>
 					</ng-container>
@@ -605,19 +623,31 @@
 				cadastro do contrato.
 			</p>
 
-			<div class="field">
+			<app-file-upload
+				name="uploadDoc"
+				[fileLimit]="10"
+				(selectEvent)="onFileSelect($event)"
+				accept=".xls, .doc, .pdf, .xlsx, .docx"
+			></app-file-upload>
+
+			<!-- <div class="field">
 				<label for="occupancy" class="block">Anexo</label>
 				<p-fileUpload
 					id="occupancy"
 					mode="basic"
 					name="demo[]"
-					url="./upload"
-					accept="image/*"
-					chooseLabel="Arraste ou clique para fazer o upload"
+					accept="application/*"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
 					(onUpload)="onUpload($event)"
+					(onSelect)="onSelect($event, 'projeto')"
 				></p-fileUpload>
+
 				<ng-container *ngIf="checkHasError(f['occupancy'])">
 					<small
 						id="occupancy-help"
@@ -632,7 +662,7 @@
 						</small>
 					</ng-template>
 				</ng-container>
-			</div>
+			</div> -->
 		</section>
 	</div>
 	<div class="form-actions">
@@ -665,7 +695,7 @@
 
 <!-- ------------------------------------------------------------------------ -->
 <!-- ------------------------------------------------------------------------ -->
-<!-- REGISTRO DE PROPRIETÁRIO (SIDEBAR) -->
+<!-- REGISTRO DE PROPRIEDADE (SIDEBAR) -->
 <!-- ------------------------------------------------------------------------ -->
 <!-- ------------------------------------------------------------------------ -->
 
@@ -727,11 +757,11 @@
 							"
 							class="p-error block"
 						>
-							Informe a data de nascimento
+							Informe a unidade
 						</small>
 						<ng-template #error2>
 							<small id="unidade-help" class="p-error block">
-								Data de nascimento inválida
+								Unidade inválida
 							</small>
 						</ng-template>
 					</ng-container>
@@ -762,11 +792,232 @@
 	</p-sidebar>
 </form>
 
-<p-dialog
-	[(visible)]="displayModal"
-	[modal]="true"
-	[draggable]="false"
-	[resizable]="false"
+<!-- ------------------------------------------------------------------------ -->
+<!-- ------------------------------------------------------------------------ -->
+<!-- REGISTRO DE LOCATARIO (SIDEBAR) -->
+<!-- ------------------------------------------------------------------------ -->
+<!-- ------------------------------------------------------------------------ -->
+
+<form [formGroup]="registerRenterForm" *ngIf="registerRenterVisible">
+	<p-sidebar [(visible)]="registerRenterVisible" position="right">
+		<ng-template pTemplate="header">
+			<h4>Adicionar novo locatário</h4>
+		</ng-template>
+		<ng-template pTemplate="content">
+			<div class="register-renter-form">
+				<div class="field">
+					<label for="client-type" class="block">Tipo de cliente</label>
+					<p-dropdown
+						id="client-type"
+						[options]="renterTypes"
+						formControlName="tipoCliente"
+						aria-describedby="client-type-help"
+						(onChange)="renterTypeChange()"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['tipoCliente'])">
+						<small
+							id="client-type-help"
+							*ngIf="f['tipoCliente'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o tipo de cliente
+						</small>
+						<ng-template #error2>
+							<small id="client-type-help" class="p-error block">
+								Tipo de cliente inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="name" class="block">Nome</label>
+					<input
+						id="name"
+						type="text"
+						formControlName="name"
+						aria-describedby="name-help"
+						maxlength="100"
+						pInputText
+					/>
+					<ng-container
+						*ngIf="checkHasError(registerRenterForm.controls['name'])"
+					>
+						<small
+							id="name-help"
+							*ngIf="
+								registerRenterForm.controls['name'].hasError('required');
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe o nome do locatário
+						</small>
+						<ng-template #error2>
+							<small id="name-help" class="p-error block">
+								Nome inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="cpf-cnpj" class="block">{{ currCpfCnpj }}</label>
+					<input
+						id="cpf-cnpj"
+						type="text"
+						formControlName="cpfCnpj"
+						aria-describedby="cpf-cnpj-help"
+						[mask]="CpfCnpjMask"
+						pInputText
+					/>
+					<ng-container
+						*ngIf="checkHasError(registerRenterForm.controls['cpfCnpj'])"
+					>
+						<small
+							id="cpf-cnpj-help"
+							*ngIf="
+								registerRenterForm.controls['cpfCnpj'].hasError('required');
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe o CPF/CNPJ
+						</small>
+						<ng-template #error2>
+							<small id="cpf-cnpj-help" class="p-error block">
+								CPF/CNPJ inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div
+					class="field"
+					*ngIf="registerRenterForm.controls['tipoCliente'].value === 'cpf'"
+				>
+					<label for="birthday" class="block">Nascimento</label>
+					<p-calendar
+						id="birthday"
+						formControlName="birthday"
+						styleClass="no-picker"
+						dateFormat="dd/mm/yy"
+						(onInput)="onInputDate($event)"
+						(onBlur)="onBlurDate()"
+						placeholder="dd/mm/aaaa"
+						aria-describedby="birthday-help"
+					></p-calendar>
+					<ng-container
+						*ngIf="checkHasError(registerRenterForm.controls['birthday'])"
+					>
+						<small
+							id="birthday-help"
+							*ngIf="
+								registerRenterForm.controls['birthday'].hasError('required');
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe a data de nascimento
+						</small>
+						<ng-template #error2>
+							<small id="birthday-help" class="p-error block">
+								Data de nascimento inválida
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="email" class="block">Email</label>
+					<input
+						id="email"
+						type="text"
+						formControlName="email"
+						aria-describedby="email-help"
+						maxlength="150"
+						pInputText
+					/>
+					<ng-container
+						*ngIf="checkHasError(registerRenterForm.controls['email'])"
+					>
+						<small
+							id="email-help"
+							*ngIf="
+								registerRenterForm.controls['email'].hasError('required');
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe o Email
+						</small>
+						<ng-template #error2>
+							<small id="email-help" class="p-error block">
+								Email inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="telephone" class="block">Telefone</label>
+					<input
+						id="telephone"
+						type="text"
+						formControlName="telephone"
+						aria-describedby="telephone-help"
+						mask="(00) 0000-0000 || (00) 0 0000-0000"
+						pInputText
+					/>
+					<ng-container
+						*ngIf="checkHasError(registerRenterForm.controls['telephone'])"
+					>
+						<small
+							id="telephone-help"
+							*ngIf="
+								registerRenterForm.controls['telephone'].hasError('required');
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe o telefone
+						</small>
+						<ng-template #error2>
+							<small id="telephone-help" class="p-error block">
+								Telefone inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="footer">
+			<div class="flex justify-between gap-4">
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Cancelar"
+					class="p-button-outlined h-9 w-full"
+					(click)="registerRenterVisible = false"
+				></button>
+
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Continuar"
+					class="h-9 w-full"
+					(click)="onRenterSubmit()"
+				></button>
+			</div>
+		</ng-template>
+	</p-sidebar>
+</form>
+
+<app-responsive-dialog
+	[isMobile]="isMobile"
+	[visible]="displayModal"
 	styleClass="form-modal"
 >
 	<div *ngIf="!modalContent.isError; else error" class="modal-success">
@@ -779,6 +1030,14 @@
 		<button
 			pButton
 			label="Continuar"
+			(click)="closeModal(setNewRenter); registerRenterVisible = false"
+			*ngIf="registerRenterVisible"
+		></button>
+
+		<button
+			pButton
+			label="Continuar"
+			*ngIf="!registerRenterVisible"
 			(click)="closeModal(navigateTo, 'rent-contract/listing')"
 		></button>
 	</div>
@@ -792,4 +1051,4 @@
 			<button pButton label="Continuar" (click)="closeModal()"></button>
 		</div>
 	</ng-template>
-</p-dialog>
+</app-responsive-dialog>
