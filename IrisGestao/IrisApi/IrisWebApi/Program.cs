@@ -27,7 +27,7 @@ builder.Services.AddAuthentication(options =>
     })
     .AddJwtBearer(jwtOptions =>
     {
-        jwtOptions.Authority = $"https://enterprisetecnologia.b2clogin.com/{builder.Configuration["AzureAdB2C:Tenant"]}/{builder.Configuration["AzureAdB2C:Policy"]}/v2.0";
+        jwtOptions.Authority = $"https://{builder.Configuration["AzureAdB2C:Domain"]}.b2clogin.com/{builder.Configuration["AzureAdB2C:Tenant"]}/{builder.Configuration["AzureAdB2C:Policy"]}/v2.0";
         jwtOptions.Audience = builder.Configuration["AzureAdB2C:ClientId"];
         // jwtOptions.RequireHttpsMetadata = false;
         jwtOptions.TokenValidationParameters = new TokenValidationParameters
