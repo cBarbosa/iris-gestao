@@ -1,9 +1,9 @@
-name:  Build and deploy - iris-gestao-apistg (main)
+name:  Build and deploy - iris-gestao-apistg (staging)
 
 on:
   push:
     branches:
-      - main
+      - staging
     paths:
       - IrisGestao/IrisApi/**
   workflow_dispatch:
