@@ -88,4 +88,7 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
 
     [InverseProperty("IdContratoAluguelNavigation")]
     public virtual ICollection<TituloReceber> TituloReceber { get; } = new List<TituloReceber>();
+
+    [InverseProperty("IdContratoAluguelNavigation")]
+    public virtual ICollection<TituloPagar> TituloPagar { get; } = new List<TituloPagar>();
 }

@@ -299,26 +299,29 @@
 				</div>
 
 				<div class="field">
-					<label for="dataVencimento" class="block"
-						>Data do vencimento da parcela</label
-					>
-					<p-dropdown
-						id="dataVencimento"
-						[options]="dueDates"
-						formControlName="dataVencimento"
-						aria-describedby="dataVencimento-help"
-					></p-dropdown>
-					<ng-container *ngIf="checkHasError(f['dataVencimento'])">
+					<label for="dataVencimentoPrimeraParcela" class="block">
+						Data de vencimento da primeira parcela
+					</label>
+					<p-calendar
+						id="dataVencimentoPrimeraParcela"
+						formControlName="dataVencimentoPrimeraParcela"
+						dateFormat="dd/mm/yy"
+						(onInput)="onInputDate($event)"
+						(onBlur)="onBlurDate()"
+						placeholder="dd/mm/aaaa"
+						aria-describedby="dataVencimentoPrimeraParcela-help"
+					></p-calendar>
+					<ng-container *ngIf="checkHasError(f['dataVencimentoPrimeraParcela'])">
 						<small
-							id="dataVencimento-help"
-							*ngIf="f['dataVencimento'].hasError('required'); else error2"
+							id="dataVencimentoPrimeraParcela-help"
+							*ngIf="f['dataVencimentoPrimeraParcela'].hasError('required'); else error2"
 							class="p-error block"
 						>
-							Informe a data de vencimento
+							Informe a data de vencimento da primeira parcela
 						</small>
 						<ng-template #error2>
-							<small id="dataVencimento-help" class="p-error block">
-								Data de vencimento inválida
+							<small id="dataVencimentoPrimeraParcela-help" class="p-error block">
+								Data de vencimento da primeira parcela inválida
 							</small>
 						</ng-template>
 					</ng-container>
@@ -897,7 +900,7 @@
 					<p-calendar
 						id="birthday"
 						formControlName="birthday"
-						styleClass="no-popup"
+						styleClass="no-picker"
 						dateFormat="dd/mm/yy"
 						(onInput)="onInputDate($event)"
 						(onBlur)="onBlurDate()"

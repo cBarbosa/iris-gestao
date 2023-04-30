@@ -5,23 +5,24 @@ using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Drawing;
 
 namespace IrisGestao.Infraestructure.Repository.Impl;
 
-public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceberRepository
+public class TituloPagarRepository : Repository<TituloPagar>, ITituloPagarRepository
 {
-    public TituloReceberRepository(IConfiguration configuration, ILogger<TituloReceber> logger)
+    public TituloPagarRepository(IConfiguration configuration, ILogger<TituloPagar> logger)
         : base(configuration, logger)
     {
 
     }
 
-    public async Task<TituloReceber?> GetByReferenceGuid(Guid guid)
+    public async Task<TituloPagar?> GetByReferenceGuid(Guid guid)
     {
         return await DbSet.FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
     }
     
-    public async Task<TituloReceber?> GetByContratoAluguelId(int idContratoAluguel)
+    public async Task<TituloPagar?> GetByContratoAluguelId(int idContratoAluguel)
     {
         return await DbSet.FirstOrDefaultAsync(x => x.IdContratoAluguel.Equals(idContratoAluguel));
     }
@@ -34,11 +35,11 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
         }
         catch (Exception)
         {
-            return 100000;
+            return 200000;
         }
     }
 
-    public async Task<object?> GetByTituloReceberGuid(Guid guid)
+    public async Task<object?> GetByTituloPagarGuid(Guid guid)
     {
         return await DbSet
                     .Include(x => x.IdContratoAluguelNavigation)
@@ -48,7 +49,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                     .Include(x => x.IdIndiceReajusteNavigation)
                     .Include(x => x.TituloImovel)
                         .ThenInclude(x => x.TituloUnidade)
-                    .Include(x => x.FaturaTitulo)
+                    .Include(x => x.FaturaTituloPagar)
                     .Where(x => x.GuidReferencia.Equals(guid))
                     .Select(x => new
                     {
@@ -63,7 +64,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                         DataAtualização = x.DataUltimaModificacao,
                         DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,
                         PorcentagemTaxaAdministracao = x.PorcentagemTaxaAdministracao,
-                        TipoTituloReceber = x.IdTipoTituloNavigation == null ? null : new
+                        TipoTituloPagar = x.IdTipoTituloNavigation == null ? null : new
                         {
                             Id = x.IdTipoTituloNavigation.Id,
                             Nome = x.IdTipoTituloNavigation.Nome
@@ -92,6 +93,29 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                             Id = x.IdFormaPagamentoNavigation.Id,
                             Nome = x.IdFormaPagamentoNavigation.Nome
                         },
+                        Faturas = x.FaturaTituloPagar.Select(x => new
+                        {
+                            GuidReferencia = x.GuidReferencia,
+                            NumeroFatura = x.NumeroFatura,
+                            ValorFatura = x.Valor,
+                            DataEnvio = x.DataEnvio,
+                            DataPagamento = x.DataPagamento,
+                            DataVencimento = x.DataVencimento,
+                            DiasAtraso = x.DiasAtraso,
+                            DataCriacao = x.DataCriacao,
+                            DataUltimaModificacao = x.DataUltimaModificacao,
+                            DataEmissaoNotaFiscal = x.DataEmissaoNotaFiscal,
+                            Status = x.Status,
+                            NumeroParcela = x.NumeroParcela,
+                            StatusFatura = ((x.Status && x.DataPagamento == null && x.DataVencimento > DateTime.Now) ? FaturaTituloEnum.A_VENCER :
+                            (x.Status && x.DataPagamento == null && x.DataVencimento < DateTime.Now) ? FaturaTituloEnum.VENCIDO :
+                            (x.Status && x.DataPagamento != null) ? FaturaTituloEnum.PAGO : FaturaTituloEnum.INATIVO),
+                            NumeroNotaFiscal = x.NumeroNotaFiscal,
+                            PorcentagemImpostoRetido = x.PorcentagemImpostoRetido,
+                            ValorLiquidoTaxaAdministracao = x.ValorLiquidoTaxaAdministracao,
+                            ValorRealPago = x.ValorRealPago,
+                            DescricaoBaixaFatura = String.IsNullOrEmpty(x.DescricaoBaixaFatura) ? "" : x.DescricaoBaixaFatura,
+                        }),
                         ContratoAluguel = x.IdContratoAluguelNavigation == null ? null : new
                         {
                             GuidReferencia = x.IdContratoAluguelNavigation.GuidReferencia,
@@ -111,31 +135,9 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                             DataCriacao = x.IdContratoAluguelNavigation.DataCriacao,
                             DataAtualização = x.IdContratoAluguelNavigation.DataUltimaModificacao,
                         },
-                        Faturas = x.FaturaTitulo.Select(x => new
-                        {
-                            GuidReferencia = x.GuidReferencia,
-                            NumeroFatura = x.NumeroFatura,
-                            ValorFatura = x.Valor,
-                            DataEnvio = x.DataEnvio,
-                            DataPagamento = x.DataPagamento,
-                            DataVencimento = x.DataVencimento,
-                            DiasAtraso = x.DiasAtraso,
-                            DataCriacao = x.DataCriacao,
-                            DataUltimaModificacao = x.DataUltimaModificacao,
-                            DataEmissaoNotaFiscal = x.DataEmissaoNotaFiscal,
-                            Status = x.Status,
-                            NumeroParcela = x.NumeroParcela,
-                            StatusFatura = ((x.Status && x.DataPagamento == null && x.DataVencimento > DateTime.Now) ? FaturaTituloEnum.A_VENCER :
-                            (x.Status && x.DataPagamento == null && x.DataVencimento < DateTime.Now) ? FaturaTituloEnum.VENCIDO : 
-                            (x.Status && x.DataPagamento != null) ? FaturaTituloEnum.PAGO : FaturaTituloEnum.INATIVO),
-                            NumeroNotaFiscal = x.NumeroNotaFiscal,
-                            PorcentagemImpostoRetido = x.PorcentagemImpostoRetido,
-                            ValorLiquidoTaxaAdministracao = x.ValorLiquidoTaxaAdministracao,
-                            ValorRealPago = x.ValorRealPago,
-                            DescricaoBaixaFatura = String.IsNullOrEmpty(x.DescricaoBaixaFatura) ? "" : x.DescricaoBaixaFatura,
-                        }),
                         Imoveis = x.TituloImovel.Select(y => new
                         {
+                            Id = y.IdImovelNavigation.Id,
                             Nome = y.IdImovelNavigation.Nome,
                             guidReferencia = y.IdImovelNavigation.GuidReferencia,
                             NroUnidades = y.IdImovelNavigation.Unidade.Where(x => x.Status).Count(),
@@ -161,6 +163,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                             },
                             Unidades = y.TituloUnidade.Select(y => new
                             {
+                                Id = y.IdUnidadeNavigation.Id,
                                 GuidReferencia = y.IdUnidadeNavigation.GuidReferencia,
                                 IdImovel = y.IdUnidadeNavigation.IdImovel,
                                 AreaUtil = y.IdUnidadeNavigation.AreaUtil,
@@ -181,7 +184,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                                     Id = y.IdUnidadeNavigation.IdTipoUnidadeNavigation.Id,
                                     Nome = y.IdUnidadeNavigation.IdTipoUnidadeNavigation.Nome
                                 }
-                            }),
+                            }).Where(y => y.Ativo),
                         }),
                     }).ToListAsync(); 
     }
@@ -195,6 +198,8 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
             var contratos = await DbSet
                         .Include(x => x.IdContratoAluguelNavigation)
                             .ThenInclude(x => x.IdTipoContratoNavigation)
+                        .Include(x => x.TituloImovel)
+                            .ThenInclude(x => x.TituloUnidade)
                         .Where(x =>  (idTipoTitulo.HasValue
                                         ? x.IdTipoTituloNavigation.Id == idTipoTitulo.Value
                                         : true)
@@ -212,7 +217,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                             ValorTotalTitulo = x.ValorTotalTitulo,
                             DataCriacao = x.DataCriacao,
                             DataAtualização = x.DataUltimaModificacao,
-                            TipoTituloReceber = x.IdTipoTituloNavigation == null ? null : new
+                            TipoTituloPagar = x.IdTipoTituloNavigation == null ? null : new
                             {
                                 Id = x.IdTipoTituloNavigation.Id,
                                 Nome = x.IdTipoTituloNavigation.Nome
@@ -241,8 +246,9 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                                 Id = x.IdFormaPagamentoNavigation.Id,
                                 Nome = x.IdFormaPagamentoNavigation.Nome
                             },
-                            Imoveil = x.TituloImovel.Select(y => new
+                            Imovel = x.TituloImovel.Select(y => new
                             {
+                                Id = y.IdImovelNavigation.Id,
                                 Nome = y.IdImovelNavigation.Nome,
                                 guidReferencia = y.IdImovelNavigation.GuidReferencia,
                                 NroUnidades = y.IdImovelNavigation.Unidade.Where(x => x.Status).Count(),
@@ -266,6 +272,31 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                                     Nome = y.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
                                     Telefone = y.IdImovelNavigation.IdClienteProprietarioNavigation.Telefone
                                 },
+                                Unidades = y.TituloUnidade.Select(y => new
+                                {
+                                    Id = y.IdUnidadeNavigation.Id,
+                                    GuidReferencia = y.IdUnidadeNavigation.GuidReferencia,
+                                    IdImovel = y.IdUnidadeNavigation.IdImovel,
+                                    AreaUtil = y.IdUnidadeNavigation.AreaUtil,
+                                    AreaTotal = y.IdUnidadeNavigation.AreaTotal,
+                                    AreaHabitese = y.IdUnidadeNavigation.AreaHabitese,
+                                    InscricaoIPTU = y.IdUnidadeNavigation.InscricaoIPTU,
+                                    Matricula = y.IdUnidadeNavigation.Matricula,
+                                    MatriculaEnergia = y.IdUnidadeNavigation.MatriculaEnergia,
+                                    MatriculaAgua = y.IdUnidadeNavigation.MatriculaAgua,
+                                    TaxaAdministracao = y.IdUnidadeNavigation.TaxaAdministracao,
+                                    Tipo = y.IdUnidadeNavigation.Tipo,
+                                    ValorPotencial = y.IdUnidadeNavigation.ValorPotencial,
+                                    DataCriacao = y.IdUnidadeNavigation.DataCriacao,
+                                    DataUltimaModificacao = y.IdUnidadeNavigation.DataUltimaModificacao,
+                                    Ativo = y.IdUnidadeNavigation.Status,
+                                    IdTipoUnidadeNavigation = new
+                                    {
+                                        Id = y.IdUnidadeNavigation.IdTipoUnidadeNavigation.Id,
+                                        Nome = y.IdUnidadeNavigation.IdTipoUnidadeNavigation.Nome
+                                    }
+                                }
+                                ).Where(y => y.Ativo),
                             }),
                         }).OrderByDescending(x=> x.DataCriacao).ToListAsync();
 
@@ -283,6 +314,23 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
 
         return null!;
     }
+
+    public async Task<IEnumerable<object>?> GetAllImoveisTitulo()
+    {
+        return await DbSet
+            .Where(x => x.Status)
+            .Select(x => new
+            {
+                ListaImoveis = x.TituloImovel.Select(y => new
+                {
+                    Id = y.IdImovelNavigation.Id,
+                    NomeImovel = y.IdImovelNavigation.Nome,
+                    guidReferencia = y.IdImovelNavigation.GuidReferencia,
+                })
+            })
+            .ToListAsync();
+    }
+
 
     public static string ImagemCapaFake => "../../../../assets/images/imovel.png";
 

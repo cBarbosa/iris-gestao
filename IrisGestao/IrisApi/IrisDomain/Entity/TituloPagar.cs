@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IrisGestao.Domain.Entity;
 
-public partial class TituloReceber : BaseEntity<TituloReceber>
+public partial class TituloPagar : BaseEntity<TituloPagar>
 {
     [StringLength(100)]
     [Unicode(false)]
@@ -22,7 +22,7 @@ public partial class TituloReceber : BaseEntity<TituloReceber>
 
     public int IdTipoTitulo { get; set; }
 
-    public int? IdContratoAluguel { get; set; }
+    public int? IdContratoAluguel { get; set; } = null!;
 
     public int? IdCliente { get; set; }
 
@@ -60,33 +60,33 @@ public partial class TituloReceber : BaseEntity<TituloReceber>
     [Column(TypeName = "datetime")]
     public DateTime? DataUltimaModificacao { get; set; }
 
-    [InverseProperty("IdTituloReceberNavigation")]
-    public virtual ICollection<FaturaTitulo> FaturaTitulo { get; } = new List<FaturaTitulo>();
+    [InverseProperty("IdTituloPagarNavigation")]
+    public virtual ICollection<FaturaTituloPagar> FaturaTituloPagar { get; } = new List<FaturaTituloPagar>();
 
     [ForeignKey("IdTipoTitulo")]
-    [InverseProperty("TituloReceber")]
+    [InverseProperty("TituloPagar")]
     public virtual TipoTitulo IdTipoTituloNavigation { get; set; } = null!;
 
     [ForeignKey("IdContratoAluguel")]
-    [InverseProperty("TituloReceber")]
+    [InverseProperty("TituloPagar")]
     public virtual ContratoAluguel? IdContratoAluguelNavigation { get; set; } = null!;
 
     [ForeignKey("IdCliente")]
-    [InverseProperty("TituloReceber")]
+    [InverseProperty("TituloPagar")]
     public virtual Cliente IdClienteNavigation { get; set; } = null!;
 
     [ForeignKey("IdIndiceReajuste")]
-    [InverseProperty("TituloReceber")]
+    [InverseProperty("TituloPagar")]
     public virtual IndiceReajuste IdIndiceReajusteNavigation { get; set; } = null!;
 
     [ForeignKey("IdTipoCreditoAluguel")]
-    [InverseProperty("TituloReceber")]
+    [InverseProperty("TituloPagar")]
     public virtual TipoCreditoAluguel IdTipoCreditoAluguelNavigation { get; set; } = null!;
 
-    [InverseProperty("IdTituloReceberNavigation")]
+    [InverseProperty("IdTituloPagarNavigation")]
     public virtual ICollection<TituloImovel> TituloImovel { get; } = new List<TituloImovel>();
 
     [ForeignKey("IdFormaPagamento")]
-    [InverseProperty("TituloReceber")]
+    [InverseProperty("TituloPagar")]
     public virtual FormaPagamento IdFormaPagamentoNavigation { get; set; } = null!;
 }

@@ -85,4 +85,7 @@ public partial class Cliente: BaseEntity<Cliente>
 
     [InverseProperty("IdClienteNavigation")]
     public virtual ICollection<TituloReceber> TituloReceber { get; } = new List<TituloReceber>();
+
+    [InverseProperty("IdClienteNavigation")]
+    public virtual ICollection<TituloPagar> TituloPagar { get; } = new List<TituloPagar>();
 }

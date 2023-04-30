@@ -4,6 +4,31 @@
 	(ngSubmit)="onSubmit($event)"
 >
 	<div class="field">
+		<label for="numeroFatura" class="block">Nº Fatura</label>
+		<input
+			id="numeroFatura"
+			type="text"
+			formControlName="numeroFatura"
+			aria-describedby="numeroFatura-help"
+			pInputText
+		/>
+		<ng-container *ngIf="checkHasError(f['numeroFatura'])">
+			<small
+				id="numeroFatura-help"
+				*ngIf="f['numeroFatura'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe o número da fatura
+			</small>
+			<ng-template #error2>
+				<small id="numeroFatura-help" class="p-error block">
+					Número da fatura inválido
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
 		<label for="dataVencimento" class="block">Data de Vencimento</label>
 		<p-calendar
 			id="dataVencimento"
@@ -13,7 +38,7 @@
 			(onBlur)="onBlurDate()"
 			placeholder="dd/mm/aaaa"
 			aria-describedby="dataVencimento-help"
-			[disabled]="true"
+			styleClass="small-picker"
 		></p-calendar>
 		<ng-container *ngIf="checkHasError(f['dataVencimento'])">
 			<small
@@ -32,13 +57,12 @@
 	</div>
 
 	<div class="field">
-		<label for="valorTotal" class="block">Valor total</label>
+		<label for="valorTotal" class="block">Valor fatura</label>
 		<input
 			id="valorTotal"
 			type="text"
 			formControlName="valorTotal"
 			aria-describedby="valorTotal-help"
-			[disabled]="true"
 			currencyMask
 			pInputText
 		/>
@@ -94,6 +118,7 @@
 			(onBlur)="onBlurDate()"
 			placeholder="dd/mm/aaaa"
 			aria-describedby="dataPagamento-help"
+			styleClass="small-picker"
 		></p-calendar>
 		<ng-container *ngIf="checkHasError(f['dataPagamento'])">
 			<small
@@ -117,10 +142,9 @@
 			id="diasAtraso"
 			type="text"
 			mask="0*"
-			suffix=" dias"
+			[suffix]="f['diasAtraso'].value > 1 ? ' dias' : ' dia'"
 			formControlName="diasAtraso"
 			aria-describedby="diasAtraso-help"
-			[disabled]="true"
 			pInputText
 		/>
 		<ng-container *ngIf="checkHasError(f['diasAtraso'])">
@@ -151,6 +175,7 @@
 			(onBlur)="onBlurDate()"
 			placeholder="dd/mm/aaaa"
 			aria-describedby="dataVencimentoFatura-help"
+			styleClass="small-picker"
 		></p-calendar>
 		<ng-container *ngIf="checkHasError(f['dataVencimentoFatura'])">
 			<small
@@ -170,15 +195,13 @@
 
 	<div class="field">
 		<label for="observacoes" class="block">Observação da baixa</label>
-		<input
+		<textarea
+			rows="3"
 			id="observacoes"
-			type="text"
-			mask="0*"
-			suffix=" dias"
 			formControlName="observacoes"
 			aria-describedby="observacoes-help"
-			pInputText
-		/>
+			pInputTextarea
+		></textarea>
 		<ng-container *ngIf="checkHasError(f['observacoes'])">
 			<small
 				id="observacoes-help"
@@ -197,17 +220,6 @@
 
 	<div class="field">
 		<label for="anexoNf" class="block">Anexo da NF</label>
-		<!-- <p-fileUpload
-			id="anexoNf"
-			mode="basic"
-			name="anexoNf"
-			accept="application/*"
-			chooseLabel="Clique para fazer o upload"
-			chooseIcon="pi-upload"
-			[maxFileSize]="1000000"
-			(onSelect)="onFileSelect($event)"
-		></p-fileUpload> -->
-
 		<app-file-upload
 			name="uploadDoc"
 			[fileLimit]="1"
@@ -242,8 +254,30 @@
 			pButton
 			pRipple
 			type="submit"
-			label="Continuar"
+			label="Baixar Fatura"
 			class="h-11 w-full"
 		></button>
 	</div>
 </form>
+
+<app-responsive-dialog [visible]="displayModal" styleClass="form-modal">
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+
+		<button pButton label="Continuar" (click)="closeModal()"></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</app-responsive-dialog>
