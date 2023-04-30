@@ -1,5 +1,5 @@
 
-const baseUrl = 'irisgestao-api.azurewebsites.net/'
+const baseUrl = 'https://irisgestao-api.azurewebsites.net/'
 
 export const environment = {
     production: true,
