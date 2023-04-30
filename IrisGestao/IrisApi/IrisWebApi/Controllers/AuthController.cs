@@ -21,7 +21,7 @@ public class AuthController : Controller
     public async Task<IActionResult> Index()
     {
         var result = await Service.GetAuthData(User.Claims.FirstOrDefault(x => x.Type.Equals("emails"))!.Value,
-            User.Claims.FirstOrDefault(x => x.Type.Equals("name"))!.Value,
+            User.Claims.FirstOrDefault(x => x.Type.Equals("name"))!.Value ?? "Anonimo",
             User.Claims.FirstOrDefault(x => x.Type.Equals("jobTitle"))!.Value,
             int.Parse(User.Claims.FirstOrDefault(x => x.Type.Equals("exp"))!.Value)
         );
