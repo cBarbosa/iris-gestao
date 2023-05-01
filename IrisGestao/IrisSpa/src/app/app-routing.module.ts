@@ -86,6 +86,15 @@ const routes: Routes = [
 				},
 			},
 			{
+				path: 'expense',
+				loadChildren: () =>
+					import('./pages/expense/expense.module').then((m) => m.ExpenseModule),
+				canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
 				path: 'construction',
 				loadChildren: () =>
 					import('./pages/construction/construction.module').then(

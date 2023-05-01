@@ -1,0 +1,149 @@
+<form
+	[formGroup]="registerForm"
+	class="flex flex-col justify-between h-full"
+	(ngSubmit)="onSubmit($event)"
+>
+	<div class="field">
+		<label for="numeroFatura" class="block">Número da NF</label>
+		<input
+			id="numeroFatura"
+			type="text"
+			formControlName="numeroFatura"
+			aria-describedby="numeroFatura-help"
+			pInputText
+		/>
+		<ng-container *ngIf="checkHasError(f['numeroFatura'])">
+			<small
+				id="numeroFatura-help"
+				*ngIf="f['numeroFatura'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe o número da NF
+			</small>
+			<ng-template #error2>
+				<small id="numeroFatura-help" class="p-error block">
+					Número da NF inválido
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
+		<label for="dataEnvio" class="block">Data de envio da NF</label>
+		<p-calendar
+			id="dataEnvio"
+			formControlName="dataEnvio"
+			dateFormat="dd/mm/yy"
+			(onInput)="onInputDate($event)"
+			(onBlur)="onBlurDate()"
+			placeholder="dd/mm/aaaa"
+			aria-describedby="dataEnvio-help"
+			styleClass="small-picker"
+		></p-calendar>
+		<ng-container *ngIf="checkHasError(f['dataEnvio'])">
+			<small
+				id="dataEnvio-help"
+				*ngIf="f['dataEnvio'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe a data do pagamento
+			</small>
+			<ng-template #error2>
+				<small id="dataEnvio-help" class="p-error block">
+					Data do pagamento inválida
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
+		<label for="dataEmissao" class="block"> Data de emissão da NF </label>
+		<p-calendar
+			id="dataEmissao"
+			formControlName="dataEmissao"
+			dateFormat="dd/mm/yy"
+			(onInput)="onInputDate($event)"
+			(onBlur)="onBlurDate()"
+			placeholder="dd/mm/aaaa"
+			aria-describedby="dataEmissao-help"
+			styleClass="small-picker"
+		></p-calendar>
+		<ng-container *ngIf="checkHasError(f['dataEmissao'])">
+			<small
+				id="dataEmissao-help"
+				*ngIf="f['dataEmissao'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe a data de vencimento
+			</small>
+			<ng-template #error2>
+				<small id="dataEmissao-help" class="p-error block">
+					Data de vencimento inválida
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
+		<label for="anexoNf" class="block">Anexo da NF</label>
+		<app-file-upload
+			name="uploadDoc"
+			[fileLimit]="1"
+			(selectEvent)="onFileSelect($event)"
+			accept=".xls, .doc, .pdf, .xlsx, .docx"
+		></app-file-upload>
+		<ng-container *ngIf="checkHasError(f['anexoNf'])">
+			<small
+				id="anexoNf-help"
+				*ngIf="f['anexoNf'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe o anexo
+			</small>
+			<ng-template #error2>
+				<small id="anexoNf-help" class="p-error block"> Anexo inválido </small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="flex justify-between gap-4 pb-5">
+		<button
+			pButton
+			pRipple
+			type="button"
+			label="Cancelar"
+			class="p-button-outlined h-11 w-full"
+			(click)="cancelEdit()"
+		></button>
+
+		<button
+			pButton
+			pRipple
+			type="submit"
+			label="Confirmar Baixa"
+			class="h-11 w-full"
+		></button>
+	</div>
+</form>
+
+<app-responsive-dialog [visible]="displayModal" styleClass="form-modal">
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+
+		<button pButton label="Continuar" (click)="closeModal()"></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</app-responsive-dialog>

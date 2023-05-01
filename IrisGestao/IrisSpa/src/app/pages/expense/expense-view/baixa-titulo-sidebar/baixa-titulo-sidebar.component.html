@@ -1,0 +1,157 @@
+<form
+	[formGroup]="registerForm"
+	class="flex flex-col justify-between h-full"
+	(ngSubmit)="onSubmit($event)"
+>
+	<div class="field">
+		<label for="valorAluguel" class="block">Valor do aluguel pago</label>
+		<input
+			id="valorAluguel"
+			type="text"
+			formControlName="valorAluguel"
+			aria-describedby="valorAluguel-help"
+			currencyMask
+			pInputText
+		/>
+		<ng-container *ngIf="checkHasError(f['valorAluguel'])">
+			<small
+				id="valorAluguel-help"
+				*ngIf="f['valorAluguel'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe o valor do aluguel pago
+			</small>
+			<ng-template #error2>
+				<small id="valorAluguel-help" class="p-error block">
+					Valor do aluguel pago inválido
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
+		<label for="dataPagamento" class="block">Data do pagamento</label>
+		<p-calendar
+			id="dataPagamento"
+			formControlName="dataPagamento"
+			dateFormat="dd/mm/yy"
+			(onInput)="onInputDate($event)"
+			(onBlur)="onBlurDate()"
+			placeholder="dd/mm/aaaa"
+			aria-describedby="dataPagamento-help"
+			styleClass="small-picker"
+		></p-calendar>
+		<ng-container *ngIf="checkHasError(f['dataPagamento'])">
+			<small
+				id="dataPagamento-help"
+				*ngIf="f['dataPagamento'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe a data do pagamento
+			</small>
+			<ng-template #error2>
+				<small id="dataPagamento-help" class="p-error block">
+					Data do pagamento inválida
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
+		<label for="diasAtraso" class="block">Dias de atraso</label>
+		<input
+			id="diasAtraso"
+			type="text"
+			mask="0*"
+			[suffix]="f['diasAtraso'].value > 1 ? ' dias' : ' dia'"
+			formControlName="diasAtraso"
+			aria-describedby="diasAtraso-help"
+			pInputText
+		/>
+		<ng-container *ngIf="checkHasError(f['diasAtraso'])">
+			<small
+				id="diasAtraso-help"
+				*ngIf="f['diasAtraso'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe os dias de atraso
+			</small>
+			<ng-template #error2>
+				<small id="diasAtraso-help" class="p-error block">
+					Dias de atraso inválido
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="field">
+		<label for="dataVencimento" class="block"
+			>Data de Vencimento da Fatura</label
+		>
+		<p-calendar
+			id="dataVencimento"
+			formControlName="dataVencimento"
+			dateFormat="dd/mm/yy"
+			(onInput)="onInputDate($event)"
+			(onBlur)="onBlurDate()"
+			placeholder="dd/mm/aaaa"
+			aria-describedby="dataVencimento-help"
+			styleClass="small-picker"
+		></p-calendar>
+		<ng-container *ngIf="checkHasError(f['dataVencimento'])">
+			<small
+				id="dataVencimento-help"
+				*ngIf="f['dataVencimento'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe a data de vencimento
+			</small>
+			<ng-template #error2>
+				<small id="dataVencimento-help" class="p-error block">
+					Data de vencimento inválida
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+
+	<div class="flex justify-between gap-4 pb-5">
+		<button
+			pButton
+			pRipple
+			type="button"
+			label="Cancelar"
+			class="p-button-outlined h-11 w-full"
+			(click)="cancelEdit()"
+		></button>
+
+		<button
+			pButton
+			pRipple
+			type="submit"
+			label="Confirmar Baixa"
+			class="h-11 w-full"
+		></button>
+	</div>
+</form>
+
+<app-responsive-dialog [visible]="displayModal" styleClass="form-modal">
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+
+		<button pButton label="Continuar" (click)="closeModal()"></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</app-responsive-dialog>
