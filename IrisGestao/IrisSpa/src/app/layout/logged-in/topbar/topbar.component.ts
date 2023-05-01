@@ -86,6 +86,11 @@ export class TopbarComponent {
 						id: route.startsWith('/revenue/') ? 'current' : '',
 						command: () => this.navigateTo('revenue/listing'),
 					},
+					{
+						label: 'Despesas',
+						id: route.startsWith('/expense/') ? 'current' : '',
+						command: () => this.navigateTo('expense/listing'),
+					},
 				],
 			},
 			// {

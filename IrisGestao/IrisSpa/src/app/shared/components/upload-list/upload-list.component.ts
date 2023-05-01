@@ -48,30 +48,32 @@ export class UploadListComponent {
 		this.deletedAttachments.clear();
 		this.fileInput && (this.fileInput.nativeElement.value = '');
 
-		this.anexoService
-			.getFiles(this.guid)
-			.pipe(first())
-			.subscribe({
-				next: (event) => {
-					this.attachments =
-						event
-							?.filter(
-								({ classificacao }) =>
-									classificacao !== 'capa' && classificacao !== 'foto'
-							)
-							.map(({ nome, local, id }) => {
-								return {
-									fileName: nome,
-									fileLocation: local,
-									code: id,
-								};
-							}) ?? [];
-					console.debug('attachmentList', this.attachments);
-				},
-				error: (error) => {
-					console.error('Erro: ', error);
-				},
-			});
+		if (this.guid)
+			this.anexoService
+				.getFiles(this.guid)
+				.pipe(first())
+				.subscribe({
+					next: (event) => {
+						this.attachments =
+							event
+								?.filter(
+									({ classificacao }) =>
+										classificacao !== 'capa' && classificacao !== 'foto'
+								)
+								.map(({ nome, local, id }) => {
+									return {
+										fileName: nome,
+										fileLocation: local,
+										code: id,
+									};
+								}) ?? [];
+						console.debug('attachmentList', this.attachments);
+					},
+					error: (error) => {
+						console.error('Erro: ', error);
+					},
+				});
+		else this.attachments = [];
 	}
 
 	addAttachment(event: Event) {

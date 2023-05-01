@@ -1,0 +1,205 @@
+<div class="header-background"></div>
+<div class="content-wrapper">
+	<div class="content">
+		<header class="list-header">
+			<div class="flex justify-between items-center" [class.mb-2]="isMobile">
+				<h3 class="text-2xl font-bold">
+					Despesas
+					<span class="ml-2 text-sm">{{ totalExpenseCount }}</span>
+				</h3>
+				<button
+					pButton
+					pRipple
+					type="button"
+					icon="pi pi-sliders-h"
+					class="p-button-rounded p-button-text white-theme"
+					*ngIf="isMobile"
+					(click)="openFilters()"
+				></button>
+			</div>
+
+			<div class="options">
+				<ng-container *ngIf="!isMobile">
+					<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+				</ng-container>
+
+				<button
+					pButton
+					type="button"
+					class="p-button-outlined h-9 white-theme addButton"
+					(click)="navigateTo('expense/register')"
+				>
+					<i class="pi pi-plus pr-2"></i>
+					Nova Despesa
+				</button>
+			</div>
+		</header>
+
+		<ng-template #filtersTemplate>
+			<span class="p-input-icon-left w-full md:w-52">
+				<i class="pi pi-search"></i>
+				<input
+					pInputText
+					class="w-full md:w-52"
+					[class.white-theme]="!isMobile"
+					[(ngModel)]="filterTitulo"
+					(ngModelChange)="filterExpensesDebounce($event)"
+					type="text"
+					placeholder="Buscar por título"
+				/>
+			</span>
+
+			<!-- <p-dropdown
+				[styleClass]="'w-full md:w-[8rem]' + (isMobile ? '' : ' white-theme')"
+				placeholder="Locatário"
+				[options]="opcoesLocatario"
+				[(ngModel)]="filterLocatario"
+				(ngModelChange)="filterExpensesDebounce($event)"
+			></p-dropdown> -->
+
+			<p-dropdown
+				[styleClass]="
+					'w-full md:w-[12.6rem]' + (isMobile ? '' : ' white-theme')
+				"
+				placeholder="Tipo de Recebimento"
+				[options]="opcoesTipo"
+				[(ngModel)]="filterTipo"
+				(ngModelChange)="filterExpensesDebounce($event)"
+			></p-dropdown>
+		</ng-template>
+
+		<ng-container>
+			<ng-container *ngIf="isLoadingExpenses">
+				<app-spinner styleClass="mt-11"></app-spinner>
+			</ng-container>
+			<ng-container *ngIf="!isLoadingExpenses && noRestults">
+				<div class="no-results-warn">
+					<span>Nenhum resultado</span>
+				</div>
+			</ng-container>
+
+			<p-table
+				*ngIf="!isMobile"
+				[value]="expenseEntries"
+				styleClass="p-datatable-striped"
+				[tableStyle]="{ 'min-width': '50rem' }"
+				[paginator]="!noRestults && !isLoadingExpenses"
+				[rows]="rows"
+				[(first)]="first"
+				responsiveLayout="scroll"
+				[totalRecords]="totalExpenseCount"
+				[lazy]="true"
+				(onLazyLoad)="loadExpensesPage($event)"
+			>
+				<ng-template pTemplate="header">
+					<tr *ngIf="!isLoadingExpenses && !noRestults">
+						<th>Nome</th>
+						<th>Imóvel</th>
+						<th>Locador</th>
+						<th>Valor</th>
+						<th>Tipo de documento</th>
+						<th>Data Pagamento/Vencimento</th>
+						<th></th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-expense>
+					<tr>
+						<td class="font-bold">{{ expense.nomeTitulo }}</td>
+						<td>{{ expense.imovel }}</td>
+						<td>{{ expense.locador }}</td>
+						<td>{{ expense.valor | currency }}</td>
+						<td>{{ expense.tipoDocumento }}</td>
+						<td>
+							{{
+								expense.dataPagamento
+									? (expense.dataPagamento | date : "shortDate")
+									: "-"
+							}}
+						</td>
+						<td class="action min-w-[10rem]">
+							<button
+								pButton
+								type="button"
+								class="p-button-text h-7 text-center"
+								(click)="
+									navigateTo('expense/details/' + expense.guidReferencia)
+								"
+							>
+								Ver detalhes
+							</button>
+						</td>
+					</tr>
+				</ng-template>
+			</p-table>
+
+			<ng-container *ngIf="isMobile">
+				<div class="cardList">
+					<ng-container *ngFor="let expense of expenseEntries">
+						<app-card-item
+							[card]="{
+								infos: [
+									{
+										label: 'Tipo de recebimento',
+										data: expense.tipoRecebimento
+									},
+									{
+										label: 'Imóvel',
+										data: expense.imovel
+									},
+									{
+										label: 'Número do Título',
+										data: expense.numeroTitulo
+									},
+									{
+										label: 'Locatário',
+										data: expense.locatario
+									},
+									{
+										label: 'Valor',
+										data: expense.valor,
+										pipe: cardPipes['currency']
+									},
+									{
+										label: 'Data Pagamento/Vencimento',
+										data: expense.dataPagamento,
+										pipe: cardPipes['date']
+									}
+								]
+							}"
+						>
+							<button
+								pButton
+								type="button"
+								class="p-button-text h-7 font-bold"
+								(click)="
+									navigateTo('expense/details/' + expense.guidReferencia)
+								"
+							>
+								Ver detalhes
+							</button>
+						</app-card-item>
+					</ng-container>
+
+					<div class="mx-5 mt-5">
+						<button
+							pButton
+							type="button"
+							class="p-button-outlined h-9 justify-center w-full"
+							(click)="loadExpenseEntries()"
+							*ngIf="expenseEntries.length < totalExpenseCount"
+						>
+							Carregar mais
+						</button>
+					</div>
+				</div>
+			</ng-container>
+		</ng-container>
+	</div>
+</div>
+
+<p-sidebar [(visible)]="displayMobileFilters" position="bottom">
+	<ng-template pTemplate="header">Filtros</ng-template>
+	<ng-template pTemplate="content">
+		<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+	</ng-template>
+</p-sidebar>
