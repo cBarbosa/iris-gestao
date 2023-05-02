@@ -2,5 +2,5 @@
 
 public static class TipoTituloReceberEnum
 {
-    public static int ALUGUEL = 2;
+    public static int ALUGUEL = 1;
 }
