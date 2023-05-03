@@ -56,11 +56,11 @@ export class TopbarComponent {
 			{
 				label: 'Contratos',
 				items: [
-					{
-						label: 'Contrato de aluguel',
-						id: route.startsWith('/rent-contract/') ? 'current' : '',
-						command: () => this.navigateTo('rent-contract/listing'),
-					},
+					// {
+					// 	label: 'Contrato de aluguel',
+					// 	id: route.startsWith('/rent-contract/') ? 'current' : '',
+					// 	command: () => this.navigateTo('rent-contract/listing'),
+					// },
 					{
 						label: 'Contrato de fornecedor',
 						id: route.startsWith('/supplier-contract/') ? 'current' : '',
@@ -68,26 +68,26 @@ export class TopbarComponent {
 					},
 				],
 			},
-			{
-				label: 'Gerenciamento de obras',
-				id: route.startsWith('/construction/') ? 'current' : '',
-				command: () => this.navigateTo('construction/listing'),
-			},
+			// {
+			// 	label: 'Gerenciamento de obras',
+			// 	id: route.startsWith('/construction/') ? 'current' : '',
+			// 	command: () => this.navigateTo('construction/listing'),
+			// },
 			{
 				label: 'Fornecedores',
 				id: route.startsWith('/supplier/') ? 'current' : '',
 				command: () => this.navigateTo('supplier/listing'),
 			},
-			{
-				label: 'Financeiro',
-				items: [
-					{
-						label: 'Receitas',
-						id: route.startsWith('/revenue/') ? 'current' : '',
-						command: () => this.navigateTo('revenue/listing'),
-					},
-				],
-			},
+			// {
+			// 	label: 'Financeiro',
+			// 	items: [
+			// 		{
+			// 			label: 'Receitas',
+			// 			id: route.startsWith('/revenue/') ? 'current' : '',
+			// 			command: () => this.navigateTo('revenue/listing'),
+			// 		},
+			// 	],
+			// },
 			// {
 			// 	label: 'Prestador de serviços',
 			// },
