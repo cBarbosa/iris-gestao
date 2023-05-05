@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
-import { DominiosService } from 'src/app/shared/services';
+import { ClienteService, DominiosService } from 'src/app/shared/services';
 import { RevenueService } from 'src/app/shared/services/revenue.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -27,6 +27,7 @@ export class RevenueEditComponent {
 	editForm: FormGroup;
 
 	revenueGuid: string;
+	revenue: any;
 	isLoading = false;
 	invalidGuid = false;
 
@@ -86,7 +87,8 @@ export class RevenueEditComponent {
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private revenueService: RevenueService,
-		private dominiosService: DominiosService
+		private dominiosService: DominiosService,
+		private clienteService: ClienteService
 	) {}
 
 	ngOnInit() {
@@ -123,6 +125,8 @@ export class RevenueEditComponent {
 					const data = event.data[0];
 					console.log(data);
 
+					this.revenue = data;
+
 					this.imovel.nome = data.imoveis[0].nome;
 					const { rua, bairro, cidade, uf } = data.imoveis[0].imovelEndereco[0];
 					this.imovel.endereco = `${rua}, ${bairro}, ${cidade} - ${uf}`;
@@ -132,7 +136,7 @@ export class RevenueEditComponent {
 						numeroTitulo: data.numeroTitulo,
 						planoContas: +data.tipoTituloReceber?.id ?? null,
 						creditarPara: +data.creditoAluguel?.id ?? null,
-						nomeLocador: data.cliente?.nome ?? null,
+						nomeLocador: data.cliente.guidReferencia ?? null,
 						formaPagamento: +data.formaPagamento?.id ?? null,
 						dataVencimento: data.dataVencimentoPrimeraParcela
 							? new Date(data.dataVencimentoPrimeraParcela)
@@ -167,14 +171,14 @@ export class RevenueEditComponent {
 					// 	valorPagar: [data.valorTitulo, Validators.required],
 					// });
 
-					setTimeout(() => {
-						this.editForm.patchValue({
-							planoContas: +data.tipoTituloReceber?.id ?? null,
-							creditarPara: +data.creditoAluguel?.id ?? null,
-							nomeLocador: data.cliente?.nome ?? null,
-							formaPagamento: +data.formaPagamento?.id ?? null,
-						});
-					}, 40);
+					// setTimeout(() => {
+					// 	this.editForm.patchValue({
+					// 		planoContas: +data.tipoTituloReceber?.id ?? null,
+					// 		creditarPara: +data.creditoAluguel?.id ?? null,
+					// 		nomeLocador: data.cliente?.nome ?? null,
+					// 		formaPagamento: +data.formaPagamento?.id ?? null,
+					// 	});
+					// }, 40);
 				} else {
 					this.invalidGuid = true;
 				}
@@ -195,6 +199,9 @@ export class RevenueEditComponent {
 								};
 							})
 						);
+						this.f['planoContas'].setValue(
+							+this.revenue?.tipoTituloReceber?.id ?? null
+						);
 					} else console.error(e.message);
 				},
 				error: (err) => {
@@ -213,6 +220,9 @@ export class RevenueEditComponent {
 							value: forma.id,
 						});
 					});
+					this.f['creditarPara'].setValue(
+						+this.revenue?.creditoAluguel?.id ?? null
+					);
 				},
 				error: (err) => {
 					console.error(err);
@@ -230,6 +240,28 @@ export class RevenueEditComponent {
 							value: forma.id,
 						});
 					});
+					this.f['formaPagamento'].setValue(
+						+this.revenue?.formaPagamento?.id ?? null
+					);
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+
+		this.clienteService
+			.getListaProprietarios()
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					response?.data.forEach((forma: any) => {
+						this.opcoesNomeLocador.push({
+							label: forma.nome,
+							value: forma.guidReferencia,
+						});
+					});
+					this.f['nomeLocador'].setValue(this.revenue?.cliente.guidReferencia);
+					console.log('>>>>>>>>>', this.revenue?.cliente.guidReferencia);
 				},
 				error: (err) => {
 					console.error(err);
