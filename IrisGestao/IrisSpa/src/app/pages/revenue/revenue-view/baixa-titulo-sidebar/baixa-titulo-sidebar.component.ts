@@ -79,6 +79,13 @@ export class BaixaTituloSidebarComponent {
 
 	registerForm: FormGroup;
 
+	requestObj: {
+		dataVencimento: string;
+		dataPagamento: string;
+		valorRealPago: number;
+		DescricaoBaixaFatura: string;
+	} | null = null;
+
 	onInputDate: Function;
 	onBlurDate: Function;
 
@@ -133,8 +140,14 @@ export class BaixaTituloSidebarComponent {
 		const diasAtraso = dateDiff && dateDiff < 0 ? dateDiff : '0';
 
 		this.registerForm = this.fb.group({
-			numeroFatura: [{ value: this.data?.numeroFatura ?? null, disabled: true}, Validators.required],
-			dataVencimento: [{ value: this.data?.dataVencimento ?? null, disabled: true}, Validators.required],
+			numeroFatura: [
+				{ value: this.data?.numeroFatura ?? null, disabled: true },
+				Validators.required,
+			],
+			dataVencimento: [
+				{ value: this.data?.dataVencimento ?? null, disabled: true },
+				Validators.required,
+			],
 			valorTotal: [
 				{ value: this.data?.valorTotal ?? '', disabled: true },
 				Validators.required,
@@ -173,7 +186,7 @@ export class BaixaTituloSidebarComponent {
 
 		const editFormData = this.registerForm.getRawValue();
 
-		const baixaObj = {
+		this.requestObj = {
 			dataVencimento: editFormData.dataVencimento
 				? editFormData.dataVencimento.toISOString()
 				: '',
@@ -184,22 +197,21 @@ export class BaixaTituloSidebarComponent {
 			DescricaoBaixaFatura: editFormData.observacoes,
 		};
 
-		console.log('on register', baixaObj);
+		console.log('on register', this.requestObj);
 
 		// if (this.onSubmitForm) this.onSubmitForm(contactObj);
 
 		if (this.registerOnSubmit && this.guidRevenue)
-			this.registerInvoice(baixaObj)
+			this.registerInvoice(this.requestObj)
 				.then(() => {
 					this.openModal();
-					if (this.onSubmitForm) this.onSubmitForm(baixaObj);
 				})
 				.catch((err) => {
 					this.openModal();
 					console.error(err);
 				});
 		else {
-			if (this.onSubmitForm) this.onSubmitForm(baixaObj);
+			if (this.onSubmitForm) this.onSubmitForm(this.requestObj);
 		}
 	}
 
@@ -227,11 +239,14 @@ export class BaixaTituloSidebarComponent {
 
 							formData.append('files', this.selectedFile);
 
-							this.anexoService.registerFile(
-								response.data.guidReferencia,
-								formData,
-								'outrosdocs'
-							);
+							this.anexoService
+								.registerFile(
+									response.data.guidReferencia,
+									formData,
+									'outrosdocs'
+								)
+								.pipe(first())
+								.subscribe();
 						} else {
 							this.modalContent = {
 								header: 'Cadastro não realizado',
@@ -257,12 +272,14 @@ export class BaixaTituloSidebarComponent {
 		this.displayModal = true;
 	}
 
-	closeModal() {
+	closeModal(success = false) {
 		this.displayModal = false;
+		if (success && this.onSubmitForm) this.onSubmitForm(this.requestObj);
 	}
 
 	onFileSelect(e: any) {
 		this.selectedFile = e[0];
+		console.log('selecting on sidebar', this.selectedFile);
 	}
 
 	cancelEdit() {

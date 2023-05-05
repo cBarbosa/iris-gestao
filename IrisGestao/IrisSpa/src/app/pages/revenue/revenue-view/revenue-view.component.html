@@ -280,58 +280,59 @@
 	<ng-template pTemplate="header">
 		<h2 class="text-xl font-bold">Detalhes da Baixa da Fatura</h2>
 	</ng-template>
-	<app-detail-sidebar
-		[data]="[
-			{
-				label: 'Número da fatura',
-				data: faturaSelected?.numeroFatura,
-				span: true
-			},
-			{
-				label: 'Valor',
-				data: faturaSelected?.valorRealPago,
-				pipe: cardPipes['currency']
-			},
-			{
-				label: 'Dias de atraso',
-				data: faturaSelected?.diasAtraso
-					? (faturaSelected?.diasAtraso > 1
-							? faturaSelected?.diasAtraso + ' dias'
-							: faturaSelected?.diasAtraso) + ' dia'
-					: '0 dia',
-				span: true
-			},
-			{
-				label: '% de impostos retidos',
-				data: 0,
-				pipe: cardPipes['percent']
-			},
-			{
-				label: 'Valor líquido',
-				data: faturaSelected?.valorFatura,
-				pipe: cardPipes['currency']
-			},
-			{
-				label: 'Vencimento',
-				data: faturaSelected?.dataVencimento,
-				pipe: cardPipes['date']
-			},
-			{
-				label: 'Data de pagamento',
-				data: faturaSelected?.dataPagamento,
-				pipe: cardPipes['date']
-			}
-		]"
-	></app-detail-sidebar>
+	<ng-template pTemplate="content">
+		<app-detail-sidebar
+			[data]="[
+				{
+					label: 'Número da fatura',
+					data: faturaSelected?.numeroFatura,
+					span: true
+				},
+				{
+					label: 'Valor',
+					data: faturaSelected?.valorRealPago,
+					pipe: cardPipes['currency']
+				},
+				{
+					label: 'Dias de atraso',
+					data: faturaSelected?.diasAtraso
+						? (faturaSelected?.diasAtraso > 1
+								? faturaSelected?.diasAtraso + ' dias'
+								: faturaSelected?.diasAtraso) + ' dia'
+						: '0 dia',
+					span: true
+				},
+				{
+					label: '% de impostos retidos',
+					data: 0,
+					pipe: cardPipes['percent']
+				},
+				{
+					label: 'Valor líquido',
+					data: faturaSelected?.valorFatura,
+					pipe: cardPipes['currency']
+				},
+				{
+					label: 'Vencimento',
+					data: faturaSelected?.dataVencimento,
+					pipe: cardPipes['date']
+				},
+				{
+					label: 'Data de pagamento',
+					data: faturaSelected?.dataPagamento,
+					pipe: cardPipes['date']
+				}
+			]"
+		></app-detail-sidebar>
 
-	<h3 class="mt-3 font-bold">Anexo nota fiscal</h3>
+		<h3 class="mt-3 font-bold">Anexo nota fiscal</h3>
 
-	<div class="document-list">
-		<app-upload-list
-			[guid]="faturaSelected?.guidReferencia"
-			[editable]="false"
-		></app-upload-list>
-		<!-- <div class="document file" [class.empty]="!faturaSelected?.nfFile">
+		<div class="document-list">
+			<app-upload-list
+				[guid]="faturaSelected?.guidReferencia"
+				[editable]="false"
+			></app-upload-list>
+			<!-- <div class="document file" [class.empty]="!faturaSelected?.nfFile">
 			<span>{{ faturaSelected?.nfFile.name }}</span>
 			<span class="buttons">
 				<button
@@ -349,15 +350,16 @@
 				</button>
 			</span>
 		</div> -->
-	</div>
+		</div>
 
-	<button
-		pButton
-		class="p-button-outlined w-full h-10 justify-center"
-		(click)="hideDetalheBaixa()"
-	>
-		Fechar
-	</button>
+		<button
+			pButton
+			class="p-button-outlined w-full h-10 justify-center"
+			(click)="hideDetalheBaixa()"
+		>
+			Fechar
+		</button>
+	</ng-template>
 </p-sidebar>
 
 <p-sidebar [(visible)]="baixaTituloVisible" position="right">
