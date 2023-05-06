@@ -56,7 +56,6 @@ export class LinkPropertyComponent {
 
 	propertyAddForm: FormGroup;
 
-	//linkedProperties: LinkedProperty[] = [];
 	linkedPropertiesInvalid = false;
 	editingLinkedProperty: string | null = null;
 	propertyAddVisible = false;
@@ -68,6 +67,7 @@ export class LinkPropertyComponent {
 			disabled: true,
 		},
 	];
+	buildingsList: DropdownItem[] = [];
 
 	units: DropdownItem[] = [];
 
@@ -93,6 +93,8 @@ export class LinkPropertyComponent {
 						units: item.unidade,
 					});
 				});
+				console.log(this.buildings);
+				this.setBuildingsList();
 			}
 		});
 	}
@@ -105,13 +107,26 @@ export class LinkPropertyComponent {
 		return Utils.checkHasError(c);
 	}
 
-	get buildingsList() {
-		return this.buildings.filter((building) => {
+	// get buildingsList() {
+	// 	const buildingList = this.buildings.filter((building) => {
+	// 		if (this.editingLinkedProperty === building.value?.guid) return true;
+	// 		return !this.linkedProperties.some((linked) => {
+	// 			return building.value?.guid === linked.guid;
+	// 		});
+	// 	});
+	// 	console.log('>>>', buildingList);
+	// 	return buildingList;
+	// }
+
+	setBuildingsList() {
+		const list = this.buildings.filter((building) => {
 			if (this.editingLinkedProperty === building.value?.guid) return true;
 			return !this.linkedProperties.some((linked) => {
 				return building.value?.guid === linked.guid;
 			});
 		});
+		this.buildingsList = list;
+		return list;
 	}
 
 	onProprietarySubmit(e: any = null) {
@@ -198,10 +213,17 @@ export class LinkPropertyComponent {
 	removeLinkedProperty(guid: string) {
 		const index = this.linkedProperties.findIndex((p) => p.guid === guid);
 
-		this.linkedProperties.splice(index, 1);
+		const linked = [...this.linkedProperties];
+
+		linked.splice(index, 1);
+
+		this.selectEvent.emit(linked);
+
+		this.linkedProperties = linked;
+
 		this.updateLinkedPropertiesValidity();
 
-		this.selectEvent.emit(this.linkedProperties);
+		console.log('linked', this.linkedProperties);
 	}
 
 	editLinkedProperty(property: any) {

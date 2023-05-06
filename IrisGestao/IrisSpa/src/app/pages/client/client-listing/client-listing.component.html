@@ -5,14 +5,14 @@
 			<div class="flex justify-between items-center" [class.mb-2]="isMobile">
 				<h3 class="text-2xl font-bold">
 					Clientes
-					<span class="ml-2 text-sm">{{ totalClientCount }}</span>
+					<span class="ml-2 text-sm text-slate-600">{{ totalClientCount }}</span>
 				</h3>
 				<button
 					pButton
 					pRipple
 					type="button"
 					icon="pi pi-sliders-h"
-					class="p-button-rounded p-button-text white-theme"
+					class="p-button-rounded p-button-text"
 					*ngIf="isMobile"
 					(click)="openFilters()"
 				></button>
@@ -26,7 +26,7 @@
 				<button
 					pButton
 					type="button"
-					class="p-button-outlined h-9 white-theme addButton"
+					class="p-button-outlined h-9 addButton"
 					(click)="navigateTo('client/register/new')"
 				>
 					<i class="pi pi-plus mr-3"></i>

@@ -123,8 +123,18 @@ export class RevenueViewComponent {
 		this.detalheBaixaVisible = false;
 	};
 
-	hideBaixaTitulo = () => {
+	hideBaixaTitulo = (returnValue: any) => {
 		this.baixaTituloVisible = false;
+
+		if (returnValue !== undefined) {
+			const updated = this.revenue.faturas.find((fatura: any) => {
+				return fatura.guidReferencia === this.faturaSelected.guidReferencia;
+			});
+			updated.dataPagamento = returnValue.dataPagamento;
+			updated.dataVencimento = returnValue.dataVencimento;
+			updated.valorRealPago = updated.valorFatura;
+			updated.statusFatura = 'Pago';
+		}
 	};
 
 	toggleDetalheBaixa() {

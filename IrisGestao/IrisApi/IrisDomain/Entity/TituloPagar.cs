@@ -77,16 +77,16 @@ public partial class TituloPagar : BaseEntity<TituloPagar>
 
     [ForeignKey("IdIndiceReajuste")]
     [InverseProperty("TituloPagar")]
-    public virtual IndiceReajuste IdIndiceReajusteNavigation { get; set; } = null!;
+    public virtual IndiceReajuste? IdIndiceReajusteNavigation { get; set; } = null!;
 
     [ForeignKey("IdTipoCreditoAluguel")]
     [InverseProperty("TituloPagar")]
-    public virtual TipoCreditoAluguel IdTipoCreditoAluguelNavigation { get; set; } = null!;
+    public virtual TipoCreditoAluguel? IdTipoCreditoAluguelNavigation { get; set; } = null!;
 
     [InverseProperty("IdTituloPagarNavigation")]
     public virtual ICollection<TituloImovel> TituloImovel { get; } = new List<TituloImovel>();
 
     [ForeignKey("IdFormaPagamento")]
     [InverseProperty("TituloPagar")]
-    public virtual FormaPagamento IdFormaPagamentoNavigation { get; set; } = null!;
+    public virtual FormaPagamento? IdFormaPagamentoNavigation { get; set; } = null!;
 }
