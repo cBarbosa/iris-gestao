@@ -65,6 +65,7 @@ export class SupplierContractRegisterComponent {
 	displayModal = false;
 	modalContent: {
 		isError?: boolean;
+		isWarn?: boolean;
 		header?: string;
 		message: string;
 	} = {
@@ -497,30 +498,55 @@ export class SupplierContractRegisterComponent {
 			this.attachments.forEach((file) => {
 				formData.append('files', file);
 			});
-			this.anexoService.registerFile(guid, formData, 'outrosdocs').subscribe();
+
+			return new Promise((res, rej) => {
+				this.anexoService
+					.registerFile(guid, formData, 'outrosdocs')
+					.pipe(first())
+					.subscribe({
+						next: (response) => {
+							if (response.success) {
+								res(response);
+							} else {
+								rej(response);
+							}
+						},
+						error: (err) => {
+							rej({ message: 'Não foi possível enviar os arquivos de anexo.' });
+						},
+					});
+			});
 		};
 
 		this.contractService
 			.registerContract(contractObj)
 			.pipe(first())
 			.subscribe({
-				next: (response: any) => {
+				next: (response) => {
 					if (response.success) {
-						registerAttachments(response.data.guidReferencia);
-
-						this.modalContent = {
-							header: 'Cadastro realizado com sucesso',
-							message: response.message,
-						};
+						registerAttachments(response.data.guidReferencia)
+							.then((attachmentResponse) => {
+								this.modalContent = {
+									header: 'Cadastro realizado com sucesso',
+									message: response.message ?? '',
+								};
+							})
+							.catch((attachmentError) => {
+								this.modalContent = {
+									header: 'Cadastro realizado parcialmente',
+									message: attachmentError.message ?? '',
+									isWarn: true,
+								};
+							})
+							.finally(() => this.openModal());
 					} else {
 						this.modalContent = {
 							header: 'Cadastro não realizado',
-							message: response.message,
+							message: response.message ?? '',
 							isError: true,
 						};
+						this.openModal();
 					}
-
-					this.openModal();
 				},
 				error: (error: any) => {
 					console.error(error);

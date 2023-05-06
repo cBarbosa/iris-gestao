@@ -4,7 +4,7 @@
 	[modal]="true"
 	[draggable]="false"
 	[resizable]="false"
-	[styleClass]="styleClass"
+	[styleClass]="'responsive-dialog ' + styleClass"
 	*ngIf="!isMobile"
 >
 	<ng-container *ngTemplateOutlet="content"></ng-container>
@@ -14,7 +14,7 @@
 	[(visible)]="visible"
 	(onHide)="emitVisibleChange(false)"
 	position="bottom"
-	[styleClass]="styleClass"
+	[styleClass]="'responsive-dialog ' + styleClass"
 	*ngIf="isMobile"
 >
 	<ng-template pTemplate="content">

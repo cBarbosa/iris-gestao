@@ -182,18 +182,18 @@ export class SupplierRegisterComponent implements OnInit {
 				Telefone: ['', [Validators.required]],
 			}),
 			addressInfo: this.fb.group({
-				Endereco: [''],
-				Bairro: [''],
-				Cidade: [''],
+				Endereco: ['', Validators.maxLength(100)],
+				Bairro: ['', Validators.maxLength(50)],
+				Cidade: ['', Validators.maxLength(50)],
 				Estado: [''],
 				Cep: ['', Validators.required],
 			}),
 			bankInfo: this.fb.group({
 				IdBanco: [''],
-				Agencia: [''],
-				Conta: [''],
-				Operacao: [''],
-				ChavePix: [''],
+				Agencia: ['', Validators.maxLength(5)],
+				Conta: ['', Validators.maxLength(9)],
+				Operacao: ['', Validators.maxLength(4)],
+				ChavePix: ['', Validators.maxLength(60)],
 			}),
 		});
 	};

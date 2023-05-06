@@ -15,7 +15,8 @@
 	.topbar {
 		.hamburger {
 			> span {
-				color: #641b1e;
+				// color: #641b1e;
+				color: #ffffff;
 			}
 		}
 	}
@@ -33,6 +34,8 @@
 			justify-content: start;
 			max-width: 1440px;
 			border: none;
+			background-color: #6b7c36;
+			border-radius: 0;
 
 			.p-element {
 				height: 100%;
@@ -45,7 +48,7 @@
 						@apply text-sm;
 						height: 100%;
 						margin-bottom: -1px;
-						color: #262626;
+						color: #ffffff;
 
 						.p-menuitem-link {
 							--tw-ring-color: rgba(0, 0, 0, 0.05);
@@ -58,14 +61,16 @@
 
 							.p-menuitem-text {
 								@apply font-medium;
+								color: #ffffff;
 							}
 
 							.p-submenu-icon {
 								position: relative;
 								font-size: 0.6rem;
 								margin-top: 0.2rem;
-								top: 25%;
-								color: #6c757d;
+								top: 2px;
+								// color: #6c757d;
+								color: #ffffff;
 							}
 
 							&#current {
@@ -79,20 +84,24 @@
 							&:focus-visible,
 							&#current {
 								background-color: transparent;
-								border-bottom: 2px solid var(--dark-red);
+								// border-bottom: 2px solid var(--dark-red);
+								border-bottom: 2px solid #47591b;
 
 								.p-submenu-icon {
-									color: #6c757d;
+									// color: #6c757d;
+									color: #ffffff;
 								}
 							}
 						}
 
 						&.p-menuitem-active {
 							.p-menuitem-link {
-								border-bottom: 2px solid var(--dark-red);
+								// border-bottom: 2px solid var(--dark-red);
+								border-bottom: 2px solid #47591b;
 
-								.p-menuitem-text {
-									color: #262626;
+								> .p-menuitem-text {
+									// color: #262626;
+									color: #ffffff;
 								}
 							}
 						}
@@ -104,6 +113,10 @@
 							.p-menuitem {
 								.p-menuitem-link {
 									border-bottom: none;
+
+									> .p-menuitem-text {
+										color: #262626;
+									}
 
 									&:hover {
 										background-color: rgba(0, 0, 0, 0.05);
