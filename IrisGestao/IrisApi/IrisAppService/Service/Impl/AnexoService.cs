@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Web;
 using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.ApplicationService.Services.Interface;
 using IrisGestao.Domain.Command.Request;
@@ -62,6 +63,7 @@ public class AnexoService: IAnexoService
     public async Task<CommandResult> Insert(CriarAnexoCommand cmd)
     {
         #region valida extensões
+        string pattern = @"(?i)[^0-9a-záéíóúàèìòùâêîôûãõç\\s]";
         string[] fotoExtensoes = {".png", ".jpg", ".jpeg", ".svn", ".gif"};
         string[] documentoExtensoes = {".xls", ".doc", ".pdf", ".xlsx", ".docx", ".dwg"};
 
@@ -89,9 +91,12 @@ public class AnexoService: IAnexoService
         IList<string> azureFiles = new List<string>();
         foreach (var file in cmd.Images)
         {
+            file.ImageName = 
+                Regex.Replace(file.ImageName!, pattern, string.Empty);
+            
             var fileUri =
                 await azureStorageService.UploadBase64data(file.ImageBinary!,
-                    file.ImageName!,
+                    file.ImageName,
                     $"{cmd.IdReferencia}",
                     "assets");
 
@@ -147,7 +152,6 @@ public class AnexoService: IAnexoService
         }
     }
 
-
     public async Task<CommandResult> Delete(int codigo)
     {
         try
@@ -158,7 +162,7 @@ public class AnexoService: IAnexoService
             {
                 return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
             }
-            
+
             var result = await azureStorageService.DeleteBlobFile(
                 anexo.Nome,
                 $"{anexo.GuidReferencia}",

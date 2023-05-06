@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using System.Web;
+using Azure.Storage.Blobs;
 using IrisGestao.ApplicationService.Services.Interface;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
@@ -56,11 +57,9 @@ public class AzureStorageService: IAzureStorageService
     {
         try
         {
-            var blobClient = new BlobClient(
-                blobAzureStorageConnectionString
-                , container
-                , $"{environment}/{originFolder}/{fileName}");
-
+            var blobClient = blobServiceClient.GetBlobContainerClient(container);
+            blobClient.GetBlobClient($"{environment}/{originFolder}/{fileName}");
+            
             return await blobClient.DeleteIfExistsAsync();
         }
         catch (Exception e)
