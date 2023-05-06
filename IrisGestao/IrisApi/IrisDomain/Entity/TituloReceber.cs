@@ -22,7 +22,7 @@ public partial class TituloReceber : BaseEntity<TituloReceber>
 
     public int IdTipoTitulo { get; set; }
 
-    public int? IdContratoAluguel { get; set; }
+    public int? IdContratoAluguel { get; set; } = null!;
 
     public int? IdCliente { get; set; }
 
@@ -65,7 +65,7 @@ public partial class TituloReceber : BaseEntity<TituloReceber>
 
     [ForeignKey("IdTipoTitulo")]
     [InverseProperty("TituloReceber")]
-    public virtual TipoTitulo IdTipoTituloNavigation { get; set; } = null!;
+    public virtual TipoTitulo? IdTipoTituloNavigation { get; set; } = null!;
 
     [ForeignKey("IdContratoAluguel")]
     [InverseProperty("TituloReceber")]
@@ -77,7 +77,7 @@ public partial class TituloReceber : BaseEntity<TituloReceber>
 
     [ForeignKey("IdIndiceReajuste")]
     [InverseProperty("TituloReceber")]
-    public virtual IndiceReajuste IdIndiceReajusteNavigation { get; set; } = null!;
+    public virtual IndiceReajuste? IdIndiceReajusteNavigation { get; set; } = null!;
 
     [ForeignKey("IdTipoCreditoAluguel")]
     [InverseProperty("TituloReceber")]
@@ -88,5 +88,5 @@ public partial class TituloReceber : BaseEntity<TituloReceber>
 
     [ForeignKey("IdFormaPagamento")]
     [InverseProperty("TituloReceber")]
-    public virtual FormaPagamento IdFormaPagamentoNavigation { get; set; } = null!;
+    public virtual FormaPagamento? IdFormaPagamentoNavigation { get; set; } = null!;
 }
