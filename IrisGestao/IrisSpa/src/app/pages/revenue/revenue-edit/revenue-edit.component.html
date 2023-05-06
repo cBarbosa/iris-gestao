@@ -16,48 +16,48 @@
 
 <ng-template #content>
 	<div class="edit-form">
-		<h1 class="text-2xl font-bold mb-6">Editar Receita</h1>
+		<form [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
+			<h1 class="text-2xl font-bold mb-6">Editar Receita</h1>
 
-		<div class="input-wrapper">
-			<section class="revenue-data">
-				<h4>Edifício do contrato</h4>
+			<div class="input-wrapper">
+				<section class="revenue-data">
+					<h4>Edifício do contrato</h4>
 
-				<div class="field">
-					<label for="name" class="block">Tipo do imóvel</label>
-					<input
-						id="name"
-						type="text"
-						[value]="imovel.tipo"
-						aria-describedby="name-help"
-						maxlength="100"
-						pInputText
-						[disabled]="true"
-					/>
-				</div>
+					<div class="field">
+						<label for="name" class="block">Tipo do imóvel</label>
+						<input
+							id="name"
+							type="text"
+							[value]="imovel.tipo"
+							aria-describedby="name-help"
+							maxlength="100"
+							pInputText
+							[disabled]="true"
+						/>
+					</div>
 
-				<div class="field">
-					<label for="name" class="block">Edifício</label>
-					<input
-						id="name"
-						type="text"
-						[value]="imovel.nome"
-						aria-describedby="name-help"
-						maxlength="100"
-						pInputText
-						[disabled]="true"
-					/>
-				</div>
+					<div class="field">
+						<label for="name" class="block">Edifício</label>
+						<input
+							id="name"
+							type="text"
+							[value]="imovel.nome"
+							aria-describedby="name-help"
+							maxlength="100"
+							pInputText
+							[disabled]="true"
+						/>
+					</div>
 
-				<div class="photo-input">
-					<img src="../../../../assets/images/imovel.png" alt="edit-photo" />
-				</div>
+					<div class="photo-input">
+						<img src="../../../../assets/images/imovel.png" alt="edit-photo" />
+					</div>
 
-				<h5 class="mt-4">Ed. José Maria Lopes</h5>
-				<p>{{ imovel.endereco }}</p>
-				<p><span class="icon file mr-2">&nbsp;</span>Edifício corporativo</p>
-			</section>
+					<h5 class="mt-4">Ed. José Maria Lopes</h5>
+					<p>{{ imovel.endereco }}</p>
+					<p><span class="icon file mr-2">&nbsp;</span>Edifício corporativo</p>
+				</section>
 
-			<form [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
 				<section class="aditional-data">
 					<div class="field">
 						<label for="nomeConta" class="block">Nome da conta</label>
@@ -293,28 +293,28 @@
 						</ng-container>
 					</div>
 				</section>
-			</form>
-		</div>
-		<div class="form-actions">
-			<button
-				pButton
-				type="button"
-				label="Voltar"
-				class="p-button-text h-11"
-				(click)="goBack()"
-			></button>
+			</div>
+			<div class="form-actions">
+				<button
+					pButton
+					type="button"
+					label="Voltar"
+					class="p-button-text h-11"
+					(click)="goBack()"
+				></button>
 
-			<button
-				pButton
-				pRipple
-				type="button"
-				label="Cancelar"
-				class="p-button-outlined h-11"
-				(click)="navigateTo('revenue/details/' + revenueGuid)"
-			></button>
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Cancelar"
+					class="p-button-outlined h-11"
+					(click)="navigateTo('revenue/details/' + revenueGuid)"
+				></button>
 
-			<button pButton type="submit" label="Continuar" class="h-11"></button>
-		</div>
+				<button pButton type="submit" label="Continuar" class="h-11"></button>
+			</div>
+		</form>
 	</div>
 </ng-template>
 

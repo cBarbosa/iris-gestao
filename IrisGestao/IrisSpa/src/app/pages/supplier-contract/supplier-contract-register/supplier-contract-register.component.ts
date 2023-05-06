@@ -497,7 +497,10 @@ export class SupplierContractRegisterComponent {
 			this.attachments.forEach((file) => {
 				formData.append('files', file);
 			});
-			this.anexoService.registerFile(guid, formData, 'outrosdocs').subscribe();
+			this.anexoService
+				.registerFile(guid, formData, 'outrosdocs')
+				.pipe(first())
+				.subscribe();
 		};
 
 		this.contractService
