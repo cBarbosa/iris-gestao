@@ -50,7 +50,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'iris-gestao-apistg'
+          app-name: 'irisgestao-api'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZURE_WEB_API_PRD }}
           package: .
