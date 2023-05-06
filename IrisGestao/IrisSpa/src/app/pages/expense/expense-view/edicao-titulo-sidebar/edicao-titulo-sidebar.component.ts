@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
 	AbstractControl,
 	FormBuilder,
@@ -8,45 +8,36 @@ import {
 	ReactiveFormsModule,
 	Validators,
 } from '@angular/forms';
-import { NgxCurrencyModule } from 'ngx-currency';
-import { NgxMaskModule } from 'ngx-mask';
+import { DropdownItem } from 'src/app/shared/models/types';
+import { ExpenseService } from 'src/app/shared/services/expense.service';
+import { AnexoService } from 'src/app/shared/services/anexo.service';
+import { Utils } from 'src/app/shared/utils';
+import { first } from 'rxjs';
 import { CalendarModule } from 'primeng/calendar';
-import { DropdownModule } from 'primeng/dropdown';
+import { NgxMaskModule } from 'ngx-mask';
 import { InputTextModule } from 'primeng/inputtext';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
-import { Utils } from 'src/app/shared/utils';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { RevenueService } from 'src/app/shared/services/revenue.service';
-import { first } from 'rxjs';
+import { NgxCurrencyModule } from 'ngx-currency';
 import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
-import { AnexoService } from 'src/app/shared/services/anexo.service';
-
-type DropdownItem = {
-	label: string;
-	value: any;
-	disabled?: boolean;
-};
 
 @Component({
-	selector: 'app-baixa-titulo-sidebar',
+	selector: 'app-edicao-titulo-sidebar',
 	standalone: true,
 	imports: [
 		CommonModule,
 		FormsModule,
 		ReactiveFormsModule,
 		NgxMaskModule,
-		CalendarModule,
 		InputTextModule,
-		DropdownModule,
+		CalendarModule,
 		FileUploadComponent,
 		NgxCurrencyModule,
-		InputTextareaModule,
 		ResponsiveDialogComponent,
 	],
-	templateUrl: './baixa-titulo-sidebar.component.html',
-	styleUrls: ['./baixa-titulo-sidebar.component.scss'],
+	templateUrl: './edicao-titulo-sidebar.component.html',
+	styleUrls: ['./edicao-titulo-sidebar.component.scss'],
 })
-export class BaixaTituloSidebarComponent {
+export class EdicaoTituloSidebarComponent {
 	@Input()
 	onRegister: Function;
 
@@ -58,7 +49,7 @@ export class BaixaTituloSidebarComponent {
 	registerOnSubmit: boolean = false;
 
 	@Input()
-	guidRevenue: string | null;
+	guidExpense: string | null;
 
 	@Input()
 	cancel: Function;
@@ -67,24 +58,12 @@ export class BaixaTituloSidebarComponent {
 	data: {
 		guidFatura: string | null;
 		numeroFatura: string | null;
-		dataVencimento: Date | null;
-		valorTotal: number;
-		valorAluguel: number;
-		dataPagamento: Date | null;
-		diasAtraso: number;
-		// dataVencimentoFatura: Date | null;
-		observacoes: string;
+		dataEnvio: Date | null;
+		dataEmissao: Date | null;
 		anexoNf: string;
 	} | null;
 
 	registerForm: FormGroup;
-
-	requestObj: {
-		dataVencimento: string;
-		dataPagamento: string;
-		valorRealPago: number;
-		DescricaoBaixaFatura: string;
-	} | null = null;
 
 	onInputDate: Function;
 	onBlurDate: Function;
@@ -119,49 +98,28 @@ export class BaixaTituloSidebarComponent {
 
 	constructor(
 		private fb: FormBuilder,
-		private revenueService: RevenueService,
+		private expenseService: ExpenseService,
 		private anexoService: AnexoService
 	) {}
 
 	ngOnInit() {
 		console.log('Fatura detalhes: >> ' + JSON.stringify(this.data));
 
-		if (this.registerOnSubmit && !this.guidRevenue)
+		if (this.registerOnSubmit && !this.guidExpense)
 			throw new Error(
 				"contact-register-sidebar: O Guid de receita deve ser informado caso o parâmetro 'registerOnSubmit' seja verdadeiro."
 			);
-
-		const dateDiff = this.data
-			? Utils.dateDiffInDays(
-					this.data.dataPagamento ?? undefined,
-					this.data.dataVencimento ?? undefined
-			  )
-			: 0;
-		const diasAtraso = dateDiff && dateDiff < 0 ? dateDiff : '0';
 
 		this.registerForm = this.fb.group({
 			numeroFatura: [
 				{ value: this.data?.numeroFatura ?? null, disabled: true },
 				Validators.required,
 			],
-			dataVencimento: [
-				{ value: this.data?.dataVencimento ?? null, disabled: true },
+			dataEnvio: [
+				{ value: this.data?.dataEnvio ?? null, disabled: true },
 				Validators.required,
 			],
-			valorTotal: [
-				{ value: this.data?.valorTotal ?? '', disabled: true },
-				Validators.required,
-			],
-			valorAluguel: [this.data?.valorAluguel ?? '', Validators.required],
-			dataPagamento: [this.data?.dataPagamento ?? null, Validators.required],
-			diasAtraso: [
-				{
-					value: diasAtraso,
-					disabled: true,
-				},
-				Validators.required,
-			],
-			observacoes: [this.data?.observacoes ?? '', Validators.required],
+			dataEmissao: [this.data?.dataEmissao ?? null, Validators.required],
 			anexoNf: [this.data?.anexoNf ?? null, Validators.required],
 		});
 
@@ -186,7 +144,7 @@ export class BaixaTituloSidebarComponent {
 
 		const editFormData = this.registerForm.getRawValue();
 
-		this.requestObj = {
+		const edicaoObj = {
 			dataVencimento: editFormData.dataVencimento
 				? editFormData.dataVencimento.toISOString()
 				: '',
@@ -197,33 +155,34 @@ export class BaixaTituloSidebarComponent {
 			DescricaoBaixaFatura: editFormData.observacoes,
 		};
 
-		console.log('on register', this.requestObj);
+		console.log('on register', edicaoObj);
 
 		// if (this.onSubmitForm) this.onSubmitForm(contactObj);
 
-		if (this.registerOnSubmit && this.guidRevenue)
-			this.registerInvoice(this.requestObj)
+		if (this.registerOnSubmit && this.guidExpense)
+			this.registerInvoice(edicaoObj)
 				.then(() => {
 					this.openModal();
+					if (this.onSubmitForm) this.onSubmitForm(edicaoObj);
 				})
 				.catch((err) => {
 					this.openModal();
 					console.error(err);
 				});
 		else {
-			if (this.onSubmitForm) this.onSubmitForm(this.requestObj);
+			if (this.onSubmitForm) this.onSubmitForm(edicaoObj);
 		}
 	}
 
-	registerInvoice(baixaObj: {
+	registerInvoice(edicaoObj: {
 		dataVencimento: string;
 		dataPagamento: string;
 		valorRealPago: number;
 		DescricaoBaixaFatura: string;
 	}): Promise<unknown> {
 		return new Promise((res, rej) => {
-			this.revenueService
-				.baixarParcela(this.guidRevenue!, baixaObj)
+			this.expenseService
+				.baixarParcela(this.guidExpense!, edicaoObj)
 				.pipe(first())
 				.subscribe({
 					next: (response) => {
@@ -239,14 +198,11 @@ export class BaixaTituloSidebarComponent {
 
 							formData.append('files', this.selectedFile);
 
-							this.anexoService
-								.registerFile(
-									response.data.guidReferencia,
-									formData,
-									'outrosdocs'
-								)
-								.pipe(first())
-								.subscribe();
+							this.anexoService.registerFile(
+								response.data.guidReferencia,
+								formData,
+								'outrosdocs'
+							);
 						} else {
 							this.modalContent = {
 								header: 'Cadastro não realizado',
@@ -272,14 +228,12 @@ export class BaixaTituloSidebarComponent {
 		this.displayModal = true;
 	}
 
-	closeModal(success = false) {
+	closeModal() {
 		this.displayModal = false;
-		if (success && this.onSubmitForm) this.onSubmitForm(this.requestObj);
 	}
 
 	onFileSelect(e: any) {
 		this.selectedFile = e[0];
-		console.log('selecting on sidebar', this.selectedFile);
 	}
 
 	cancelEdit() {

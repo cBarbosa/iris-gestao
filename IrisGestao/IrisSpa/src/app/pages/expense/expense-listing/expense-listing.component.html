@@ -4,8 +4,8 @@
 		<header class="list-header">
 			<div class="flex justify-between items-center" [class.mb-2]="isMobile">
 				<h3 class="text-2xl font-bold">
-					Receitas
-					<span class="ml-2 text-sm">{{ totalRevenueCount }}</span>
+					Despesas
+					<span class="ml-2 text-sm">{{ totalExpenseCount }}</span>
 				</h3>
 				<button
 					pButton
@@ -27,10 +27,10 @@
 					pButton
 					type="button"
 					class="p-button-outlined h-9 addButton"
-					(click)="navigateTo('revenue/register')"
+					(click)="navigateTo('expense/register')"
 				>
 					<i class="pi pi-plus pr-2"></i>
-					Nova Receita
+					Nova Despesa
 				</button>
 			</div>
 		</header>
@@ -43,7 +43,7 @@
 					class="w-full md:w-52"
 					[class.white-theme]="!isMobile"
 					[(ngModel)]="filterTitulo"
-					(ngModelChange)="filterRevenuesDebounce($event)"
+					(ngModelChange)="filterExpensesDebounce($event)"
 					type="text"
 					placeholder="Buscar por título"
 				/>
@@ -54,7 +54,7 @@
 				placeholder="Locatário"
 				[options]="opcoesLocatario"
 				[(ngModel)]="filterLocatario"
-				(ngModelChange)="filterRevenuesDebounce($event)"
+				(ngModelChange)="filterExpensesDebounce($event)"
 			></p-dropdown> -->
 
 			<p-dropdown
@@ -64,15 +64,15 @@
 				placeholder="Tipo de Recebimento"
 				[options]="opcoesTipo"
 				[(ngModel)]="filterTipo"
-				(ngModelChange)="filterRevenuesDebounce($event)"
+				(ngModelChange)="filterExpensesDebounce($event)"
 			></p-dropdown>
 		</ng-template>
 
 		<ng-container>
-			<ng-container *ngIf="isLoadingRevenues">
+			<ng-container *ngIf="isLoadingExpenses">
 				<app-spinner styleClass="mt-11"></app-spinner>
 			</ng-container>
-			<ng-container *ngIf="!isLoadingRevenues && noRestults">
+			<ng-container *ngIf="!isLoadingExpenses && noRestults">
 				<div class="no-results-warn">
 					<span>Nenhum resultado</span>
 				</div>
@@ -80,39 +80,39 @@
 
 			<p-table
 				*ngIf="!isMobile"
-				[value]="revenueEntries"
+				[value]="expenseEntries"
 				styleClass="p-datatable-striped"
 				[tableStyle]="{ 'min-width': '50rem' }"
-				[paginator]="!noRestults && !isLoadingRevenues"
+				[paginator]="!noRestults && !isLoadingExpenses"
 				[rows]="rows"
 				[(first)]="first"
 				responsiveLayout="scroll"
-				[totalRecords]="totalRevenueCount"
+				[totalRecords]="totalExpenseCount"
 				[lazy]="true"
-				(onLazyLoad)="loadRevenuesPage($event)"
+				(onLazyLoad)="loadExpensesPage($event)"
 			>
 				<ng-template pTemplate="header">
-					<tr *ngIf="!isLoadingRevenues && !noRestults">
-						<th>Tipo de recebimento</th>
+					<tr *ngIf="!isLoadingExpenses && !noRestults">
+						<th>Nome</th>
 						<th>Imóvel</th>
-						<th>Número do Título</th>
-						<th>Locatário</th>
+						<th>Locador</th>
 						<th>Valor</th>
+						<th>Tipo de documento</th>
 						<th>Data Pagamento/Vencimento</th>
 						<th></th>
 					</tr>
 				</ng-template>
-				<ng-template pTemplate="body" let-revenue>
+				<ng-template pTemplate="body" let-expense>
 					<tr>
-						<td class="font-bold">{{ revenue.tipoRecebimento }}</td>
-						<td>{{ revenue.imovel }}</td>
-						<td>{{ revenue.numeroTitulo }}</td>
-						<td>{{ revenue.locatario }}</td>
-						<td>{{ revenue.valor | currency }}</td>
+						<td class="font-bold">{{ expense.nomeTitulo }}</td>
+						<td>{{ expense.imovel }}</td>
+						<td>{{ expense.locador }}</td>
+						<td>{{ expense.valor | currency }}</td>
+						<td>{{ expense.tipoDocumento }}</td>
 						<td>
 							{{
-								revenue.dataPagamento
-									? (revenue.dataPagamento | date : "shortDate")
+								expense.dataPagamento
+									? (expense.dataPagamento | date : "shortDate")
 									: "-"
 							}}
 						</td>
@@ -122,7 +122,7 @@
 								type="button"
 								class="p-button-text h-7 text-center"
 								(click)="
-									navigateTo('revenue/details/' + revenue.guidReferencia)
+									navigateTo('expense/details/' + expense.guidReferencia)
 								"
 							>
 								Ver detalhes
@@ -134,34 +134,34 @@
 
 			<ng-container *ngIf="isMobile">
 				<div class="cardList">
-					<ng-container *ngFor="let revenue of revenueEntries">
+					<ng-container *ngFor="let expense of expenseEntries">
 						<app-card-item
 							[card]="{
 								infos: [
 									{
 										label: 'Tipo de recebimento',
-										data: revenue.tipoRecebimento
+										data: expense.tipoRecebimento
 									},
 									{
 										label: 'Imóvel',
-										data: revenue.imovel
+										data: expense.imovel
 									},
 									{
 										label: 'Número do Título',
-										data: revenue.numeroTitulo
+										data: expense.numeroTitulo
 									},
 									{
 										label: 'Locatário',
-										data: revenue.locatario
+										data: expense.locatario
 									},
 									{
 										label: 'Valor',
-										data: revenue.valor,
+										data: expense.valor,
 										pipe: cardPipes['currency']
 									},
 									{
 										label: 'Data Pagamento/Vencimento',
-										data: revenue.dataPagamento,
+										data: expense.dataPagamento,
 										pipe: cardPipes['date']
 									}
 								]
@@ -172,7 +172,7 @@
 								type="button"
 								class="p-button-text h-7 font-bold"
 								(click)="
-									navigateTo('revenue/details/' + revenue.guidReferencia)
+									navigateTo('expense/details/' + expense.guidReferencia)
 								"
 							>
 								Ver detalhes
@@ -185,8 +185,8 @@
 							pButton
 							type="button"
 							class="p-button-outlined h-9 justify-center w-full"
-							(click)="loadRevenueEntries()"
-							*ngIf="revenueEntries.length < totalRevenueCount"
+							(click)="loadExpenseEntries()"
+							*ngIf="expenseEntries.length < totalExpenseCount"
 						>
 							Carregar mais
 						</button>

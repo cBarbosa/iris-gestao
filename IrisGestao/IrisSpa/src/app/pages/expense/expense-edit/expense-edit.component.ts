@@ -8,26 +8,20 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
-import { ClienteService, DominiosService } from 'src/app/shared/services';
-import { RevenueService } from 'src/app/shared/services/revenue.service';
+import { DropdownItem } from 'src/app/shared/models/types';
+import { DominiosService } from 'src/app/shared/services';
+import { ExpenseService } from 'src/app/shared/services/expense.service';
 import { Utils } from 'src/app/shared/utils';
 
-type DropdownItem = {
-	label: string;
-	value: any;
-	disabled?: boolean;
-};
-
 @Component({
-	selector: 'app-revenue-edit',
-	templateUrl: './revenue-edit.component.html',
-	styleUrls: ['./revenue-edit.component.scss'],
+	selector: 'app-expense-edit',
+	templateUrl: './expense-edit.component.html',
+	styleUrls: ['./expense-edit.component.scss'],
 })
-export class RevenueEditComponent {
+export class ExpenseEditComponent {
 	editForm: FormGroup;
 
-	revenueGuid: string;
-	revenue: any;
+	expenseGuid: string;
 	isLoading = false;
 	invalidGuid = false;
 
@@ -86,21 +80,20 @@ export class RevenueEditComponent {
 		private location: Location,
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
-		private revenueService: RevenueService,
-		private dominiosService: DominiosService,
-		private clienteService: ClienteService
+		private expenseService: ExpenseService,
+		private dominiosService: DominiosService
 	) {}
 
 	ngOnInit() {
-		const revenueGuid = this.activatedRoute.snapshot.paramMap.get('guid');
+		const expenseGuid = this.activatedRoute.snapshot.paramMap.get('guid');
 
-		if (revenueGuid === null) {
+		if (expenseGuid === null) {
 			this.isLoading = false;
 			this.invalidGuid = true;
 			return;
 		}
 
-		this.revenueGuid = revenueGuid;
+		this.expenseGuid = expenseGuid;
 
 		this.editForm = this.fb.group({
 			nomeConta: ['', Validators.required],
@@ -118,14 +111,15 @@ export class RevenueEditComponent {
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
 
-		this.revenueService
-			.getRevenueByGuid(this.revenueGuid)
+		let data: any;
+
+		this.expenseService
+			.getExpenseByGuid(this.expenseGuid)
+			.pipe(first())
 			.subscribe((event: any) => {
 				if (event) {
-					const data = event.data[0];
+					data = event.data[0];
 					console.log(data);
-
-					this.revenue = data;
 
 					this.imovel.nome = data.imoveis[0].nome;
 					const { rua, bairro, cidade, uf } = data.imoveis[0].imovelEndereco[0];
@@ -134,9 +128,9 @@ export class RevenueEditComponent {
 					this.editForm.patchValue({
 						nomeConta: data.nomeTitulo,
 						numeroTitulo: data.numeroTitulo,
-						planoContas: +data.tipoTituloReceber?.id ?? null,
+						planoContas: +data.tipoTituloPagar?.id ?? null,
 						creditarPara: +data.creditoAluguel?.id ?? null,
-						nomeLocador: data.cliente.guidReferencia ?? null,
+						nomeLocador: data.cliente?.nome ?? null,
 						formaPagamento: +data.formaPagamento?.id ?? null,
 						dataVencimento: data.dataVencimentoPrimeraParcela
 							? new Date(data.dataVencimentoPrimeraParcela)
@@ -145,40 +139,14 @@ export class RevenueEditComponent {
 						valorPagar: data.valorTitulo,
 					});
 
-					// this.editForm = this.fb.group({
-					// 	nomeConta: [data.nomeTitulo, Validators.required],
-					// 	numeroTitulo: [data.numeroTitulo, [Validators.required]],
-					// 	planoContas: [
-					// 		+data.tipoTituloReceber.id ?? null,
-					// 		[Validators.required],
-					// 	],
-					// 	creditarPara: [
-					// 		+data.creditoAluguel.id ?? null,
-					// 		[Validators.required],
-					// 	],
-					// 	nomeLocador: [data.cliente.nome ?? null, Validators.required],
-					// 	formaPagamento: [
-					// 		+data.formaPagamento.id ?? null,
-					// 		Validators.required,
-					// 	],
-					// 	dataVencimento: [
-					// 		data.dataVencimentoPrimeraParcela
-					// 			? new Date(data.dataVencimentoPrimeraParcela)
-					// 			: null,
-					// 		Validators.required,
-					// 	],
-					// 	valorTitulo: [data.valorTitulo, Validators.required],
-					// 	valorPagar: [data.valorTitulo, Validators.required],
-					// });
-
-					// setTimeout(() => {
-					// 	this.editForm.patchValue({
-					// 		planoContas: +data.tipoTituloReceber?.id ?? null,
-					// 		creditarPara: +data.creditoAluguel?.id ?? null,
-					// 		nomeLocador: data.cliente?.nome ?? null,
-					// 		formaPagamento: +data.formaPagamento?.id ?? null,
-					// 	});
-					// }, 40);
+					setTimeout(() => {
+						this.editForm.patchValue({
+							planoContas: +data.tipoTituloPagar?.id ?? null,
+							creditarPara: +data.creditoAluguel?.id ?? null,
+							nomeLocador: data.cliente?.nome ?? null,
+							formaPagamento: +data.formaPagamento?.id ?? null,
+						});
+					}, 40);
 				} else {
 					this.invalidGuid = true;
 				}
@@ -199,9 +167,7 @@ export class RevenueEditComponent {
 								};
 							})
 						);
-						this.f['planoContas'].setValue(
-							+this.revenue?.tipoTituloReceber?.id ?? null
-						);
+						this.f['planoContas'].setValue(+data.tipoTituloPagar?.id ?? null);
 					} else console.error(e.message);
 				},
 				error: (err) => {
@@ -220,9 +186,7 @@ export class RevenueEditComponent {
 							value: forma.id,
 						});
 					});
-					this.f['creditarPara'].setValue(
-						+this.revenue?.creditoAluguel?.id ?? null
-					);
+					this.f['creditarPara'].setValue(+data.creditoAluguel?.id ?? null);
 				},
 				error: (err) => {
 					console.error(err);
@@ -240,28 +204,7 @@ export class RevenueEditComponent {
 							value: forma.id,
 						});
 					});
-					this.f['formaPagamento'].setValue(
-						+this.revenue?.formaPagamento?.id ?? null
-					);
-				},
-				error: (err) => {
-					console.error(err);
-				},
-			});
-
-		this.clienteService
-			.getListaProprietarios()
-			.pipe(first())
-			.subscribe({
-				next: (response) => {
-					response?.data.forEach((forma: any) => {
-						this.opcoesNomeLocador.push({
-							label: forma.nome,
-							value: forma.guidReferencia,
-						});
-					});
-					this.f['nomeLocador'].setValue(this.revenue?.cliente.guidReferencia);
-					console.log('>>>>>>>>>', this.revenue?.cliente.guidReferencia);
+					this.f['formaPagamento'].setValue(+data.formaPagamento?.id ?? null);
 				},
 				error: (err) => {
 					console.error(err);

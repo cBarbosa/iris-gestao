@@ -73,14 +73,18 @@
 <!-- ------------------------------------------------------------------------ -->
 
 <form [formGroup]="propertyAddForm" *ngIf="propertyAddVisible">
-	<p-sidebar [(visible)]="propertyAddVisible" position="right">
+	<p-sidebar
+		[(visible)]="propertyAddVisible"
+		position="right"
+		(onShow)="setBuildingsList()"
+	>
 		<ng-template pTemplate="header">
 			<h4 *ngIf="editingLinkedProperty === null; else editingHeader">
 				Adicionar novo Edifício
 			</h4>
-			<ng-template #editingHeader
-				><h4>Editar Edifício vinculado</h4></ng-template
-			>
+			<ng-template #editingHeader>
+				<h4>Editar Edifício vinculado</h4>
+			</ng-template>
 		</ng-template>
 		<ng-template pTemplate="content">
 			<div class="register-property-form">
