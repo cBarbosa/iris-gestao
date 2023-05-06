@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
-type Step = {
+export type Step = {
 	label: string;
 	isValid?: boolean;
 	isCurrent?: boolean;

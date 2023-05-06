@@ -17,6 +17,7 @@ public class ContratoAluguelService: IContratoAluguelService
     private readonly IContratoAluguelImovelRepository contratoAluguelImovelRepository;
     private readonly IContratoAluguelUnidadeRepository contratoAluguelUnidadeRepository;
     private readonly ITituloReceberService tituloReceberService;
+    private readonly ITituloPagarService tituloPagarService;
     private readonly IContratoAluguelHistoricorReajusteService contratoAluguelHistoricorReajusteService;
     private readonly ILogger<IContratoAluguelService> logger;
 
@@ -27,6 +28,7 @@ public class ContratoAluguelService: IContratoAluguelService
                         , IContratoAluguelImovelRepository ContratoAluguelImovelRepository
                         , IContratoAluguelUnidadeRepository ContratoAluguelUnidadeRepository
                         , ITituloReceberService TituloReceberService
+                        , ITituloPagarService TituloPagarService
                         , IContratoAluguelHistoricorReajusteService contratoAluguelHistoricorReajusteService
                         , ILogger<IContratoAluguelService> logger)
     {
@@ -36,7 +38,8 @@ public class ContratoAluguelService: IContratoAluguelService
         this.clienteRepository = ClienteRepository;
         this.contratoAluguelImovelRepository = ContratoAluguelImovelRepository;
         this.contratoAluguelUnidadeRepository = ContratoAluguelUnidadeRepository;
-        this.tituloReceberService = TituloReceberService;
+        this.tituloReceberService = TituloReceberService; 
+        this.tituloPagarService = TituloPagarService;
         this.contratoAluguelHistoricorReajusteService = contratoAluguelHistoricorReajusteService;
         this.logger = logger;
     }
@@ -103,8 +106,11 @@ public class ContratoAluguelService: IContratoAluguelService
             contratoAluguelRepository.Insert(contratoAluguel);
             await CriaContratoAluguelImovel(contratoAluguel.Id, cmd.lstImoveis);
 
-            //Criar Titulos Contas a Pagar
+            //Criar Titulos Contas a Receber - Receitas
             await tituloReceberService.InsertByContratoAluguel(contratoAluguel, cmd.lstImoveis);
+
+            //Criar Titulos Contas a Pagar - Despesas
+            await tituloPagarService.InsertByContratoAluguel(contratoAluguel, cmd.lstImoveis);
 
             return new CommandResult(true, SuccessResponseEnums.Success_1000, contratoAluguel);
         }

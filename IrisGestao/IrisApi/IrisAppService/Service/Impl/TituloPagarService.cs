@@ -5,6 +5,7 @@ using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.Extensions.Logging;
+using System.Text.Encodings.Web;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -87,9 +88,10 @@ public class TituloPagarService: ITituloPagarService
             lstTituloImovelCommand.Add(tituloImovelCommand);
         }
 
+        var unidadeTaxaAdm = await unidadeRepository.GetByReferenceGuid(lstTituloImovelCommand[0].lstUnidades[0]);
         int sequencial = await tituloPagarRepository.GetNumeroTitulo();
         TituloPagar.Sequencial = sequencial + 1;
-        BindTituloPagarByContratoAluguelData(contratoAluguel, TituloPagar, lstFaturaTituloPagar);
+        BindTituloPagarByContratoAluguelData(contratoAluguel, TituloPagar, lstFaturaTituloPagar, (double)unidadeTaxaAdm.TaxaAdministracao.Value);
 
         try
         {
@@ -287,8 +289,10 @@ public class TituloPagarService: ITituloPagarService
         }
     }
 
-    private static void BindTituloPagarByContratoAluguelData(ContratoAluguel contratoAluguel, TituloPagar TituloPagar, List<FaturaTituloPagar> lstFaturaTituloPagar)
+    private static void BindTituloPagarByContratoAluguelData(ContratoAluguel contratoAluguel, TituloPagar TituloPagar, List<FaturaTituloPagar> lstFaturaTituloPagar, Double unidadeTaxaAdministracao)
     {
+        double valorLiquido;
+        valorLiquido = calcularPorcentagemContratoAluguel(contratoAluguel.ValorAluguel, unidadeTaxaAdministracao);
         int prazo = contratoAluguel.PrazoTotalContrato > 12 ? 12 : contratoAluguel.PrazoTotalContrato;
         switch (TituloPagar.GuidReferencia)
         {
@@ -313,8 +317,8 @@ public class TituloPagarService: ITituloPagarService
         TituloPagar.IdCliente = contratoAluguel?.IdCliente;
         TituloPagar.IdIndiceReajuste = contratoAluguel?.IdIndiceReajuste;
         TituloPagar.IdTipoCreditoAluguel = contratoAluguel?.IdTipoCreditoAluguel;
-        TituloPagar.ValorTitulo = contratoAluguel.ValorAluguelLiquido;
-        TituloPagar.ValorTotalTitulo = contratoAluguel.ValorAluguelLiquido * prazo;
+        TituloPagar.ValorTitulo = valorLiquido;
+        TituloPagar.ValorTotalTitulo = valorLiquido * prazo;
         TituloPagar.Parcelas = prazo;
         TituloPagar.DataVencimentoPrimeraParcela = contratoAluguel.DataVencimentoPrimeraParcela;
         TituloPagar.PorcentagemTaxaAdministracao = contratoAluguel.PercentualRetencaoImpostos;
@@ -452,5 +456,11 @@ public class TituloPagarService: ITituloPagarService
     {
         double desconto = ((double)valor / 100) * percentual;
         return Math.Round(valor - desconto, 2);
+    }
+
+    private static double calcularPorcentagemContratoAluguel(double valor, Double valorTaxaAdministracao)
+    {
+        double desconto = ((double)valor / 100) * valorTaxaAdministracao;
+        return desconto;
     }
 }

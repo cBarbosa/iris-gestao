@@ -3,35 +3,36 @@ import { Component, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
 import { Imovel } from 'src/app/shared/models';
+import { ExpenseService } from 'src/app/shared/services/expense.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
-import { RevenueService } from 'src/app/shared/services/revenue.service';
 import { Utils } from 'src/app/shared/utils';
 
 @Component({
-	selector: 'app-revenue-view',
-	templateUrl: './revenue-view.component.html',
-	styleUrls: ['./revenue-view.component.scss'],
+	selector: 'app-expense-view',
+	templateUrl: './expense-view.component.html',
+	styleUrls: ['./expense-view.component.scss'],
 })
-export class RevenueViewComponent {
+export class ExpenseViewComponent {
 	property: Imovel | null = null;
 	guid: string;
-	revenue: any;
+	expense: any;
 	imageList: ImageData[] = [];
 	isLoadingView = true;
 
 	isMobile: boolean = false;
-	displayRevenueDetails = false;
+	displayExpenseDetails = false;
 	cardPipes: Record<string, PipeTransform>;
 
 	faturaSelected: any;
 
 	detalheBaixaVisible = false;
 	baixaTituloVisible = false;
+	edicaoTituloVisible = false;
 
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
-		private revenueService: RevenueService,
+		private expenseService: ExpenseService,
 		private responsiveService: ResponsiveService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
@@ -40,7 +41,7 @@ export class RevenueViewComponent {
 	}
 
 	ngOnInit(): void {
-		this.getByIdRevenue();
+		this.getByIdExpense();
 		// this.getAttachs();
 
 		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
@@ -57,28 +58,28 @@ export class RevenueViewComponent {
 		};
 	}
 
-	getByIdRevenue() {
+	getByIdExpense() {
 		this.isLoadingView = true;
-		this.revenueService
-			.getRevenueByGuid(this.guid)
+		this.expenseService
+			.getExpenseByGuid(this.guid)
 			.pipe(first())
 			.subscribe({
 				next: (event: any) => {
 					console.log('event', event);
 					if (event.success) {
-						this.revenue = event.data[0];
+						this.expense = event.data[0];
 						this.imageList ||= event.imagens ?? [];
 						//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
 						// this.properties = [...event.data.imovel];
 						event.data[0]?.imoveis &&
 							(this.property = event.data[0].imoveis[0] as unknown as Imovel);
 					} else {
-						this.revenue = null;
+						this.expense = null;
 					}
 					this.isLoadingView = false;
 				},
 				error: (err) => {
-					this.revenue = null;
+					this.expense = null;
 					this.isLoadingView = false;
 				},
 			});
@@ -112,33 +113,34 @@ export class RevenueViewComponent {
 	showDetalheBaixa = (): void => {
 		this.detalheBaixaVisible = true;
 		this.baixaTituloVisible = false;
+		this.edicaoTituloVisible = false;
 	};
 
 	showBaixaTitulo = (): void => {
 		this.detalheBaixaVisible = false;
 		this.baixaTituloVisible = true;
+		this.edicaoTituloVisible = false;
+	};
+	showEdicaoTitulo = (): void => {
+		this.detalheBaixaVisible = false;
+		this.baixaTituloVisible = false;
+		this.edicaoTituloVisible = true;
 	};
 
 	hideDetalheBaixa = () => {
 		this.detalheBaixaVisible = false;
 	};
 
-	hideBaixaTitulo = (returnValue: any) => {
+	hideBaixaTitulo = () => {
 		this.baixaTituloVisible = false;
+	};
 
-		if (returnValue !== undefined) {
-			const updated = this.revenue.faturas.find((fatura: any) => {
-				return fatura.guidReferencia === this.faturaSelected.guidReferencia;
-			});
-			updated.dataPagamento = returnValue.dataPagamento;
-			updated.dataVencimento = returnValue.dataVencimento;
-			updated.valorRealPago = updated.valorFatura;
-			updated.statusFatura = 'Pago';
-		}
+	hideEdicaoTitulo = () => {
+		this.edicaoTituloVisible = false;
 	};
 
 	toggleDetalheBaixa() {
-		this.displayRevenueDetails = !this.displayRevenueDetails;
+		this.displayExpenseDetails = !this.displayExpenseDetails;
 	}
 
 	async downloadFile(

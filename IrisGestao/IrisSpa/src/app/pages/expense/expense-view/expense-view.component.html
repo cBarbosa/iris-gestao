@@ -6,22 +6,22 @@
 	</div>
 </ng-container>
 <ng-template #details>
-	<div class="revenue-view">
+	<div class="expense-view">
 		<div class="content">
-			<section class="revenue">
+			<section class="expense">
 				<h2>Detalhe da receita</h2>
 
 				<div class="main-card">
 					<header>
 						<h3 class="mb-4">
-							{{ revenue?.nomeTitulo }}
+							{{ expense?.nomeTitulo }}
 						</h3>
 						<div class="actions">
 							<button
 								pButton
 								type="button"
 								class="p-element h-10 p-button p-component p-button-outlined"
-								(click)="navigateTo('revenue/edit/' + revenue.guidReferencia)"
+								(click)="navigateTo('expense/edit/' + expense.guidReferencia)"
 							>
 								Editar Título
 							</button>
@@ -34,75 +34,73 @@
 
 					<p-panel
 						[header]="
-							displayRevenueDetails ? 'Menos Detalhes' : 'Mais detalhes'
+							displayExpenseDetails ? 'Menos Detalhes' : 'Mais detalhes'
 						"
 						[toggleable]="true"
-						[collapsed]="!displayRevenueDetails"
+						[collapsed]="!displayExpenseDetails"
 						(onBeforeToggle)="toggleDetalheBaixa()"
 						styleClass="mt-3"
 						*ngIf="isMobile"
 					>
 						<ng-container
-							*ngTemplateOutlet="revenueInfoTemplate"
+							*ngTemplateOutlet="expenseInfoTemplate"
 						></ng-container>
 					</p-panel>
 
 					<ng-container *ngIf="!isMobile">
 						<ng-container
-							*ngTemplateOutlet="revenueInfoTemplate"
+							*ngTemplateOutlet="expenseInfoTemplate"
 						></ng-container>
 					</ng-container>
 
-					<ng-template #revenueInfoTemplate>
-						<div class="revenue-info">
-							<div class="revenue-data">
+					<ng-template #expenseInfoTemplate>
+						<div class="expense-info">
+							<div class="expense-data">
 								<div class="data-label">Número do título</div>
 								<div class="data-value">
-									{{ revenue?.['numeroTitulo'] }}
+									{{ expense?.['numeroTitulo'] }}
 								</div>
 							</div>
-							<div class="revenue-data">
-								<div class="data-label">Classificação da Receita</div>
+							<div class="expense-data">
+								<div class="data-label">Plano de Contas</div>
 								<div class="data-value">
-									{{ revenue?.['nomeTitulo'] }}
+									{{ expense?.['nomeTitulo'] }}
 								</div>
 							</div>
-							<div class="revenue-data">
+							<div class="expense-data">
 								<div class="data-label">Creditar para</div>
 								<div class="data-value">
-									{{ revenue?.['creditoAluguel'].nome }}
+									{{ expense?.['creditoAluguel'].nome }}
 								</div>
 							</div>
-							<div class="revenue-data">
-								<div class="data-label">Locatário</div>
+							<div class="expense-data">
+								<div class="data-label">Locador</div>
 								<div class="data-value">
-									{{ revenue?.['cliente'].nome }}
+									{{ expense?.['cliente'].nome }}
 								</div>
 							</div>
-							<div class="revenue-data">
-								<div class="data-label">
-									Data de vencimento da primeira parcela
-								</div>
+							<div class="expense-data">
+								<div class="data-label">Vencimento</div>
 								<div class="data-value">
-									{{ revenue?.['dataVencimentoPrimeraParcela'] | date : "shortDate" }}
+									{{ expense?.['dataVencimentoPrimeraParcela'] | date : "shortDate" }}
 								</div>
 							</div>
-							<div class="revenue-data">
+							<div class="expense-data">
 								<div class="data-label">Forma de pagamento</div>
 								<div class="data-value">
-									{{ revenue?.['formaPagamento'].nome }}
+									{{ expense?.['formaPagamento'].nome }}
 								</div>
 							</div>
-							<div class="revenue-data">
+							<div class="expense-data">
+								<div class="data-label">Valor total a pagar</div>
+								<div class="data-value">
+									{{ expense?.['valorTotalTitulo'] | currency }}
+								</div>
+							</div>
+							<div class="expense-data">
 								<div class="data-label">Valor a pagar</div>
 								<div class="data-value">
-									{{ revenue?.['valorTitulo'] | currency }}
-								</div>
-							</div>
-							<div class="revenue-data">
-								<div class="data-label">Valor total do contrato</div>
-								<div class="data-value">
-									{{ revenue?.['valorTotalTitulo'] | currency }}
+									{{ expense?.['valorTitulo'] | currency }}
 								</div>
 							</div>
 						</div>
@@ -110,14 +108,14 @@
 				</div>
 			</section>
 
-			<section class="fatura" *ngIf="revenue?.faturas?.length > 0">
+			<section class="fatura" *ngIf="expense?.faturas?.length > 0">
 				<header class="flex justify-between flex-wrap items-start mb-5">
 					<h2 class="mb-2">Faturas</h2>
 				</header>
 
 				<p-table
 					*ngIf="!isMobile; else faturaCardListTemplate"
-					[value]="revenue?.faturas"
+					[value]="expense?.faturas"
 					styleClass="p-datatable-striped"
 					[tableStyle]="{ 'min-width': '50rem' }"
 				>
@@ -200,7 +198,7 @@
 
 				<ng-template #faturaCardListTemplate>
 					<div class="cardList">
-						<ng-container *ngFor="let fatura of revenue?.faturas">
+						<ng-container *ngFor="let fatura of expense?.faturas">
 							<app-card-item
 								[card]="{
 									infos: [
@@ -280,59 +278,73 @@
 	<ng-template pTemplate="header">
 		<h2 class="text-xl font-bold">Detalhes da Baixa da Fatura</h2>
 	</ng-template>
-	<ng-template pTemplate="content">
-		<app-detail-sidebar
-			[data]="[
-				{
-					label: 'Número da fatura',
-					data: faturaSelected?.numeroFatura,
-					span: true
-				},
-				{
-					label: 'Valor',
-					data: faturaSelected?.valorRealPago,
-					pipe: cardPipes['currency']
-				},
-				{
-					label: 'Dias de atraso',
-					data: faturaSelected?.diasAtraso
-						? (faturaSelected?.diasAtraso > 1
-								? faturaSelected?.diasAtraso + ' dias'
-								: faturaSelected?.diasAtraso) + ' dia'
-						: '0 dia',
-					span: true
-				},
-				{
-					label: '% de impostos retidos',
-					data: 0,
-					pipe: cardPipes['percent']
-				},
-				{
-					label: 'Valor líquido',
-					data: faturaSelected?.valorFatura,
-					pipe: cardPipes['currency']
-				},
-				{
-					label: 'Vencimento',
-					data: faturaSelected?.dataVencimento,
-					pipe: cardPipes['date']
-				},
-				{
-					label: 'Data de pagamento',
-					data: faturaSelected?.dataPagamento,
-					pipe: cardPipes['date']
-				}
-			]"
-		></app-detail-sidebar>
+	<app-detail-sidebar
+		[data]="[
+			{
+				label: 'Número da NF',
+				data: faturaSelected?.numeroFatura,
+				span: true
+			},
+			{
+				label: 'Data de envio',
+				data: faturaSelected?.dataEnvio,
+				pipe: cardPipes['date']
+			},
+			{
+				label: 'Data de emissão',
+				data: faturaSelected?.dataEmissao,
+				pipe: cardPipes['date']
+			},
+			{
+				label: 'Valor',
+				data: faturaSelected?.valorRealPago,
+				pipe: cardPipes['currency']
+			},
+			{
+				label: 'Valor taxa de adm.',
+				data: faturaSelected?.valorTaxa,
+				pipe: cardPipes['currency']
+			},
+			{
+				label: '% de impostos retidos',
+				data: 0,
+				pipe: cardPipes['percent']
+			},
+			{
+				label: 'Valor líquido',
+				data: faturaSelected?.valorFatura,
+				pipe: cardPipes['currency']
+			},
+			{
+				label: 'Vencimento',
+				data: faturaSelected?.dataVencimento,
+				pipe: cardPipes['date']
+			},
+			{
+				label: 'Data de pagamento',
+				data: faturaSelected?.dataPagamento,
+				pipe: cardPipes['date']
+			},
+			{
+				label: 'Dias de atraso',
+				data: faturaSelected?.diasAtraso
+					? (faturaSelected?.diasAtraso > 1
+							? faturaSelected?.diasAtraso + ' dias'
+							: faturaSelected?.diasAtraso) + ' dia'
+					: '0 dia',
+				span: true
+			}
+		]"
+	></app-detail-sidebar>
 
-		<h3 class="mt-3 font-bold">Anexo nota fiscal</h3>
+	<h3 class="mt-3 font-bold">Anexo nota fiscal</h3>
 
-		<div class="document-list">
-			<app-upload-list
-				[guid]="faturaSelected?.guidReferencia"
-				[editable]="false"
-			></app-upload-list>
-			<!-- <div class="document file" [class.empty]="!faturaSelected?.nfFile">
+	<div class="document-list">
+		<app-upload-list
+			[guid]="faturaSelected?.guidReferencia"
+			[editable]="false"
+		></app-upload-list>
+		<!-- <div class="document file" [class.empty]="!faturaSelected?.nfFile">
 			<span>{{ faturaSelected?.nfFile.name }}</span>
 			<span class="buttons">
 				<button
@@ -350,16 +362,15 @@
 				</button>
 			</span>
 		</div> -->
-		</div>
+	</div>
 
-		<button
-			pButton
-			class="p-button-outlined w-full h-10 justify-center"
-			(click)="hideDetalheBaixa()"
-		>
-			Fechar
-		</button>
-	</ng-template>
+	<button
+		pButton
+		class="p-button-outlined w-full h-10 justify-center"
+		(click)="hideDetalheBaixa()"
+	>
+		Fechar
+	</button>
 </p-sidebar>
 
 <p-sidebar [(visible)]="baixaTituloVisible" position="right">
@@ -372,7 +383,22 @@
 			[cancel]="hideBaixaTitulo"
 			[onSubmitForm]="hideBaixaTitulo"
 			[registerOnSubmit]="true"
-			[guidRevenue]="faturaSelected.guidReferencia"
+			[guidExpense]="faturaSelected.guidReferencia"
+		></app-baixa-titulo-sidebar>
+	</ng-template>
+</p-sidebar>
+
+<p-sidebar [(visible)]="edicaoTituloVisible" position="right">
+	<ng-template pTemplate="header">
+		<h2 class="text-xl font-bold">Edição</h2>
+	</ng-template>
+	<ng-template pTemplate="content">
+		<app-baixa-titulo-sidebar
+			[data]="getFaturaFormData(faturaSelected)"
+			[cancel]="hideEdicaoTitulo"
+			[onSubmitForm]="hideEdicaoTitulo"
+			[registerOnSubmit]="true"
+			[guidExpense]="faturaSelected.guidReferencia"
 		></app-baixa-titulo-sidebar>
 	</ng-template>
 </p-sidebar>
