@@ -441,6 +441,9 @@ public class TituloReceberService: ITituloReceberService
 
     private static double calcularPorcentagem(double valor, double percentual)
     {
-        return (percentual / 100.0) * valor;
+        if(percentual == 0)
+            return valor;
+        else
+            return (percentual / 100.0) * valor;
     }
 }

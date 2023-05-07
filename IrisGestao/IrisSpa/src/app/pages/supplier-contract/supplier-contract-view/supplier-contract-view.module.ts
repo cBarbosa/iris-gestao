@@ -10,6 +10,7 @@ import { CepPipeModule } from 'src/app/shared/pipes/cep.module';
 import { PropertyListComponent } from 'src/app/shared/components/property-list/property-list.component';
 import { IconModule } from 'src/app/shared/components/custom-ui/icon/icon.module';
 import { PanelModule } from 'primeng/panel';
+import { AttachmentListComponent } from 'src/app/shared/components/attachment-list/attachment-list.component';
 
 @NgModule({
 	declarations: [SupplierContractViewComponent],
@@ -24,6 +25,7 @@ import { PanelModule } from 'primeng/panel';
 		CepPipeModule,
 		IconModule,
 		PanelModule,
+		AttachmentListComponent,
 	],
 })
 export class SupplierContractViewModule {}
