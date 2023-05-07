@@ -58,9 +58,9 @@ public class AzureStorageService: IAzureStorageService
         try
         {
             var blobClient = blobServiceClient.GetBlobContainerClient(container);
-            blobClient.GetBlobClient($"{environment}/{originFolder}/{fileName}");
+            var arquivo = blobClient.GetBlobClient($"{environment}/{originFolder}/{fileName}");
             
-            return await blobClient.DeleteIfExistsAsync();
+            return await arquivo.DeleteIfExistsAsync();
         }
         catch (Exception e)
         {

@@ -63,7 +63,7 @@ public class AnexoService: IAnexoService
     public async Task<CommandResult> Insert(CriarAnexoCommand cmd)
     {
         #region valida extensões
-        string pattern = @"(?i)[^0-9a-záéíóúàèìòùâêîôûãõç\\s]";
+        var pattern = @"(?i)[^0-9a-záéíóúàèìòùâêîôûãõç. \\s]";
         string[] fotoExtensoes = {".png", ".jpg", ".jpeg", ".svn", ".gif"};
         string[] documentoExtensoes = {".xls", ".doc", ".pdf", ".xlsx", ".docx", ".dwg"};
 
