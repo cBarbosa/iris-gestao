@@ -368,11 +368,13 @@
 	<ng-template pTemplate="header">
 		<span class="text-2xl font-bold">Editar contato</span>
 	</ng-template>
-	<app-contact-edit-sidebar
-		[data]="selectedContact"
-		[cancel]="hideContactEdit"
-		[onEdit]="onUpdateContactList"
-	></app-contact-edit-sidebar>
+	<ng-template pTemplate="content">
+		<app-contact-edit-sidebar
+			[data]="selectedContact"
+			[cancel]="hideContactEdit"
+			[onEdit]="onUpdateContactList"
+		></app-contact-edit-sidebar>
+	</ng-template>
 </p-sidebar>
 
 <app-responsive-dialog [isMobile]="isMobile" [visible]="displayModal">
