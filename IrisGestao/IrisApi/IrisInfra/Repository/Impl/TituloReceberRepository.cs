@@ -143,9 +143,6 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                             AreaUtil = y.IdImovelNavigation.Unidade.Where(x => x.Status).Sum(x => x.AreaUtil),
                             AreaHabitese = y.IdImovelNavigation.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
                             NumCentroCusto = y.IdImovelNavigation.NumCentroCusto,
-                            ImgCapa = "../../../../assets/images/imovel.png",
-                            Imagens = ImagemListFake,
-                            Anexos = AnexoListFake,
                             ImovelEndereco = y.IdImovelNavigation.ImovelEndereco,
                             Ativo = y.IdImovelNavigation.Status,
                             IdCategoriaImovelNavigation = y.IdImovelNavigation.IdCategoriaImovelNavigation == null ? null : new
@@ -250,9 +247,6 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                                 AreaUtil = y.IdImovelNavigation.Unidade.Where(x => x.Status).Sum(x => x.AreaUtil),
                                 AreaHabitese = y.IdImovelNavigation.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
                                 NumCentroCusto = y.IdImovelNavigation.NumCentroCusto,
-                                ImgCapa = "../../../../assets/images/imovel.png",
-                                Imagens = ImagemListFake,
-                                Anexos = AnexoListFake,
                                 ImovelEndereco = y.IdImovelNavigation.ImovelEndereco,
                                 Ativo = y.IdImovelNavigation.Status,
                                 IdCategoriaImovelNavigation = y.IdImovelNavigation.IdCategoriaImovelNavigation == null ? null : new
@@ -283,70 +277,4 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
 
         return null!;
     }
-
-    public static string ImagemCapaFake => "../../../../assets/images/imovel.png";
-
-    public static List<object> ImagemListFake => new List<object>
-    {
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/1.jpg",
-            Url = ".../../../assets/images/property/1.jpg"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/2.png",
-            Url = ".../../../assets/images/property/2.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/3.png",
-            Url = ".../../../assets/images/property/3.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/4.png",
-            Url = ".../../../assets/images/property/4.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/5.png",
-            Url = ".../../../assets/images/property/5.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/2.png",
-            Url = ".../../../assets/images/property/2.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/4.png",
-            Url = ".../../../assets/images/property/4.png"
-        }
-    };
-
-    public static List<object> AnexoListFake => new List<object>
-    {
-        new
-        {
-            Nome = "Projeto",
-            Tipo = 1,
-            FileName = "Projeto.pdf",
-            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
-        },
-        new
-        {
-            Nome = "Matricula",
-            FileName = "Matricula.pdf",
-            Tipo = 2,
-            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
-        },
-        new
-        {
-            Nome = "Habite-se",
-            FileName = "habite-se.pdf",
-            Tipo = 3,
-            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
-        }
-    };
 }

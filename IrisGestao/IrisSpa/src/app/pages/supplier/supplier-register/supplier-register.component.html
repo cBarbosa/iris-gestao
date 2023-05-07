@@ -423,14 +423,14 @@
 				</div>
 
 				<div class="field">
-					<label for="Agencia" class="block">Agencia</label>
+					<label for="Agencia" class="block">Agência</label>
 					<input
 						id="Agencia"
 						type="text"
 						formControlName="Agencia"
 						aria-describedby="Agencia-help"
 						pInputText
-						maxlength="50"
+						maxlength="5"
 					/>
 					<ng-container *ngIf="checkHasError(f['Agencia'])">
 						<small
@@ -438,11 +438,11 @@
 							*ngIf="f['Agencia'].hasError('required'); else error2"
 							class="p-Agencia block"
 						>
-							Informe a Agencia do fornecedor
+							Informe a Agência do fornecedor
 						</small>
 						<ng-template #error2>
 							<small id="Agencia-help" class="p-error block">
-								Agencia inválida
+								Agência inválida
 							</small>
 						</ng-template>
 					</ng-container>
@@ -456,7 +456,7 @@
 						formControlName="Conta"
 						aria-describedby="Conta-help"
 						pInputText
-						maxlength="50"
+						maxlength="9"
 					/>
 					<ng-container *ngIf="checkHasError(f['Conta'])">
 						<small
@@ -475,14 +475,14 @@
 				</div>
 
 				<div class="field">
-					<label for="Operacao" class="block">Operacao</label>
+					<label for="Operacao" class="block">Operação</label>
 					<input
 						id="Operacao"
 						type="text"
 						formControlName="Operacao"
 						aria-describedby="Operacao-help"
 						pInputText
-						maxlength="50"
+						maxlength="4"
 					/>
 					<ng-container *ngIf="checkHasError(f['Operacao'])">
 						<small
@@ -501,14 +501,14 @@
 				</div>
 
 				<div class="field">
-					<label for="ChavePix" class="block">ChavePix</label>
+					<label for="ChavePix" class="block">Chave Pix</label>
 					<input
 						id="ChavePix"
 						type="text"
 						formControlName="ChavePix"
 						aria-describedby="ChavePix-help"
 						pInputText
-						maxlength="50"
+						maxlength="60"
 					/>
 					<ng-container *ngIf="checkHasError(f['ChavePix'])">
 						<small

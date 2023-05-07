@@ -116,28 +116,35 @@ export class ClientViewComponent implements OnInit {
 
 	getByIdCliente() {
 		this.isLoadingView = true;
-		this.clienteService.getClienteById(this.uid).subscribe((event) => {
-			this.cliente = event;
-			this.isCnpj = event.cpfCnpj.length > 11;
-			//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
-			this.properties = [...event.imovel];
-			console.log(this.properties);
-			this.contacts = event.contato.map((contato: Contato) => {
-				return {
-					guidReferenciaContato: contato.guidReferenciaContato,
-					nome: contato.nome,
-					cargo: contato.cargo,
-					email: contato.email,
-					telefone: contato.telefone,
-					dataNascimento:
-						contato.dataNascimento != null
-							? new Date(contato.dataNascimento as string).toLocaleDateString()
-							: null,
-				};
-			});
+		this.clienteService
+			.getClienteById(this.uid)
+			.pipe(first())
+			.subscribe((event) => {
+				this.cliente = event;
+				this.isCnpj = event.cpfCnpj.length > 11;
+				//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
+				this.properties = [...event.imovel];
+				console.log(this.properties);
+				this.contacts = event.contato.map((contato: Contato) => {
+					return {
+						guidReferenciaContato: contato.guidReferenciaContato,
+						nome: contato.nome,
+						cargo: contato.cargo,
+						email: contato.email,
+						telefone: contato.telefone,
+						dataNascimento:
+							contato.dataNascimento != null
+								? new Date(contato.dataNascimento as string).toLocaleDateString(
+										'pt-BR'
+								  )
+								: null,
+						dataNascimentoOriginal: contato.dataNascimento,
+					};
+				});
+				console.log('->>>', this.contacts);
 
-			this.isLoadingView = false;
-		});
+				this.isLoadingView = false;
+			});
 	}
 
 	toggleClientDetails() {
@@ -163,8 +170,9 @@ export class ClientViewComponent implements OnInit {
 								contato.dataNascimento != null
 									? new Date(
 											contato.dataNascimento as string
-									  ).toLocaleDateString()
+									  ).toLocaleDateString('pt-BR')
 									: null,
+							dataNascimentoOriginal: contato.dataNascimento,
 						};
 					});
 				},
