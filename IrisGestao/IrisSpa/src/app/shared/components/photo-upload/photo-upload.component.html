@@ -1,0 +1,43 @@
+<div class="property-photos mb-5">
+	<div class="photo-scroller">
+		<label for="addPhoto" class="add-photo-button">
+			<i class="ph-plus"></i>
+			<div>Adicionar foto</div>
+			<input
+				pButton
+				type="file"
+				id="addPhoto"
+				(change)="addPhoto($event)"
+				class="hidden"
+				multiple
+				accept="image/*"
+			/>
+			<!-- <p-fileUpload
+				id="addPhoto"
+				mode="basic"
+				accept="image/*"
+				[maxFileSize]="10000000"
+				(onSelect)="addPhoto($event)"
+				[multiple]="true"
+			></p-fileUpload> -->
+		</label>
+		<ng-container *ngFor="let photo of photos; index as i">
+			<div class="photo">
+				<img [src]="photo.data" [alt]="photo.name" />
+				<button pButton type="button" (click)="removePhoto(i)">
+					<i class="ph-trash"></i>
+				</button>
+			</div>
+		</ng-container>
+		<ng-container *ngFor="let photo of addedBase64Photos; index as i">
+			<div class="photo">
+				<img [src]="photo.data" [alt]="photo.name" />
+				<button pButton type="button" (click)="removePhoto(i, true)">
+					<i class="ph-trash"></i>
+				</button>
+			</div>
+		</ng-container>
+	</div>
+
+	<div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+</div>

@@ -42,6 +42,7 @@ type DropdownItem = {
 })
 export class SupplierRegisterComponent implements OnInit {
 	uid: string = '';
+	supplierGuid: string = '';
 	isLoadingData: boolean = false;
 	registerForm: FormGroup;
 	currentStep: number = 1;
@@ -52,6 +53,8 @@ export class SupplierRegisterComponent implements OnInit {
 	supplier: any;
 	onInputDate: Function;
 	onBlurDate: Function;
+
+	isSubmitting = false;
 
 	isMobile = false;
 
@@ -145,6 +148,8 @@ export class SupplierRegisterComponent implements OnInit {
 		});
 
 		if (this.uid !== 'new') this.operacaoCriar = false;
+
+		this.supplierGuid = this.uid;
 
 		this.initForm();
 
@@ -355,6 +360,7 @@ export class SupplierRegisterComponent implements OnInit {
 			};
 		}
 
+		this.isSubmitting = true;
 		if (this.operacaoClonar) {
 			this.supplierService.createSupplier(data).subscribe({
 				next: (response: any) => {
@@ -373,6 +379,7 @@ export class SupplierRegisterComponent implements OnInit {
 					}
 
 					this.openModal();
+					this.isSubmitting = false;
 				},
 				error: (error: any) => {
 					console.error(error);
@@ -383,6 +390,7 @@ export class SupplierRegisterComponent implements OnInit {
 					};
 
 					this.openModal();
+					this.isSubmitting = false;
 				},
 			});
 		} else if (this.uid === 'new') {
@@ -403,6 +411,8 @@ export class SupplierRegisterComponent implements OnInit {
 					}
 
 					this.openModal();
+					this.isSubmitting = false;
+					this.supplierGuid = response.data.guidReferencia;
 				},
 				error: (error: any) => {
 					console.error(error);
@@ -413,6 +423,7 @@ export class SupplierRegisterComponent implements OnInit {
 					};
 
 					this.openModal();
+					this.isSubmitting = false;
 				},
 			});
 		} else {
@@ -432,6 +443,7 @@ export class SupplierRegisterComponent implements OnInit {
 					}
 
 					this.openModal();
+					this.isSubmitting = false;
 				},
 				error: (error: any) => {
 					console.error(error);
@@ -442,6 +454,7 @@ export class SupplierRegisterComponent implements OnInit {
 					};
 
 					this.openModal();
+					this.isSubmitting = false;
 				},
 			});
 		}
@@ -683,5 +696,9 @@ export class SupplierRegisterComponent implements OnInit {
 		this.displayModal = false;
 
 		if (onClose !== undefined) onClose(...params);
+	};
+
+	finishForm = () => {
+		this.navigateTo('supplier/details/' + this.supplierGuid);
 	};
 }

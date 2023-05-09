@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/internal/operators/first';
 import { Imovel, ImovelUnidadeType } from 'src/app/shared/models';
 import { DominiosService, ImovelService } from 'src/app/shared/services';
+import { AnexoService } from 'src/app/shared/services/anexo.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 
 import { Utils } from 'src/app/shared/utils';
@@ -27,8 +28,9 @@ type DropdownItem = {
 })
 export class UnitRegisterComponent implements OnInit {
 	registerForm: FormGroup;
-	uid: string = '';
+	propertyGuid: string = '';
 	isLoadingView: boolean = false;
+	isLoadingSubmit: boolean = false;
 	property: Imovel;
 	unitTypes: DropdownItem[] = [
 		{
@@ -37,7 +39,7 @@ export class UnitRegisterComponent implements OnInit {
 			disabled: true,
 		},
 	];
-	displayModal = false;
+	displayModal = true;
 	modalContent: {
 		isError?: boolean;
 		header?: string;
@@ -45,6 +47,9 @@ export class UnitRegisterComponent implements OnInit {
 	} = {
 		message: '',
 	};
+
+	selectedFiles: File[] = [];
+	selectedPhotos: File[] = [];
 
 	isMobile = false;
 
@@ -54,11 +59,12 @@ export class UnitRegisterComponent implements OnInit {
 		private location: Location,
 		private imovelService: ImovelService,
 		private dominiosService: DominiosService,
+		private anexoService: AnexoService,
 		private router: Router,
 		private responsiveService: ResponsiveService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
-			this.uid = paramMap.get('uid') ?? '';
+			this.propertyGuid = paramMap.get('uid') ?? '';
 		});
 
 		this.registerForm = this.fb.group({
@@ -113,25 +119,25 @@ export class UnitRegisterComponent implements OnInit {
 	}
 
 	saveChanges(): void {
-		this.isLoadingView = true;
+		this.isLoadingSubmit = true;
 
 		var data = {
 			IdTipoUnidade: this.registerForm.get('type')?.value,
 			Tipo: this.registerForm.get('name')?.value,
-			AreaUtil: this.registerForm.get('area_usable')?.value,
-			AreaTotal: this.registerForm.get('area_total')?.value,
-			AreaHabitese: this.registerForm.get('area_occupancy')?.value,
+			AreaUtil: +this.registerForm.get('area_usable')?.value,
+			AreaTotal: +this.registerForm.get('area_total')?.value,
+			AreaHabitese: +this.registerForm.get('area_occupancy')?.value,
 			Matricula: this.registerForm.get('occupancy')?.value,
 			InscricaoIptu: this.registerForm.get('iptu')?.value,
 			MatriculaEnergia: this.registerForm.get('neoenergia')?.value,
 			MatriculaAgua: this.registerForm.get('caesb')?.value,
-			TaxaAdministracao: this.registerForm.get('administration')?.value,
-			ValorPotencial: this.registerForm.get('potential')?.value,
+			TaxaAdministracao: +this.registerForm.get('administration')?.value,
+			ValorPotencial: +this.registerForm.get('potential')?.value,
 			UnidadeLocada: false,
 		} as ImovelUnidadeType;
 
 		const newi = this.imovelService
-			.createUnit(this.uid, data)
+			.createUnit(this.propertyGuid, data)
 			.pipe(first())
 			.subscribe({
 				next: (response: any) => {
@@ -140,16 +146,31 @@ export class UnitRegisterComponent implements OnInit {
 							header: 'Cadastro realizado com sucesso',
 							message: response.message,
 						};
+
+						const photoSubmit = this.savePhotos(response.guidReferencia);
+						const docSubmit = this.saveDocs(response.guidReferencia);
+
+						Promise.all([photoSubmit, docSubmit])
+							.then((response) => {
+								console.log('Upload de arquivos: ', response);
+							})
+							.catch((err) => {
+								console.error('Erro no upload de arquivos: ', err);
+							})
+							.finally(() => {
+								this.openModal();
+								this.isLoadingSubmit = false;
+							});
 					} else {
 						this.modalContent = {
 							header: 'Cadastro não realizada',
 							message: response.message,
 							isError: true,
 						};
-					}
 
-					this.openModal();
-					this.isLoadingView = false;
+						this.openModal();
+						this.isLoadingSubmit = false;
+					}
 				},
 				error: (error: any) => {
 					console.error(error);
@@ -160,7 +181,7 @@ export class UnitRegisterComponent implements OnInit {
 					};
 
 					this.openModal();
-					this.isLoadingView = false;
+					this.isLoadingSubmit = false;
 				},
 			});
 	}
@@ -169,7 +190,7 @@ export class UnitRegisterComponent implements OnInit {
 		this.isLoadingView = true;
 
 		const view = this.imovelService
-			.getProperty(this.uid)
+			.getProperty(this.propertyGuid)
 			?.pipe(first())
 			.subscribe((imovel: Imovel) => {
 				this.property = imovel;
@@ -205,6 +226,84 @@ export class UnitRegisterComponent implements OnInit {
 		});
 	}
 
+	onAttachmentSelect(fileList: File[]) {
+		this.selectedFiles = fileList;
+	}
+
+	onPhotoSelect(fileList: File[]) {
+		this.selectedPhotos = fileList;
+		console.log(this.selectedPhotos);
+	}
+
+	savePhotos(unitGuid: string) {
+		if (this.selectedPhotos.length === 0) return null;
+
+		const formData = new FormData();
+
+		this.selectedPhotos.forEach((file) => {
+			formData.append('files', file);
+		});
+
+		console.debug('sending', formData);
+
+		return new Promise<{
+			classificacao: 'foto';
+			response?: any;
+			err?: any;
+		}>((res, rej) => {
+			this.anexoService
+				.registerFile(unitGuid, formData, 'foto')
+				.pipe(first())
+				.subscribe({
+					next(response) {
+						if (response.success) res({ classificacao: 'foto', response });
+						else
+							rej({ classificacao: 'foto', response, err: response.message });
+					},
+					error(err) {
+						rej({ classificacao: 'foto', err });
+					},
+				});
+		});
+	}
+
+	saveDocs(unitGuid: string) {
+		if (this.selectedFiles.length === 0) return;
+
+		const formData = new FormData();
+
+		this.selectedFiles.forEach((file) => {
+			formData.append('files', file);
+		});
+
+		console.debug('sending', formData);
+
+		return new Promise<{
+			classificacao: 'outrosdocs';
+			response?: any;
+			err?: any;
+		}>((res, rej) => {
+			this.anexoService
+				.registerFile(unitGuid, formData, 'outrosdocs')
+				.pipe(first())
+				.subscribe({
+					next(response) {
+						if (response.success)
+							res({ classificacao: 'outrosdocs', response });
+						else
+							rej({
+								classificacao: 'outrosdocs',
+								response,
+								err: response.message,
+							});
+					},
+					error(err) {
+						rej({ classificacao: 'outrosdocs', err });
+					},
+				});
+		});
+	}
+
 	openModal() {
 		console.log('openning modal');
 		this.displayModal = true;
@@ -218,5 +317,9 @@ export class UnitRegisterComponent implements OnInit {
 
 	navigateTo = (route: string) => {
 		this.router.navigate([route]);
+	};
+
+	finishForm = () => {
+		this.navigateTo('property/details/' + this.propertyGuid);
 	};
 }

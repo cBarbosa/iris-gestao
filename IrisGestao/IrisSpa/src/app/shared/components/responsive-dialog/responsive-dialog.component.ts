@@ -24,6 +24,9 @@ export class ResponsiveDialogComponent {
 	@Input()
 	styleClass: string;
 
+	@Input()
+	onHide: Function;
+
 	emitVisibleChange(value: boolean) {
 		this.visibleChange.emit(value);
 	}
