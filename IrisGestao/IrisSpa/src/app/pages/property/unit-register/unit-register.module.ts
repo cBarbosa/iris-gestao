@@ -15,6 +15,10 @@ import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/sp
 import { NgxMaskModule } from 'ngx-mask';
 import { TabViewModule } from 'primeng/tabview';
 import { SidebarModule } from 'primeng/sidebar';
+import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
+import { PhotoUploadComponent } from 'src/app/shared/components/photo-upload/photo-upload.component';
+import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
 
 @NgModule({
 	declarations: [UnitRegisterComponent],
@@ -33,6 +37,9 @@ import { SidebarModule } from 'primeng/sidebar';
 		NgxMaskModule,
 		TabViewModule,
 		SidebarModule,
+		FileUploadComponent,
+		PhotoUploadComponent,
+		ResponsiveDialogComponent,
 	],
 })
 export class UnitRegisterModule {}

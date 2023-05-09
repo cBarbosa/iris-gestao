@@ -551,10 +551,11 @@
 				label="Continuar"
 				class="h-11"
 				(click)="nextStep()"
+				[disabled]="isSubmitting"
 			></button>
-			<div class="error" *ngIf="registerForm.hasError('yourErrorName')">
+			<!-- <div class="error" *ngIf="registerForm.hasError('yourErrorName')">
 				Some text
-			</div>
+			</div> -->
 		</div>
 	</form>
 </ng-template>
@@ -576,6 +577,7 @@
 	[isMobile]="isMobile"
 	[visible]="displayModal"
 	styleClass="form-modal"
+	[onHide]="finishForm"
 >
 	<div *ngIf="!modalContent.isError; else error" class="modal-success">
 		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>

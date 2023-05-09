@@ -75,7 +75,9 @@ export class ContatoService {
 
 	getContactsBySuppleirId(supplierGuid: string) {
 		return this.http
-			.get<ApiResponse>(`${env.config.apiUrl}Contato/${supplierGuid}/fornecedor`)
+			.get<ApiResponse>(
+				`${env.config.apiUrl}Contato/${supplierGuid}/fornecedor`
+			)
 			.pipe(
 				map((response) => {
 					if (!response.success)
