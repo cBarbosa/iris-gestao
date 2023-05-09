@@ -67,6 +67,64 @@ public class FornecedorRepository : Repository<Fornecedor>, IFornecedorRepositor
                                 DataCriacao = z.DataCriacao,
                                 DataAtualização = z.DataUltimaModificacao,
                                 guidReferenciaContato  = z.GuidReferencia,
+                            }),
+                            Contratos = x.ContratoFornecedor.Select(x => new
+                            {
+                                NumeroContrato = x.NumeroContrato,
+                                Percentual = x.Percentual,
+                                DataAtualizacao = x.DataAtualizacao,
+                                ValorServicoContratado = x.ValorServicoContratado,
+                                DataInicioContrato = x.DataInicioContrato,
+                                PrazoTotalMeses = x.PrazoTotalMeses,
+                                DataFimContrato = x.DataFimContrato,
+                                DiaPagamento = x.DiaPagamento,
+                                PeriodicidadeReajuste = x.PeriodicidadeReajuste,
+                                GuidReferencia = x.GuidReferencia,
+                                DataCriacao = x.DataCriacao,
+                                DataAtualização = x.DataUltimaModificacao,
+                                Status = x.Status,
+                                DescricaoServico = x.DescricaoServico,
+                                ExibirAlertaVencimento = (x.DataFimContrato - DateTime.Now).Days <= 90 ? true : false,
+                                Imovel = x.IdImovelNavigation == null ? null : new
+                                {
+                                    GuidReferencia = x.IdImovelNavigation.GuidReferencia,
+                                    Nome = x.IdImovelNavigation.Nome,
+                                    NumCentroCusto = x.IdImovelNavigation.NumCentroCusto,
+                                    Status = x.IdImovelNavigation.Status,
+                                    AreaTotal = x.IdImovelNavigation.Unidade.Where(x => x.Status).Sum(x => x.AreaTotal),
+                                    AreaUtil = x.IdImovelNavigation.Unidade.Where(x => x.Status).Sum(x => x.AreaUtil),
+                                    AreaHabitese = x.IdImovelNavigation.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
+                                    NroUnidades = x.IdImovelNavigation.Unidade.Where(x => x.Status).Count(),
+                                    ImovelEndereco = x.IdImovelNavigation.ImovelEndereco,
+                                    IdCategoriaImovelNavigation = x.IdImovelNavigation.IdCategoriaImovelNavigation == null ? null : new
+                                    {
+                                        Id = x.IdImovelNavigation.IdCategoriaImovelNavigation.Id,
+                                        Nome = x.IdImovelNavigation.IdCategoriaImovelNavigation.Nome
+                                    },
+                                    IdClienteProprietarioNavigation = x.IdImovelNavigation.IdClienteProprietarioNavigation == null ? null : new
+                                    {
+                                        CpfCnpj = x.IdImovelNavigation.IdClienteProprietarioNavigation.CpfCnpj,
+                                        Nome = x.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
+                                        Telefone = x.IdImovelNavigation.IdClienteProprietarioNavigation.Telefone
+                                    }
+                                },
+                                IndiceReajuste = x.IdIndiceReajusteNavigation == null ? null : new
+                                {
+                                    Id = x.IdIndiceReajusteNavigation.Id,
+                                    Nome = x.IdIndiceReajusteNavigation.Nome,
+                                    Percentual = x.IdIndiceReajusteNavigation.Percentual,
+                                    DataAtualizacao = x.IdIndiceReajusteNavigation.DataAtualizacao,
+                                },
+                                FormaPagamento = x.IdFormaPagamentoNavigation == null ? null : new
+                                {
+                                    Id = x.IdFormaPagamentoNavigation.Id,
+                                    Nome = x.IdFormaPagamentoNavigation.Nome
+                                },
+                                TipodeServico = x.IdTipoServicoNavigation == null ? null : new
+                                {
+                                    Id = x.IdTipoServicoNavigation.Id,
+                                    Nome = x.IdTipoServicoNavigation.Nome
+                                },
                             })
                         })
                         .FirstOrDefaultAsync();
