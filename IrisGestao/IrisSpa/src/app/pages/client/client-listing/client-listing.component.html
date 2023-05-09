@@ -1,40 +1,32 @@
 <div class="header-background"></div>
 <div class="content-wrapper">
 	<div class="content">
-		<header class="flex justify-between py-9">
-			<h3 class="text-2xl font-bold">
-				Clientes
-				<span class="ml-2 text-sm text-slate-600">{{ totalClientCount }}</span>
-			</h3>
+		<header class="list-header">
+			<div class="flex justify-between items-center" [class.mb-2]="isMobile">
+				<h3 class="text-2xl font-bold">
+					Clientes
+					<span class="ml-2 text-sm text-slate-600">{{ totalClientCount }}</span>
+				</h3>
+				<button
+					pButton
+					pRipple
+					type="button"
+					icon="pi pi-sliders-h"
+					class="p-button-rounded p-button-text"
+					*ngIf="isMobile"
+					(click)="openFilters()"
+				></button>
+			</div>
 
 			<div class="options">
-				<span class="p-input-icon-left mx-2">
-					<i class="pi pi-search"></i>
-					<input
-						pInputText
-						class="white-theme"
-						[(ngModel)]="filterText"
-						(ngModelChange)="filterClientDebounce($event)"
-						type="text"
-						placeholder="Buscar cliente"
-					/>
-				</span>
-
-				<p-dropdown
-					class="mx-2"
-					styleClass="w-44 white-theme"
-					placeholder="Tipo de cliente"
-					id="IdTipoCliente"
-					[options]="tiposCliente"
-					aria-describedby="client-type-help"
-					[(ngModel)]="filterType"
-					(ngModelChange)="filterClientDebounce($event)"
-				></p-dropdown>
+				<ng-container *ngIf="!isMobile">
+					<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+				</ng-container>
 
 				<button
 					pButton
 					type="button"
-					class="p-button-outlined h-9 white-theme"
+					class="p-button-outlined h-9 addButton"
 					(click)="navigateTo('client/register/new')"
 				>
 					<i class="pi pi-plus mr-3"></i>
@@ -42,76 +34,163 @@
 				</button>
 			</div>
 		</header>
-		<ng-container>
-			<ng-container *ngIf="isLoadingClients">
-				<app-spinner styleClass="mt-11"></app-spinner>
-			</ng-container>
-			<ng-container *ngIf="!isLoadingClients && noRestults">
-				<div class="no-results-warn">
-					<span>Nenhum resultado</span>
-				</div>
-			</ng-container>
 
-			<p-table
-				[value]="clientEntries"
-				styleClass="p-datatable-striped"
-				[tableStyle]="{ 'min-width': '50rem' }"
-				[paginator]="!noRestults && !isLoadingClients"
-				[rows]="rows"
-				[(first)]="first"
-				responsiveLayout="scroll"
-				[totalRecords]="totalClientCount"
-				[lazy]="true"
-				(onLazyLoad)="loadClientsPage($event)"
-			>
-				<ng-template pTemplate="header">
-					<tr *ngIf="!isLoadingClients && !noRestults">
-						<th>Nome/Razão social</th>
-						<th>CPF/CNPJ</th>
-						<th>Aniversário</th>
-						<!-- <th>Tipo de cliente</th> -->
-						<th></th>
-					</tr>
-				</ng-template>
-				<ng-template pTemplate="body" let-client>
-					<tr>
-						<td class="font-bold">{{ client.name }}</td>
-						<td>{{ client.cpf_cnpj | cpfcnpj }}</td>
-						<td>
-							{{ client.birthday | date : "shortDate" }}
-						</td>
-						<!-- <td>{{ client.client_type }}</td> -->
-						<!--td class="w-24">
-					<ng-container *ngIf="client.status === 'inativo'; else ativo">
-						<p-tag
-							value="Inativo"
-							[rounded]="true"
-							severity="danger"
-							styleClass="w-20"
-						></p-tag>
-					</ng-container>
-					<ng-template #ativo>
-						<p-tag
-							value="Ativo"
-							[rounded]="true"
-							severity="success"
-							styleClass="w-20"
-						></p-tag>
-					</ng-template>
-				</td-->
-						<td class="action w-40">
-							<button
-								pButton
-								type="button"
-								class="p-button-text h-7"
-								(click)="navigateTo('client/details/' + client.guidReferencia)"
-							>
-								Ver detalhes
-							</button>
-						</td>
-					</tr>
-				</ng-template>
-			</p-table>
+		<ng-template #filtersTemplate>
+			<span class="p-input-icon-left mx-2">
+				<i class="pi pi-search"></i>
+				<input
+					pInputText
+					[class.white-theme]="!isMobile"
+					[(ngModel)]="filterText"
+					(ngModelChange)="filterClientDebounce($event)"
+					type="text"
+					placeholder="Buscar cliente"
+				/>
+			</span>
+
+			<p-dropdown
+				class="mx-2"
+				[styleClass]="'w-full md:w-44' + (isMobile ? '' : ' white-theme')"
+				placeholder="Tipo de cliente"
+				id="IdTipoCliente"
+				[options]="tiposCliente"
+				aria-describedby="client-type-help"
+				[(ngModel)]="filterType"
+				(ngModelChange)="filterClientDebounce($event)"
+			></p-dropdown>
+		</ng-template>
+
+		<ng-container *ngIf="isLoadingClients">
+			<app-spinner styleClass="mt-11"></app-spinner>
+		</ng-container>
+		<ng-container *ngIf="!isLoadingClients && noRestults">
+			<div class="no-results-warn">
+				<span>Nenhum resultado</span>
+			</div>
+		</ng-container>
+
+		<p-table
+			*ngIf="!isMobile"
+			[value]="clientEntries"
+			styleClass="p-datatable-striped"
+			[tableStyle]="{ 'min-width': '50rem' }"
+			[paginator]="!noRestults && !isLoadingClients"
+			[rows]="rows"
+			[(first)]="first"
+			responsiveLayout="scroll"
+			[totalRecords]="totalClientCount"
+			[lazy]="true"
+			(onLazyLoad)="loadClientsPage($event)"
+		>
+			<ng-template pTemplate="header">
+				<tr *ngIf="!isLoadingClients && !noRestults">
+					<th>Nome/Razão social</th>
+					<th>CPF/CNPJ</th>
+					<th>Aniversário</th>
+					<th>Tipo de cliente</th>
+					<th></th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-client>
+				<tr>
+					<td class="font-bold">{{ client.name }}</td>
+					<td>{{ client.cpf_cnpj | cpfcnpj }}</td>
+					<td>
+						{{ client.birthday | date : "shortDate" }}
+					</td>
+					<!-- <td>{{ client.client_type }}</td> -->
+					<td>
+						<ng-container *ngIf="client.hasImovel">
+							<p-tag
+								value="Proprietário"
+								[rounded]="true"
+								severity="success"
+								styleClass="w-20"
+							></p-tag>
+						</ng-container>
+						<ng-container *ngIf="client.hasContrato">
+							<p-tag
+								value="Locatário"
+								[rounded]="true"
+								severity="success"
+								styleClass="w-20"
+							></p-tag>
+						</ng-container>
+					</td>
+					<td class="action w-40">
+						<button
+							pButton
+							type="button"
+							class="p-button-text h-7"
+							(click)="navigateTo('client/details/' + client.guidReferencia)"
+						>
+							Ver detalhes
+						</button>
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+
+		<ng-container *ngIf="isMobile">
+			<div class="cardList">
+				<ng-container *ngFor="let client of clientEntries">
+					<app-card-item
+						[card]="{
+							tags: [
+								client.hasImovel && {
+									value: 'Proprietário',
+									severity: 'success'
+								},
+								client.hasContrato && {
+									value: 'Locatário',
+									severity: 'success'
+								}
+							],
+							infos: [
+								{ label: 'Nome', data: client.name },
+								{
+									label: 'CPF',
+									data: client.cpf_cnpj,
+									pipe: cardPipes['cpfcnpj']
+								},
+								{
+									label: 'Aniversário',
+									data: client.birthday,
+									pipe: cardPipes['date']
+								}
+							]
+						}"
+					>
+						<button
+							pButton
+							type="button"
+							class="p-button-text h-7 font-bold"
+							(click)="navigateTo('client/details/' + client.guidReferencia)"
+						>
+							Ver detalhes
+						</button>
+					</app-card-item>
+				</ng-container>
+
+				<div class="mx-5 mt-5">
+					<button
+						pButton
+						type="button"
+						class="p-button-outlined h-9 justify-center w-full"
+						(click)="loadClientEntries()"
+						*ngIf="clientEntries.length < totalClientCount"
+					>
+						Carregar mais
+					</button>
+				</div>
+			</div>
 		</ng-container>
 	</div>
 </div>
+
+<p-sidebar [(visible)]="displayMobileFilters" position="bottom">
+	<ng-template pTemplate="header">Filtros</ng-template>
+	<ng-template pTemplate="content">
+		<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+	</ng-template>
+</p-sidebar>

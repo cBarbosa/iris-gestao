@@ -1,0 +1,200 @@
+<ng-container *ngIf="isLoadingView; else details">
+	<div class="flex relative justify-center items-center w-full h-full pt-20">
+		<div class="w-full max-w-3xl">
+			<app-spinner text="Carregando"></app-spinner>
+		</div>
+	</div>
+</ng-container>
+<ng-template #details>
+	<div class="contract-view">
+		<div class="content">
+			<section class="contract">
+				<h2>Detalhe do contrato de fornecedor</h2>
+
+				<div class="main-card">
+					<header>
+						<h3>
+							{{ contract?.descricaoServico }}
+							<span>Contrato {{ contract?.numeroContrato }}</span>
+							<!-- <span>{{ cliente?.idTipoClienteNavigation?.nome }}</span> -->
+						</h3>
+						<div class="actions">
+							<button
+								pButton
+								type="button"
+								class="p-element h-9 p-button p-component p-button-outlined"
+								(click)="
+									navigateTo('supplier/register/' + contract.guidReferencia)
+								"
+								[disabled]="true"
+							>
+								Editar contrato
+							</button>
+							<!--button pButton type="button" class="p-button-outlined h-7"
+						(click)="navigateTo('client/register/'+ cliente.guidReferencia + '/Clone')">
+							Duplicar
+						</button-->
+						</div>
+					</header>
+
+					<p-panel
+						[header]="
+							displayContractDetails ? 'Menos Detalhes' : 'Mais detalhes'
+						"
+						[toggleable]="true"
+						[collapsed]="!displayContractDetails"
+						(onBeforeToggle)="toggleClientDetails()"
+						styleClass="mt-3"
+						*ngIf="isMobile"
+					>
+						<ng-container
+							*ngTemplateOutlet="contractInfoTemplate"
+						></ng-container>
+					</p-panel>
+
+					<ng-container *ngIf="!isMobile">
+						<ng-container
+							*ngTemplateOutlet="contractInfoTemplate"
+						></ng-container>
+					</ng-container>
+
+					<ng-template #contractInfoTemplate>
+						<div class="contract-info">
+							<div class="contract-data">
+								<div class="data-label">Prestador de serviço</div>
+								<div class="data-value">
+									{{ contract?.fornecedor.nome | cpfcnpj }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">CNPJ</div>
+								<div class="data-value">
+									{{ contract?.fornecedor.cpfCnpj | cpfcnpj }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Valor do serviço</div>
+								<div class="data-value">
+									{{ contract?.valorServicoContratado | currency }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Dia do pagamento</div>
+								<div class="data-value">
+									Todo dia
+									{{ contract?.diaPagamento.toString().padStart(2, "0") }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Data início do contrato</div>
+								<div class="data-value">
+									{{ contract?.dataInicioContrato | date : "shortDate" }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Data final do contrato</div>
+								<div class="data-value">
+									{{ contract?.dataFimContrato | date : "shortDate" }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Total de meses</div>
+								<div class="data-value">{{ contract?.prazoTotalMeses }}</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Forma de pagamento</div>
+								<div class="data-value">
+									{{ contract?.formaPagamento.nome }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Índice do contrato</div>
+								<div class="data-value">
+									{{ contract?.indiceReajuste.nome }}
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Periodicidade de reajuste</div>
+								<div class="data-value">
+									{{ contract?.periodicidadeReajuste }} meses
+								</div>
+							</div>
+							<div class="contract-data">
+								<div class="data-label">Centro de custo</div>
+								<div class="data-value">
+									{{ contract?.imovel.numCentroCusto }}
+								</div>
+							</div>
+						</div>
+					</ng-template>
+				</div>
+			</section>
+
+			<section class="property" *ngIf="property">
+				<h2>Imóveis cadastrados no cliente</h2>
+
+				<div class="flex flex-col gap-6">
+					<app-property-list [properties]="[property]"></app-property-list>
+				</div>
+			</section>
+
+			<section class="attachments">
+				<h2>Anexos</h2>
+				<app-attachment-list [guid]="guid"></app-attachment-list>
+
+				<!-- <div class="attachments-card">
+					<button
+						type="button"
+						class="attachment"
+						*ngIf="attachmentDocs.projeto"
+						(click)="
+							downloadFile(
+								attachmentDocs.projeto.local,
+								attachmentDocs.projeto.nome
+							)
+						"
+					>
+						<span class="icon">
+							<app-icon name="att-proj" size="1.5rem"></app-icon>
+						</span>
+						<span class="label">Projeto</span>
+					</button>
+
+					<button
+						type="button"
+						class="attachment"
+						*ngIf="attachmentDocs.matricula"
+						(click)="
+							downloadFile(
+								attachmentDocs.matricula.local,
+								attachmentDocs.matricula.nome
+							)
+						"
+					>
+						<span class="icon">
+							<app-icon name="att-mat" size="1.5rem"></app-icon>
+						</span>
+						<span class="label">Matrícula</span>
+					</button>
+
+					<button
+						type="button"
+						class="attachment"
+						*ngIf="attachmentDocs.habitese"
+						(click)="
+							downloadFile(
+								attachmentDocs.habitese.local,
+								attachmentDocs.habitese.nome
+							)
+						"
+					>
+						<span class="icon">
+							<app-icon name="att-hab" size="1.5rem"></app-icon>
+						</span>
+						<span class="label">Habite-se</span>
+					</button>
+				</div> -->
+			</section>
+		</div>
+	</div>
+</ng-template>

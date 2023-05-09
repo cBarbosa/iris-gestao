@@ -17,6 +17,16 @@ import {
 	DominiosService,
 	ImovelService,
 } from 'src/app/shared/services';
+import {
+	CnpjValidator,
+	CpfValidator,
+	EmailValidator,
+} from 'src/app/shared/validators/custom-validators';
+import {
+	AnexoService,
+	ArquivoClassificacoes,
+} from 'src/app/shared/services/anexo.service';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 
 type Step = {
 	label: string;
@@ -40,12 +50,17 @@ type DropdownItem = {
 export class RentContractRegisterComponent {
 	registerForm: FormGroup;
 	propertyAddForm: FormGroup;
+	registerRenterForm: FormGroup;
+
+	registerRenterVisible = false;
 
 	stepList: Step[];
 	currentStep: number;
 
 	onInputDate: Function;
 	onBlurDate: Function;
+
+	isMobile = false;
 
 	linkedProperties: {
 		nome: string;
@@ -85,7 +100,11 @@ export class RentContractRegisterComponent {
 		},
 	];
 
-	//??? QUAIS DIAS
+	renterTypes: DropdownItem[] = [
+		{ label: 'Pessoa física', value: 'cpf' },
+		{ label: 'Pessoa jurídica', value: 'cnpj' },
+	];
+
 	dueDates: DropdownItem[] = Array.from({ length: 31 }, (v, k) => {
 		return { label: 'Todo dia ' + (k + 1), value: k + 1, disabled: false };
 	});
@@ -140,6 +159,8 @@ export class RentContractRegisterComponent {
 
 	units: DropdownItem[] = [];
 
+	attachments: File[] = [];
+
 	constructor(
 		private fb: FormBuilder,
 		private location: Location,
@@ -148,7 +169,9 @@ export class RentContractRegisterComponent {
 		private dominiosService: DominiosService,
 		private commonService: CommonService,
 		private imovelService: ImovelService,
-		private clienteService: ClienteService
+		private clienteService: ClienteService,
+		private anexoService: AnexoService,
+		private responsiveService: ResponsiveService
 	) {}
 
 	ngOnInit() {
@@ -170,6 +193,10 @@ export class RentContractRegisterComponent {
 			},
 		];
 
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
+
 		this.registerForm = this.fb.group({
 			contractInfo: this.fb.group({
 				numero: ['', Validators.required],
@@ -178,7 +205,8 @@ export class RentContractRegisterComponent {
 				dataInicio: [null, Validators.required],
 				// dataFim: [null, Validators.required],
 				dataOcupacao: [null, Validators.required],
-				dataVencimento: [1, Validators.required],
+				//dataVencimento: [1, Validators.required],
+				dataVencimentoPrimeraParcela: [null, Validators.required],
 			}),
 			valuesInfo: this.fb.group({
 				valor: ['', Validators.required],
@@ -201,6 +229,15 @@ export class RentContractRegisterComponent {
 		this.propertyAddForm = this.fb.group({
 			edificio: [null, Validators.required],
 			unidade: [null, [Validators.required]],
+		});
+
+		this.registerRenterForm = this.fb.group({
+			name: ['', [Validators.required]],
+			tipoCliente: ['cpf', [Validators.required]],
+			cpfCnpj: ['', [Validators.required]],
+			birthday: ['', [Validators.required]],
+			email: ['', [Validators.required, EmailValidator]],
+			telephone: ['', [Validators.required]],
 		});
 
 		this.propertyAddForm.controls['unidade'].disable();
@@ -231,16 +268,7 @@ export class RentContractRegisterComponent {
 			}
 		});
 
-		this.clienteService.getListaProprietarios().subscribe((event) => {
-			if (event) {
-				event.data.forEach((item: any) => {
-					this.renters.push({
-						label: item.nome,
-						value: item.guidReferencia,
-					});
-				});
-			}
-		});
+		this.getListaProprietarios();
 
 		this.dominiosService.getTiposCreditoAluguel().subscribe((event) => {
 			if (event) {
@@ -289,6 +317,69 @@ export class RentContractRegisterComponent {
 
 	checkHasError(c: AbstractControl) {
 		return Utils.checkHasError(c);
+	}
+
+	getListaProprietarios() {
+		this.clienteService
+			.getListaProprietarios()
+			.pipe(first())
+			.subscribe((event) => {
+				if (event) {
+					this.renters = [
+						{
+							label: 'Selecione',
+							value: null,
+							disabled: true,
+						},
+					];
+					event.data.forEach((item: any) => {
+						this.renters.push({
+							label: item.nome,
+							value: item.guidReferencia,
+						});
+					});
+				}
+			});
+	}
+
+	setNewRenter: () => void = () => {};
+
+	get CpfCnpjMask() {
+		if (this.registerRenterForm.controls['tipoCliente'].value === 'cpf')
+			return '000.000.000-00';
+		return '00.000.000/0000-00';
+	}
+
+	get currCpfCnpj() {
+		if (this.registerRenterForm.controls['tipoCliente'].value === 'cpf')
+			return 'CPF';
+		return 'CNPJ';
+	}
+
+	get isCnpj() {
+		if (this.registerRenterForm.controls['tipoCliente'].value === 'cpf')
+			return false;
+		return true;
+	}
+
+	renterTypeChange() {
+		if (this.registerRenterForm.controls['tipoCliente'].value === 'cpf') {
+			this.registerRenterForm.controls['cpfCnpj'].setValidators([
+				Validators.required,
+				CpfValidator,
+			]);
+			this.registerRenterForm.controls['birthday'].setValidators(
+				Validators.required
+			);
+		} else {
+			this.registerRenterForm.controls['cpfCnpj'].setValidators([
+				Validators.required,
+				CnpjValidator,
+			]);
+			this.registerRenterForm.controls['birthday'].setValidators(null);
+		}
+		this.registerRenterForm.controls['cpfCnpj'].updateValueAndValidity();
+		this.registerRenterForm.controls['birthday'].updateValueAndValidity();
 	}
 
 	changeStep(step: number) {
@@ -394,76 +485,7 @@ export class RentContractRegisterComponent {
 			return;
 		}
 
-		/*{
-    "guidCliente": "5bda2407-e4be-48c0-9aae-7351662d978d",
-    "idTipoCreditoAluguel": 1,
-    "idIndiceReajuste": 2,
-    "idTipoContrato": 2,
-    "numeroContrato": "1239854768401",
-    "valorAluguel": 1.000,
-    "percentualRetencaoImpostos": 5.0,
-    "percentualDescontoAluguel": 10.0,
-    "carenciaAluguel": true,
-    "prazoCarencia": 24,
-    "dataInicioContrato": "2023-01-22T00:00:00.0000Z",
-    "prazoTotalContrato": 24,
-    "dataOcupacao": "2023-02-01T00:00:00.000Z",
-    "diaVencimentoAluguel": 5,
-    "periodicidadeReajuste": 12,
-    "lstImoveis": [
-        {
-            "guidImovel": "0f9a10da-e223-4282-819d-46f0fa8d7f21",
-            "lstUnidades": [
-                "2DD43519-34FD-4A19-9A76-8F5859B6B2FC",
-                "00a6237c-c12a-4854-b70f-1ce001b89f20"
-            ]
-        },
-        {
-            "guidImovel": "5b6ae81a-556f-4603-8b7f-f9e876740c58",
-            "lstUnidades": [
-                "28C34BCF-C531-4F52-9972-E604AEEBD9EA",
-                "B24F12ED-14F7-4538-86D7-3E233D26D7B4"
-            ]
-        },
-        {
-            "guidImovel": "20767265-c3b7-4681-a679-31b6304cff71",
-            "lstUnidades": [
-                "d60bbe64-d98a-44be-8e91-c8be0ce0f236"
-            ]
-        }
-    ]
-}*/
-
-		/*
-{
-    "contractInfo": {
-        "nome": "nome do contrato",
-        "tipo": -1,
-        "locatario": -1,
-        "dataInicio": "2023-02-07T03:00:00.000Z",
-        "dataFim": "2023-02-08T03:00:00.000Z",
-        "dataOcupacao": "2023-02-09T03:00:00.000Z",
-        "dataVencimento": -1
-    },
-    "valuesInfo": {
-        "valor": 10,
-        "valorLiquido": 20,
-        "retencao": "30",
-        "desconto": -1,
-        "descontoPrazo": -1,
-        "reajuste": -1,
-        "periodicidade": -1,
-        "carencia": false,
-        "carenciaPrazo": -1,
-        "creditarPara": -1
-    },
-    "attachmentsInfo": {
-        "attachment": null
-    }
-}
-*/
-
-		let formData: {
+		const formData: {
 			contractInfo: {
 				numero: string; // x
 				tipo: number; // x
@@ -472,6 +494,7 @@ export class RentContractRegisterComponent {
 				// dataFim: string;
 				dataOcupacao: string; // x
 				dataVencimento: number; // x
+				dataVencimentoPrimeraParcela: string;
 			};
 			valuesInfo: {
 				valor: number; // x
@@ -490,8 +513,6 @@ export class RentContractRegisterComponent {
 			};
 		} = this.registerForm.getRawValue();
 
-		console.log('formData', formData);
-
 		const contractObj: ContratoAluguel = {
 			guidCliente: formData.contractInfo.locatario,
 			idTipoCreditoAluguel: formData.valuesInfo.creditarPara,
@@ -507,6 +528,7 @@ export class RentContractRegisterComponent {
 			prazoTotalContrato: +formData.valuesInfo.descontoPrazo, //???
 			dataOcupacao: formData.contractInfo.dataOcupacao,
 			diaVencimentoAluguel: formData.contractInfo.dataVencimento,
+			dataVencimentoPrimeraParcela: formData.contractInfo.dataVencimentoPrimeraParcela,
 			periodicidadeReajuste: +formData.valuesInfo.periodicidade,
 			lstImoveis: this.linkedProperties.map((p) => {
 				return {
@@ -516,12 +538,16 @@ export class RentContractRegisterComponent {
 			}),
 		};
 
+		console.debug('contractObj', contractObj);
+
 		this.rentContractService
 			.registerContract(contractObj)
 			.pipe(first())
 			.subscribe({
 				next: (response: any) => {
 					if (response.success) {
+						registerAttachments(response.data.guidReferencia);
+
 						this.modalContent = {
 							header: 'Cadastro realizado com sucesso',
 							message: response.message,
@@ -547,18 +573,43 @@ export class RentContractRegisterComponent {
 					this.openModal();
 				},
 			});
+
+		const registerAttachments = (guid: string) => {
+			const formData = new FormData();
+			this.attachments.forEach((file) => {
+				formData.append('files', file);
+			});
+			this.anexoService.registerFile(guid, formData, 'outrosdocs').subscribe();
+		};
 	}
 
 	onProprietarySubmit(e: any = null) {
-		const formData = this.propertyAddForm.getRawValue();
+		const formData: {
+			edificio: {
+				guid: string;
+				name: string;
+			};
+			unidade: {
+				guid: string;
+				name: string;
+			}[];
+		} = this.propertyAddForm.getRawValue();
 
 		if (this.editingLinkedProperty === null) {
-			this.linkedProperties.push({
-				nome: formData.edificio.name,
-				guid: formData.edificio.guid,
-				tipo: 'Edifício Coorporativo',
-				unidades: formData.unidade,
+			const isDuplicate = this.linkedProperties.some(({ unidades }) => {
+				return unidades.some(({ guid: linkedGuid }) => {
+					return formData.unidade.some(({ guid }) => linkedGuid === guid);
+				});
 			});
+
+			if (!isDuplicate) {
+				this.linkedProperties.push({
+					nome: formData.edificio.name,
+					guid: formData.edificio.guid,
+					tipo: 'Edifício Coorporativo',
+					unidades: formData.unidade,
+				});
+			}
 		} else {
 			const index = this.linkedProperties.findIndex(
 				(p) => p.guid === this.editingLinkedProperty
@@ -581,6 +632,86 @@ export class RentContractRegisterComponent {
 		this.propertyAddForm.reset();
 
 		this.hideAddProperty();
+	}
+
+	onRenterSubmit() {
+		if (this.registerRenterForm.invalid) {
+			this.registerRenterForm.markAllAsTouched();
+			return;
+		}
+
+		const renterFormData = this.registerRenterForm.getRawValue();
+		console.log(renterFormData);
+
+		const renterObj = {
+			nome: renterFormData.name,
+			cpfCnpj: renterFormData.cpfCnpj.toString(),
+			dataNascimento: renterFormData.birthday
+				? (renterFormData.birthday as Date).toISOString()
+				: null,
+			email: renterFormData.email,
+			telefone: renterFormData.telephone.toString(),
+			idTipoCliente: 1,
+			status: true,
+			bairro: '',
+			cidade: '',
+			estado: '',
+			endereco: '',
+			razaoSocial: '',
+		};
+
+		this.clienteService
+			.criarCliente(renterObj)
+			.pipe(first())
+			.subscribe({
+				next: (response: any) => {
+					if (response.success) {
+						this.modalContent = {
+							header: 'Cadastro realizado',
+							message:
+								response.message ??
+								'Cadastro de proprietário realizado com sucesso',
+							isError: false,
+						};
+
+						this.registerRenterForm.reset();
+
+						this.getListaProprietarios();
+
+						console.log('resp', response.data);
+
+						this.setNewRenter = () => {
+							this.contractInfoForm.controls['locatario'].setValue(
+								response.data.guidReferencia
+							);
+						};
+
+						// this.registerRenterVisible = false;
+						this.openModal();
+					} else {
+						this.modalContent = {
+							header: 'Cadastro não realizado',
+							message:
+								response.message ?? 'Erro no envio de dados de proprietário',
+							isError: true,
+						};
+
+						this.registerRenterVisible = false;
+						this.openModal();
+					}
+				},
+				error: (error: any) => {
+					console.error(error);
+					this.modalContent = {
+						header: 'Cadastro não realizado',
+						message: 'Erro no envio de dados de proprietário',
+						isError: true,
+					};
+
+					this.registerRenterVisible = false;
+					this.openModal();
+				},
+			});
 	}
 
 	onChangeBuilding(event: any) {
@@ -692,4 +823,9 @@ export class RentContractRegisterComponent {
 	navigateTo = (route: string) => {
 		this.router.navigate([route]);
 	};
+
+	onFileSelect(e: any) {
+		console.log('e', e);
+		this.attachments = e;
+	}
 }

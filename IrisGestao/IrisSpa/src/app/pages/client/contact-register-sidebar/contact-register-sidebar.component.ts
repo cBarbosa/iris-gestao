@@ -55,7 +55,10 @@ export class ContactRegisterSidebarComponent implements OnInit {
 	registerOnSubmit: boolean = false;
 
 	@Input()
-	guidClient: string;
+	guidClient: string | null;
+
+	@Input()
+	guidSupplier: string | null;
 
 	@Input()
 	cancel: Function;
@@ -81,7 +84,7 @@ export class ContactRegisterSidebarComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		if (this.registerOnSubmit && !this.guidClient)
+		if (this.registerOnSubmit && !this.guidClient && !this.guidSupplier)
 			throw new Error(
 				"contact-register-sidebar: O Guid de cliente deve ser informado caso o parâmetro 'registerOnSubmit' seja verdadeiro."
 			);
@@ -112,6 +115,7 @@ export class ContactRegisterSidebarComponent implements OnInit {
 
 		const contactObj = {
 			guidClienteReferencia: this.guidClient,
+			guidFornecedorReferencia: this.guidSupplier,
 			idFornecedor: null,
 			idCliente: null,
 			nome: this.f['name'].value,

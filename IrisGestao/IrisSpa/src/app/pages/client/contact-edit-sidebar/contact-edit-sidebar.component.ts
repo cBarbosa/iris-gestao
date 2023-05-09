@@ -37,9 +37,9 @@ import {
 	templateUrl: './contact-edit-sidebar.component.html',
 	styleUrls: ['./contact-edit-sidebar.component.scss'],
 })
-export class ContactEditSidebarComponent implements OnInit, OnChanges {
+export class ContactEditSidebarComponent implements OnInit {
 	@Input()
-	data: Contato;
+	data: Contato & Partial<{ dataNascimentoOriginal: string }>;
 
 	@Input()
 	onEdit: Function;
@@ -61,7 +61,12 @@ export class ContactEditSidebarComponent implements OnInit, OnChanges {
 		this.editForm = this.fb.group({
 			name: [this.data.nome, Validators.required],
 			role: [this.data.cargo],
-			birthday: [this.data.dataNascimento, PastDateValidator],
+			birthday: [
+				this.data.dataNascimentoOriginal
+					? new Date(this.data.dataNascimentoOriginal)
+					: null,
+				PastDateValidator,
+			],
 			email: [this.data.email, EmailValidator],
 			telephone: [this.data.telefone],
 		});
@@ -82,17 +87,32 @@ export class ContactEditSidebarComponent implements OnInit, OnChanges {
 		// 			},
 		// 		});
 		// }
+
+		console.log(
+			'data>',
+			this.data.dataNascimentoOriginal
+				? new Date(this.data.dataNascimentoOriginal)
+				: null
+		);
+
+		// this.editForm?.patchValue({
+		// 	name: this.data.nome,
+		// 	role: this.data.cargo,
+		// 	birthday: this.data.dataNascimento ?? null,
+		// 	email: this.data.email,
+		// 	telephone: this.data.telefone,
+		// });
 	}
 
-	ngOnChanges(): void {
-		this.editForm?.patchValue({
-			name: this.data.nome,
-			role: this.data.cargo,
-			birthday: this.data.dataNascimento ?? null,
-			email: this.data.email,
-			telephone: this.data.telefone,
-		});
-	}
+	// ngOnChanges(): void {
+	// this.editForm?.patchValue({
+	// 	name: this.data.nome,
+	// 	role: this.data.cargo,
+	// 	birthday: this.data.dataNascimento ?? null,
+	// 	email: this.data.email,
+	// 	telephone: this.data.telefone,
+	// });
+	// }
 
 	get f(): { [key: string]: AbstractControl<any, any> } {
 		return this.editForm.controls;
@@ -112,18 +132,19 @@ export class ContactEditSidebarComponent implements OnInit, OnChanges {
 
 		const editFormData = this.editForm.getRawValue();
 
-		const birthday = editFormData.birthday != null
-			? editFormData.birthday.toLocaleDateString().split('/')
-			: null;
+		const birthday =
+			editFormData.birthday != null
+				? (editFormData?.birthday as Date)?.toISOString?.()
+				: null;
 
 		const contactObj: ContatoUpdate = {
 			guidClienteReferencia: this.data.guidClienteReferencia,
-			idFornecedor: null,
+			guidFornecedorReferencia: this.data.guidReferenciaContato,
 			nome: editFormData.name,
 			email: editFormData.email,
 			telefone: editFormData.telephone,
 			cargo: editFormData.role,
-			dataNascimento: birthday != null ? `${birthday[2]}-${birthday[1]}-${birthday[0]}` : null,
+			dataNascimento: birthday ?? null,
 		};
 
 		this.contatoService

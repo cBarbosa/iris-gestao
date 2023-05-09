@@ -29,7 +29,11 @@ public class ContatoController : Controller
     [Produces("application/json")]
     public async Task<IActionResult> GetByGuidCliente([FromRoute] Guid guid) =>
     Ok(await contatoService.GetByGuidCliente(guid));
-
+    
+    [HttpGet("{guid}/fornecedor")]
+    [Produces("application/json")]
+    public async Task<IActionResult> GetByGuidFornecedor([FromRoute] Guid guid) =>
+        Ok(await contatoService.GetByGuidFornecedor(guid));
 
     [HttpPost("criar")]
     [Produces("application/json")]

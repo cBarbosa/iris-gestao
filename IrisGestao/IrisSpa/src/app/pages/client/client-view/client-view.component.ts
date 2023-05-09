@@ -1,5 +1,11 @@
 import { identifierName } from '@angular/compiler';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import {
+	Component,
+	Input,
+	OnInit,
+	PipeTransform,
+	ViewChild,
+} from '@angular/core';
 import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { DatePipe } from '@angular/common';
 import { first } from 'rxjs';
@@ -8,6 +14,8 @@ import { Imovel } from 'src/app/shared/models';
 import { ClienteService } from '../../../shared/services/cliente.service';
 import { Contato } from 'src/app/shared/models/contato.model';
 import { ContatoService } from 'src/app/shared/services/contato.service';
+import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
+import { TelefonePipe } from 'src/app/shared/pipes/telefone.pipe';
 
 @Component({
 	selector: 'app-client-view',
@@ -23,6 +31,12 @@ export class ClientViewComponent implements OnInit {
 	isLoadingView = false;
 	isInativar = false;
 
+	displayClientDetails = false;
+
+	isMobile: boolean = false;
+
+	cardPipes: Record<string, PipeTransform>;
+
 	displayModal = false;
 	displayConfirmationModal = false;
 	displayConfirmationInactiveModal = false;
@@ -35,6 +49,7 @@ export class ClientViewComponent implements OnInit {
 	};
 
 	tableMenu: MenuItem[];
+	tableMenuContract: MenuItem[];
 
 	isCnpj: boolean = false;
 	contacts: Contato[];
@@ -44,11 +59,14 @@ export class ClientViewComponent implements OnInit {
 	contactRegisterVisible = false;
 	contactEditVisible = false;
 
+	contractidSelected: string;
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
 		private clienteService: ClienteService,
-		private contatoService: ContatoService
+		private contatoService: ContatoService,
+		private responsiveService: ResponsiveService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
@@ -56,6 +74,18 @@ export class ClientViewComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
+
+		this.cardPipes = {
+			telefone: new TelefonePipe(),
+			date: new DatePipe('pt-BR', undefined, {
+				dateFormat: 'shortDate',
+				timezone: '',
+			}),
+		};
+
 		this.tableMenu = [
 			{
 				label: 'Detalhes',
@@ -74,31 +104,51 @@ export class ClientViewComponent implements OnInit {
 			},
 		];
 
+		this.tableMenuContract = [
+			{
+				label: 'Detalhes',
+				icon: 'ph-eye',
+				command: () => this.showContract(),
+			},
+		];
 		this.getByIdCliente();
 	}
 
 	getByIdCliente() {
 		this.isLoadingView = true;
-		this.clienteService.getClienteById(this.uid).subscribe((event) => {
-			this.cliente = event;
-			this.isCnpj = event.cpfCnpj.length > 11;
+		this.clienteService
+			.getClienteById(this.uid)
+			.pipe(first())
+			.subscribe((event) => {
+				this.cliente = event;
+				this.isCnpj = event.cpfCnpj.length > 11;
+				//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
+				this.properties = [...event.imovel];
+				console.log(this.properties);
+				this.contacts = event.contato.map((contato: Contato) => {
+					return {
+						guidReferenciaContato: contato.guidReferenciaContato,
+						nome: contato.nome,
+						cargo: contato.cargo,
+						email: contato.email,
+						telefone: contato.telefone,
+						dataNascimento:
+							contato.dataNascimento != null
+								? new Date(contato.dataNascimento as string).toLocaleDateString(
+										'pt-BR'
+								  )
+								: null,
+						dataNascimentoOriginal: contato.dataNascimento,
+					};
+				});
+				console.log('->>>', this.contacts);
 
-			this.properties = [...event.imovel];
-			this.contacts = event.contato.map((contato: Contato) => {
-				return {
-					guidReferenciaContato: contato.guidReferenciaContato,
-					nome: contato.nome,
-					cargo: contato.cargo,
-					email: contato.email,
-					telefone: contato.telefone,
-						dataNascimento: contato.dataNascimento != null ? new Date(
-							contato.dataNascimento as string
-						).toLocaleDateString()
-						: null,
-				};
+				this.isLoadingView = false;
 			});
-			this.isLoadingView = false;
-		});
+	}
+
+	toggleClientDetails() {
+		this.displayClientDetails = !this.displayClientDetails;
 	}
 
 	getContactList() {
@@ -116,10 +166,13 @@ export class ClientViewComponent implements OnInit {
 							cargo: contato.cargo,
 							email: contato.email,
 							telefone: contato.telefone,
-								dataNascimento: contato.dataNascimento != null ? new Date(
-									contato.dataNascimento as string
-								).toLocaleDateString()
-								: null,
+							dataNascimento:
+								contato.dataNascimento != null
+									? new Date(
+											contato.dataNascimento as string
+									  ).toLocaleDateString('pt-BR')
+									: null,
+							dataNascimentoOriginal: contato.dataNascimento,
 						};
 					});
 				},
@@ -143,35 +196,44 @@ export class ClientViewComponent implements OnInit {
 		this.displayModal = true;
 	};
 
-	confirmDelete() {
+	confirmDelete = (): void => {
 		this.displayConfirmationModal = true;
-	}
+	};
 
-	closeConfirmationModal() {
+	closeConfirmationModal = (): void => {
 		this.displayConfirmationModal = false;
-	}
+	};
 
-	closeModal() {
+	closeModal = (): void => {
 		this.displayModal = false;
-	}
+	};
 
-	confirmInativar() {
+	confirmInativar = (): void => {
 		this.displayConfirmationInactiveModal = true;
-	}
+	};
 
-	closeConfirmationInativarModal() {
+	closeConfirmationInativarModal = (): void => {
 		this.displayConfirmationInactiveModal = false;
-	}
+	};
 
-	setCurrentContact(item: Contato): void {
+	setCurrentContact = (item: Contato): void => {
 		this.selectedContact = { ...item, guidClienteReferencia: this.uid };
-	}
+	};
 
-	showContactDetails() {
+	setCurrentContract = (item: any): void => {
+		console.log('Contrato Selecionado >> ' + JSON.stringify(item));
+		this.contractidSelected = item.guidReferencia;
+	};
+
+	showContract = (): void => {
+		this.navigateTo('rent-contract/details/' + this.contractidSelected);
+	};
+
+	showContactDetails = (): void => {
 		this.contactDetailsVisible = true;
 		this.contactEditVisible = false;
 		this.contactRegisterVisible = false;
-	}
+	};
 
 	showContactEdit = () => {
 		this.contactDetailsVisible = false;
@@ -197,7 +259,7 @@ export class ClientViewComponent implements OnInit {
 		this.contactRegisterVisible = false;
 	};
 
-	deleteContact() {
+	deleteContact = (): void => {
 		this.closeConfirmationModal();
 		if (this.selectedContact?.guidReferenciaContato) {
 			this.contatoService
@@ -227,42 +289,40 @@ export class ClientViewComponent implements OnInit {
 					},
 				});
 		}
-	}
+	};
 
-	inativarCliente() {
+	inativarCliente = (): void => {
 		this.closeConfirmationModal();
-		this.clienteService
-			.inativarCliente(this.uid, false)
-			.subscribe({
-				next: (response) => {
-					console.log('InativarCliente >> retorno '+ JSON.stringify(response));
-					if (response.success) {
-						this.closeConfirmationInativarModal();
-						this.isInativar = true;
-						this.onUpdateContactList({
-							header: 'Cliente Inativado',
-							message: response.message ?? 'Cliente inativado com sucesso',
-						});
-					} else {
-						this.onUpdateContactList({
-							header: 'Cliente não inativado',
-							message: response.message ?? 'Erro na inativação de contato',
-							isError: true,
-						});
-					}
-				},
-				error: (err) => {
-					console.error(err);
+		this.clienteService.inativarCliente(this.uid, false).subscribe({
+			next: (response) => {
+				console.log('InativarCliente >> retorno ' + JSON.stringify(response));
+				if (response.success) {
+					this.closeConfirmationInativarModal();
+					this.isInativar = true;
 					this.onUpdateContactList({
-						header: 'Contato não inativado',
-						message: 'Erro no envio de dados',
+						header: 'Cliente Inativado',
+						message: response.message ?? 'Cliente inativado com sucesso',
+					});
+				} else {
+					this.onUpdateContactList({
+						header: 'Cliente não inativado',
+						message: response.message ?? 'Erro na inativação de contato',
 						isError: true,
 					});
-				},
-			});
-	}
+				}
+			},
+			error: (err) => {
+				console.error(err);
+				this.onUpdateContactList({
+					header: 'Contato não inativado',
+					message: 'Erro no envio de dados',
+					isError: true,
+				});
+			},
+		});
+	};
 
-	navigateTo(route: string) {
+	navigateTo = (route: string): void => {
 		this.router.navigate([route]);
-	}
+	};
 }

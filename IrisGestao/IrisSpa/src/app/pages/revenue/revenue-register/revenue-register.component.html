@@ -1,0 +1,353 @@
+<form
+	class="register-form"
+	[formGroup]="registerForm"
+	(ngSubmit)="onSubmit($event)"
+>
+	<div class="input-wrapper">
+		<section class="form-details">
+			<h4>Adicionar novo contrato</h4>
+			<app-form-steps
+				[list]="stepList"
+				[callback]="changeStepCb"
+			></app-form-steps>
+		</section>
+
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- STEP 1 -->
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- ------------------------------------------------------------------------ -->
+		<section
+			*ngIf="currentStep === 1"
+			class="form-data"
+			formGroupName="infoImovel"
+		>
+			<h4>Selecione o imóvel</h4>
+
+			<app-link-property
+				(selectEvent)="onPropertySelect($event)"
+				[required]="true"
+				[linkedProperties]="linkedProperty ? [linkedProperty] : []"
+			></app-link-property>
+		</section>
+
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- STEP 2 -->
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- ------------------------------------------------------------------------ -->
+		<section
+			*ngIf="currentStep === 2"
+			class="form-data"
+			formGroupName="infoCliente"
+		>
+			<h4>Informações do cliente</h4>
+
+			<div class="field">
+				<label for="proprietario" class="block">Proprietário</label>
+				<p-dropdown
+					id="proprietario"
+					[options]="opcoesProprietario"
+					filterBy="label"
+					formControlName="proprietario"
+					aria-describedby="proprietario-help"
+				></p-dropdown>
+				<ng-container *ngIf="checkHasError(f['proprietario'])">
+					<small
+						id="proprietario-help"
+						*ngIf="f['proprietario'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o proprietário
+					</small>
+					<ng-template #error2>
+						<small id="proprietario-help" class="p-error block">
+							Proprietário inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+		</section>
+
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- STEP 3 -->
+		<!-- ------------------------------------------------------------------------ -->
+		<!-- ------------------------------------------------------------------------ -->
+		<section
+			*ngIf="currentStep === 3"
+			class="form-data"
+			formGroupName="infoFatura"
+		>
+			<h4>Informações da fatura</h4>
+
+			<div class="field">
+				<label for="classificacaoReceita" class="block">
+					Classificação da Receita
+				</label>
+				<p-dropdown
+					id="classificacaoReceita"
+					[options]="opcoesClassificacaoReceita"
+					filterBy="label"
+					formControlName="classificacaoReceita"
+					aria-describedby="classificacaoReceita-help"
+					(onChange)="changeClassificacao($event)"
+				></p-dropdown>
+				<ng-container *ngIf="checkHasError(f['classificacaoReceita'])">
+					<small
+						id="classificacaoReceita-help"
+						*ngIf="f['classificacaoReceita'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a classificação da Receita
+					</small>
+					<ng-template #error2>
+						<small id="classificacaoReceita-help" class="p-error block">
+							Classificação da Receita inválida
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field" *ngIf="!f['nomeTitulo'].disabled">
+				<label for="nomeTitulo" class="block">Classificação da Receita</label>
+				<input
+					id="nomeTitulo"
+					type="text"
+					formControlName="nomeTitulo"
+					aria-describedby="nomeTitulo-help"
+					maxlength="100"
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['nomeTitulo'])">
+					<small
+						id="nomeTitulo-help"
+						*ngIf="f['nomeTitulo'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a classificação da receita
+					</small>
+					<ng-template #error2>
+						<small id="nomeTitulo-help" class="p-error block">
+							Classificação da receita inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="creditarPara" class="block">Creditar para</label>
+				<p-dropdown
+					id="creditarPara"
+					[options]="opcoesCreditarPara"
+					filterBy="label"
+					formControlName="creditarPara"
+					aria-describedby="creditarPara-help"
+				></p-dropdown>
+				<ng-container *ngIf="checkHasError(f['creditarPara'])">
+					<small
+						id="creditarPara-help"
+						*ngIf="f['creditarPara'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a quem creditar
+					</small>
+					<ng-template #error2>
+						<small id="creditarPara-help" class="p-error block">
+							Crédito inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="formaPagamento" class="block">Forma de pagamento</label>
+				<p-dropdown
+					id="formaPagamento"
+					[options]="opcoesFormaPagamento"
+					filterBy="label"
+					formControlName="formaPagamento"
+					aria-describedby="formaPagamento-help"
+				></p-dropdown>
+				<ng-container *ngIf="checkHasError(f['formaPagamento'])">
+					<small
+						id="formaPagamento-help"
+						*ngIf="f['formaPagamento'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a forma de pagamento
+					</small>
+					<ng-template #error2>
+						<small id="formaPagamento-help" class="p-error block">
+							Forma de pagamento inválida
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="parcelas" class="block">Parcelas</label>
+				<p-dropdown
+					id="parcelas"
+					[options]="opcoesParcelas"
+					filterBy="label"
+					formControlName="parcelas"
+					aria-describedby="parcelas-help"
+				></p-dropdown>
+				<ng-container *ngIf="checkHasError(f['parcelas'])">
+					<small
+						id="parcelas-help"
+						*ngIf="f['parcelas'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe as parcelas
+					</small>
+					<ng-template #error2>
+						<small id="parcelas-help" class="p-error block">
+							Parcelas inválidas
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="valor" class="block">Valor</label>
+				<input
+					id="valor"
+					type="text"
+					formControlName="valor"
+					aria-describedby="valor-help"
+					maxlength="20"
+					currencyMask
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['valor'])">
+					<small
+						id="valor-help"
+						*ngIf="f['valor'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o valor
+					</small>
+					<ng-template #error2>
+						<small id="valor-help" class="p-error block">
+							Valor inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="dataVencimento" class="block">
+					Data de vencimento da primeira parcela
+				</label>
+				<p-calendar
+					id="dataVencimento"
+					formControlName="dataVencimento"
+					dateFormat="dd/mm/yy"
+					(onInput)="onInputDate($event)"
+					(onBlur)="onBlurDate()"
+					placeholder="dd/mm/aaaa"
+					aria-describedby="dataVencimento-help"
+				></p-calendar>
+				<ng-container *ngIf="checkHasError(f['dataVencimento'])">
+					<small
+						id="dataVencimento-help"
+						*ngIf="f['dataVencimento'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a data de vencimento da primeira parcela
+					</small>
+					<ng-template #error2>
+						<small id="dataVencimento-help" class="p-error block">
+							Data de vencimento da primeira parcela inválida
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="impostos" class="block">Impostos</label>
+				<input
+					id="impostos"
+					type="text"
+					formControlName="impostos"
+					aria-describedby="impostos-help"
+					mask="percent"
+					suffix="%"
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['impostos'])">
+					<small
+						id="impostos-help"
+						*ngIf="f['impostos'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe os impostos
+					</small>
+					<ng-template #error2>
+						<small id="impostos-help" class="p-error block">
+							Impostos inválidos
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+		</section>
+	</div>
+	<div class="form-actions">
+		<button
+			pButton
+			type="button"
+			label="Voltar"
+			class="p-button-text h-11"
+			(click)="prevStep()"
+		></button>
+
+		<button
+			pButton
+			pRipple
+			type="button"
+			label="Cancelar"
+			(click)="navigateTo('revenue/listing')"
+			class="p-button-outlined h-11"
+		></button>
+
+		<button
+			pButton
+			type="button"
+			label="Continuar"
+			class="h-11"
+			(click)="nextStep()"
+		></button>
+	</div>
+</form>
+
+<app-responsive-dialog
+	[isMobile]="isMobile"
+	[visible]="displayModal"
+	styleClass="form-modal"
+>
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+
+		<button
+			pButton
+			label="Continuar"
+			(click)="closeModal(navigateTo, 'revenue/listing')"
+		></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</app-responsive-dialog>

@@ -13,3 +13,10 @@ export type PropertyItemData = {
 		telephone: string;
 	};
 };
+
+export type DropdownItem = {
+	label: string;
+	value: any;
+	disabled?: boolean;
+	[index: string]: any;
+};

@@ -55,9 +55,9 @@ public class DadoBancarioService : IDadoBancarioService
         }
         catch (Exception e)
         {
-            logger.LogError(e.Message);
-            return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
+            logger.LogError(e, e.Message);
         }
+        return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
     }
 
     public async Task<CommandResult> Update(CriarDadosBancarioCommand cmd)
@@ -89,21 +89,20 @@ public class DadoBancarioService : IDadoBancarioService
 
     private static void BindDadosBancariosData(CriarDadosBancarioCommand cmd, ref DadoBancario dadoBancario)
     {
+        if (!cmd.IdBanco.HasValue)
+        {
+            dadoBancario = null!;
+            return;
+        }
+        
         switch (dadoBancario.GuidReferencia)
         {
             case null:
                 dadoBancario.GuidReferencia = Guid.NewGuid();
-                dadoBancario.DataCriacao = DateTime.Now;
                 break;
             default:
                 dadoBancario.GuidReferencia = dadoBancario.GuidReferencia;
                 break;
-        }
-
-        if (string.IsNullOrEmpty(cmd.Banco))
-        {
-            dadoBancario = null!;
-            return;
         }
 
         if (dadoBancario.Id <= 0 && cmd.Id <= 0)
@@ -114,7 +113,7 @@ public class DadoBancarioService : IDadoBancarioService
         dadoBancario.Agencia = cmd.Agencia;
         dadoBancario.Operacao = cmd.Operacao;
         dadoBancario.Conta = cmd.Conta;
-        dadoBancario.Banco = cmd.Banco ?? string.Empty;
-        dadoBancario.ChavePix = cmd.ChavePix ?? string.Empty;
+        dadoBancario.IdBanco = cmd.IdBanco;
+        dadoBancario.ChavePix = cmd.ChavePix;
     }
 }

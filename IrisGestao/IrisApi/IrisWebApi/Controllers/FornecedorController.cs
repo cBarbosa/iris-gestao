@@ -41,9 +41,6 @@ public class FornecedorController : Controller
     {
         var result = await FornecedorService.Update(guid, cmd);
 
-        if (result == null)
-            return BadRequest("Operação não realizada");
-
         return Ok(result);
     }
 

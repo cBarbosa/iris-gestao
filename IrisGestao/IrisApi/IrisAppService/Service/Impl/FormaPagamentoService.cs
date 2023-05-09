@@ -22,4 +22,13 @@ public class FormaPagamentoService: IFormaPagamentoService
             ? new CommandResult(false, ErrorResponseEnums.Error_1000, null!)
             : new CommandResult(true, SuccessResponseEnums.Success_1000, FormaPagamentos);
     }
+
+    public async Task<CommandResult> GetBancos()
+    {
+        var Bancos = await formaPagamentoRepository.GetBancos();
+
+        return !Bancos.Any()
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, Bancos);
+    }
 }

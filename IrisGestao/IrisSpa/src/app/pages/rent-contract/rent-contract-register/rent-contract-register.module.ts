@@ -16,6 +16,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { InputTextModule } from 'primeng/inputtext';
 import { NgxMaskModule } from 'ngx-mask';
 import { NgxCurrencyModule } from 'ngx-currency';
+import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
 
 @NgModule({
 	declarations: [RentContractRegisterComponent],
@@ -36,6 +38,8 @@ import { NgxCurrencyModule } from 'ngx-currency';
 		InputTextModule,
 		NgxMaskModule.forChild(),
 		NgxCurrencyModule,
+		ResponsiveDialogComponent,
+		FileUploadComponent,
 	],
 })
 export class RentContractRegisterModule {}

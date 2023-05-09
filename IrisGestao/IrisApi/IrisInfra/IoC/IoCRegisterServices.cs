@@ -32,8 +32,18 @@ public class IoCRegisterServices
         services.AddScoped<IFornecedorService, FornecedorService>();
         services.AddScoped<IDadoBancarioService, DadoBancarioService>();
         services.AddScoped<IContratoAluguelService, ContratoAluguelService>();
+        services.AddScoped<IContratoAluguelHistoricorReajusteService, ContratoAluguelHistoricorReajusteService>();
         services.AddScoped<IContratoAluguelImovelService, ContratoAluguelImovelService>();
         services.AddScoped<IContratoAluguelUnidadeService, ContratoAluguelUnidadeService>();
+        services.AddScoped<IContratoFornecedorService, ContratoFornecedorService>();
+        services.AddScoped<ITituloPagarService, TituloPagarService>();
+        services.AddScoped<ITituloReceberService, TituloReceberService>();
+        services.AddScoped<ITituloImovelService, TituloImovelService>();
+        services.AddScoped<ITituloUnidadeService, TituloUnidadeService>();
+        services.AddScoped<IFaturaTituloService, FaturaTituloService>();
+        services.AddScoped<IFaturaTituloPagarService, FaturaTituloPagarService>();
+        services.AddScoped<IAzureStorageService, AzureStorageService>();
+        services.AddScoped<IObraService, ObraService>();
 
         //External Services
         services.AddScoped<IRepublicaVirtualService, RepublicaVirtualService>();
@@ -60,7 +70,17 @@ public class IoCRegisterServices
         services.AddScoped<IFornecedorRepository, Repository.Impl.FornecedorRepository>();
         services.AddScoped<IDadoBancarioRepository, Repository.Impl.DadoBancarioRepository>();
         services.AddScoped<IContratoAluguelRepository, Repository.Impl.ContratoAluguelRepository>();
+        services.AddScoped<IContratoAluguelHistoricoReajusteRepository, Repository.Impl.ContratoAluguelHistoricoReajusteRepository>();
         services.AddScoped<IContratoAluguelImovelRepository, Repository.Impl.ContratoAluguelImovelRepository>();
         services.AddScoped<IContratoAluguelUnidadeRepository, Repository.Impl.ContratoAluguelUnidadeRepository>();
+        services.AddScoped<IContratoFornecedorRepository, Repository.Impl.ContratoFornecedorRepository>();
+        services.AddScoped<IFaturaTituloPagarRepository, Repository.Impl.FaturaTituloPagarRepository>();
+        services.AddScoped<ITituloPagarRepository, Repository.Impl.TituloPagarRepository>();
+        services.AddScoped<IFaturaTituloRepository, Repository.Impl.FaturaTituloRepository>();
+        services.AddScoped<ITituloReceberRepository, Repository.Impl.TituloReceberRepository>();
+        services.AddScoped<ITituloImovelRepository, Repository.Impl.TituloImovelRepository>();
+        services.AddScoped<ITituloUnidadeRepository, Repository.Impl.TituloUnidadeRepository>();
+        services.AddScoped<IObraRepository, Repository.Impl.ObraRepository>();
+        services.AddScoped<INotaFiscalRepository, Repository.Impl.NotaFiscalRepository>();
     }
 }

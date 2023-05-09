@@ -6,8 +6,8 @@ import { environment as env } from '../../../environments/environment';
 import { Contato } from '../models/contato.model';
 
 export type ContatoUpdate = {
-	guidClienteReferencia: string;
-	idFornecedor: number | null;
+	guidClienteReferencia: string | null;
+	guidFornecedorReferencia: string | null;
 	nome: string;
 	email: string;
 	telefone: string;
@@ -71,5 +71,19 @@ export class ContatoService {
 		return this.http.delete<ApiResponse>(
 			`${env.config.apiUrl}Contato/${guid}/deletar`
 		);
+	}
+
+	getContactsBySuppleirId(supplierGuid: string) {
+		return this.http
+			.get<ApiResponse>(
+				`${env.config.apiUrl}Contato/${supplierGuid}/fornecedor`
+			)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getContactsByClientId: ${response.message}`);
+					return response;
+				})
+			);
 	}
 }

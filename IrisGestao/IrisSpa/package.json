@@ -7,6 +7,7 @@
 		"build": "ng build",
 		"build-dev": "ng build --configuration dev",
 		"build-stg": "ng build --configuration staging",
+		"build-prd": "ng build --configuration production",
 		"watch": "ng build --watch --configuration development",
 		"test": "ng test"
 	},
@@ -20,7 +21,9 @@
 		"@angular/platform-browser": "^15.0.0",
 		"@angular/platform-browser-dynamic": "^15.0.0",
 		"@angular/router": "^15.0.0",
+		"chart.js": "^4.2.1",
 		"ngx-currency": "^3.0.0",
+		"ngx-image-cropper": "^6.3.2",
 		"ngx-mask": "^14.2.4",
 		"primeicons": "^6.0.1",
 		"primeng": "^15.0.0",
@@ -41,7 +44,7 @@
 		"karma-jasmine": "~5.1.0",
 		"karma-jasmine-html-reporter": "~2.0.0",
 		"postcss": "^8.4.19",
-		"tailwindcss": "^3.2.4",
+		"tailwindcss": "~3.2.4",
 		"typescript": "~4.8.2"
 	}
 }

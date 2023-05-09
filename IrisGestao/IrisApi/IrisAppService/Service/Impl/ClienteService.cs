@@ -62,7 +62,6 @@ public class ClienteService: IClienteService
             
             if(cmd.Contato != null)
             {
-                var contato = new Contato();
                 cmd.Contato.GuidClienteReferencia = Guid.NewGuid();
                 cmd.Contato.idCliente = cliente.Id;
                 await contatoService.Insert(cmd.Contato);
@@ -72,7 +71,7 @@ public class ClienteService: IClienteService
         }
         catch (Exception e)
         {
-            logger.LogError(e.Message);
+            logger.LogError(e, e.Message);
             return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
         }
     }
@@ -173,7 +172,9 @@ public class ClienteService: IClienteService
             : new CommandResult(true, SuccessResponseEnums.Success_1005, proprietarios);
     }
 
-    private static void BindClienteData(CriarClienteCommand cmd, Cliente cliente)
+    private static void BindClienteData(
+        CriarClienteCommand cmd
+        , Cliente cliente)
     {
         switch (cliente.GuidReferencia)
         {

@@ -5,4 +5,5 @@ namespace IrisGestao.ApplicationService.Services.Interface;
 public interface IFormaPagamentoService
 {
     Task<CommandResult> GetAll();
+    Task<CommandResult> GetBancos();
 }

@@ -21,8 +21,8 @@ public class AuthController : Controller
     public async Task<IActionResult> Index()
     {
         var result = await Service.GetAuthData(User.Claims.FirstOrDefault(x => x.Type.Equals("emails"))!.Value,
-            User.Claims.FirstOrDefault(x => x.Type.Equals("name"))!.Value,
-            User.Claims.FirstOrDefault(x => x.Type.Equals("jobTitle"))!.Value,
+            User.Claims.FirstOrDefault(x => x.Type.Equals("name"))!.Value ?? "Anonymous",
+            User.Claims.FirstOrDefault(x => x.Type.Equals("jobTitle"))!.Value.ToUpper(),
             int.Parse(User.Claims.FirstOrDefault(x => x.Type.Equals("exp"))!.Value)
         );
 
@@ -46,8 +46,8 @@ public class AuthController : Controller
         return await Task.FromResult(Ok(new
         {
             Email = User.Claims.FirstOrDefault(x => x.Type.Equals("emails"))!.Value,
-            Name = User.Claims.FirstOrDefault(x => x.Type.Equals("name"))!.Value,
-            JobTitle = User.Claims.FirstOrDefault(x => x.Type.Equals("jobTitle"))!.Value,
+            Name = User.Claims.FirstOrDefault(x => x.Type.Equals("name"))!.Value ?? "Anonymous",
+            JobTitle = User.Claims.FirstOrDefault(x => x.Type.Equals("jobTitle"))!.Value.ToUpper(),
             RequestUTCDateTime = DateTime.Now.ToLocalTime(),
             Expiration = User.Claims.FirstOrDefault(x => x.Type.Equals("exp"))!.Value,
             ExpirationUTCDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0)

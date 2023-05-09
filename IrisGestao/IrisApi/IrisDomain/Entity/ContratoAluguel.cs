@@ -47,6 +47,9 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
     [Column(TypeName = "date")]
     public DateTime? DataOcupacao { get; set; }
 
+    [Column(TypeName = "date")]
+    public DateTime? DataVencimentoPrimeraParcela { get; set; }
+
     public int DiaVencimentoAluguel { get; set; }
 
     public int PeriodicidadeReajuste { get; set; }
@@ -60,7 +63,10 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
 
     [Column(TypeName = "datetime")]
     public DateTime? DataUltimaModificacao { get; set; }
-    
+
+    [InverseProperty("IdContratoAluguelNavigation")]
+    public virtual ICollection<ContratoAluguelHistoricoReajuste> ContratoAluguelHistoricoReajuste { get; } = new List<ContratoAluguelHistoricoReajuste>();
+
     [InverseProperty("IdContratoAluguelNavigation")]
     public virtual ICollection<ContratoAluguelImovel> ContratoAluguelImovel { get; } = new List<ContratoAluguelImovel>();
 
@@ -79,4 +85,10 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
     [ForeignKey("IdTipoCreditoAluguel")]
     [InverseProperty("ContratoAluguel")]
     public virtual TipoCreditoAluguel IdTipoCreditoAluguelNavigation { get; set; } = null!;
+
+    [InverseProperty("IdContratoAluguelNavigation")]
+    public virtual ICollection<TituloReceber> TituloReceber { get; } = new List<TituloReceber>();
+
+    [InverseProperty("IdContratoAluguelNavigation")]
+    public virtual ICollection<TituloPagar> TituloPagar { get; } = new List<TituloPagar>();
 }

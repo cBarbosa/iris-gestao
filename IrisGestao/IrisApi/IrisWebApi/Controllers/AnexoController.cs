@@ -1,10 +1,12 @@
 ﻿using IrisGestao.ApplicationService.Services.Interface;
 using IrisGestao.Domain.Command.Request;
+using IrisGestao.Domain.Command.Result;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IrisWebApi.Controllers;
 
 [Route("api/[controller]")]
+[Produces("application/json")]
 [ApiController]
 public class AnexoController : Controller
 {
@@ -15,60 +17,73 @@ public class AnexoController : Controller
         this.anexoService = anexoService;
     }
 
-    // GET
-    [HttpGet("/api/[controller]")]
-    [Produces("application/json")]
+    [HttpGet]
     public async Task<IActionResult> GetAll() =>
         Ok(await anexoService.GetAll());
-
-    // GET
-    [HttpGet("/api/[controller]/{codigo}/id/")]
-    [Produces("application/json")]
+    
+    [HttpGet("{codigo}/id")]
     public async Task<IActionResult> BuscarAnexo([FromRoute] int codigo) =>
         Ok(await anexoService.GetById(codigo));
-
-
-    // GET
-    [HttpGet("/api/[controller]/{idRefencia}/idRefencia")]
-    [Produces("application/json")]
-    public async Task<IActionResult> GetByIdReferencia([FromRoute] string idRefencia) =>
-        Ok(await anexoService.GetByIdReferencia(idRefencia));
-
-
-    [HttpPost("/api/[controller]/criar")]
-    [Produces("application/json")]
-    public async Task<IActionResult> Post([FromBody] CriarAnexoCommand cmd)
+    
+    [HttpGet("{uid:guid}")]
+    public async Task<IActionResult> GetByIdReferencia([FromRoute] Guid uid) =>
+        Ok(await anexoService.GetByIdReferencia(uid));
+    
+    [HttpPost("{uid:guid}/classificacao/{classificacao}")]
+    public async Task<IActionResult> Post(
+        [FromRoute] Guid uid,
+        [FromRoute] string? classificacao,
+        [FromForm]IFormFileCollection files)
     {
-        var result = await anexoService.Insert(cmd);
-
-        if (result == null)
-            return BadRequest("Operação não realizada");
-
-        return Ok(result);
+        if (files.Count.Equals(0)
+            || string.IsNullOrEmpty(classificacao))
+        {
+            return Ok(await Task.FromResult(
+                new CommandResult(true, 
+                    "Não foi possível fazer upload do arquivo", null!)));
+        }
+    
+        #region bind files
+        var cmd = new CriarAnexoCommand
+        {
+            IdReferencia = uid,
+            Classificacao = classificacao,
+            Images = new List<ImageMessage>()
+        };
+    
+        foreach (var file in files)
+        {
+            await BindFile(cmd, file);
+        }
+        #endregion
+    
+        return Ok(await anexoService.Insert(cmd));
     }
-
-
-    [HttpPut("/api/[controller]/{codigo}/atualizar/")]
-    [Produces("application/json")]
-    public async Task<IActionResult> Atualizar(int? codigo, [FromBody] CriarAnexoCommand cmd)
+    
+    [HttpPut("{codigo:int}")]
+    public async Task<IActionResult> Atualizar(
+        [FromRoute] int codigo,
+        [FromBody] CriarAnexoCommand cmd) => 
+        Ok(await anexoService.Update(codigo, cmd));
+    
+    [HttpDelete("{codigo:int}")]
+    public async Task<IActionResult> Deletar(int codigo) =>
+        Ok(await anexoService.Delete(codigo));
+    
+    private static async Task BindFile(
+        CriarAnexoCommand cmd,
+        IFormFile file)
     {
-        var result = await anexoService.Update(codigo, cmd);
-
-        if (result == null)
-            return BadRequest("Operação não realizada");
-
-        return Ok(result);
+        using var memoryStream = new MemoryStream();
+        await file.CopyToAsync(memoryStream);
+        cmd.Images.Add(new ImageMessage
+        {
+            ImageName = $"{file.FileName}",
+            ImageSize = (int)file.Length,
+            MimeType = file.ContentType,
+            ImageHeaders = $"data:{file.ContentType};base64,",
+            ImageBinary = memoryStream.ToArray()
+        });
     }
-
-    [HttpDelete("/api/[controller]/{codigo}/deletar/")]
-    [Produces("application/json")]
-    public async Task<IActionResult> Deletar(int? codigo)
-    {
-        var result = await anexoService.Delete(codigo);
-
-        if (result == null)
-            return BadRequest("Operação não realizada");
-
-        return Ok(result);
-    }
+    
 }

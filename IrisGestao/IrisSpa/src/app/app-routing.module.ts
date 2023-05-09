@@ -55,6 +55,65 @@ const routes: Routes = [
 				},
 			},
 			{
+				path: 'supplier-contract',
+				loadChildren: () =>
+					import('./pages/supplier-contract/supplier-contract.module').then(
+						(m) => m.SupplierContractModule
+					),
+				canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
+				path: 'supplier',
+				loadChildren: () =>
+					import('./pages/supplier/supplier.module').then(
+						(m) => m.SupplierModule
+					),
+				canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
+				path: 'revenue',
+				loadChildren: () =>
+					import('./pages/revenue/revenue.module').then((m) => m.RevenueModule),
+				canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
+				path: 'expense',
+				loadChildren: () =>
+					import('./pages/expense/expense.module').then((m) => m.ExpenseModule),
+				canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
+				path: 'construction',
+				loadChildren: () =>
+					import('./pages/construction/construction.module').then(
+						(m) => m.ConstructionModule
+					),
+				canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
+				path: 'dashboard',
+				loadChildren: () => import('./pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
+				canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				}
+			},
+			{
 				path: '',
 				redirectTo: 'home',
 				pathMatch: 'full',

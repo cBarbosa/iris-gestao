@@ -42,15 +42,14 @@
 
 				header {
 					border-bottom: 1px solid #eaeaea;
-					@apply flex justify-between pb-6 pt-3 flex-wrap;
+					@apply flex gap-x-5 justify-between pb-6 pt-3 flex-wrap;
 
 					h3 {
-						@apply font-bold text-3xl;
+						@apply flex gap-x-4 font-bold text-3xl;
 
-						span {
-							@apply font-medium text-base leading-10 align-middle ml-4;
+						> span {
+							@apply flex gap-4 font-medium text-base leading-10 align-middle;
 							position: relative;
-							top: -0.3rem;
 						}
 					}
 
@@ -126,7 +125,7 @@
 		display: none;
 	}
 
-	.form-modal {
+	.responsive-dialog {
 		text-align: center;
 		max-width: 25rem;
 
@@ -163,23 +162,86 @@
 ::ng-deep {
 	.p-sidebar.p-sidebar-right {
 		width: 26rem;
+		max-width: 100vw;
 	}
 
 	.p-dialog {
-		&.confirmation-modal {
-			@apply w-[25rem];
+		.p-dialog-content {
+			text-align: center;
+		}
+	}
+	.confirmation-modal {
+		@apply w-[25rem];
 
-			.p-dialog-content {
-				text-align: center;
+		h2 {
+			@apply text-3xl font-bold mb-4;
+		}
 
+		p {
+			@apply text-lg mb-10;
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	.client-view {
+		margin: 0 0rem;
+
+		.content {
+			width: 100%;
+			max-width: 100%;
+			overflow-x: hidden;
+
+			section {
 				h2 {
-					@apply text-3xl font-bold mb-4;
+					@apply mx-4;
 				}
 
-				p {
-					@apply text-lg mb-10;
+				header {
+					@apply px-4;
+				}
+
+				&.client {
+					.main-card {
+						@apply m-0 pb-3 w-auto;
+
+						header {
+							@apply flex-col;
+
+							h3 {
+								@apply flex-col;
+
+								> span {
+									top: 0;
+								}
+							}
+
+							.actions {
+								flex-grow: 1;
+								display: flex;
+								justify-content: space-between;
+								@apply gap-4;
+
+								> button.p-button {
+									flex-grow: 1;
+									justify-content: center;
+								}
+							}
+						}
+					}
+				}
+
+				&.properties {
+					@apply px-4;
 				}
 			}
+		}
+	}
+
+	::ng-deep {
+		.form-modal,
+		.confirmation-modal {
+			width: 100%;
 		}
 	}
 }

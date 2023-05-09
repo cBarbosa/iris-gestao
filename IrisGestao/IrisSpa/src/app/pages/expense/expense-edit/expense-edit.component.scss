@@ -1,0 +1,202 @@
+:host {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	min-height: 100vh;
+}
+.edit-form {
+	@apply pt-8;
+	width: 100%;
+	max-width: 1155px;
+	margin: 0 2rem;
+
+	.input-wrapper {
+		display: flex;
+		@apply mb-7;
+
+		form {
+			width: 100%;
+		}
+
+		section {
+			@apply p-6;
+			flex-grow: 1;
+
+			h4 {
+				@apply text-2xl font-bold;
+				color: #262626;
+			}
+
+			h5 {
+				@apply text-lg font-bold;
+			}
+
+			p {
+				@apply my-2;
+				color: #646464;
+			}
+
+			span.icon.file {
+				display: inline-block;
+				width: 1.5rem;
+				width: 1.5rem;
+				background-repeat: no-repeat;
+				background-image: url("../../../../assets/images/icons/real-estate-location-building-pin.svg");
+			}
+
+			&.expense-data {
+				max-width: 445px;
+				width: 100%;
+				height: fit-content;
+				background-color: #f8f9fa;
+
+				h4 {
+					@apply mb-7;
+				}
+
+				.unit-list {
+					@apply mb-5 mt-5 mb-7;
+				}
+			}
+		}
+	}
+
+	.form-actions {
+		display: flex;
+		gap: 1rem;
+		width: 100%;
+		border-top: 1px solid #eaeaea;
+		@apply py-8 px-6;
+
+		button {
+			&:first-child {
+				margin-right: auto;
+			}
+		}
+	}
+}
+
+.field {
+	margin-bottom: 1.7rem;
+
+	label {
+		@apply text-sm mb-2;
+		color: #262626;
+	}
+
+	input {
+		width: 100%;
+	}
+
+	.p-error {
+		position: absolute;
+	}
+
+	&:last-child {
+		margin-bottom: 0.7rem;
+	}
+}
+
+:host ::ng-deep {
+	.p-inputwrapper {
+		width: 100%;
+
+		.p-component {
+			&.p-dropdown {
+				width: 100%;
+			}
+		}
+	}
+
+	.p-calendar {
+		width: 100%;
+
+		.p-inputtext {
+			width: 100%;
+		}
+	}
+
+	.form-modal {
+		text-align: center;
+		max-width: 25rem;
+
+		h2 {
+			@apply font-bold;
+			font-size: 2rem;
+			color: #353635;
+		}
+
+		i {
+			@apply mt-4;
+			font-size: 5rem;
+			color: #319016;
+		}
+
+		p {
+			@apply text-lg mt-4;
+			color: #262626;
+		}
+
+		.p-button {
+			@apply mt-10;
+			width: 100%;
+		}
+
+		.modal-error {
+			i {
+				color: #e24c4c;
+			}
+		}
+	}
+}
+
+.alert-message {
+	width: 100%;
+	// height: 100%;
+	background-color: #f8f9fa;
+	align-self: stretch;
+
+	.loading {
+		max-width: 1440px;
+		margin: 5rem;
+		height: 100%;
+	}
+}
+
+:host ::ng-deep {
+	.p-element {
+		.p-accordion {
+			.p-accordion-tab {
+				.p-toggleable-content {
+					.p-accordion-content {
+						background-color: #ffffff;
+
+						section {
+							padding-top: 0;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	.edit-form {
+		.input-wrapper {
+			flex-direction: column;
+
+			section {
+				@apply px-0;
+			}
+		}
+	}
+
+	:host ::ng-deep {
+		.p-element {
+			.p-accordion {
+				@apply px-0;
+			}
+		}
+	}
+}

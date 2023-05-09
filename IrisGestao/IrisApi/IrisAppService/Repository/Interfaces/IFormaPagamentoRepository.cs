@@ -4,4 +4,5 @@ namespace IrisGestao.ApplicationService.Repository.Interfaces;
 
 public interface IFormaPagamentoRepository : IRepository<FormaPagamento>, IDisposable
 {
+    Task<IEnumerable<Bancos>> GetBancos();
 }

@@ -47,4 +47,15 @@ public class ContratoAluguelController : Controller
 
         return Ok(result);
     }
+
+    [HttpPost("{guid}/{percentual}/reajustar-contrato")]
+    [Produces("application/json")]
+    public async Task<IActionResult> ReajustarContrato(
+    Guid guid,
+    double percentual)
+    {
+        var result = await contratoAluguelService.ReajusteContrato(guid, percentual);
+
+        return Ok(result);
+    }
 }

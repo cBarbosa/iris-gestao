@@ -67,13 +67,12 @@ public class ContatoService: IContatoService
 
     public async Task<CommandResult> Insert(CriarContatoCommand cmd)
     {
-        var contato = new Contato();
-        if(!cmd.GuidClienteReferencia.HasValue && !cmd.GuidFornecedorReferencia.HasValue)
+        if(cmd is {GuidClienteReferencia: null, GuidFornecedorReferencia: null})
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
 
-        if (cmd.GuidClienteReferencia.HasValue)
+        if (cmd is { GuidClienteReferencia: not null, idCliente: null })
         {
             var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidClienteReferencia.Value);
 
@@ -84,7 +83,7 @@ public class ContatoService: IContatoService
             cmd.idCliente = cliente.Id;
         }
         
-        if (cmd.GuidFornecedorReferencia.HasValue)
+        if (cmd is { GuidFornecedorReferencia: not null, idFornecedor: null })
         {
             var fornecedor = await fornecedorRepository.GetByReferenceGuid(cmd.GuidFornecedorReferencia.Value);
 
@@ -95,6 +94,7 @@ public class ContatoService: IContatoService
             cmd.idFornecedor = fornecedor.Id;
         }
 
+        var contato = new Contato();
         BindContatoData(cmd, contato);
 
         try
@@ -104,7 +104,7 @@ public class ContatoService: IContatoService
         }
         catch (Exception e)
         {
-            logger.LogError(e.Message);
+            logger.LogError(e, e.Message);
             return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
         }
     }
@@ -164,6 +164,26 @@ public class ContatoService: IContatoService
             logger.LogError(e.Message);
             return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
         }
+    }
+    
+    public async Task<CommandResult> GetByGuidFornecedor(Guid guid)
+    {
+        if (guid.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var fornecedor = await fornecedorRepository.GetByReferenceGuid(guid);
+        if (fornecedor == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+
+        var contato = await contatoRepository.GetByFornecedorId(fornecedor.Id);
+
+        return contato == null
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, contato);
     }
 
     private static void BindContatoData(CriarContatoCommand cmd, Contato contato)

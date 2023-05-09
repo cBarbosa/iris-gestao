@@ -65,4 +65,73 @@ export class DominiosService {
 				})
 			);
 	}
+
+	getBanks() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/bancos`)
+			.pipe(
+				map((response) => {
+					if (response.success) return response;
+					else return console.error(`getBanks: ${response.message}`);
+				})
+			);
+	}
+
+	getFormasPagamento() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/forma-pagamento`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getFormasPagamento: ${response.message}`);
+					return response;
+				})
+			);
+	}
+
+	getTiposServico() {
+		return new Observable<ApiResponse>((subscriber) => {
+			subscriber.next({
+				success: true,
+				message: 'Dados carregados com sucesso',
+				data: [
+					{
+						id: 1,
+						nome: 'Segurança',
+					},
+					{
+						id: 2,
+						nome: 'Limpeza',
+					},
+					{
+						id: 3,
+						nome: 'Recepção',
+					},
+					{
+						id: 4,
+						nome: 'Copa',
+					},
+				],
+			});
+		});
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/tipo-cliente`)
+			.pipe(
+				map((response) => {
+					if (response.success) return response;
+					else return console.error(`getTiposServico: ${response.message}`);
+				})
+			);
+	}
+
+	getTiposTitulo() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/tipo-titulo`)
+			.pipe(
+				map((response) => {
+					if (response.success) return response;
+					else return console.error(`getTiposTitulo: ${response.message}`);
+				})
+			);
+	}
 }

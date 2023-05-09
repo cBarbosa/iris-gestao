@@ -59,7 +59,7 @@
 
 				<div class="field">
 					<label for="Nome" class="block">
-						{{!isCnpj ? "Nome" : "Razão Social"}}
+						{{ !isCnpj ? "Nome" : "Razão Social" }}
 					</label>
 					<input
 						id="Nome"
@@ -75,7 +75,9 @@
 							*ngIf="f['Nome'].hasError('required'); else error2"
 							class="p-error block"
 						>
-						{{!isCnpj? "Informe o nome do cliente" : "Informe a ração social"}}
+							{{
+								!isCnpj ? "Informe o nome do cliente" : "Informe a ração social"
+							}}
 						</small>
 						<ng-template #error2>
 							<small id="name-help" class="p-error block">
@@ -431,11 +433,9 @@
 	></app-contact-register-sidebar>
 </p-sidebar>
 
-<p-dialog
-	[(visible)]="displayModal"
-	[modal]="true"
-	[draggable]="false"
-	[resizable]="false"
+<app-responsive-dialog
+	[isMobile]="isMobile"
+	[visible]="displayModal"
 	styleClass="form-modal"
 >
 	<div *ngIf="!modalContent.isError; else error" class="modal-success">
@@ -469,4 +469,4 @@
 			<button pButton label="Continuar" (click)="closeModal()"></button>
 		</div>
 	</ng-template>
-</p-dialog>
+</app-responsive-dialog>

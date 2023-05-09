@@ -76,12 +76,14 @@
 						</ng-template>
 					</ng-container>
 				</div>
-				<div class="flex justify-between text-sm font-medium mb-6">
-					<a>Não encontrou proprietário?</a>
+				<div
+					class="flex flex-col md:flex-row justify-between text-sm font-medium mb-6"
+				>
+					<span>Não encontrou proprietário?</span>
 					<p-button
 						icon="pi pi-plus"
 						label="Adicionar novo proprietário"
-						styleClass="p-button-text text-sm"
+						styleClass="p-button-text text-sm add-proprietary-button"
 						(click)="registerProprietaryVisible = true"
 					></p-button>
 				</div>
@@ -181,7 +183,7 @@
 						<small
 							id="Bairro-help"
 							*ngIf="f['neighborhood'].hasError('required'); else error2"
-							class="p-Bairro block"
+							class="p-error block"
 						>
 							Informe o Bairro do cliente
 						</small>
@@ -316,7 +318,7 @@
 						type="text"
 						formControlName="registration"
 						aria-describedby="registration-help"
-						maxlength=16
+						maxlength="16"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['registration'])">
@@ -342,7 +344,7 @@
 						type="text"
 						formControlName="iptu"
 						aria-describedby="iptu-help"
-						maxlength=16
+						maxlength="16"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['iptu'])">
@@ -370,7 +372,7 @@
 						type="text"
 						formControlName="neoenergia"
 						aria-describedby="neoenergia-help"
-						maxlength=16
+						maxlength="16"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['neoenergia'])">
@@ -396,7 +398,7 @@
 						type="text"
 						formControlName="caesb"
 						aria-describedby="caesb-help"
-						maxlength=16
+						maxlength="16"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['caesb'])">
@@ -681,18 +683,30 @@
 				cadastro do imóvel.
 			</p>
 
+			<app-file-upload
+				name="uploadDoc"
+				[fileLimit]="10"
+				(selectEvent)="onFileSelect($event)"
+				accept=".xls, .doc, .pdf, .xlsx, .docx"
+			></app-file-upload>
+
+			<!-- OLD FILEUPLOAD -->
+			<!-- 
 			<div class="field">
 				<label for="occupancy" class="block">Habite-se</label>
 				<p-fileUpload
 					id="occupancy"
 					mode="basic"
-					name="demo[]"
-					url="./upload"
-					accept="image/*"
-					chooseLabel="Arraste ou clique para fazer o upload"
+					name="habitese"
+					accept="application/*"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer o upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
-					(onUpload)="onUpload($event)"
+					(onSelect)="onSelect($event, 'habitese')"
 				></p-fileUpload>
 				<ng-container *ngIf="checkHasError(f['occupancy'])">
 					<small
@@ -715,13 +729,16 @@
 				<p-fileUpload
 					id="project"
 					mode="basic"
-					name="demo[]"
-					url="./upload"
-					accept="image/*"
-					chooseLabel="Arraste ou clique para fazer o upload"
+					name="projeto"
+					accept="application/*"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer o upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
-					(onUpload)="onUpload($event)"
+					(onSelect)="onSelect($event, 'projeto')"
 				></p-fileUpload>
 				<ng-container *ngIf="checkHasError(f['project'])">
 					<small
@@ -744,13 +761,16 @@
 				<p-fileUpload
 					id="registration"
 					mode="basic"
-					name="demo[]"
-					url="./upload"
-					accept="image/*"
-					chooseLabel="Arraste ou clique para fazer o upload"
+					name="matricula"
+					accept="application/*"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer o upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
-					(onUpload)="onUpload($event)"
+					(onSelect)="onSelect($event, 'matricula')"
 				></p-fileUpload>
 				<ng-container *ngIf="checkHasError(f['registration'])">
 					<small
@@ -773,13 +793,17 @@
 				<p-fileUpload
 					id="others"
 					mode="basic"
-					name="demo[]"
+					name="outrosdocs[]"
 					url="./upload"
-					accept="image/*"
-					chooseLabel="Arraste ou clique para fazer o upload"
+					accept="application/*"
+					[chooseLabel]="
+						isMobile
+							? 'Clique para fazer o upload'
+							: 'Arraste ou clique para fazer o upload'
+					"
 					chooseIcon="pi-upload"
 					[maxFileSize]="1000000"
-					(onUpload)="onUpload($event)"
+					(onSelect)="onSelect($event, 'outrosdocs')"
 				></p-fileUpload>
 				<ng-container *ngIf="checkHasError(f['others'])">
 					<small
@@ -795,7 +819,7 @@
 						</small>
 					</ng-template>
 				</ng-container>
-			</div>
+			</div> -->
 		</section>
 	</div>
 	<div class="form-actions">
@@ -839,7 +863,6 @@
 		</ng-template>
 		<ng-template pTemplate="content">
 			<div class="register-proprietary-form">
-
 				<div class="field">
 					<label for="client-type" class="block">Tipo de cliente</label>
 					<p-dropdown
@@ -934,7 +957,7 @@
 					<p-calendar
 						id="birthday"
 						formControlName="birthday"
-						styleClass="no-popup"
+						styleClass="no-picker"
 						dateFormat="dd/mm/yy"
 						(onInput)="onInputDate($event)"
 						(onBlur)="onBlurDate()"
@@ -1059,7 +1082,23 @@
 	[draggable]="false"
 	[resizable]="false"
 	styleClass="form-modal"
+	*ngIf="!isMobile"
 >
+	<ng-container *ngTemplateOutlet="modalContentTemplate"></ng-container>
+</p-dialog>
+
+<p-sidebar
+	[(visible)]="displayModal"
+	position="bottom"
+	styleClass="form-modal"
+	*ngIf="isMobile"
+>
+	<ng-template pTemplate="content">
+		<ng-container *ngTemplateOutlet="modalContentTemplate"></ng-container>
+	</ng-template>
+</p-sidebar>
+
+<ng-template #modalContentTemplate>
 	<div *ngIf="!modalContent.isError; else error" class="modal-success">
 		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
 		<i class="ph-check-circle"></i>
@@ -1093,4 +1132,4 @@
 			<button pButton label="Continuar" (click)="closeModal()"></button>
 		</div>
 	</ng-template>
-</p-dialog>
+</ng-template>

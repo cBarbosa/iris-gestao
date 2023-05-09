@@ -1,0 +1,170 @@
+<div
+	class="add-property-alert"
+	[class.invalid]="linkedPropertiesInvalid"
+	*ngIf="linkedProperties.length === 0; else properties"
+>
+	<span> Você precisa atribuir pelo menos um imóvel ao seu contrato </span>
+	<button
+		type="button"
+		class="min-w-[6.5rem]"
+		(click)="showAddProperty()"
+		pButton
+	>
+		Adicionar
+	</button>
+</div>
+
+<ng-template #properties>
+	<div
+		class="properties-data"
+		*ngFor="let property of linkedProperties; let i = index"
+	>
+		<h4>Imóvel {{ multiple ? i + 1 : "" }}</h4>
+		<div class="top-data">
+			<span class="font-bold">{{ property.nome }}</span>
+			<span class="flex-inline justify-between gap-3">
+				<button
+					pButton
+					type="button"
+					class="p-button-text"
+					label="Editar"
+					(click)="editLinkedProperty(property)"
+				></button>
+				<button
+					pButton
+					type="button"
+					class="p-button-text"
+					label="Excluir"
+					(click)="removeLinkedProperty(property.guid)"
+				></button>
+			</span>
+		</div>
+		<div class="text-sm flex flex-col gap-4 justify-center">
+			<div *ngIf="property.tipo" class="basis-0 max-w-[50%]">
+				{{ property.tipo }}
+			</div>
+			<div *ngIf="property.unidades.length > 0" class="basis-0">
+				Unidade(s):
+				<ng-container *ngFor="let unit of property.unidades; index as i">
+					<ng-container *ngIf="i !== 0">, </ng-container>
+					{{ unit.name }}
+				</ng-container>
+			</div>
+		</div>
+	</div>
+
+	<div class="add-property-button" *ngIf="multiple">
+		<button
+			pButton
+			type="button"
+			class="p-button-text text-sm"
+			label="Vincular um imóvel"
+			icon="pi pi-plus"
+			iconPos="left"
+			(click)="showAddProperty()"
+		></button>
+	</div>
+</ng-template>
+
+<!-- ------------------------------------------------------------------------ -->
+<!-- ------------------------------------------------------------------------ -->
+<!-- REGISTRO DE PROPRIEDADE (SIDEBAR) -->
+<!-- ------------------------------------------------------------------------ -->
+<!-- ------------------------------------------------------------------------ -->
+
+<form [formGroup]="propertyAddForm" *ngIf="propertyAddVisible">
+	<p-sidebar
+		[(visible)]="propertyAddVisible"
+		position="right"
+		(onShow)="setBuildingsList()"
+	>
+		<ng-template pTemplate="header">
+			<h4 *ngIf="editingLinkedProperty === null; else editingHeader">
+				Adicionar novo Edifício
+			</h4>
+			<ng-template #editingHeader>
+				<h4>Editar Edifício vinculado</h4>
+			</ng-template>
+		</ng-template>
+		<ng-template pTemplate="content">
+			<div class="register-property-form">
+				<div class="field">
+					<label for="edificio">Edifício</label>
+					<p-dropdown
+						id="edificio"
+						[options]="buildingsList"
+						formControlName="edificio"
+						aria-describedby="edificio-help"
+						(ngModelChange)="onChangeBuilding($event)"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['edificio'])">
+						<small
+							id="edificio-help"
+							*ngIf="f['edificio'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o edificio
+						</small>
+						<ng-template #error2>
+							<small id="edificio-help" class="p-error block">
+								Edifício inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="unidade" class="block">Unidade</label>
+					<p-multiSelect
+						[options]="units"
+						formControlName="unidade"
+						defaultLabel="Selecione a(s) unidade(s)"
+						[showToggleAll]="false"
+						[showClear]="false"
+					></p-multiSelect>
+
+					<ng-container
+						*ngIf="checkHasError(propertyAddForm.controls['unidade'])"
+					>
+						<small
+							id="unidade-help"
+							*ngIf="
+								propertyAddForm.controls['unidade'].hasError('required');
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe a unidade
+						</small>
+						<ng-template #error2>
+							<small id="unidade-help" class="p-error block">
+								Unidade inválida
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="footer">
+			<div class="flex justify-between gap-4">
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Cancelar"
+					class="p-button-outlined h-9 w-full"
+					(click)="hideAddProperty()"
+				></button>
+
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Continuar"
+					class="h-9 w-full"
+					(click)="onProprietarySubmit()"
+				></button>
+			</div>
+		</ng-template>
+	</p-sidebar>
+</form>

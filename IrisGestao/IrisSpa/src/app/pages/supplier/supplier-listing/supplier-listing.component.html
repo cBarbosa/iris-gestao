@@ -1,0 +1,169 @@
+<div class="header-background"></div>
+<div class="content-wrapper">
+	<div class="content">
+		<header class="list-header">
+			<div class="flex justify-between items-center" [class.mb-2]="isMobile">
+				<h3 class="text-2xl font-bold">
+					Fornecedores
+					<span class="ml-2 text-sm">{{ totalSupplierCount }}</span>
+				</h3>
+				<button
+					pButton
+					pRipple
+					type="button"
+					icon="pi pi-sliders-h"
+					class="p-button-rounded p-button-text"
+					*ngIf="isMobile"
+					(click)="openFilters()"
+				></button>
+			</div>
+
+			<div class="options">
+				<ng-container *ngIf="!isMobile">
+					<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+				</ng-container>
+
+				<button
+					pButton
+					type="button"
+					class="p-button-outlined ml-3 h-9 addButton"
+					(click)="navigateTo('supplier/register/new')"
+				>
+					<i class="pi pi-plus mr-3"></i>
+					Novo Fornecedor
+				</button>
+			</div>
+		</header>
+
+		<ng-template #filtersTemplate>
+			<span class="p-input-icon-left w-full md:w-44">
+				<i class="pi pi-search"></i>
+				<input
+					pInputText
+					class="w-full md:w-44"
+					[class.white-theme]="!isMobile"
+					[(ngModel)]="filterText"
+					(ngModelChange)="filterSuppliersDebounce($event)"
+					type="text"
+					placeholder="Buscar fornecedor"
+				/>
+			</span>
+		</ng-template>
+
+		<ng-container>
+			<ng-container *ngIf="isLoadingSuppliers">
+				<app-spinner styleClass="mt-11"></app-spinner>
+			</ng-container>
+			<ng-container *ngIf="!isLoadingSuppliers && noRestults">
+				<div class="no-results-warn">
+					<span>Nenhum resultado</span>
+				</div>
+			</ng-container>
+
+			<p-table
+				*ngIf="!isMobile"
+				[value]="suppliersEntries"
+				styleClass="p-datatable-striped"
+				[tableStyle]="{ 'min-width': '50rem' }"
+				[paginator]="!noRestults && !isLoadingSuppliers"
+				[rows]="rows"
+				[(first)]="first"
+				responsiveLayout="scroll"
+				[totalRecords]="totalSupplierCount"
+				[lazy]="true"
+				(onLazyLoad)="loadSuppliersPage($event)"
+			>
+				<ng-template pTemplate="header">
+					<tr *ngIf="!isLoadingSuppliers && !noRestults">
+						<th>Nome</th>
+						<th>CPF/CNPJ</th>
+						<th>Telefone</th>
+						<th>Email</th>
+						<th></th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-supplier>
+					<tr>
+						<td class="font-bold">{{ supplier.name }}</td>
+						<td>{{ supplier.cpf_cnpj | cpfcnpj }}</td>
+						<td>{{ supplier.phone | telefone }}</td>
+						<td>{{ supplier.email }}</td>
+						<td class="action w-40">
+							<button
+								pButton
+								type="button"
+								class="p-button-text h-7"
+								(click)="
+									navigateTo('supplier/details/' + supplier.guidReferencia)
+								"
+							>
+								Ver detalhes
+							</button>
+						</td>
+					</tr>
+				</ng-template>
+			</p-table>
+
+			<ng-container *ngIf="isMobile">
+				<div class="cardList">
+					<ng-container *ngFor="let supplier of suppliersEntries">
+						<app-card-item
+							[card]="{
+								infos: [
+									{
+										label: 'Nome',
+										data: supplier.name
+									},
+									{
+										label: 'CPF/CNPJ',
+										data: supplier.cpf_cnpj,
+										pipe: cardPipes['cpfcnpj']
+									},
+									{
+										label: 'Telefone',
+										data: supplier.phone,
+										pipe: cardPipes['telefone']
+									},
+									{
+										label: 'Email',
+										data: supplier.email
+									}
+								]
+							}"
+						>
+							<button
+								pButton
+								type="button"
+								class="p-button-text h-7 font-bold"
+								(click)="
+									navigateTo('supplier/details/' + supplier.guidReferencia)
+								"
+							>
+								Ver detalhes
+							</button>
+						</app-card-item>
+					</ng-container>
+
+					<div class="mx-5 mt-5">
+						<button
+							pButton
+							type="button"
+							class="p-button-outlined h-9 justify-center w-full"
+							(click)="loadSuppliersEntries()"
+							*ngIf="suppliersEntries.length < totalSupplierCount"
+						>
+							Carregar mais
+						</button>
+					</div>
+				</div>
+			</ng-container>
+		</ng-container>
+	</div>
+</div>
+
+<p-sidebar [(visible)]="displayMobileFilters" position="bottom">
+	<ng-template pTemplate="header">Filtros</ng-template>
+	<ng-template pTemplate="content">
+		<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+	</ng-template>
+</p-sidebar>
