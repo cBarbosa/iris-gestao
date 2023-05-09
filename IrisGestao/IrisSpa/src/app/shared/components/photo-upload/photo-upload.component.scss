@@ -1,0 +1,83 @@
+.property-photos {
+	position: relative;
+	width: 100%;
+	max-width: 100%;
+	// width: 400px;
+	overflow-x: hidden;
+
+	.photo-scroller {
+		display: flex;
+		align-items: flex-start;
+		flex-wrap: wrap;
+		gap: 1rem;
+		width: 100%;
+		max-width: 100%;
+
+		> * {
+			flex-grow: 0;
+			flex-shrink: 1;
+			flex-basis: 7.5rem;
+		}
+
+		.photo {
+			position: relative;
+			overflow: hidden;
+			width: 7.5rem;
+			height: 6.5rem;
+
+			img {
+				min-width: 100%;
+				min-height: 100%;
+				max-width: none;
+				max-height: 100%;
+				object-fit: cover;
+				background-color: #262626;
+			}
+
+			button {
+				position: absolute;
+				display: flex;
+				align-items: center;
+				bottom: 0;
+				left: 0;
+				border-radius: 0;
+				padding: 0 0 0 0.36rem;
+				@apply text-xl w-8 h-8;
+				color: #ffffff;
+				background-color: #641b1e;
+			}
+		}
+
+		.add-photo-button {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			width: 7.5rem;
+			height: 6.5rem;
+			border-radius: 0;
+			color: #641b1e;
+			padding: 0.4rem;
+			background-color: #f7ded3;
+			cursor: pointer;
+			@apply text-sm;
+
+			i {
+				@apply text-2xl;
+			}
+
+			&:hover {
+				background-color: rgb(248, 212, 197);
+			}
+
+			.addPhoto {
+				display: none;
+			}
+		}
+	}
+
+	.error {
+		color: rgb(218, 38, 38);
+		margin: 1rem 0 0.5rem;
+	}
+}

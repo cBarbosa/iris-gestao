@@ -16,15 +16,12 @@ const httpOptions = {
 export class FornecedorService {
 	constructor(private http: HttpClient) {}
 
-	getSuppliers(
-		limit: number = 50,
-		page: number = 1,
-		filter?: string
-	) {
+	getSuppliers(limit: number = 50, page: number = 1, filter?: string) {
 		return this.http
 			.get<ApiResponse>(
 				`${env.config.apiUrl}Fornecedor?limit=${limit}&page=${page}${
-					filter ? `&nome=${filter}` : ''}`
+					filter ? `&nome=${filter}` : ''
+				}`
 			)
 			.pipe(
 				map((response) => {
@@ -34,7 +31,7 @@ export class FornecedorService {
 					return response;
 				})
 			);
-	};
+	}
 
 	getSupplierById(uid: string) {
 		return this.http
@@ -46,7 +43,7 @@ export class FornecedorService {
 					else return console.error(`getSupplier: ${response.message}`);
 				})
 			);
-	};
+	}
 
 	createSupplier(form: any) {
 		return this.http
@@ -62,7 +59,7 @@ export class FornecedorService {
 					else return console.error(`createSupplier: ${response}`);
 				})
 			);
-	};
+	}
 
 	updateSupplier(uid: string, form: any) {
 		return this.http
@@ -78,6 +75,5 @@ export class FornecedorService {
 					else return console.error(`getClients: ${response.message}`);
 				})
 			);
-	};
-
+	}
 }
