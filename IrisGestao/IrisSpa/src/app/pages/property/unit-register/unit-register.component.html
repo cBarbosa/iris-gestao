@@ -140,42 +140,11 @@
 					<h5>Documentos</h5>
 
 					<div class="document-list">
-						<div class="document project">
-							<span>Projeto</span>
-							<span class="buttons">
-								<button
-									pButton
-									type="button"
-									class="p-button-rounded p-button-text"
-								>
-									<i class="ph-download-simple"></i>
-								</button>
-							</span>
-						</div>
-						<div class="document registration">
-							<span>Matrícula</span>
-							<span class="buttons">
-								<button
-									pButton
-									type="button"
-									class="p-button-rounded p-button-text"
-								>
-									<i class="ph-download-simple"></i>
-								</button>
-							</span>
-						</div>
-						<div class="document occupancy">
-							<span>Habite-se</span>
-							<span class="buttons">
-								<button
-									pButton
-									type="button"
-									class="p-button-rounded p-button-text"
-								>
-									<i class="ph-download-simple"></i>
-								</button>
-							</span>
-						</div>
+						<app-file-upload
+							name="documents"
+							(selectEvent)="onAttachmentSelect($event)"
+							accept=".xls, .doc, .pdf, .xlsx, .docx"
+						></app-file-upload>
 					</div>
 				</div>
 				<ng-template #spinner>
@@ -192,26 +161,11 @@
 				<p>Informações adicionais do cadastro do imóvel</p>
 
 				<h5 class="mb-5">Fotos do imóvel</h5>
-				<div class="property-photos">
-					<div class="photo">
-						<img
-							src="../../../../assets/images/property/3.png"
-							alt="Foto do imóvel"
-						/>
-						<button pButton type="button">
-							<i class="ph-trash"></i>
-						</button>
-					</div>
 
-					<button
-						pButton
-						type="button"
-						class="p-button-rounded add-photo-button"
-					>
-						<i class="ph-plus"></i>
-						<div>Adicionar foto</div>
-					</button>
-				</div>
+				<app-photo-upload
+					(selectEvent)="onPhotoSelect($event)"
+					[maxFileSize]="10000000"
+				></app-photo-upload>
 
 				<div class="field">
 					<label for="type" class="block">Tipo da unidade</label>
@@ -244,6 +198,7 @@
 						type="text"
 						formControlName="name"
 						aria-describedby="name-help"
+						maxlength="50"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['name'])">
@@ -266,7 +221,10 @@
 					<label for="area-total" class="block">Área total</label>
 					<input
 						id="area-total"
-						type="number"
+						type="text"
+						mask="0*"
+						suffix=" m²"
+						maxlength="12"
 						formControlName="area_total"
 						aria-describedby="area-total-help"
 						pInputText
@@ -291,7 +249,10 @@
 					<label for="area-usable" class="block">Área útil</label>
 					<input
 						id="area-usable"
-						type="number"
+						type="text"
+						mask="0*"
+						suffix=" m²"
+						maxlength="12"
 						formControlName="area_usable"
 						aria-describedby="area-usable-help"
 						pInputText
@@ -316,7 +277,10 @@
 					<label for="area-occupancy" class="block">Área Habite-se</label>
 					<input
 						id="area-occupancy"
-						type="number"
+						type="text"
+						mask="0*"
+						suffix=" m²"
+						maxlength="12"
 						formControlName="area_occupancy"
 						aria-describedby="area-occupancy-help"
 						pInputText
@@ -477,6 +441,7 @@
 					<input
 						id="potential"
 						type="text"
+						maxlength="15"
 						formControlName="potential"
 						aria-describedby="potential-help"
 						currencyMask
@@ -517,11 +482,17 @@
 			class="p-button-outlined h-11"
 		></button>
 
-		<button pButton type="submit" label="Continuar" class="h-11"></button>
+		<button
+			pButton
+			type="submit"
+			label="Continuar"
+			class="h-11"
+			[disabled]="isLoadingSubmit"
+		></button>
 	</div>
 </form>
 
-<p-dialog
+<!-- <p-dialog
 	[(visible)]="displayModal"
 	[modal]="true"
 	[draggable]="false"
@@ -541,9 +512,14 @@
 	<ng-template pTemplate="content">
 		<ng-container *ngTemplateOutlet="modalContentTemplate"></ng-container>
 	</ng-template>
-</p-sidebar>
+</p-sidebar> -->
 
-<ng-template #modalContentTemplate>
+<app-responsive-dialog
+	[isMobile]="isMobile"
+	[visible]="displayModal"
+	styleClass="form-modal"
+	[onHide]="finishForm"
+>
 	<div *ngIf="!modalContent.isError; else error" class="modal-success">
 		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
 		<i class="ph-check-circle"></i>
@@ -554,7 +530,7 @@
 		<button
 			pButton
 			label="Continuar"
-			(click)="navigateTo('property/details/' + uid)"
+			(click)="navigateTo('property/details/' + propertyGuid)"
 		></button>
 	</div>
 	<ng-template #error>
@@ -564,7 +540,14 @@
 			<p>
 				{{ modalContent.message }}
 			</p>
-			<button pButton label="Continuar" (click)="closeModal()"></button>
+			<button
+				pButton
+				label="Continuar"
+				(click)="closeModal(navigateTo, 'property/details/' + propertyGuid)"
+			></button>
 		</div>
 	</ng-template>
-</ng-template>
+</app-responsive-dialog>
+
+<!-- <ng-template #modalContentTemplate>
+</ng-template> -->

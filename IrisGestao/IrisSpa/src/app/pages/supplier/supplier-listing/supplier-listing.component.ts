@@ -20,7 +20,7 @@ export class SupplierListingComponent {
 	];
 
 	totalSupplierCount: number;
-	isLoadingSuppliers = false;
+	isLoadingSuppliers = true;
 	noRestults = false;
 	first = 0;
 	rows = 10;
@@ -154,7 +154,7 @@ export class SupplierListingComponent {
 		console.log(e);
 
 		if (stack) return this.getSuppliersPage(page, this.filterText);
-		else return this.setSuppliersEntries(1, this.filterText);
+		else return this.setSuppliersEntries(page, this.filterText);
 	};
 
 	filterSuppliersDebounce: Function = Utils.debounce(

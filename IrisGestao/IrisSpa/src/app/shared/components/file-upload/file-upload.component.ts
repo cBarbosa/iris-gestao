@@ -35,22 +35,13 @@ export class FileUploadComponent {
 	maxFileSize: number = 1000000;
 
 	@Input()
-	fileLimit: number;
+	fileLimit: number = 10;
 
 	@ViewChild('fileUpload') fileUpload: any;
 
 	@Output() selectEvent = new EventEmitter<File[]>();
 
 	selectedAttachments: File[] = [];
-	// selectedAttachments = [
-	// 	{ name: 'teste', size: 109303 },
-	// 	{
-	// 		name: 'teste nome test name doc teste nome test name doc teste nome test name doc',
-	// 		size: 109303,
-	// 	},
-	// 	{ name: 'teste nome test', size: 2109303 },
-	// 	{ name: 'teste nome test name doc', size: 109303 },
-	// ];
 
 	limitReached = false;
 
