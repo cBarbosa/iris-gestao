@@ -12,6 +12,7 @@
 				formControlName="name"
 				aria-describedby="name-help"
 				pInputText
+				maxlength="100"
 			/>
 			<ng-container *ngIf="checkHasError(f['name'])">
 				<small
@@ -34,6 +35,7 @@
 				formControlName="role"
 				aria-describedby="role-help"
 				pInputText
+				maxlength="50"
 			/>
 			<ng-container *ngIf="checkHasError(f['role'])">
 				<small
@@ -82,6 +84,7 @@
 				formControlName="email"
 				aria-describedby="email-help"
 				pInputText
+				maxlength="60"
 			/>
 			<ng-container *ngIf="checkHasError(f['email'])">
 				<small
