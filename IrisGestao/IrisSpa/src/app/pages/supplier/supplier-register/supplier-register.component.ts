@@ -54,6 +54,8 @@ export class SupplierRegisterComponent implements OnInit {
 	onInputDate: Function;
 	onBlurDate: Function;
 
+	cpfCnpjMask = '000.000.000-00';
+
 	isSubmitting = false;
 
 	isMobile = false;
@@ -123,9 +125,10 @@ export class SupplierRegisterComponent implements OnInit {
 		return this.registerForm.controls;
 	}
 
-	get CpfCnpjMask() {
-		if (this.f['tipoFornecedor']?.value === 'cpf') return '000.000.000-00';
-		return '00.000.000/0000-00';
+	setCpfCnpjMask() {
+		if (this.f['tipoFornecedor']?.value === 'cpf')
+			this.cpfCnpjMask = '000.000.000-00';
+		else this.cpfCnpjMask = '00.000.000/0000-00';
 	}
 
 	get currCpfCnpj() {
@@ -539,6 +542,7 @@ export class SupplierRegisterComponent implements OnInit {
 	};
 
 	supplierTypeChange = (): void => {
+		this.setCpfCnpjMask();
 		if (!this.isCnpj) {
 			this.supplierInfoForm.controls['CpfCnpj'].setValidators([
 				Validators.required,
@@ -696,9 +700,5 @@ export class SupplierRegisterComponent implements OnInit {
 		this.displayModal = false;
 
 		if (onClose !== undefined) onClose(...params);
-	};
-
-	finishForm = () => {
-		this.navigateTo('supplier/details/' + this.supplierGuid);
 	};
 }
