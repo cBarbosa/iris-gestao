@@ -24,11 +24,15 @@ export class ResponsiveDialogComponent {
 	@Input()
 	styleClass: string;
 
-	@Input()
-	onHide: Function;
+	@Output()
+	onHide = new EventEmitter<boolean>();
 
-	emitVisibleChange(value: boolean) {
-		this.visibleChange.emit(value);
+	// emitVisibleChange(value: boolean) {
+	// 	this.visibleChange.emit(value);
+	// }
+
+	emitOnHide(value: boolean) {
+		this.onHide.emit(value);
 	}
 
 	constructor(private responsiveService: ResponsiveService) {}

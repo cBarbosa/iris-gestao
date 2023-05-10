@@ -386,7 +386,6 @@
 				type="button"
 				label="Cancelar"
 				class="p-button-outlined h-11"
-				[disabled]="editForm.invalid"
 				(click)="navigateTo('property/details/' + propertyGuid)"
 			></button>
 
@@ -395,7 +394,7 @@
 				type="submit"
 				label="Continuar"
 				class="h-11"
-				[disabled]="editForm.invalid"
+				[disabled]="editForm.invalid || isSubmitting"
 			></button>
 		</div>
 	</form>
@@ -473,8 +472,7 @@
 <ng-template #cropModalContentTemplate>
 	<ng-template pTemplate="header"><h3>Nova capa</h3></ng-template>
 	<!-- <input type="file" (change)="fileChangeEvent($event)" /> -->
-
-	<label for="coverUpload" class="inputfile" *ngIf="!croppedCover">
+	<label for="coverUpload" class="inputfile" *ngIf="!auxCroppedCover">
 		Selecionar capa
 		<input
 			type="file"
@@ -483,20 +481,29 @@
 			id="coverUpload"
 		/>
 	</label>
+	<div [ngClass]="{ 'pb-12': !!auxCroppedCover }">
+		<image-cropper
+			[imageChangedEvent]="imageChangedEvent"
+			[maintainAspectRatio]="true"
+			[aspectRatio]="4 / 1"
+			[resizeToWidth]="1440"
+			format="png"
+			(imageCropped)="imageCropped($event)"
+			(imageLoaded)="imageLoaded()"
+			(cropperReady)="cropperReady()"
+			(loadImageFailed)="loadImageFailed()"
+		></image-cropper>
+	</div>
 
-	<image-cropper
-		[imageChangedEvent]="imageChangedEvent"
-		[maintainAspectRatio]="true"
-		[aspectRatio]="4 / 1"
-		[resizeToWidth]="1440"
-		format="png"
-		(imageCropped)="imageCropped($event)"
-		(imageLoaded)="imageLoaded()"
-		(cropperReady)="cropperReady()"
-		(loadImageFailed)="loadImageFailed()"
-	></image-cropper>
-
-	<!-- <img [src]="croppedCover" /> -->
+	<button
+		pButton
+		type="button"
+		(click)="setCroppedImage()"
+		*ngIf="auxCroppedCover"
+		class="fixed right-5 bottom-5"
+	>
+		Confirmar
+	</button>
 
 	<ng-template pTemplate="footer">
 		<div class="flex justify-end">

@@ -304,19 +304,19 @@ export class PropertyRegisterComponent {
 	setNewProprietary: () => void = () => {};
 
 	get CpfCnpjMask() {
-		if (this.registerProprietaryForm.controls['tipoCliente'].value === 'cpf')
+		if (this.registerProprietaryForm.controls['tipoCliente']?.value === 'cpf')
 			return '000.000.000-00';
 		return '00.000.000/0000-00';
 	}
 
 	get currCpfCnpj() {
-		if (this.registerProprietaryForm.controls['tipoCliente'].value === 'cpf')
+		if (this.registerProprietaryForm.controls['tipoCliente']?.value === 'cpf')
 			return 'CPF';
 		return 'CNPJ';
 	}
 
 	get isCnpj() {
-		if (this.registerProprietaryForm.controls['tipoCliente'].value === 'cpf')
+		if (this.registerProprietaryForm.controls['tipoCliente']?.value === 'cpf')
 			return false;
 		return true;
 	}
