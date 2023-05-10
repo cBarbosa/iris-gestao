@@ -95,6 +95,9 @@ export class PropertyRegisterComponent {
 	stepList: Step[];
 	currentStep: number;
 
+	isSubmitting = false;
+	isSubmittingProprietary = false;
+
 	displayModal = false;
 	modalContent: {
 		isError?: boolean;
@@ -685,6 +688,8 @@ export class PropertyRegisterComponent {
 				});
 		};
 
+		this.isSubmitting = true;
+
 		registerPropertyAndUnit(propertyObj, unitObj);
 	}
 
@@ -713,6 +718,8 @@ export class PropertyRegisterComponent {
 			endereco: '',
 			razaoSocial: '',
 		};
+
+		this.isSubmittingProprietary = true;
 
 		this.clienteService
 			.criarCliente(proprietaryObj)
@@ -748,7 +755,7 @@ export class PropertyRegisterComponent {
 							isError: true,
 						};
 
-						this.registerProprietaryVisible = false;
+						// this.registerProprietaryVisible = false;
 						this.openModal();
 					}
 				},
@@ -760,13 +767,14 @@ export class PropertyRegisterComponent {
 						isError: true,
 					};
 
-					this.registerProprietaryVisible = false;
+					// this.registerProprietaryVisible = false;
 					this.openModal();
 				},
 			});
 	}
 
 	openModal() {
+		console.log('openning modal on parent');
 		this.displayModal = true;
 	}
 
@@ -778,6 +786,17 @@ export class PropertyRegisterComponent {
 
 	toggleModal() {
 		this.displayModal = !this.displayModal;
+	}
+
+	finishForm() {
+		console.log('isSubmitting', this.isSubmitting);
+		console.log('isSubmittingProprietary', this.isSubmittingProprietary);
+		if (this.isSubmitting) {
+			this.isSubmitting = false;
+			this.navigateTo('property/listing');
+		} else {
+			this.isSubmittingProprietary = false;
+		}
 	}
 
 	goBack() {

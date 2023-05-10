@@ -330,6 +330,7 @@
 	[isMobile]="isMobile"
 	[visible]="displayModal"
 	styleClass="form-modal"
+	(onHide)="closeModal(navigateTo, 'expense/listing')"
 >
 	<div *ngIf="!modalContent.isError; else error" class="modal-success">
 		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
