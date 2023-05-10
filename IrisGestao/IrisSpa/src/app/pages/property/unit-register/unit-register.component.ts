@@ -39,7 +39,7 @@ export class UnitRegisterComponent implements OnInit {
 			disabled: true,
 		},
 	];
-	displayModal = true;
+	displayModal = false;
 	modalContent: {
 		isError?: boolean;
 		header?: string;
@@ -317,9 +317,5 @@ export class UnitRegisterComponent implements OnInit {
 
 	navigateTo = (route: string) => {
 		this.router.navigate([route]);
-	};
-
-	finishForm = () => {
-		this.navigateTo('property/details/' + this.propertyGuid);
 	};
 }

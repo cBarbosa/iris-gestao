@@ -518,7 +518,7 @@
 	[isMobile]="isMobile"
 	[visible]="displayModal"
 	styleClass="form-modal"
-	[onHide]="finishForm"
+	(onHide)="closeModal(navigateTo, 'property/details/' + propertyGuid)"
 >
 	<div *ngIf="!modalContent.isError; else error" class="modal-success">
 		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
