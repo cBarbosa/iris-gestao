@@ -124,17 +124,17 @@ export class SupplierRegisterComponent implements OnInit {
 	}
 
 	get CpfCnpjMask() {
-		if (this.f['tipoFornecedor'].value === 'cpf') return '000.000.000-00';
+		if (this.f['tipoFornecedor']?.value === 'cpf') return '000.000.000-00';
 		return '00.000.000/0000-00';
 	}
 
 	get currCpfCnpj() {
-		if (this.f['tipoFornecedor'].value === 'cpf') return 'CPF';
+		if (this.f['tipoFornecedor']?.value === 'cpf') return 'CPF';
 		return 'CNPJ';
 	}
 
 	get isCnpj() {
-		if (this.f['tipoFornecedor'].value === 'cpf') return false;
+		if (this.f['tipoFornecedor']?.value === 'cpf') return false;
 		return true;
 	}
 
