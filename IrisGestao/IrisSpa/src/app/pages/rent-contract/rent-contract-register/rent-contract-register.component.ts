@@ -345,19 +345,19 @@ export class RentContractRegisterComponent {
 	setNewRenter: () => void = () => {};
 
 	get CpfCnpjMask() {
-		if (this.registerRenterForm.controls['tipoCliente'].value === 'cpf')
+		if (this.registerRenterForm.controls['tipoCliente']?.value === 'cpf')
 			return '000.000.000-00';
 		return '00.000.000/0000-00';
 	}
 
 	get currCpfCnpj() {
-		if (this.registerRenterForm.controls['tipoCliente'].value === 'cpf')
+		if (this.registerRenterForm.controls['tipoCliente']?.value === 'cpf')
 			return 'CPF';
 		return 'CNPJ';
 	}
 
 	get isCnpj() {
-		if (this.registerRenterForm.controls['tipoCliente'].value === 'cpf')
+		if (this.registerRenterForm.controls['tipoCliente']?.value === 'cpf')
 			return false;
 		return true;
 	}
@@ -528,7 +528,8 @@ export class RentContractRegisterComponent {
 			prazoTotalContrato: +formData.valuesInfo.descontoPrazo, //???
 			dataOcupacao: formData.contractInfo.dataOcupacao,
 			diaVencimentoAluguel: formData.contractInfo.dataVencimento,
-			dataVencimentoPrimeraParcela: formData.contractInfo.dataVencimentoPrimeraParcela,
+			dataVencimentoPrimeraParcela:
+				formData.contractInfo.dataVencimentoPrimeraParcela,
 			periodicidadeReajuste: +formData.valuesInfo.periodicidade,
 			lstImoveis: this.linkedProperties.map((p) => {
 				return {
