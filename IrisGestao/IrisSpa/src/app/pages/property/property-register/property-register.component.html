@@ -846,6 +846,7 @@
 			label="Continuar"
 			class="h-11"
 			(click)="nextStep()"
+			[disabled]="isSubmitting"
 		></button>
 	</div>
 </form>
@@ -1069,6 +1070,7 @@
 					type="button"
 					label="Continuar"
 					class="h-9 w-full"
+					[disabled]="isSubmittingProprietary"
 					(click)="onProprietarySubmit()"
 				></button>
 			</div>
@@ -1076,7 +1078,48 @@
 	</p-sidebar>
 </form>
 
-<p-dialog
+<app-responsive-dialog
+	[isMobile]="isMobile"
+	[(visible)]="displayModal"
+	styleClass="form-modal"
+	(onHide)="finishForm()"
+>
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+
+		<button
+			pButton
+			label="Continuar"
+			(click)="
+				closeModal(setNewProprietary); registerProprietaryVisible = false
+			"
+			*ngIf="registerProprietaryVisible"
+		></button>
+
+		<button
+			pButton
+			label="Continuar"
+			(click)="closeModal(navigateTo, 'property/listing')"
+			*ngIf="!registerProprietaryVisible"
+		></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</app-responsive-dialog>
+
+<!-- <p-dialog
 	[(visible)]="displayModal"
 	[modal]="true"
 	[draggable]="false"
@@ -1132,4 +1175,4 @@
 			<button pButton label="Continuar" (click)="closeModal()"></button>
 		</div>
 	</ng-template>
-</ng-template>
+</ng-template> -->
