@@ -75,25 +75,28 @@ public class UnidadeService: IUnidadeService
             return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
         }
 
-        cmd.GuidReferencia = Guid.Empty;
         try
         {
             if (!cmd.QtdeCopias.HasValue
                 || cmd.IdTipoUnidade.Equals(TipoUnidadeEnum.PAVIMENTO_CORPORATIVO))
             {
-                await CriaVariasUnidades(1, cmd, imovel);
+                cmd.GuidReferencia = await CriaVariasUnidades(1, cmd, imovel);
             }
             else
             {
-                await CriaVariasUnidades(cmd.QtdeCopias ?? 1, cmd, imovel);
+                cmd.GuidReferencia = await CriaVariasUnidades(cmd.QtdeCopias ?? 1, cmd, imovel);
             }
 
             return new CommandResult(true,
-                SuccessResponseEnums.Success_1000,
-                $"{cmd.QtdeCopias ?? 1} unidades cadastradas com sucesso");
+                SuccessResponseEnums.Success_1000, new
+                {
+                    message = $"{cmd.QtdeCopias ?? 1} unidades cadastradas com sucesso",
+                    guidReferencia = cmd.GuidReferencia
+                });
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            logger.LogError(e, e.Message);
             return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
         }
     }
@@ -122,7 +125,7 @@ public class UnidadeService: IUnidadeService
         }
         catch (Exception e)
         {
-            logger.LogError(e.Message);
+            logger.LogError(e, e.Message);
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
     }
@@ -133,25 +136,23 @@ public class UnidadeService: IUnidadeService
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
-        else
+        
+        var _unidade = await Task.FromResult(unidadeRepository.GetById(codigo.Value));
+
+        if(_unidade == null)
         {
-            var _unidade = await Task.FromResult(unidadeRepository.GetById(codigo.Value));
+            return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
+        }
 
-            if(_unidade == null)
-            {
-                return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
-            }
-
-            try
-            {
-                unidadeRepository.Delete(codigo.Value);
-                return new CommandResult(true, SuccessResponseEnums.Success_1002, null);
-            }
-            catch (Exception)
-            {
-                return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
-                throw;
-            }
+        try
+        {
+            unidadeRepository.Delete(codigo.Value);
+            return new CommandResult(true, SuccessResponseEnums.Success_1002, null);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
         }
     }
 
@@ -177,7 +178,7 @@ public class UnidadeService: IUnidadeService
         }
         catch (Exception e)
         {
-            logger.LogError(e.Message);
+            logger.LogError(e, e.Message);
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
     }
@@ -219,7 +220,7 @@ public class UnidadeService: IUnidadeService
         }
         catch (Exception e)
         {
-            logger.LogError(e.Message);
+            logger.LogError(e, e.Message);
             return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
         }
     }
@@ -228,7 +229,7 @@ public class UnidadeService: IUnidadeService
     {
         if (cmd.GuidReferencia.Equals(Guid.Empty))
         {
-            // TODO alterar o tipo para GUID
+            // TODO [Renato] alterar o tipo GuidReferencia para GUID
             unidade.GuidReferencia = $"{Guid.NewGuid()}";
             unidade.DataCriacao = DateTime.Now;
             unidade.DataUltimaModificacao = DateTime.Now;
@@ -253,14 +254,24 @@ public class UnidadeService: IUnidadeService
         unidade.Tipo = cmd.Tipo ?? string.Empty;
     }
 
-    private async Task CriaVariasUnidades(int qtdUnidades, CriarUnidadeCommand cmd, Imovel imovel)
+    private async Task<Guid> CriaVariasUnidades(
+        int qtdUnidades,
+        CriarUnidadeCommand cmd,
+        Imovel imovel)
     {
+        cmd.GuidReferencia = Guid.Empty;
+        var guidReferencia = Guid.Empty;
         for (int i = 0; i < qtdUnidades; i++)
         {
             var unidade = new Unidade();
             BindUnidadeData(cmd, unidade);
+            guidReferencia = Guid.Empty.Equals(guidReferencia)
+                ? Guid.Parse(unidade.GuidReferencia)
+                : guidReferencia;
             unidade.IdImovel = imovel.Id;
             unidadeRepository.Insert(unidade);
         }
+
+        return await Task.FromResult(guidReferencia);
     }
 }
