@@ -147,8 +147,8 @@ export class UnitRegisterComponent implements OnInit {
 							message: response.message,
 						};
 
-						const photoSubmit = this.savePhotos(response.guidReferencia);
-						const docSubmit = this.saveDocs(response.guidReferencia);
+						const photoSubmit = this.savePhotos(response.data.guidReferencia);
+						const docSubmit = this.saveDocs(response.data.guidReferencia);
 
 						Promise.all([photoSubmit, docSubmit])
 							.then((response) => {
@@ -159,7 +159,6 @@ export class UnitRegisterComponent implements OnInit {
 							})
 							.finally(() => {
 								this.openModal();
-								this.isLoadingSubmit = false;
 							});
 					} else {
 						this.modalContent = {
@@ -168,8 +167,8 @@ export class UnitRegisterComponent implements OnInit {
 							isError: true,
 						};
 
-						this.openModal();
 						this.isLoadingSubmit = false;
+						this.openModal();
 					}
 				},
 				error: (error: any) => {
@@ -180,8 +179,8 @@ export class UnitRegisterComponent implements OnInit {
 						isError: true,
 					};
 
-					this.openModal();
 					this.isLoadingSubmit = false;
+					this.openModal();
 				},
 			});
 	}
@@ -313,6 +312,9 @@ export class UnitRegisterComponent implements OnInit {
 		this.displayModal = false;
 
 		if (onClose !== undefined) onClose(...params);
+
+		if (this.isLoadingSubmit)
+			this.navigateTo('property/details/' + this.propertyGuid);
 	}
 
 	navigateTo = (route: string) => {
