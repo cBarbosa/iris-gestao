@@ -40,6 +40,8 @@ export class SupplierViewComponent implements OnInit {
 	contactEditVisible: boolean = false;
 	displayConfirmationModal: boolean = false;
 
+	properties = [];
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
@@ -105,6 +107,10 @@ export class SupplierViewComponent implements OnInit {
 							? new Date(contato.dataNascimento as string).toLocaleDateString()
 							: null,
 				};
+			});
+
+			this.properties = event.contratos?.map((contrato: any) => {
+				return contrato.imovel;
 			});
 
 			this.isLoadingView = false;

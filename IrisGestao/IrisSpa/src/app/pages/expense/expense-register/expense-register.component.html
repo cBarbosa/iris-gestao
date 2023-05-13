@@ -279,6 +279,7 @@
 					aria-describedby="impostos-help"
 					mask="percent"
 					suffix="%"
+					[dropSpecialCharacters]="false"
 					pInputText
 				/>
 				<ng-container *ngIf="checkHasError(f['impostos'])">

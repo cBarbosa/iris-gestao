@@ -257,12 +257,12 @@
 				</ng-template>
 			</ng-container>
 
-			<section class="properties">
+			<section class="properties" *ngIf="properties.length">
 				<h2>Local de prestação do serviço</h2>
 
-				<!-- <div class="flex flex-col gap-6">
+				<div class="flex flex-col gap-6">
 					<app-property-list [properties]="properties"></app-property-list>
-				</div> -->
+				</div>
 			</section>
 		</div>
 	</div>

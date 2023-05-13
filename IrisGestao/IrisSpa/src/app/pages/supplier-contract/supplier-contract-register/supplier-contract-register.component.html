@@ -436,6 +436,7 @@
 						aria-describedby="percentual-help"
 						mask="percent"
 						suffix="%"
+						[dropSpecialCharacters]="false"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['percentual'])">
