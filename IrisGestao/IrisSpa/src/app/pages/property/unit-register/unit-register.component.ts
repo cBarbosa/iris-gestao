@@ -69,20 +69,20 @@ export class UnitRegisterComponent implements OnInit {
 
 		this.registerForm = this.fb.group({
 			name: ['', Validators.required],
-			nameCompany: [{ value: '', disabled: true }],
-			category: [{ value: '', disabled: true }],
+			nameCompany: [{ value: '', disabled: true }, Validators.required],
+			category: [{ value: '', disabled: true }, Validators.required],
 			type: [null, [Validators.required]],
-			typeStr: [{ value: '', disabled: true }],
+			typeStr: [{ value: '', disabled: true }, Validators.required],
 			proprietary: [{ value: '', disabled: true }, [Validators.required]],
-			area_total: [''],
-			area_usable: [''],
-			area_occupancy: [''],
-			occupancy: [''],
-			iptu: [''],
-			neoenergia: [''],
-			caesb: [''],
-			administration: [''],
-			potential: [''],
+			area_total: ['', Validators.required],
+			area_usable: ['', Validators.required],
+			area_occupancy: ['', Validators.required],
+			registration: ['', Validators.required],
+			iptu: ['', Validators.required],
+			neoenergia: ['', Validators.required],
+			caesb: ['', Validators.required],
+			administration: ['', Validators.required],
+			potential: ['', Validators.required],
 		});
 	}
 
@@ -127,7 +127,7 @@ export class UnitRegisterComponent implements OnInit {
 			AreaUtil: +this.registerForm.get('area_usable')?.value,
 			AreaTotal: +this.registerForm.get('area_total')?.value,
 			AreaHabitese: +this.registerForm.get('area_occupancy')?.value,
-			Matricula: this.registerForm.get('occupancy')?.value,
+			Matricula: this.registerForm.get('registration')?.value,
 			InscricaoIptu: this.registerForm.get('iptu')?.value,
 			MatriculaEnergia: this.registerForm.get('neoenergia')?.value,
 			MatriculaAgua: this.registerForm.get('caesb')?.value,
@@ -147,8 +147,8 @@ export class UnitRegisterComponent implements OnInit {
 							message: response.message,
 						};
 
-						const photoSubmit = this.savePhotos(response.guidReferencia);
-						const docSubmit = this.saveDocs(response.guidReferencia);
+						const photoSubmit = this.savePhotos(response.data.guidReferencia);
+						const docSubmit = this.saveDocs(response.data.guidReferencia);
 
 						Promise.all([photoSubmit, docSubmit])
 							.then((response) => {
@@ -159,7 +159,6 @@ export class UnitRegisterComponent implements OnInit {
 							})
 							.finally(() => {
 								this.openModal();
-								this.isLoadingSubmit = false;
 							});
 					} else {
 						this.modalContent = {
@@ -168,8 +167,8 @@ export class UnitRegisterComponent implements OnInit {
 							isError: true,
 						};
 
-						this.openModal();
 						this.isLoadingSubmit = false;
+						this.openModal();
 					}
 				},
 				error: (error: any) => {
@@ -180,8 +179,8 @@ export class UnitRegisterComponent implements OnInit {
 						isError: true,
 					};
 
-					this.openModal();
 					this.isLoadingSubmit = false;
+					this.openModal();
 				},
 			});
 	}
@@ -313,6 +312,9 @@ export class UnitRegisterComponent implements OnInit {
 		this.displayModal = false;
 
 		if (onClose !== undefined) onClose(...params);
+
+		if (this.isLoadingSubmit)
+			this.navigateTo('property/details/' + this.propertyGuid);
 	}
 
 	navigateTo = (route: string) => {
