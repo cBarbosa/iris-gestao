@@ -5,8 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace IrisWebApi.Controllers;
 
 [Route("api/[controller]")]
+[Produces("application/json")]
 [ApiController]
-public class UnidadeController : Controller
+public class UnidadeController : ControllerBase
 {
     private readonly IUnidadeService unidadeService;
 
@@ -15,77 +16,37 @@ public class UnidadeController : Controller
         this.unidadeService = unidadeService;
     }
  
-    // GET
     [HttpGet]
-    [Produces("application/json")]
    public async Task<IActionResult> GetAll() =>
         Ok(await unidadeService.GetAll());
 
-    // GET
     [HttpGet("{guid}/guid")]
-    [Produces("application/json")]
     public async Task<IActionResult> GetByUid([FromRoute] Guid guid) =>
         Ok(await unidadeService.GetByUid(guid));
 
-    // GET
     [HttpGet("{codigo}/idImovel")]
-    [Produces("application/json")]
     public async Task<IActionResult> BuscarBuscarUnidadePorImovel([FromRoute] int codigo) =>
         Ok(await unidadeService.BuscarBuscarUnidadePorImovel(codigo));
 
-
     [HttpPost("{guid}/criar")]
-    [Produces("application/json")]
-    public async Task<IActionResult> Insert(
-        Guid guid,
-        [FromBody] CriarUnidadeCommand cmd)
-    {
-        var result = await unidadeService.Insert(guid, cmd);
-
-        return Ok(result);
-    }
+    public async Task<IActionResult> Insert(Guid guid, [FromBody] CriarUnidadeCommand cmd) =>
+        Ok(await unidadeService.Insert(guid, cmd));
 
     [HttpPut("{guid}/atualizar")]
-    [Produces("application/json")]
     public async Task<IActionResult> Atualizar(
         Guid guid,
-        [FromBody] CriarUnidadeCommand cmd)
-    {
-        var result = await unidadeService.Update(guid, cmd);
-
-        return Ok(result);
-    }
+        [FromBody] CriarUnidadeCommand cmd) =>
+        Ok(await unidadeService.Update(guid, cmd));
 
     [HttpPut("{guid}/{status}/alterar-status")]
-    [Produces("application/json")]
-    public async Task<IActionResult> AlterarStatus(
-        Guid guid,
-        bool status)
-    {
-        var result = await unidadeService.AlterarStatus(guid, status);
+    public async Task<IActionResult> AlterarStatus(Guid guid, bool status) =>
+        Ok(await unidadeService.AlterarStatus(guid, status));
 
-        return Ok(result);
-    }
-
-    [HttpDelete("{codigo}/deletar/")]
-    [Produces("application/json")]
-    public async Task<IActionResult> Deletar(int? codigo)
-    {
-        var result = await unidadeService.Delete(codigo);
-
-        if (result == null)
-            return BadRequest("Operação não realizada");
-
-        return Ok(result);
-    }
+    [HttpDelete("{codigo}/deletar")]
+    public async Task<IActionResult> Deletar(int? codigo) =>
+        Ok(await unidadeService.Delete(codigo));
     
     [HttpPut("{guid}/duplicar")]
-    [Produces("application/json")]
-    public async Task<IActionResult> Clone(
-        Guid guid)
-    {
-        var result = await unidadeService.Clone(guid);
-
-        return Ok(result);
-    }
+    public async Task<IActionResult> Clone(Guid guid) =>
+        Ok(await unidadeService.Clone(guid));
 }
