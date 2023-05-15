@@ -155,6 +155,6 @@ public class ContratoFornecedorService: IContratoFornecedorService
 
     private static int calculaMes(DateTime dataInicio, DateTime dataFim)
     {
-        return ((dataInicio.Year - dataFim.Year) * 12) + dataInicio.Month - dataFim.Month;
+        return ((dataFim.Year - dataInicio.Year) * 12) + dataFim.Month - dataInicio.Month;
     }
 }
