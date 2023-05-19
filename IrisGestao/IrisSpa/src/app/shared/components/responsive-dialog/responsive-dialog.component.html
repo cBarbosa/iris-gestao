@@ -1,29 +1,28 @@
-<ng-container *ngIf="!isMobile">
+<ng-container *ngIf="!isMobile; else mobileView">
 	<p-dialog
 		[(visible)]="visible"
-		(onHide)="emitVisibleChange(false)"
 		[modal]="true"
 		[draggable]="false"
 		[resizable]="false"
 		[styleClass]="'responsive-dialog ' + styleClass"
-		(onHide)="onHide($event)"
+		(onHide)="emitOnHide(false)"
 	>
 		<ng-container *ngTemplateOutlet="content"></ng-container>
 	</p-dialog>
 </ng-container>
-<ng-container *ngIf="isMobile">
+<ng-template #mobileView>
 	<p-sidebar
 		[(visible)]="visible"
-		(onHide)="emitVisibleChange(false)"
 		position="bottom"
 		[styleClass]="'responsive-dialog ' + styleClass"
-		(onHide)="onHide($event)"
+		(onHide)="emitOnHide(false)"
+		(onShow)="openning()"
 	>
 		<ng-template pTemplate="content">
 			<ng-container *ngTemplateOutlet="content"></ng-container>
 		</ng-template>
 	</p-sidebar>
-</ng-container>
+</ng-template>
 
 <ng-template #content>
 	<ng-content></ng-content>

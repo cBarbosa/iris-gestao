@@ -222,7 +222,7 @@
 					<input
 						id="area-total"
 						type="text"
-						mask="0*"
+						mask="separator.2"
 						suffix=" m²"
 						maxlength="12"
 						formControlName="area_total"
@@ -250,7 +250,7 @@
 					<input
 						id="area-usable"
 						type="text"
-						mask="0*"
+						mask="separator.2"
 						suffix=" m²"
 						maxlength="12"
 						formControlName="area_usable"
@@ -278,7 +278,7 @@
 					<input
 						id="area-occupancy"
 						type="text"
-						mask="0*"
+						mask="separator.2"
 						suffix=" m²"
 						maxlength="12"
 						formControlName="area_occupancy"
@@ -302,25 +302,25 @@
 				</div>
 
 				<div class="field">
-					<label for="occupancy" class="block">Habite-se</label>
+					<label for="registration" class="block">Número da matrícula</label>
 					<input
-						id="occupancy"
+						id="registration"
 						type="text"
-						formControlName="occupancy"
-						aria-describedby="occupancy-help"
+						formControlName="registration"
+						aria-describedby="registration-help"
 						maxlength="16"
 						pInputText
 					/>
-					<ng-container *ngIf="checkHasError(f['occupancy'])">
+					<ng-container *ngIf="checkHasError(f['registration'])">
 						<small
-							id="occupancy-help"
-							*ngIf="f['occupancy'].hasError('required'); else error2"
+							id="registration-help"
+							*ngIf="f['registration'].hasError('required'); else error2"
 							class="p-error block"
 						>
 							Informe o Habite-se
 						</small>
 						<ng-template #error2>
-							<small id="occupancy-help" class="p-error block">
+							<small id="registration-help" class="p-error block">
 								Habite-se inválido
 							</small>
 						</ng-template>
@@ -408,9 +408,9 @@
 				</div>
 
 				<div class="field">
-					<label for="administration" class="block"
-						>Taxa de administração</label
-					>
+					<label for="administration" class="block">
+						Taxa de administração
+					</label>
 					<input
 						id="administration"
 						type="text"
@@ -418,6 +418,7 @@
 						aria-describedby="administration-help"
 						mask="percent"
 						suffix="%"
+						[dropSpecialCharacters]="false"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['administration'])">
@@ -518,7 +519,7 @@
 	[isMobile]="isMobile"
 	[visible]="displayModal"
 	styleClass="form-modal"
-	[onHide]="finishForm"
+	(onHide)="closeModal(navigateTo, 'property/details/' + propertyGuid)"
 >
 	<div *ngIf="!modalContent.isError; else error" class="modal-success">
 		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>

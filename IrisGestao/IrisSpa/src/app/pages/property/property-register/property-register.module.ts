@@ -16,6 +16,7 @@ import { NgxMaskModule } from 'ngx-mask';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { CalendarModule } from 'primeng/calendar';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
+import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
 
 @NgModule({
 	declarations: [PropertyRegisterComponent],
@@ -35,6 +36,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-
 		NgxMaskModule.forChild(),
 		NgxCurrencyModule,
 		FileUploadComponent,
+		ResponsiveDialogComponent,
 	],
 })
 export class PropertyRegisterModule {}

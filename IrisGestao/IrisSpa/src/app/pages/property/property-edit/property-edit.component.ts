@@ -52,6 +52,8 @@ export class PropertyEditComponent {
 
 	imovelObj: any = null;
 
+	isSubmitting = false;
+
 	attachmentsObj:
 		| Partial<{
 				capa: Attachment;
@@ -152,6 +154,7 @@ export class PropertyEditComponent {
 
 	imageChangedEvent: any = '';
 	croppedCover: any = null;
+	auxCroppedCover: any = null;
 
 	fileChangeEvent(event: any): void {
 		this.displayCropModal = true;
@@ -160,7 +163,7 @@ export class PropertyEditComponent {
 	}
 	//Emits an ImageCroppedEvent each time the image is cropped
 	imageCropped(event: ImageCroppedEvent) {
-		this.croppedCover = event.base64;
+		this.auxCroppedCover = event.base64;
 	}
 	//Emits the LoadedImage when it was loaded into the cropper
 	imageLoaded(image?: LoadedImage) {
@@ -177,12 +180,17 @@ export class PropertyEditComponent {
 		console.error('Erro ao cortar imagem');
 	}
 
+	setCroppedImage() {
+		this.croppedCover = this.auxCroppedCover;
+		this.closeCropModal();
+	}
+
 	closeCropModal() {
 		this.displayCropModal = false;
 	}
 	openCropModal() {
 		this.imageChangedEvent = null;
-		this.croppedCover = null;
+		this.auxCroppedCover = null;
 		this.displayCropModal = true;
 	}
 
@@ -357,6 +365,8 @@ export class PropertyEditComponent {
 			return;
 		}
 
+		this.isSubmitting = true;
+
 		const editFormData = this.editForm.getRawValue();
 
 		const propertyObj = {
@@ -406,6 +416,7 @@ export class PropertyEditComponent {
 							}
 
 							this.openModal();
+							this.isSubmitting = false;
 						},
 						error: (error: any) => {
 							console.error(error);
@@ -416,6 +427,7 @@ export class PropertyEditComponent {
 							};
 
 							this.openModal();
+							this.isSubmitting = false;
 						},
 					});
 			})

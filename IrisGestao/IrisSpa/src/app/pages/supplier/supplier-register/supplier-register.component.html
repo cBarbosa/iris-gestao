@@ -125,7 +125,7 @@
 						formControlName="CpfCnpj"
 						aria-describedby="CpfCnpj-help"
 						[specialCharacters]="['/', '.', '-']"
-						[mask]="CpfCnpjMask"
+						[mask]="cpfCnpjMask"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['CpfCnpj'])">
@@ -404,7 +404,6 @@
 						[options]="dropDownBankList"
 						formControlName="IdBanco"
 						aria-describedby="IdBanco-help"
-						(onChange)="supplierTypeChange()"
 					></p-dropdown>
 					<ng-container *ngIf="checkHasError(f['IdBanco'])">
 						<small
@@ -577,7 +576,7 @@
 	[isMobile]="isMobile"
 	[visible]="displayModal"
 	styleClass="form-modal"
-	[onHide]="finishForm"
+	(onHide)="closeModal(navigateTo, 'supplier/listing')"
 >
 	<div *ngIf="!modalContent.isError; else error" class="modal-success">
 		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>

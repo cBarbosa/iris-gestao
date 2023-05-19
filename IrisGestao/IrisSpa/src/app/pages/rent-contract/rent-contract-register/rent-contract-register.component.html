@@ -311,16 +311,24 @@
 						placeholder="dd/mm/aaaa"
 						aria-describedby="dataVencimentoPrimeraParcela-help"
 					></p-calendar>
-					<ng-container *ngIf="checkHasError(f['dataVencimentoPrimeraParcela'])">
+					<ng-container
+						*ngIf="checkHasError(f['dataVencimentoPrimeraParcela'])"
+					>
 						<small
 							id="dataVencimentoPrimeraParcela-help"
-							*ngIf="f['dataVencimentoPrimeraParcela'].hasError('required'); else error2"
+							*ngIf="
+								f['dataVencimentoPrimeraParcela'].hasError('required');
+								else error2
+							"
 							class="p-error block"
 						>
 							Informe a data de vencimento da primeira parcela
 						</small>
 						<ng-template #error2>
-							<small id="dataVencimentoPrimeraParcela-help" class="p-error block">
+							<small
+								id="dataVencimentoPrimeraParcela-help"
+								class="p-error block"
+							>
 								Data de vencimento da primeira parcela inválida
 							</small>
 						</ng-template>
@@ -401,6 +409,7 @@
 						aria-describedby="retencao-help"
 						mask="percent"
 						suffix="%"
+						[dropSpecialCharacters]="false"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['retencao'])">
@@ -428,6 +437,7 @@
 						aria-describedby="desconto-help"
 						mask="percent"
 						suffix="%"
+						[dropSpecialCharacters]="false"
 						pInputText
 					/>
 					<ng-container *ngIf="checkHasError(f['desconto'])">
