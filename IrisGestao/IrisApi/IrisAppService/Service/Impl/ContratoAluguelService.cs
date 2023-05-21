@@ -141,6 +141,7 @@ public class ContratoAluguelService: IContratoAluguelService
         {
             contratoAluguelRepository.Update(ContratoAluguel);
             await tituloReceberService.InativarTitulo(ContratoAluguel);
+            await tituloPagarService.InativarTitulo(ContratoAluguel);
             return new CommandResult(true, SuccessResponseEnums.Success_1001, ContratoAluguel);
         }
         catch (Exception e){
@@ -171,6 +172,7 @@ public class ContratoAluguelService: IContratoAluguelService
             contratoAluguelRepository.Update(contratoAluguel);
             contratoAluguelHistoricorReajusteService.Insert(contratoAluguelHistoricoReajusteCommand);
             await tituloReceberService.AtualizarReajuste(contratoAluguel);
+            await tituloPagarService.AtualizarReajuste(contratoAluguel);
             return new CommandResult(true, SuccessResponseEnums.Success_1001, contratoAluguel);
         }
         catch (Exception e)
@@ -258,6 +260,7 @@ public class ContratoAluguelService: IContratoAluguelService
     {
         double valorLiquido;
         valorLiquido = calculaValorLiquido(ContratoAluguel.ValorAluguel, ContratoAluguel.PercentualDescontoAluguel, novoPercentualReajuste);
+        DateTime dataVencimento                     = ContratoAluguel.DataFimContrato.AddMonths(12);
 
         cmd.IdContratoAluguel                       = ContratoAluguel.Id;
         cmd.PercentualReajusteAntigo                = ContratoAluguel.PercentualRetencaoImpostos;
@@ -268,6 +271,7 @@ public class ContratoAluguelService: IContratoAluguelService
         ContratoAluguel.DataUltimaModificacao       = DateTime.Now;
         ContratoAluguel.PercentualRetencaoImpostos  = novoPercentualReajuste;
         ContratoAluguel.ValorAluguelLiquido         = valorLiquido;
+        ContratoAluguel.DataFimContrato             = ContratoAluguel.DataFimContrato >= dataVencimento ? ContratoAluguel.DataFimContrato : dataVencimento;
     }
 
     private static double calculaValorLiquido(double valorAluguel, double? percentualDesconto, double percentualImpostos)
