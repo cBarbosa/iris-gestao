@@ -415,17 +415,18 @@ public class TituloPagarService: ITituloPagarService
         return lstFaturaTituloPagar;
     }
 
-    private static void BindTituloPagarReajusteData(ContratoAluguel contratoAluguel, TituloPagar TituloPagar, List<FaturaTituloPagar> lstFaturaTituloPagar)
+    private static void BindTituloPagarReajusteData(ContratoAluguel contratoAluguel, TituloPagar tituloPagar, List<FaturaTituloPagar> lstFaturaTituloPagar)
     {
-        TituloPagar.DataUltimaModificacao = DateTime.Now;
-        TituloPagar.DataFimTitulo = TituloPagar.DataFimTitulo.Value.AddMonths(12);
-        
-        TituloPagar.ValorTitulo = contratoAluguel.ValorAluguelLiquido;
-        TituloPagar.ValorTotalTitulo = (TituloPagar.ValorTotalTitulo + (contratoAluguel.ValorAluguelLiquido * 12));
-        TituloPagar.Parcelas = TituloPagar.Parcelas + 12;
-        TituloPagar.PorcentagemTaxaAdministracao = contratoAluguel.PercentualRetencaoImpostos;
+        DateTime dataVencimento = tituloPagar.DataFimTitulo.Value.AddMonths(12);
+        tituloPagar.DataUltimaModificacao = DateTime.Now;
+        tituloPagar.DataFimTitulo = tituloPagar.DataFimTitulo.Value >= dataVencimento ? tituloPagar.DataFimTitulo : dataVencimento;
 
-        BindFaturaTituloReajusteData(TituloPagar, lstFaturaTituloPagar);
+        tituloPagar.ValorTitulo = contratoAluguel.ValorAluguelLiquido;
+        tituloPagar.ValorTotalTitulo = (tituloPagar.ValorTotalTitulo + (contratoAluguel.ValorAluguelLiquido * 12));
+        tituloPagar.Parcelas = tituloPagar.Parcelas + 12;
+        tituloPagar.PorcentagemTaxaAdministracao = contratoAluguel.PercentualRetencaoImpostos;
+
+        BindFaturaTituloReajusteData(tituloPagar, lstFaturaTituloPagar);
     }
 
     private static List<FaturaTituloPagar> BindFaturaTituloReajusteData(TituloPagar TituloPagar, List<FaturaTituloPagar> lstFaturaTituloPagar)

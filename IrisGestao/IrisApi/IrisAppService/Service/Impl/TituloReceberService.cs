@@ -404,8 +404,9 @@ public class TituloReceberService: ITituloReceberService
 
     private static void BindTituloReceberReajusteData(ContratoAluguel contratoAluguel, TituloReceber tituloReceber, List<FaturaTitulo> lstFaturaTitulo)
     {
+        DateTime dataVencimento = tituloReceber.DataFimTitulo.Value.AddMonths(12);
         tituloReceber.DataUltimaModificacao = DateTime.Now;
-        tituloReceber.DataFimTitulo = tituloReceber.DataFimTitulo.Value.AddMonths(12);
+        tituloReceber.DataFimTitulo = tituloReceber.DataFimTitulo.Value >= dataVencimento ? tituloReceber.DataFimTitulo : dataVencimento;
         
         tituloReceber.ValorTitulo = contratoAluguel.ValorAluguelLiquido;
         tituloReceber.ValorTotalTitulo = (tituloReceber.ValorTotalTitulo + (contratoAluguel.ValorAluguelLiquido * 12));
