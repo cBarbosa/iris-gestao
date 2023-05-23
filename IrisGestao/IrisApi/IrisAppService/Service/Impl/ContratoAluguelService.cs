@@ -121,6 +121,56 @@ public class ContratoAluguelService: IContratoAluguelService
         }
     }
 
+    public async Task<CommandResult> Update(Guid uuid, CriarContratoAluguelCommand cmd)
+    {
+        var contratoAluguel = new ContratoAluguel();
+        if (cmd == null || uuid.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        contratoAluguel = await contratoAluguelRepository.GetByGuid(uuid);
+        if (contratoAluguel == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Contrato", null!);
+        }
+
+        var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidCliente);
+        if (cliente == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
+        }
+
+        BindContratoAluguelData(cmd, contratoAluguel);
+        contratoAluguel.IdCliente = cliente.Id;
+
+        if (contratoAluguel?.DataOcupacao.Value > contratoAluguel?.DataFimContrato)
+        {
+            return new CommandResult(false, "A data de ocupação do imóvel não pode ser maior que a data fim do contrato", null!);
+        }
+        if (contratoAluguel.PeriodicidadeReajuste > contratoAluguel.PrazoTotalContrato)
+        {
+            return new CommandResult(false, "A periodicidade de reajuste não pode ser maior que o prazo total do contrato", null!);
+        }
+
+        try
+        {
+
+            contratoAluguelRepository.Update(contratoAluguel);
+            List<ContratoAluguelImovel> lstContratosVinculados = new List<ContratoAluguelImovel>();
+            /*var contratosVinculados = await contratoAluguelImovelRepository.GetContratoImoveisByContrato(contratoAluguel.Id);
+            lstContratosVinculados = contratosVinculados.ToList();
+            await AtualizaContratoAluguelImovel(contratoAluguel.Id, cmd.lstImoveis, lstContratosVinculados);
+            */
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, contratoAluguel);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+    }
+
     public async Task<CommandResult> AlterarStatus(Guid uuid, bool status)
     {
         if (uuid.Equals(Guid.Empty)){
@@ -217,6 +267,21 @@ public class ContratoAluguelService: IContratoAluguelService
         }
     }
 
+    private async Task AtualizaContratoAluguelImovel(int idContratoAluguel, List<ContratoAluguelImovelCommand> lstContratoImovel, List<ContratoAluguelImovel> lstImoveisVinculados)
+    {
+        List<ContratoAluguelImovel> lstContratoAluguelImovel = new List<ContratoAluguelImovel>();
+        foreach (ContratoAluguelImovelCommand contratoImovel in lstContratoImovel)
+        {
+            var imovel = await imovelRepository.GetByReferenceGuid(contratoImovel.guidImovel);
+
+            ContratoAluguelImovel _contratoAluguelImovel = new ContratoAluguelImovel();
+            _contratoAluguelImovel.IdImovel = imovel.Id;
+            _contratoAluguelImovel.IdContratoAluguel = idContratoAluguel;
+            lstContratoAluguelImovel.Add(_contratoAluguelImovel);
+        }
+        var list3 = lstImoveisVinculados.Except(lstContratoAluguelImovel).ToList();
+        var list4 = lstContratoAluguelImovel.Except(lstImoveisVinculados).ToList();
+    }
     private static void BindContratoAluguelData(CriarContratoAluguelCommand cmd, ContratoAluguel ContratoAluguel)
     {
         double valorLiquido;

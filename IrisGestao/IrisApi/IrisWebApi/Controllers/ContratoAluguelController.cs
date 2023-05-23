@@ -1,4 +1,5 @@
-﻿using IrisGestao.ApplicationService.Services.Interface;
+﻿using IrisGestao.ApplicationService.Service.Impl;
+using IrisGestao.ApplicationService.Services.Interface;
 using IrisGestao.Domain.Command.Request;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,6 +37,21 @@ public class ContratoAluguelController : Controller
     [Produces("application/json")]
     public async Task<IActionResult> Cadatrar([FromBody] CriarContratoAluguelCommand cmd) =>
         Ok(await contratoAluguelService.Insert(cmd));
+
+
+    [HttpPut("{guid}/atualizar")]
+    [Produces("application/json")]
+    public async Task<IActionResult> Atualizar(
+        Guid guid,
+        [FromBody] CriarContratoAluguelCommand cmd)
+    {
+        var result = await contratoAluguelService.Update(guid, cmd);
+
+        if (result == null)
+            return BadRequest("Operação não realizada");
+
+        return Ok(result);
+    }
 
     [HttpPut("{guid}/{status}/alterar-status")]
     [Produces("application/json")]
