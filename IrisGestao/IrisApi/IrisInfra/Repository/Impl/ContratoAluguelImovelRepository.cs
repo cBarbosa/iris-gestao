@@ -15,4 +15,11 @@ public class ContratoAluguelImovelRepository : Repository<ContratoAluguelImovel>
     {
 
     }
+
+    public async Task<IEnumerable<ContratoAluguelImovel>> GetContratoImoveisByContrato(int idContratoAluguel)
+    {
+        return await DbSet
+            .Where(x => x.IdContratoAluguel.Equals(idContratoAluguel))
+            .ToListAsync();
+    }
 }
