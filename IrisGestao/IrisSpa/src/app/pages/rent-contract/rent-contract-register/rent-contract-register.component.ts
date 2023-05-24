@@ -204,6 +204,7 @@ export class RentContractRegisterComponent {
 				locatario: [null, Validators.required],
 				dataInicio: [null, Validators.required],
 				// dataFim: [null, Validators.required],
+				prazoTotalContrato:  [null, Validators.required],
 				dataOcupacao: [null, Validators.required],
 				//dataVencimento: [1, Validators.required],
 				dataVencimentoPrimeraParcela: [null, Validators.required],
@@ -492,6 +493,7 @@ export class RentContractRegisterComponent {
 				locatario: string; // x
 				dataInicio: string; // x
 				// dataFim: string;
+				prazoTotalContrato: number;
 				dataOcupacao: string; // x
 				dataVencimento: number; // x
 				dataVencimentoPrimeraParcela: string;
@@ -525,7 +527,7 @@ export class RentContractRegisterComponent {
 			carenciaAluguel: formData.valuesInfo.carencia,
 			prazoCarencia: +formData.valuesInfo.carenciaPrazo,
 			dataInicioContrato: formData.contractInfo.dataInicio,
-			prazoTotalContrato: +formData.valuesInfo.descontoPrazo, //???
+			prazoTotalContrato: +formData.contractInfo.prazoTotalContrato, //???
 			dataOcupacao: formData.contractInfo.dataOcupacao,
 			diaVencimentoAluguel: formData.contractInfo.dataVencimento,
 			dataVencimentoPrimeraParcela:

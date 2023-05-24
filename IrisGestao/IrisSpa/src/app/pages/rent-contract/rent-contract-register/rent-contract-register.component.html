@@ -242,32 +242,35 @@
 					</ng-container>
 				</div>
 
-				<!-- <div class="field">
-					<label for="dataFim" class="block"> Data de fim do contrato </label>
-					<p-calendar
-						id="dataFim"
-						formControlName="dataFim"
-						dateFormat="dd/mm/yy"
-						(onInput)="onInputDate($event)"
-						(onBlur)="onBlurDate()"
-						placeholder="dd/mm/aaaa"
-						aria-describedby="dataFim-help"
-					></p-calendar>
-					<ng-container *ngIf="checkHasError(f['dataFim'])">
+				<div class="field">
+					<label for="prazoTotalContrato" class="block">
+						Prazo Total Contrato
+					</label>
+					<input
+						id="prazoTotalContrato"
+						type="text"
+						formControlName="prazoTotalContrato"
+						aria-describedby="prazoTotalContrato-help"
+						mask="0*"
+						suffix=" Meses"
+						maxlength="9"
+						pInputText
+					/>
+					<ng-container *ngIf="checkHasError(f['prazoTotalContrato'])">
 						<small
-							id="dataFim-help"
-							*ngIf="f['dataFim'].hasError('required'); else error2"
+							id="prazoTotalContrato-help"
+							*ngIf="f['prazoTotalContrato'].hasError('required'); else error2"
 							class="p-error block"
 						>
-							Informe a data de fim
+							Informe o Prazo Total Contrato
 						</small>
 						<ng-template #error2>
-							<small id="dataFim-help" class="p-error block">
-								Data de fim inválida
+							<small id="prazoTotalContrato-help" class="p-error block">
+								Prazo Total Contrato é inválida
 							</small>
 						</ng-template>
 					</ng-container>
-				</div> -->
+				</div>
 
 				<div class="field">
 					<label for="dataOcupacao" class="block">
