@@ -7,6 +7,7 @@ public interface IContratoFornecedorService
 {
     Task<CommandResult> GetByGuid(Guid guidReferencia);
     Task<CommandResult> Insert(CriarContratoFornecedorCommand cmd);
+    Task<CommandResult> Update(Guid uuid, CriarContratoFornecedorCommand cmd);
     Task<CommandResult> AlterarStatus(Guid uuid, bool status);
     Task<CommandResult> GetAllPaging(string? numeroContrato, int limit, int page);
 }
