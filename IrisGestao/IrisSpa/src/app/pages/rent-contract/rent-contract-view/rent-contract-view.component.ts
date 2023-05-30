@@ -5,7 +5,7 @@ import { ApiResponse } from 'src/app/shared/models';
 import { ContratoAluguel } from 'src/app/shared/models/contrato-aluguel.model';
 import {
 	Attachment,
-	AnexoService
+	AnexoService,
 } from 'src/app/shared/services/anexo.service';
 import { RentContractService } from 'src/app/shared/services/rent-contract.service';
 import { Utils } from 'src/app/shared/utils';
@@ -20,6 +20,8 @@ export class RentContractViewComponent {
 	isLoadingView = false;
 	guid: string;
 
+	taxRetention: string;
+
 	contactList:
 		| {
 				nome: string;
@@ -30,6 +32,7 @@ export class RentContractViewComponent {
 		  }[]
 		| null = null;
 	contactsVisible = false;
+	adjustVisible = false;
 
 	attachmentDocs: {
 		projeto?: Attachment;
@@ -101,17 +104,20 @@ export class RentContractViewComponent {
 		this.contactsVisible = false;
 	}
 
+	showAdjustment() {
+		this.adjustVisible = true;
+	}
+
 	navigateTo(route: string) {
 		this.router.navigate([route]);
 	}
 
-	getAtachs():void {
+	getAtachs(): void {
 		this.anexoService
 			.getFiles(this.guid)
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
-
 					response?.forEach((file) => {
 						const classificacao = file.classificacao;
 
@@ -128,7 +134,7 @@ export class RentContractViewComponent {
 					console.error(err);
 				},
 			});
-	};
+	}
 
 	async downloadFile(
 		file: File | string | ArrayBuffer | null,

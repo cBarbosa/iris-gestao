@@ -16,48 +16,49 @@
 
 <ng-template #content>
 	<div class="edit-form">
-		<h1 class="text-2xl font-bold mb-6">Editar contrato</h1>
+		<form [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
+			<h1 class="text-2xl font-bold mb-6">Editar contrato</h1>
 
-		<div class="input-wrapper">
-			<section class="contract-data">
-				<h4>Edifício do contrato</h4>
+			<div class="input-wrapper">
+				<section class="contract-data">
+					<h4>Edifício do contrato</h4>
 
-				<div class="field">
-					<label for="name" class="block">Tipo do imóvel</label>
-					<input
-						id="name"
-						type="text"
-						value="Edifício corporativo"
-						aria-describedby="name-help"
-						maxlength="100"
-						pInputText
-						[disabled]="true"
-					/>
-				</div>
+					<div class="field">
+						<label for="name" class="block">Tipo do imóvel</label>
+						<input
+							id="name"
+							type="text"
+							value="Edifício corporativo"
+							aria-describedby="name-help"
+							maxlength="100"
+							pInputText
+							[disabled]="true"
+						/>
+					</div>
 
-				<div class="field">
-					<label for="name" class="block">Edifício</label>
-					<input
-						id="name"
-						type="text"
-						value="Edi. José Maria Lopes"
-						aria-describedby="name-help"
-						maxlength="100"
-						pInputText
-						[disabled]="true"
-					/>
-				</div>
+					<div class="field">
+						<label for="name" class="block">Edifício</label>
+						<input
+							id="name"
+							type="text"
+							value="Edi. José Maria Lopes"
+							aria-describedby="name-help"
+							maxlength="100"
+							pInputText
+							[disabled]="true"
+						/>
+					</div>
 
-				<div class="photo-input">
-					<img src="../../../../assets/images/imovel.png" alt="edit-photo" />
-				</div>
+					<div class="photo-input">
+						<img src="../../../../assets/images/imovel.png" alt="edit-photo" />
+					</div>
 
-				<h4>Ed. José Maria Lopes</h4>
-				<span>SQS 415 Bloco C</span>
-				<span>Edifício corporativo</span>
+					<h4>Ed. José Maria Lopes</h4>
+					<span>SQS 415 Bloco C</span>
+					<span>Edifício corporativo</span>
 
-				<h5>Unidade</h5>
-				<div class="unit-list">
+					<h5>Unidade</h5>
+					<!-- <div class="unit-list">
 					<div class="mt-1.5">
 						<p-checkbox
 							name="units"
@@ -91,10 +92,15 @@
 					icon="pi pi-plus"
 					iconPos="left"
 					class="p-button-text"
-				></button>
-			</section>
+				></button> -->
+					<app-unit-select
+						[propertyGuid]="propertyGuid"
+						[currentUnits]="units"
+						(selectedEvent)="setSelectedUnits($event)"
+						*ngIf="propertyGuid"
+					></app-unit-select>
+				</section>
 
-			<form [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
 				<section class="aditional-data">
 					<p-accordion
 						[multiple]="false"
@@ -344,6 +350,7 @@
 										[options]="renterTypes"
 										formControlName="renterType"
 										aria-describedby="renter-type-help"
+										(onChange)="setIsCpf()"
 									></p-dropdown>
 									<ng-container
 										*ngIf="checkHasError(contractInfo['renterType'])"
@@ -367,11 +374,14 @@
 								</div>
 
 								<div class="field">
-									<label for="cpf-cnpj" class="block">CPF</label>
+									<label for="cpf-cnpj" class="block">{{
+										isCpf ? "CPF" : "CNPJ"
+									}}</label>
 									<input
 										id="cpf-cnpj"
 										type="text"
 										formControlName="cpfCnpj"
+										[mask]="isCpf ? '000.000.000-00' : '00.000.000/0000-00'"
 										aria-describedby="cpf-cnpj-help"
 										pInputText
 									/>
@@ -429,7 +439,7 @@
 										type="text"
 										formControlName="telephone"
 										aria-describedby="telephone-help"
-										mask="(00) 0 0000-0000 | (00) 0000-0000"
+										mask="(00) 0000-0000||(00) 0 000-0000"
 										pInputText
 									/>
 									<ng-container *ngIf="checkHasError(renterInfo['telephone'])">
@@ -521,12 +531,16 @@
 
 								<div class="field">
 									<label for="discount" class="block"> Desconto </label>
-									<p-dropdown
+									<input
 										id="discount"
-										[options]="renterTypes"
+										type="text"
 										formControlName="discount"
 										aria-describedby="discount-help"
-									></p-dropdown>
+										mask="percent"
+										suffix="%"
+										[dropSpecialCharacters]="false"
+										pInputText
+									/>
 									<ng-container *ngIf="checkHasError(valueInfo['discount'])">
 										<small
 											id="discount-help"
@@ -552,7 +566,7 @@
 									</label>
 									<p-dropdown
 										id="readjust"
-										[options]="renterTypes"
+										[options]="readjustmentIndex"
 										formControlName="readjust"
 										aria-describedby="readjust-help"
 									></p-dropdown>
@@ -581,9 +595,10 @@
 									</label>
 									<p-dropdown
 										id="rent-grace"
-										[options]="renterTypes"
+										[options]="yesOrNo"
 										formControlName="rentGrace"
 										aria-describedby="rent-grace-help"
+										(ngModelChange)="onHasGracePeriodChange()"
 									></p-dropdown>
 									<ng-container *ngIf="checkHasError(valueInfo['rentGrace'])">
 										<small
@@ -604,16 +619,20 @@
 									</ng-container>
 								</div>
 
-								<div class="field">
+								<div class="field" *ngIf="valueInfo['rentGrace'].value">
 									<label gracer="rent-period" class="block">
 										Prazo de carência
 									</label>
-									<p-dropdown
+									<input
 										id="grace-period"
-										[options]="renterTypes"
+										type="text"
 										formControlName="gracePeriod"
 										aria-describedby="grace-period-help"
-									></p-dropdown>
+										mask="0*"
+										suffix=" Meses"
+										maxlength="8"
+										pInputText
+									/>
 									<ng-container *ngIf="checkHasError(valueInfo['gracePeriod'])">
 										<small
 											id="grace-period-help"
@@ -637,7 +656,7 @@
 									<label for="credit-to" class="block"> Creditar para </label>
 									<p-dropdown
 										id="credit-to"
-										[options]="renterTypes"
+										[options]="creditTo"
 										formControlName="creditTo"
 										aria-describedby="credit-to-help"
 									></p-dropdown>
@@ -663,28 +682,28 @@
 						</p-accordionTab>
 					</p-accordion>
 				</section>
-			</form>
-		</div>
-		<div class="form-actions">
-			<button
-				pButton
-				type="button"
-				label="Voltar"
-				class="p-button-text h-11"
-				(click)="goBack()"
-			></button>
+			</div>
+			<div class="form-actions">
+				<button
+					pButton
+					type="button"
+					label="Voltar"
+					class="p-button-text h-11"
+					(click)="goBack()"
+				></button>
 
-			<button
-				pButton
-				pRipple
-				type="button"
-				label="Cancelar"
-				class="p-button-outlined h-11"
-				(click)="navigateTo('contract/details/' + contractGuid)"
-			></button>
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Cancelar"
+					class="p-button-outlined h-11"
+					(click)="navigateTo('rent-contract/details/' + contractGuid)"
+				></button>
 
-			<button pButton type="submit" label="Continuar" class="h-11"></button>
-		</div>
+				<button pButton type="submit" label="Continuar" class="h-11"></button>
+			</div>
+		</form>
 	</div>
 </ng-template>
 
@@ -704,7 +723,7 @@
 		<button
 			pButton
 			label="Continuar"
-			(click)="closeModal(navigateTo, 'property/details/' + contractGuid)"
+			(click)="closeModal(navigateTo, 'rent-contract/details/' + contractGuid)"
 		></button>
 	</div>
 	<ng-template #error>

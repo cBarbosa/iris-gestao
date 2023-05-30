@@ -66,4 +66,12 @@ export class RentContractService {
 			httpOptions
 		);
 	}
+
+	editContract(guid: string, contractObj: ContratoAluguel) {
+		return this.http.put<ApiResponse>(
+			`${env.config.apiUrl}ContratoAluguel/${guid}/Atualizar`,
+			JSON.stringify(contractObj, null, 2),
+			httpOptions
+		);
+	}
 }

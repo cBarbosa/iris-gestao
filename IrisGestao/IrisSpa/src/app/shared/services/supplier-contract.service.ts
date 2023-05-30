@@ -75,4 +75,29 @@ export class SupplierContractService {
 			httpOptions
 		);
 	}
+
+	editContract(
+		guid: string,
+		contractObj: {
+			guidImovel: string;
+			guidFornecedor: string;
+			idFormaPagamento: number;
+			idIndiceReajuste: number;
+			numeroContrato: string;
+			descricaoDoServico: string;
+			// percentual: number;
+			dataAtualizacao: string;
+			valorServicoContratado: number;
+			dataInicioContrato: string;
+			dataFimContrato: string;
+			diaPagamento: number;
+			periodicidadeReajuste: number;
+		}
+	) {
+		return this.http.put<ApiResponse>(
+			`${env.config.apiUrl}ContratoFornecedor/${guid}/Atualizar`,
+			JSON.stringify(contractObj, null, 2),
+			httpOptions
+		);
+	}
 }

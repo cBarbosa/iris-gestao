@@ -61,10 +61,19 @@
 								pButton
 								type="button"
 								class="p-button-outlined h-8"
-								(click)="navigateTo('contract/edit/' + contract.guidReferencia)"
-								disabled
+								(click)="
+									navigateTo('rent-contract/edit/' + contract.guidReferencia)
+								"
 							>
 								Editar contrato
+							</button>
+							<button
+								pButton
+								type="button"
+								class="p-button-outlined h-8"
+								(click)="showAdjustment()"
+							>
+								Reajustar contrato
 							</button>
 						</div>
 					</div>
@@ -374,6 +383,51 @@
 					Telefone: {{ contato.telefone | telefone }}
 				</div>
 			</div>
+		</div>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<button
+			pButton
+			pRipple
+			type="button"
+			label="Fechar"
+			class="p-button h-9 w-full"
+			(click)="hideContacts()"
+		></button
+	></ng-template>
+</p-sidebar>
+
+<p-sidebar [(visible)]="adjustVisible" position="right">
+	<ng-template pTemplate="header">
+		<h4>Reajustar contrato</h4>
+	</ng-template>
+	<ng-template pTemplate="content">
+		<div class="field">
+			<label for="tax-retention" class="block"> % de ajuste </label>
+			<input
+				id="tax-retention"
+				type="text"
+				[(ngModel)]="taxRetention"
+				aria-describedby="tax-retention-help"
+				mask="percent"
+				suffix="%"
+				[dropSpecialCharacters]="false"
+				pInputText
+			/>
+			<!-- <ng-container *ngIf="checkHasError(valueInfo['taxRetention'])">
+				<small
+					id="tax-retention-help"
+					*ngIf="valueInfo['taxRetention'].hasError('required'); else error2"
+					class="p-error block"
+				>
+					Informe a % de retenção de impostos
+				</small>
+				<ng-template #error2>
+					<small id="tax-retention-help" class="p-error block">
+						% de retenção de impostos inválida
+					</small>
+				</ng-template>
+			</ng-container> -->
 		</div>
 	</ng-template>
 	<ng-template pTemplate="footer">
