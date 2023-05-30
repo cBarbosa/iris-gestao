@@ -33,7 +33,7 @@ const routes: Routes = [
 		},
 	},
 	{
-		path: 'edit',
+		path: 'edit/:guid',
 		loadChildren: () =>
 			import('./rent-contract-edit/rent-contract-edit.module').then(
 				(m) => m.RentContractEditModule

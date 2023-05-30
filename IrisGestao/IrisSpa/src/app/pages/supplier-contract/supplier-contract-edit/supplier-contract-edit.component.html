@@ -1,0 +1,403 @@
+<div class="alert-message" *ngIf="invalidGuid || isLoading; else content">
+	<div class="loading" *ngIf="isLoading">
+		<app-spinner></app-spinner>
+	</div>
+	<div
+		class="invalid flex justify-center items-center h-full"
+		*ngIf="invalidGuid"
+	>
+		<div class="bg-white rounded border border-slate-200">
+			<div class="text-center w-full text-xl font-bold p-20 text-red-600">
+				Não foi possível carregar dados do imóvel
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #content>
+	<div class="edit-form">
+		<form [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
+			<h1 class="text-2xl font-bold mb-6">Editar contrato</h1>
+
+			<div class="input-wrapper">
+				<section class="contract-data">
+					<h4>Informações do Prestador</h4>
+
+					<div class="field">
+						<label for="contract-number" class="block">
+							Número do contrato
+						</label>
+						<input
+							id="contract-number"
+							type="text"
+							formControlName="contractNumber"
+							aria-describedby="contract-number-help"
+							maxlength="100"
+							pInputText
+						/>
+						<ng-container *ngIf="checkHasError(contractInfo['contractNumber'])">
+							<small
+								id="contract-number-help"
+								*ngIf="
+									contractInfo['contractNumber'].hasError('required');
+									else error2
+								"
+								class="p-error block"
+							>
+								Informe o número do contrato
+							</small>
+							<ng-template #error2>
+								<small id="contract-number-help" class="p-error block">
+									Número do contrato inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="supplier-name" class="block">
+							Nome do prestador de serviço
+						</label>
+						<p-dropdown
+							id="supplier-name"
+							[options]="supplierNames"
+							[filter]="true"
+							filterBy="label"
+							formControlName="supplierName"
+							aria-describedby="supplier-name-help"
+						></p-dropdown>
+						<ng-container *ngIf="checkHasError(contractInfo['supplierName'])">
+							<small
+								id="supplier-name-help"
+								*ngIf="
+									contractInfo['supplierName'].hasError('required');
+									else error2
+								"
+								class="p-error block"
+							>
+								Informe o nome do prestador
+							</small>
+							<ng-template #error2>
+								<small id="supplier-name-help" class="p-error block">
+									Nome do prestador inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<!-- <div class="field">
+						<label for="supplier-types" class="block">
+							Tipo de fornecedor
+						</label>
+						<p-dropdown
+							id="supplier-types"
+							[options]="supplierTypes"
+							[filter]="true"
+							filterBy="label"
+							formControlName="supplierType"
+							aria-describedby="supplier-types-help"
+						></p-dropdown>
+						<ng-container *ngIf="checkHasError(contractInfo['supplierType'])">
+							<small
+								id="supplier-types-help"
+								*ngIf="
+									contractInfo['supplierType'].hasError('required');
+									else error2
+								"
+								class="p-error block"
+							>
+								Informe o tipo de fornecedor
+							</small>
+							<ng-template #error2>
+								<small id="supplier-types-help" class="p-error block">
+									Tipo de fornecedor inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div> -->
+
+					<div class="field">
+						<label for="cnpj" class="block">CNPJ</label>
+						<input
+							id="cnpj"
+							type="text"
+							formControlName="cnpj"
+							aria-describedby="cnpj-help"
+							mask="00.000.000/0000-00"
+							pInputText
+						/>
+						<ng-container *ngIf="checkHasError(contractInfo['cnpj'])">
+							<small
+								id="cnpj-help"
+								*ngIf="contractInfo['cnpj'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o valor do serviço
+							</small>
+							<ng-template #error2>
+								<small id="cnpj-help" class="p-error block">
+									Valor inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+					<!-- <app-unit-select
+						[propertyGuid]="propertyGuid"
+						[currentUnits]="units"
+						(selectedEvent)="setSelectedUnits($event)"
+						*ngIf="propertyGuid"
+					></app-unit-select> -->
+				</section>
+
+				<section class="aditional-data">
+					<h4 class="mb-5">Informações do contrato</h4>
+					<div class="field">
+						<label for="name" class="block"> Valor do serviço </label>
+						<input
+							id="name"
+							type="text"
+							formControlName="serviceValue"
+							aria-describedby="name-help"
+							maxlength="100"
+							currencyMask
+							pInputText
+						/>
+						<ng-container *ngIf="checkHasError(contractInfo['name'])">
+							<small
+								id="name-help"
+								*ngIf="contractInfo['name'].hasError('required'); else error2"
+								class="p-error block"
+							>
+								Informe o valor do serviço
+							</small>
+							<ng-template #error2>
+								<small id="name-help" class="p-error block">
+									Valor inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="share-line">
+						<div class="field">
+							<label for="start-date" class="block">
+								Data de início do contrato
+							</label>
+							<p-calendar
+								id="start-date"
+								formControlName="startDate"
+								dateFormat="dd/mm/yy"
+								(onInput)="onInputDate($event)"
+								(onBlur)="onBlurDate()"
+								placeholder="dd/mm/aaaa"
+								aria-describedby="start-date-help"
+								panelStyleClass="hidden"
+							></p-calendar>
+							<ng-container *ngIf="checkHasError(contractInfo['startDate'])">
+								<small
+									id="start-date-help"
+									*ngIf="
+										contractInfo['startDate'].hasError('required');
+										else error2
+									"
+									class="p-error block"
+								>
+									Informe a data de início
+								</small>
+								<ng-template #error2>
+									<small id="start-date-help" class="p-error block">
+										Data de início inválida
+									</small>
+								</ng-template>
+							</ng-container>
+						</div>
+
+						<div class="field">
+							<label for="end-date" class="block">
+								Data de fim do contrato
+							</label>
+							<p-calendar
+								id="end-date"
+								formControlName="endDate"
+								dateFormat="dd/mm/yy"
+								(onInput)="onInputDate($event)"
+								(onBlur)="onBlurDate()"
+								placeholder="dd/mm/aaaa"
+								aria-describedby="end-date-help"
+								panelStyleClass="hidden"
+							></p-calendar>
+							<ng-container *ngIf="checkHasError(contractInfo['endDate'])">
+								<small
+									id="end-date-help"
+									*ngIf="
+										contractInfo['endDate'].hasError('required');
+										else error2
+									"
+									class="p-error block"
+								>
+									Informe a data de fim
+								</small>
+								<ng-template #error2>
+									<small id="end-date-help" class="p-error block">
+										Data de fim inválida
+									</small>
+								</ng-template>
+							</ng-container>
+						</div>
+					</div>
+
+					<div class="field">
+						<label for="due-date" class="block">
+							Data do vencimento da parcela
+						</label>
+						<p-dropdown
+							id="due-date"
+							[options]="dueDates"
+							formControlName="dueDate"
+							aria-describedby="due-date-help"
+						></p-dropdown>
+						<ng-container *ngIf="checkHasError(contractInfo['dueDate'])">
+							<small
+								id="due-date-help"
+								*ngIf="
+									contractInfo['dueDate'].hasError('required');
+									else error2
+								"
+								class="p-error block"
+							>
+								Informe a data do vencimento
+							</small>
+							<ng-template #error2>
+								<small id="due-date-help" class="p-error block">
+									Data do vencimento inválida
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="contract-types" class="block">Índice do contrato</label>
+						<p-dropdown
+							id="contract-types"
+							[options]="readjustmentIndex"
+							[filter]="true"
+							filterBy="label"
+							formControlName="contractIndex"
+							aria-describedby="contract-types-help"
+						></p-dropdown>
+						<ng-container *ngIf="checkHasError(contractInfo['contractType'])">
+							<small
+								id="contract-types-help"
+								*ngIf="
+									contractInfo['contractType'].hasError('required');
+									else error2
+								"
+								class="p-error block"
+							>
+								Informe o índice do contrato
+							</small>
+							<ng-template #error2>
+								<small id="contract-types-help" class="p-error block">
+									Índice do contrato inválido
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
+						<label for="periodicidade" class="block"
+							>Periodicidade do reajuste</label
+						>
+
+						<input
+							id="periodicidade"
+							type="text"
+							formControlName="periodicidade"
+							aria-describedby="periodicidade-help"
+							mask="0*"
+							suffix=" Meses"
+							maxlength="9"
+							pInputText
+						/>
+						<ng-container *ngIf="checkHasError(contractInfo['rentValue'])">
+							<small
+								id="periodicidade-help"
+								*ngIf="
+									contractInfo['rentValue'].hasError('required');
+									else error2
+								"
+								class="p-error block"
+							>
+								Informe a periodicidade
+							</small>
+							<ng-template #error2>
+								<small id="periodicidade-help" class="p-error block">
+									Periodicidade inválida
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+				</section>
+			</div>
+			<div class="form-actions">
+				<button
+					pButton
+					type="button"
+					label="Voltar"
+					class="p-button-text h-11"
+					(click)="goBack()"
+				></button>
+
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Cancelar"
+					class="p-button-outlined h-11"
+					(click)="navigateTo('supplier-contract/details/' + contractGuid)"
+					[disabled]="isSubmitting"
+				></button>
+
+				<button
+					pButton
+					type="submit"
+					label="Continuar"
+					class="h-11"
+					[disabled]="isSubmitting"
+				></button>
+			</div>
+		</form>
+	</div>
+</ng-template>
+
+<app-responsive-dialog
+	[visible]="displayModal"
+	[isMobile]="isMobile"
+	(onHide)="closeModal()"
+	styleClass="form-modal"
+>
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+		<button
+			pButton
+			label="Continuar"
+			(click)="
+				closeModal(navigateTo, 'supplier-contract/details/' + contractGuid)
+			"
+		></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</app-responsive-dialog>

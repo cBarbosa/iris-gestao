@@ -59,9 +59,9 @@ export class DominiosService {
 			.get<ApiResponse>(`${env.config.apiUrl}Dominios/tipo-credito-aluguel`)
 			.pipe(
 				map((response) => {
-					if (response.success) return response;
-					else
-						return console.error(`getTiposCreditoAluguel: ${response.message}`);
+					if (!response.success)
+						console.error(`getTiposCreditoAluguel: ${response.message}`);
+					return response;
 				})
 			);
 	}

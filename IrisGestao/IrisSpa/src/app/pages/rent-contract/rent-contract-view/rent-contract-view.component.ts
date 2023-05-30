@@ -5,7 +5,7 @@ import { ApiResponse } from 'src/app/shared/models';
 import { ContratoAluguel } from 'src/app/shared/models/contrato-aluguel.model';
 import {
 	Attachment,
-	AnexoService
+	AnexoService,
 } from 'src/app/shared/services/anexo.service';
 import { RentContractService } from 'src/app/shared/services/rent-contract.service';
 import { Utils } from 'src/app/shared/utils';
@@ -20,6 +20,20 @@ export class RentContractViewComponent {
 	isLoadingView = false;
 	guid: string;
 
+	taxRetention: string;
+
+	displayModal: boolean = false;
+	isMobile = false;
+	modalContent: {
+		isError?: boolean;
+		header?: string;
+		message: string;
+	} = {
+		message: '',
+	};
+
+	isAdjusting: boolean = false;
+
 	contactList:
 		| {
 				nome: string;
@@ -30,6 +44,7 @@ export class RentContractViewComponent {
 		  }[]
 		| null = null;
 	contactsVisible = false;
+	adjustVisible = false;
 
 	attachmentDocs: {
 		projeto?: Attachment;
@@ -64,6 +79,8 @@ export class RentContractViewComponent {
 			.subscribe((response: ApiResponse) => {
 				this.contract = response.data[0];
 
+				this.taxRetention = this.contract.percentualRetencaoImpostos;
+
 				this.contactList = this.contract.cliente?.contato?.map(
 					(contato: any) => {
 						return {
@@ -93,6 +110,48 @@ export class RentContractViewComponent {
 		return formatted.slice(0, -2);
 	}
 
+	adjustContract() {
+		if (this.taxRetention.length === 0) return;
+
+		this.isAdjusting = true;
+
+		this.rentContractService
+			.adjustContract(this.guid, +this.taxRetention)
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					this.isAdjusting = false;
+					console.log('event:', event);
+					if (event.success) {
+						this.modalContent = {
+							isError: false,
+							header: 'Cadastro ajustado',
+							message: event.message ?? 'Ajuste realizado com sucesso.',
+						};
+
+						this.contract.percentualRetencaoImpostos = +this.taxRetention;
+					} else {
+						this.modalContent = {
+							isError: true,
+							header: 'Cadastro não ajustado',
+							message: event.message ?? 'Ajuste não realizado.',
+						};
+					}
+
+					this.openModal();
+				},
+				error: (err) => {
+					this.modalContent = {
+						isError: true,
+						header: 'Cadastro não ajustado',
+						message: 'Erro no envio de dados.',
+					};
+
+					this.openModal();
+				},
+			});
+	}
+
 	showContacts() {
 		this.contactsVisible = true;
 	}
@@ -101,17 +160,38 @@ export class RentContractViewComponent {
 		this.contactsVisible = false;
 	}
 
+	showAdjustment() {
+		this.adjustVisible = true;
+	}
+
+	hideAdjustment = () => {
+		this.adjustVisible = false;
+	};
+
+	openModal() {
+		this.displayModal = true;
+	}
+
+	closeModal(onClose?: Function, ...params: any[]) {
+		this.displayModal = false;
+
+		if (onClose !== undefined) onClose(...params);
+	}
+
+	toggleModal() {
+		this.displayModal = !this.displayModal;
+	}
+
 	navigateTo(route: string) {
 		this.router.navigate([route]);
 	}
 
-	getAtachs():void {
+	getAtachs(): void {
 		this.anexoService
 			.getFiles(this.guid)
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
-
 					response?.forEach((file) => {
 						const classificacao = file.classificacao;
 
@@ -128,7 +208,7 @@ export class RentContractViewComponent {
 					console.error(err);
 				},
 			});
-	};
+	}
 
 	async downloadFile(
 		file: File | string | ArrayBuffer | null,
