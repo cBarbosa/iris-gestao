@@ -67,6 +67,14 @@ export class RentContractService {
 		);
 	}
 
+	adjustContract(guid: string, percentual: number) {
+		return this.http.post<ApiResponse>(
+			`${env.config.apiUrl}ContratoAluguel/${guid}/${percentual}/reajustar-contrato`,
+			'',
+			httpOptions
+		);
+	}
+
 	editContract(guid: string, contractObj: ContratoAluguel) {
 		return this.http.put<ApiResponse>(
 			`${env.config.apiUrl}ContratoAluguel/${guid}/Atualizar`,

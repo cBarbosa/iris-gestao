@@ -56,11 +56,11 @@ export class TopbarComponent {
 			{
 				label: 'Contratos',
 				items: [
-					// {
-					// 	label: 'Contrato de aluguel',
-					// 	id: route.startsWith('/rent-contract/') ? 'current' : '',
-					// 	command: () => this.navigateTo('rent-contract/listing'),
-					// },
+					{
+						label: 'Contrato de aluguel',
+						id: route.startsWith('/rent-contract/') ? 'current' : '',
+						command: () => this.navigateTo('rent-contract/listing'),
+					},
 					{
 						label: 'Contrato de fornecedor',
 						id: route.startsWith('/supplier-contract/') ? 'current' : '',

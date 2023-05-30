@@ -57,24 +57,26 @@
 						</div>
 						<div class="data-divider">&nbsp;</div>
 						<div class="data">
-							<button
-								pButton
-								type="button"
-								class="p-button-outlined h-8"
-								(click)="
-									navigateTo('rent-contract/edit/' + contract.guidReferencia)
-								"
-							>
-								Editar contrato
-							</button>
-							<button
-								pButton
-								type="button"
-								class="p-button-outlined h-8"
-								(click)="showAdjustment()"
-							>
-								Reajustar contrato
-							</button>
+							<div class="flex gap-3 flex-wrap">
+								<button
+									pButton
+									type="button"
+									class="p-button-outlined h-8"
+									(click)="
+										navigateTo('rent-contract/edit/' + contract.guidReferencia)
+									"
+								>
+									Editar contrato
+								</button>
+								<button
+									pButton
+									type="button"
+									class="p-button-outlined h-8"
+									(click)="showAdjustment()"
+								>
+									Reajustar contrato
+								</button>
+							</div>
 						</div>
 					</div>
 				</header>
@@ -351,6 +353,32 @@
 								</button>
 							</div>
 						</p-accordionTab>
+
+						<!-- Histórico de reajuste -->
+						<p-accordionTab header="Histórico de reajuste">
+							<div>
+								<p-table [value]="contract.historicoReajuste" class="w-full">
+									<ng-template pTemplate="header">
+										<tr class="bg-gray-100">
+											<th>Data</th>
+											<th>% de reajuste anterior</th>
+											<th>% de reajuste novo</th>
+											<th>Valor Aluguel anteiror</th>
+											<th>Valor aluguel novo</th>
+										</tr>
+									</ng-template>
+									<ng-template pTemplate="body" let-reajuste>
+										<tr class="even:bg-gray-50">
+											<td>{{ reajuste.dataCriacao | date : "short" }}</td>
+											<td>{{ reajuste.percentualReajusteAntigo }}%</td>
+											<td>{{ reajuste.percentualReajusteNovo }}%</td>
+											<td>R$ {{ reajuste.valorAluguelAnterior }}</td>
+											<td>R$ {{ reajuste.valorAluguelNovo }}</td>
+										</tr>
+									</ng-template>
+								</p-table>
+							</div>
+						</p-accordionTab>
 					</p-accordion>
 				</section>
 			</div>
@@ -391,7 +419,7 @@
 			pRipple
 			type="button"
 			label="Fechar"
-			class="p-button h-9 w-full"
+			class="p-button-outlined h-9 w-full"
 			(click)="hideContacts()"
 		></button
 	></ng-template>
@@ -431,13 +459,55 @@
 		</div>
 	</ng-template>
 	<ng-template pTemplate="footer">
+		<div class="flex gap-4">
+			<button
+				pButton
+				pRipple
+				type="button"
+				label="Fechar"
+				class="p-button-outlined h-9 w-full"
+				[disabled]="isAdjusting"
+				(click)="hideAdjustment()"
+			></button>
+			<button
+				pButton
+				pRipple
+				type="button"
+				label="Editar"
+				class="p-button h-9 w-full"
+				[disabled]="isAdjusting"
+				(click)="adjustContract()"
+			></button>
+		</div>
+	</ng-template>
+</p-sidebar>
+
+<app-responsive-dialog
+	[isMobile]="isMobile"
+	[visible]="displayModal"
+	styleClass="form-modal"
+>
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+
 		<button
 			pButton
-			pRipple
-			type="button"
 			label="Fechar"
-			class="p-button h-9 w-full"
-			(click)="hideContacts()"
-		></button
-	></ng-template>
-</p-sidebar>
+			(click)="closeModal(hideAdjustment)"
+		></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</app-responsive-dialog>

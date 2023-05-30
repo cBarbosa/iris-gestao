@@ -22,6 +22,18 @@ export class RentContractViewComponent {
 
 	taxRetention: string;
 
+	displayModal: boolean = false;
+	isMobile = false;
+	modalContent: {
+		isError?: boolean;
+		header?: string;
+		message: string;
+	} = {
+		message: '',
+	};
+
+	isAdjusting: boolean = false;
+
 	contactList:
 		| {
 				nome: string;
@@ -67,6 +79,8 @@ export class RentContractViewComponent {
 			.subscribe((response: ApiResponse) => {
 				this.contract = response.data[0];
 
+				this.taxRetention = this.contract.percentualRetencaoImpostos;
+
 				this.contactList = this.contract.cliente?.contato?.map(
 					(contato: any) => {
 						return {
@@ -96,6 +110,48 @@ export class RentContractViewComponent {
 		return formatted.slice(0, -2);
 	}
 
+	adjustContract() {
+		if (this.taxRetention.length === 0) return;
+
+		this.isAdjusting = true;
+
+		this.rentContractService
+			.adjustContract(this.guid, +this.taxRetention)
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					this.isAdjusting = false;
+					console.log('event:', event);
+					if (event.success) {
+						this.modalContent = {
+							isError: false,
+							header: 'Cadastro ajustado',
+							message: event.message ?? 'Ajuste realizado com sucesso.',
+						};
+
+						this.contract.percentualRetencaoImpostos = +this.taxRetention;
+					} else {
+						this.modalContent = {
+							isError: true,
+							header: 'Cadastro não ajustado',
+							message: event.message ?? 'Ajuste não realizado.',
+						};
+					}
+
+					this.openModal();
+				},
+				error: (err) => {
+					this.modalContent = {
+						isError: true,
+						header: 'Cadastro não ajustado',
+						message: 'Erro no envio de dados.',
+					};
+
+					this.openModal();
+				},
+			});
+	}
+
 	showContacts() {
 		this.contactsVisible = true;
 	}
@@ -106,6 +162,24 @@ export class RentContractViewComponent {
 
 	showAdjustment() {
 		this.adjustVisible = true;
+	}
+
+	hideAdjustment = () => {
+		this.adjustVisible = false;
+	};
+
+	openModal() {
+		this.displayModal = true;
+	}
+
+	closeModal(onClose?: Function, ...params: any[]) {
+		this.displayModal = false;
+
+		if (onClose !== undefined) onClose(...params);
+	}
+
+	toggleModal() {
+		this.displayModal = !this.displayModal;
 	}
 
 	navigateTo(route: string) {
