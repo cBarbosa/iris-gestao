@@ -36,7 +36,7 @@ export class FinancialVacancyComponent implements OnInit{
                 {
                     type: 'bar',
                     label: 'Dataset 2',
-                    backgroundColor: documentStyle.getPropertyValue('--green-500'),
+                    backgroundColor: `#C9D78E`,
                     data: [21, 84, 24, 75, 37, 65, 34],
                     borderColor: 'white',
                     borderWidth: 2
@@ -44,7 +44,7 @@ export class FinancialVacancyComponent implements OnInit{
                 {
                     type: 'bar',
                     label: 'Dataset 3',
-                    backgroundColor: documentStyle.getPropertyValue('--orange-500'),
+                    backgroundColor: `#641B1E`,
                     data: [41, 52, 24, 74, 23, 21, 32]
                 }
             ]
