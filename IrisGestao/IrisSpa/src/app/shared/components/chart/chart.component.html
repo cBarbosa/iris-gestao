@@ -1,0 +1,9 @@
+<div *ngIf="data" class="relative" style="container-type: inline-size">
+	<div
+		*ngIf="dataInput[0]['type'] === 'percent'"
+		class="absolute flex justify-center items-center h-full w-full font-bold relative-size"
+	>
+		{{ dataInput[0]["data"] }}%
+	</div>
+	<p-chart [type]="type" [data]="data" [options]="options[type]"> </p-chart>
+</div>

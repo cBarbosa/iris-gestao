@@ -1,0 +1,16 @@
+<div [class]="styleClass ? 'inline-block ' + styleClass : 'inline-block'">
+	<div
+		class="pill-tab"
+		[class]="'grid-cols-[repeat(' + labels.length + ',_1fr)]'"
+	>
+		<ng-container *ngFor="let label of labels; index as i">
+			<button
+				type="button"
+				[class]="current === i ? 'active' : ''"
+				(click)="changeTab(i)"
+			>
+				{{ label }}
+			</button>
+		</ng-container>
+	</div>
+</div>
