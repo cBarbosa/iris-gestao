@@ -18,6 +18,7 @@ public class TituloReceberService: ITituloReceberService
     private readonly IImovelRepository imovelRepository;
     private readonly IUnidadeRepository unidadeRepository;
     private readonly IClienteRepository clienteRepository;
+    private readonly ITipoTituloRepository tipoTituloRepository;
     private readonly ILogger<ITituloReceberService> logger;
 
     public TituloReceberService(ITituloReceberRepository TituloReceberRepository
@@ -28,6 +29,7 @@ public class TituloReceberService: ITituloReceberService
                         , IUnidadeRepository UnidadeRepository
                         , IClienteRepository ClienteRepository
                         , IContratoAluguelRepository ContratoAluguelRepository
+                        , ITipoTituloRepository TipoTituloRepository
                         , ILogger<ITituloReceberService> logger)
     {
         this.tituloReceberRepository = TituloReceberRepository;
@@ -38,6 +40,7 @@ public class TituloReceberService: ITituloReceberService
         this.unidadeRepository = UnidadeRepository;
         this.clienteRepository = ClienteRepository;
         this.contratoAluguelRepository = ContratoAluguelRepository;
+        this.tipoTituloRepository = TipoTituloRepository;
         this.logger = logger;
     }
 
@@ -113,6 +116,8 @@ public class TituloReceberService: ITituloReceberService
         }
         int? sequencial = await tituloReceberRepository.GetNumeroTitulo();
 
+        var tipoTitulo = await tipoTituloRepository.GetById(cmd.IdTipoTitulo);
+        tituloReceber.NomeTitulo = tipoTitulo?.Nome;
         tituloReceber.Sequencial = sequencial.Value + 1;
         BindTituloReceberData(cmd, tituloReceber, lstFaturaTitulo);
         tituloReceber.IdCliente = cliente.Id;
@@ -341,6 +346,7 @@ public class TituloReceberService: ITituloReceberService
 
     private static void BindTituloReceberData(CriarTituloReceberCommand cmd, TituloReceber tituloReceber,  List<FaturaTitulo> lstFaturaTitulo)
     {
+        Boolean criacao = false;
         double valorLiquido;
         valorLiquido = calcularPorcentagem(cmd.ValorTitulo, cmd.PorcentagemImpostoRetido);
         switch (tituloReceber.GuidReferencia)
@@ -349,6 +355,7 @@ public class TituloReceberService: ITituloReceberService
                 tituloReceber.GuidReferencia = Guid.NewGuid();
                 tituloReceber.DataCriacao = DateTime.Now;
                 tituloReceber.DataUltimaModificacao = DateTime.Now;
+                criacao = true;
                 break;
             default:
                 tituloReceber.GuidReferencia = tituloReceber.GuidReferencia;
@@ -357,7 +364,7 @@ public class TituloReceberService: ITituloReceberService
         }
 
         tituloReceber.NumeroTitulo                      = tituloReceber.Sequencial +"/"+ DateTime.Now.Year;
-        tituloReceber.NomeTitulo                        = cmd.NomeTitulo;
+        tituloReceber.NomeTitulo                        = string.IsNullOrEmpty(cmd.NomeTitulo) ? tituloReceber.NomeTitulo : cmd.NomeTitulo;
         tituloReceber.IdTipoTitulo                      = cmd.IdTipoTitulo;
         tituloReceber.Status                            = true;
         tituloReceber.DataFimTitulo                     = cmd.DataVencimentoPrimeraParcela.AddMonths(cmd.Parcelas);
@@ -372,7 +379,7 @@ public class TituloReceberService: ITituloReceberService
         tituloReceber.Parcelas                          = cmd.Parcelas;
         tituloReceber.PorcentagemTaxaAdministracao      = cmd.PorcentagemImpostoRetido;
 
-        if(tituloReceber.GuidReferencia == Guid.Empty)
+        if(criacao)
             BindFaturaTituloData(tituloReceber, lstFaturaTitulo);
     }
 

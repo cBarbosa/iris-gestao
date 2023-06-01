@@ -354,6 +354,7 @@ public class TituloPagarService: ITituloPagarService
 
     private static void BindTituloPagarData(CriarTituloPagarCommand cmd, TituloPagar TituloPagar,  List<FaturaTituloPagar> lstFaturaTituloPagar)
     {
+        Boolean criacao = false;
         double valorLiquido;
         valorLiquido = calcularPorcentagem(cmd.ValorTitulo, cmd.PorcentagemImpostoRetido);
         switch (TituloPagar.GuidReferencia)
@@ -364,6 +365,7 @@ public class TituloPagarService: ITituloPagarService
                 TituloPagar.DataUltimaModificacao = DateTime.Now;
                 TituloPagar.NumeroTitulo = TituloPagar.Sequencial + "/" + DateTime.Now.Year;
                 TituloPagar.Status = true;
+                criacao = true;
                 break;
             default:
                 TituloPagar.GuidReferencia = TituloPagar.GuidReferencia;
@@ -385,7 +387,7 @@ public class TituloPagarService: ITituloPagarService
         TituloPagar.Parcelas                          = cmd.Parcelas;
         TituloPagar.PorcentagemTaxaAdministracao      = cmd.PorcentagemImpostoRetido;
 
-        if(TituloPagar.Id == 0)
+        if (criacao)
             BindFaturaTituloData(TituloPagar, lstFaturaTituloPagar);
     }
 

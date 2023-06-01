@@ -20,16 +20,16 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
     [Unicode(false)]
     public string NumeroContrato { get; set; } = null!;
 
-    [Column(TypeName = "decimal(18, 0)")]
+    [Column(TypeName = "decimal(18, 2)")]
     public double ValorAluguel { get; set; }
 
-    [Column(TypeName = "decimal(3, 0)")]
+    [Column(TypeName = "decimal(3, 6)")]
     public double PercentualRetencaoImpostos { get; set; }
 
-    [Column(TypeName = "decimal(18, 0)")]
+    [Column(TypeName = "decimal(18, 2)")]
     public double ValorAluguelLiquido { get; set; }
 
-    [Column(TypeName = "decimal(3, 0)")]
+    [Column(TypeName = "decimal(3, 6)")]
     public double? PercentualDescontoAluguel { get; set; }
 
     public bool CarenciaAluguel { get; set; }

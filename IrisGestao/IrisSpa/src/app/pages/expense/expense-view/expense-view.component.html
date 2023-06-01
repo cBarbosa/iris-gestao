@@ -121,6 +121,7 @@
 				>
 					<ng-template pTemplate="header">
 						<tr>
+							<th>Nº Parcela</th>
 							<th>Valor do aluguel pago</th>
 							<th>Data do pagamento</th>
 							<th>Dias de atraso</th>
@@ -131,6 +132,7 @@
 					</ng-template>
 					<ng-template pTemplate="body" let-fatura>
 						<tr>
+							<td>{{ fatura.numeroParcela }}</td>
 							<td>{{ fatura.valorFatura | currency }}</td>
 							<td>{{ fatura.dataPagamento | date : "shortDate" }}</td>
 							<td>

@@ -193,7 +193,7 @@ export class BaixaTituloSidebarComponent {
 			dataPagamento: editFormData.dataPagamento
 				? editFormData.dataPagamento.toISOString()
 				: '',
-			valorRealPago: editFormData.valorTotal, // ??
+			valorRealPago: editFormData.valorAluguel, // ??
 			DescricaoBaixaFatura: editFormData.observacoes,
 		};
 
