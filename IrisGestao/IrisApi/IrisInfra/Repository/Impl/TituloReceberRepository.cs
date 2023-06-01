@@ -208,6 +208,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                             ValorTitulo = x.ValorTitulo,
                             ValorTotalTitulo = x.ValorTotalTitulo,
                             DataCriacao = x.DataCriacao,
+                            DataFimTitulo = x.DataFimTitulo,
                             DataAtualização = x.DataUltimaModificacao,
                             TipoTituloReceber = x.IdTipoTituloNavigation == null ? null : new
                             {
@@ -261,7 +262,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                                     Telefone = y.IdImovelNavigation.IdClienteProprietarioNavigation.Telefone
                                 },
                             }),
-                        }).OrderByDescending(x=> x.DataCriacao).ToListAsync();
+                        }).OrderBy(x=> x.DataFimTitulo).ToListAsync();
 
             var totalCount = contratos.Count();
 

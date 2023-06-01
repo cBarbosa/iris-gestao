@@ -78,21 +78,21 @@ export class TopbarComponent {
 				id: route.startsWith('/supplier/') ? 'current' : '',
 				command: () => this.navigateTo('supplier/listing'),
 			},
-			//{
-			//	label: 'Financeiro',
-			//	items: [
-			//		{
-			//			label: 'Receitas',
-			//			id: route.startsWith('/revenue/') ? 'current' : '',
-			//			command: () => this.navigateTo('revenue/listing'),
-			//		},
-			//		{
-			//			label: 'Despesas',
-			//			id: route.startsWith('/expense/') ? 'current' : '',
-			//			command: () => this.navigateTo('expense/listing'),
-			//		},
-			//	],
-			//},
+			{
+				label: 'Financeiro',
+				items: [
+					{
+						label: 'Receitas',
+						id: route.startsWith('/revenue/') ? 'current' : '',
+						command: () => this.navigateTo('revenue/listing'),
+					},
+					{
+						label: 'Despesas',
+						id: route.startsWith('/expense/') ? 'current' : '',
+						command: () => this.navigateTo('expense/listing'),
+					},
+				],
+			},
 			// {
 			// 	label: 'Prestador de serviços',
 			// },
