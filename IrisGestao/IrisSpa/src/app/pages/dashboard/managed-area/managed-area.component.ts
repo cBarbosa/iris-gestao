@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { DropdownItem } from 'src/app/shared/models/types';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
 @Component({
-	selector: 'app-financial-vacancy',
-	templateUrl: './financial-vacancy.component.html',
-	styleUrls: ['./financial-vacancy.component.scss'],
+	selector: 'app-managed-area',
+	templateUrl: './managed-area.component.html',
+	styleUrls: ['./managed-area.component.scss'],
 })
-export class FinancialVacancyComponent implements OnInit {
+export class ManagedAreaComponent {
 	data: any;
 	options: any;
 
@@ -48,33 +48,28 @@ export class FinancialVacancyComponent implements OnInit {
 			this.isMobile = screenWidth < 768;
 		});
 
-		this.data = {
-			labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-			datasets: [
-				{
-					type: 'line',
-					label: 'Dataset 1',
-					borderColor: '#D08175',
-					data: [50, 25, 12, 48, 56, 76, 42],
-				},
-				{
-					type: 'bar',
-					label: 'Dataset 2',
-					backgroundColor: `#C9D78E`,
-					data: [21, 84, 24, 75, 37, 65, 34],
-				},
-				{
-					type: 'bar',
-					label: 'Dataset 3',
-					backgroundColor: `#641B1E`,
-					data: [41, 52, 24, 74, 23, 21, 32],
-				},
-			],
-		};
-	}
-
-	changeTab(i: number) {
-		this.tabIndex = i;
+		this.data = [
+			{
+				title: 'Coorporativo CNC',
+				percent: 66.79,
+				color: '#641B1E',
+			},
+			{
+				title: 'Coorporativo Stylos',
+				percent: 29.91,
+				color: '#C9D78E',
+			},
+			{
+				title: 'Varejo CNC',
+				percent: 3.3,
+				color: '#FF9922',
+			},
+			{
+				title: 'Teste',
+				percent: 60,
+				color: '#641B1E',
+			},
+		];
 	}
 
 	filter = (e: Event) => {
