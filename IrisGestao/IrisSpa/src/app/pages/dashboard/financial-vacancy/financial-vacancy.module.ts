@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { TabViewModule } from 'primeng/tabview';
 import { PillTabComponent } from 'src/app/shared/components/pill-tab/pill-tab.component';
 import { SidebarModule } from 'primeng/sidebar';
+import { PercentChartCardComponent } from 'src/app/shared/components/percent-chart-card/percent-chart-card.component';
 
 @NgModule({
 	declarations: [FinancialVacancyComponent],
@@ -32,6 +33,7 @@ import { SidebarModule } from 'primeng/sidebar';
 		TabViewModule,
 		PillTabComponent,
 		SidebarModule,
+		PercentChartCardComponent,
 	],
 })
 export class FinancialVacancyModule {}
