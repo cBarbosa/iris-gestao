@@ -22,16 +22,14 @@ const routes: Routes = [
 			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 		},
 	},
-	// {
-	//     path: 'price-per-meter',
-	//     // loadChildren: () =>
-	// 	// 	import('./dashboard/price-per-meter.module').then(
-	// 	// 		(m) => m.PricePerMeterModule
-	// 	// 	),
-	// 	data: {
-	// 		role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-	// 	}
-	// },
+	{
+		path: 'area-price',
+		loadChildren: () =>
+			import('./area-price/area-price.module').then((m) => m.AreaPriceModule),
+		data: {
+			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+		},
+	},
 	{
 		path: 'managed-area',
 		loadChildren: () =>
