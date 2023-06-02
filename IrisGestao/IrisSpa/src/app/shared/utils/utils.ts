@@ -13,6 +13,14 @@ export class Utils {
 		};
 	}
 
+	static getDaysInMonth(m: number, y: number) {
+		return m === 2
+			? y & 3 || (!(y % 25) && y & 15)
+				? 28
+				: 29
+			: 30 + ((m + (m >> 3)) & 1);
+	}
+
 	static humanFileSize(size: number) {
 		const i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
 		return (

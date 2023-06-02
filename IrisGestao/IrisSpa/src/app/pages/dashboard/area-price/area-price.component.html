@@ -56,6 +56,7 @@
 				placeholder="Período"
 				aria-describedby="periodo-help"
 				[(ngModel)]="filterPeriodo"
+				(ngModelChange)="filterClientDebounce($event)"
 				view="month"
 				selectionMode="range"
 				dateFormat="mm/yy"

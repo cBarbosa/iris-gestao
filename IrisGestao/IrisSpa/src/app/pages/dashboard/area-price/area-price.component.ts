@@ -20,7 +20,7 @@ export class AreaPriceComponent {
 
 	filterLocador: string;
 	filterTipo: string;
-	filterPeriodo: string;
+	filterPeriodo: [Date, Date];
 
 	tabIndex: number = 0;
 
