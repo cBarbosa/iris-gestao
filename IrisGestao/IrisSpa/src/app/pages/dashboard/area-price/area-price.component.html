@@ -3,14 +3,7 @@
 	<div class="content">
 		<header class="content-header">
 			<div class="title" [class.mobile]="isMobile">
-				<h3 class="text-2xl font-bold">Vacância</h3>
-				<app-pill-tab
-					[labels]="['Financeira', 'Física']"
-					[current]="tabIndex"
-					(onTabChange)="changeTab($event)"
-					class="w-full"
-					styleClass="w-full"
-				></app-pill-tab>
+				<h3 class="text-2xl font-bold">Preço m²</h3>
 				<div class="text-right" *ngIf="isMobile">
 					<button
 						pButton
@@ -74,45 +67,10 @@
 		</ng-container>
 
 		<div class="p-12 bg-white" *ngIf="!isLoading">
-			<p-tabView [activeIndex]="tabIndex">
-				<p-tabPanel header="Vacância financeira">
-					<h2 class="pb-4 text-lg font-bold">Vacância financeira</h2>
-					<app-chart
-						[data]="data.datasets"
-						[labels]="['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul']"
-					></app-chart>
-				</p-tabPanel>
-				<p-tabPanel header="Vacância física">
-					<h2 class="pb-12 text-lg font-bold">Vacância física</h2>
-
-					<div class="flex flex-wrap gap-x-10 gap-y-14 justify-evenly">
-						<app-percent-chart-card
-							title="Coorporativo CNC"
-							[percent]="66.79"
-							color="#641B1E"
-							class="grow basis-0"
-						></app-percent-chart-card>
-						<app-percent-chart-card
-							title="Coorporativo Stylos"
-							[percent]="29.91"
-							color="#C9D78E"
-							class="grow basis-0"
-						></app-percent-chart-card>
-						<app-percent-chart-card
-							title="Varejo CNC"
-							[percent]="3.3"
-							color="#FF9922"
-							class="grow basis-0"
-						></app-percent-chart-card>
-						<app-percent-chart-card
-							title="teste titulo"
-							[percent]="60"
-							color="#641B1E"
-							class="grow basis-0"
-						></app-percent-chart-card>
-					</div>
-				</p-tabPanel>
-			</p-tabView>
+			<app-chart
+				[data]="data.datasets"
+				[labels]="['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul']"
+			></app-chart>
 		</div>
 	</div>
 </div>

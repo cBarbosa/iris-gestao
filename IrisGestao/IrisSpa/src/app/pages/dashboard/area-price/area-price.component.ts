@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { DropdownItem } from 'src/app/shared/models/types';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
 @Component({
-	selector: 'app-financial-vacancy',
-	templateUrl: './financial-vacancy.component.html',
-	styleUrls: ['./financial-vacancy.component.scss'],
+	selector: 'app-area-price',
+	templateUrl: './area-price.component.html',
+	styleUrls: ['./area-price.component.scss'],
 })
-export class FinancialVacancyComponent implements OnInit {
+export class AreaPriceComponent {
 	data: any;
 	options: any;
 
@@ -53,20 +53,23 @@ export class FinancialVacancyComponent implements OnInit {
 			datasets: [
 				{
 					type: 'line',
-					label: 'Dataset 1',
-					borderColor: '#D08175',
+					label: 'Média ponderada',
+					backgroundColor: 'white',
+					borderColor: '#480D1A',
 					data: [50, 25, 12, 48, 56, 76, 42],
 				},
 				{
-					type: 'bar',
-					label: 'Dataset 2',
-					backgroundColor: `#C9D78E`,
+					type: 'line',
+					label: 'Média Simples',
+					backgroundColor: 'white',
+					borderColor: '#6B7C36',
 					data: [21, 84, 24, 75, 37, 65, 34],
 				},
 				{
-					type: 'bar',
-					label: 'Dataset 3',
-					backgroundColor: `#641B1E`,
+					type: 'line',
+					label: 'Média',
+					backgroundColor: 'white',
+					borderColor: `#D08175`,
 					data: [41, 52, 24, 74, 23, 21, 32],
 				},
 			],

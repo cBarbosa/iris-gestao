@@ -231,6 +231,32 @@ public class ContratoAluguelService: IContratoAluguelService
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
     }
+    
+    public async Task<CommandResult> GetDashbaordFinancialVacancy(ConsultaDashboardCommand cmd)
+    {
+        if(!cmd.DateRefInit.HasValue || !cmd.DateRefEnd.HasValue 
+                                     || (cmd is { DateRefInit: not null, DateRefEnd: not null } && cmd.DateRefInit > cmd.DateRefEnd))
+            return new CommandResult(false, ErrorResponseEnums.Error_1003, null!);
+
+        var rnd = new Random();
+        var result = new object[]
+        {
+            new { referencia = "Janeiro", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
+            new { referencia = "Fevereiro", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
+            new { referencia = "Março", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
+            new { referencia = "Abril", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
+            new { referencia = "Maio", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
+            new { referencia = "Junho", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
+            new { referencia = "Julho", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
+            new { referencia = "Agosto", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
+            new { referencia = "Setembro", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
+            new { referencia = "Outubro", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
+            new { referencia = "Novembro", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
+            new { referencia = "Dezembro", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) }
+        };
+
+        return new CommandResult(true, SuccessResponseEnums.Success_1005, result);
+    }
 
     private async Task CriaContratoAluguelImovel(int idContratoAluguel, List<ContratoAluguelImovelCommand> lstContratoImovel)
     {
