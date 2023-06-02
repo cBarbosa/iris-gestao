@@ -17,8 +17,11 @@ public class DashboardController : ControllerBase
     }
     
     [HttpGet("financial-vacancy")]
-    public async Task<IActionResult> GetFinancialVacancy([FromBody] ConsultaDashboardCommand cmd) =>
-        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(cmd));
+    public async Task<IActionResult> GetFinancialVacancy(
+        [FromQuery] DateTime? DateRefInit,
+        [FromQuery] DateTime? DateRefEnd
+        ) =>
+        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit, DateRefEnd));
     
     // [HttpGet("physical-vacancy")]
     // public async Task<IActionResult> GetPhysicalVacancy([FromBody] ConsultaDashboardCommand cmd) =>

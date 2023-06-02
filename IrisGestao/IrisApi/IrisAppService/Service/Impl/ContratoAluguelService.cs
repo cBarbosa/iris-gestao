@@ -232,10 +232,12 @@ public class ContratoAluguelService: IContratoAluguelService
         }
     }
     
-    public async Task<CommandResult> GetDashbaordFinancialVacancy(ConsultaDashboardCommand cmd)
+    public async Task<CommandResult> GetDashbaordFinancialVacancy(
+        DateTime? DateRefInit,
+        DateTime? DateRefEnd)
     {
-        if(!cmd.DateRefInit.HasValue || !cmd.DateRefEnd.HasValue 
-                                     || (cmd is { DateRefInit: not null, DateRefEnd: not null } && cmd.DateRefInit > cmd.DateRefEnd))
+        if(!DateRefInit.HasValue || !DateRefEnd.HasValue
+                                     || DateRefInit > DateRefEnd)
             return new CommandResult(false, ErrorResponseEnums.Error_1003, null!);
 
         var rnd = new Random();
