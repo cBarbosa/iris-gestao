@@ -66,6 +66,7 @@
 				view="month"
 				selectionMode="range"
 				dateFormat="mm/yy"
+				(ngModelChange)="filterClientDebounce($event)"
 			></p-calendar>
 		</ng-template>
 
@@ -77,10 +78,7 @@
 			<p-tabView [activeIndex]="tabIndex">
 				<p-tabPanel header="Vacância financeira">
 					<h2 class="pb-4 text-lg font-bold">Vacância financeira</h2>
-					<app-chart
-						[data]="data.datasets"
-						[labels]="['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul']"
-					></app-chart>
+					<app-chart [data]="data.datasets" [labels]="data.labels"></app-chart>
 				</p-tabPanel>
 				<p-tabPanel header="Vacância física">
 					<h2 class="pb-12 text-lg font-bold">Vacância física</h2>
