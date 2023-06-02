@@ -17,18 +17,29 @@ export class DashboardService {
 	constructor(private http: HttpClient) {}
 
 	getFinancialVacancy(
-		IdLocador: number,
-		IdTipoImovel: number,
 		DateRefInit: string,
-		DateRefEnd: string
+		DateRefEnd: string,
+		IdLocador?: number,
+		IdTipoImovel?: number
 	) {
+		const obj:any = {};
+
+		if(IdLocador) {
+			obj.IdLocador=IdLocador;
+		}
+
+		if(IdTipoImovel) {
+			obj.IdTipoImovel = IdTipoImovel;
+		}
+
+
+
 		return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/financial-vacancy`, {
 				params: {
-					IdLocador,
-					IdTipoImovel,
 					DateRefInit,
 					DateRefEnd,
+					...obj
 				},
 			})
 			.pipe(
