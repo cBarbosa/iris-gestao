@@ -5,5 +5,12 @@
 	>
 		{{ dataInput[0]["data"] }}%
 	</div>
-	<p-chart [type]="type" [data]="data" [options]="options[type]"> </p-chart>
+	<p-chart
+		[type]="type"
+		[data]="data"
+		[options]="options[type]"
+		[responsive]="true"
+		height="29rem"
+	>
+	</p-chart>
 </div>

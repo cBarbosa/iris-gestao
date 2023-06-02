@@ -77,38 +77,12 @@
 		<div class="p-12 bg-white" *ngIf="!isLoading">
 			<p-tabView [activeIndex]="tabIndex">
 				<p-tabPanel header="Vacância financeira">
-					<h2 class="pb-4 text-lg font-bold">Vacância financeira</h2>
+					<h2 class="pb-12 text-lg font-bold">Vacância financeira</h2>
 					<app-chart [data]="data.datasets" [labels]="data.labels"></app-chart>
 				</p-tabPanel>
 				<p-tabPanel header="Vacância física">
 					<h2 class="pb-12 text-lg font-bold">Vacância física</h2>
-
-					<div class="flex flex-wrap gap-x-10 gap-y-14 justify-evenly">
-						<app-percent-chart-card
-							title="Coorporativo CNC"
-							[percent]="66.79"
-							color="#641B1E"
-							class="grow basis-0"
-						></app-percent-chart-card>
-						<app-percent-chart-card
-							title="Coorporativo Stylos"
-							[percent]="29.91"
-							color="#C9D78E"
-							class="grow basis-0"
-						></app-percent-chart-card>
-						<app-percent-chart-card
-							title="Varejo CNC"
-							[percent]="3.3"
-							color="#FF9922"
-							class="grow basis-0"
-						></app-percent-chart-card>
-						<app-percent-chart-card
-							title="teste titulo"
-							[percent]="60"
-							color="#641B1E"
-							class="grow basis-0"
-						></app-percent-chart-card>
-					</div>
+					<app-chart [data]="data.datasets" [labels]="data.labels"></app-chart>
 				</p-tabPanel>
 			</p-tabView>
 		</div>
