@@ -23,7 +23,7 @@ public class ContratoAluguelImovelRepository : Repository<ContratoAluguelImovel>
             .Where(x => x.IdContratoAluguel.Equals(idContratoAluguel))
             .ToListAsync();
     }
-    public async Task<IEnumerable<Object>> getAllImoveisDoContrato()
+    public async Task<IEnumerable<ContratoAluguelImovel>> getAllImoveisDoContrato()
     {
         return await DbSet
             .Include(x=> x.IdImovelNavigation)
