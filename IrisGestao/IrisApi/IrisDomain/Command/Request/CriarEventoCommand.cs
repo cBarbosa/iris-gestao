@@ -8,11 +8,11 @@ namespace IrisGestao.Domain.Command.Request
 {
     public class CriarEventoCommand
     {
-        public int Id { get; set; }
-        public int IdImovel { get; set; }
+        public Guid IdImovel { get; set; }
         public int IdTipoEvento { get; set; }
-        public int IdCliente { get; set; }
+        public Guid IdCliente { get; set; }
         public string Nome { get; set; }
+        public string Descricao { get; set; }
         public DateTime? DthRealizacao { get; set; }
         public Guid GuidReferencia { get; set; }
     }
