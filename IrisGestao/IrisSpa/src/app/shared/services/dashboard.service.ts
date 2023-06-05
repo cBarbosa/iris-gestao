@@ -120,4 +120,38 @@ export class DashboardService {
 			);
 	};
 
+	getAreaPrice(
+		DateRefInit: string,
+		DateRefEnd: string,
+		IdLocador?: number,
+		IdTipoImovel?: number
+	) {
+		const optionalClause:any = {};
+
+		if(IdLocador) {
+			optionalClause.IdLocador=IdLocador;
+		}
+
+		if(IdTipoImovel) {
+			optionalClause.IdTipoImovel = IdTipoImovel;
+		}
+
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/financial-vacancy`, {
+				params: {
+					DateRefInit,
+					DateRefEnd,
+					...optionalClause
+				},
+			})
+			.pipe(
+				map((response) => {
+					console.log('getAreaPrice response', response);
+					if (!response.success)
+						console.error(`getAreaPrice: ${response.message}`);
+					return response;
+				})
+			);
+	};
+
 }

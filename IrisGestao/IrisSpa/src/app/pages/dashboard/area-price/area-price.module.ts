@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { AreaPriceRoutingModule } from './area-price-routing.module';
 import { AreaPriceComponent } from './area-price.component';
 import { FormsModule } from '@angular/forms';

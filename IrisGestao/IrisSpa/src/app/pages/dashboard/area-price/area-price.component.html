@@ -40,6 +40,7 @@
 				aria-describedby="locador-help"
 				[(ngModel)]="filterLocador"
 				(ngModelChange)="filterClientDebounce($event)"
+				[options]="proprietaryOptions"
 			></p-dropdown>
 
 			<p-dropdown
@@ -49,6 +50,7 @@
 				aria-describedby="tipo-imovel-help"
 				[(ngModel)]="filterTipo"
 				(ngModelChange)="filterClientDebounce($event)"
+				[options]="categoryOptions"
 			></p-dropdown>
 
 			<p-calendar
@@ -68,10 +70,7 @@
 		</ng-container>
 
 		<div class="p-12 bg-white" *ngIf="!isLoading">
-			<app-chart
-				[data]="data.datasets"
-				[labels]="['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul']"
-			></app-chart>
+			<app-chart [data]="data.datasets" [labels]="data.labels"></app-chart>
 		</div>
 	</div>
 </div>
