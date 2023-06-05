@@ -217,13 +217,10 @@ public class ContratoAluguelService: IContratoAluguelService
     }
     
     public async Task<CommandResult> GetDashbaordFinancialVacancy(
-        DateTime? DateRefInit,
-        DateTime? DateRefEnd)
+        DateTime DateRefInit,
+        DateTime DateRefEnd,
+        int? IdLocador, int? IdTipoImovel)
     {
-        if(!DateRefInit.HasValue || !DateRefEnd.HasValue
-                                     || DateRefInit > DateRefEnd)
-            return new CommandResult(false, ErrorResponseEnums.Error_1003, null!);
-
         var rnd = new Random();
         var result = new object[]
         {
@@ -241,7 +238,24 @@ public class ContratoAluguelService: IContratoAluguelService
             new { referencia = "Dezembro", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) }
         };
 
-        return new CommandResult(true, SuccessResponseEnums.Success_1005, result);
+        return await Task.FromResult(new CommandResult(true, SuccessResponseEnums.Success_1005, result));
+    }
+
+    public async Task<CommandResult> GetDashboardTotalManagedArea(
+        DateTime DateRefInit,
+        DateTime DateRefEnd,
+        int? IdLocador, int? IdTipoImovel)
+    {
+        var rnd = new Random();
+        var result = new object[]
+        {
+            new { title = "Coorporativo CNC", percent = Math.Round(rnd.NextDouble() * (30.0 - 10.0) + 30.0, 2), color = $"#{rnd.Next(0x1000000):X6}"},
+            new { title = "Coorporativo Stylos", percent = Math.Round(rnd.NextDouble() * (20.0 - 10.0) + 20.0, 2), color = $"#{rnd.Next(0x1000000):X6}"},
+            new { title = "Varejo CNC", percent = Math.Round(rnd.NextDouble() * (30.0 - 10.0) + 30.0, 2), color = $"#{rnd.Next(0x1000000):X6}"},
+            new { title = "Varejo CNC 2", percent = Math.Round(rnd.NextDouble() * (20.0 - 10.0) + 20.0, 2), color = $"#{rnd.Next(0x1000000):X6}"}
+        };
+
+        return await Task.FromResult(new CommandResult(true, SuccessResponseEnums.Success_1005, result));
     }
 
     private async Task CriaContratoAluguelImovel(int idContratoAluguel, List<ContratoAluguelImovelCommand> lstContratoImovel)

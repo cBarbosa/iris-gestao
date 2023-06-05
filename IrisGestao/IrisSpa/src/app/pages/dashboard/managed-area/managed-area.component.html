@@ -40,6 +40,7 @@
 				aria-describedby="locador-help"
 				[(ngModel)]="filterLocador"
 				(ngModelChange)="filterClientDebounce($event)"
+				[options]="proprietaryOptions"
 			></p-dropdown>
 
 			<p-dropdown
@@ -49,6 +50,7 @@
 				aria-describedby="tipo-imovel-help"
 				[(ngModel)]="filterTipo"
 				(ngModelChange)="filterClientDebounce($event)"
+				[options]="categoryOptions"
 			></p-dropdown>
 
 			<p-calendar
@@ -59,6 +61,7 @@
 				view="month"
 				selectionMode="range"
 				dateFormat="mm/yy"
+				(ngModelChange)="filterClientDebounce($event)"
 			></p-calendar>
 		</ng-template>
 

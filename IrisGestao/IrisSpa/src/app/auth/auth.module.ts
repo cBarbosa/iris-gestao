@@ -7,6 +7,7 @@ import { IframeComponent } from './iframe/iframe.component';
 import { AuthenticateComponent } from './authenticate/authenticate.component';
 import { HttpClientModule } from '@angular/common/http';
 import { SpinnerComponent } from '../shared/components/custom-ui/spinner/spinner.component';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
 	declarations: [LoginComponent, IframeComponent, AuthenticateComponent],
@@ -16,6 +17,7 @@ import { SpinnerComponent } from '../shared/components/custom-ui/spinner/spinner
 		RouterModule,
 		HttpClientModule,
 		SpinnerComponent,
+		ButtonModule,
 	],
 })
 export class AuthModule {}

@@ -124,6 +124,31 @@ export class TopbarComponent {
 			// 		},
 			// 	],
 			// },
+			{
+				label: 'Análises',
+				items: [
+					{
+						label: 'Vacância',
+						id: route.startsWith('/dashboard') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/financial-vacancy')
+					},
+					{
+						label: 'Recebimento',
+						id: route.startsWith('/dashboard') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/receiving-performance')
+					},
+					{
+						label: 'Preço M²',
+						id: route.startsWith('/dashboard') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/area-price')
+					},
+					{
+						label: 'M² Gerenciados',
+						id: route.startsWith('/dashboard') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/managed-area')
+					}
+				]
+			}
 		];
 	}
 

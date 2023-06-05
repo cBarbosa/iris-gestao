@@ -1,6 +1,26 @@
-<h1 class="font-bold">Login</h1>
+<div class="login-page">
+	<div class="login-box">
+		<img src="/assets/images/login-logo.png" alt="Iris Logo" />
 
-<div
+		<h1 class="mt-7 text-center text-3xl font-bold">Software de Gestão Imobiliária</h1>
+		<button
+			type="button"
+			class="w-11/12 mt-11"
+			label="Tela de Login"
+			(click)="autenticar()"
+			pButton
+		></button>
+
+		<div class="error" *ngIf="message">
+			<i class="ph ph-x-circle text-4xl text-red-600"></i>
+
+			<p class="text-lg font-bold">Um problema inesperado occoreu</p>
+			<p>{{ message }}</p>
+		</div>
+	</div>
+</div>
+
+<!-- <div
 	*ngIf="message"
 	class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
 	role="alert"
@@ -85,5 +105,5 @@
             <i class="fa fa-arrow-left" aria-hidden="true"></i> Registrar
         </button>
 
-    </form> -->
-</div>
+    </form> ->
+</div> -->

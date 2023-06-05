@@ -17,71 +17,176 @@ export class DashboardService {
 	constructor(private http: HttpClient) {}
 
 	getFinancialVacancy(
-		IdLocador: number,
-		IdTipoImovel: number,
 		DateRefInit: string,
-		DateRefEnd: string
+		DateRefEnd: string,
+		IdLocador?: number,
+		IdTipoImovel?: number
 	) {
+		const optionalClause:any = {};
+
+		if(IdLocador) {
+			optionalClause.IdLocador=IdLocador;
+		}
+
+		if(IdTipoImovel) {
+			optionalClause.IdTipoImovel = IdTipoImovel;
+		}
+
 		return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/financial-vacancy`, {
 				params: {
-					IdLocador,
-					IdTipoImovel,
 					DateRefInit,
 					DateRefEnd,
+					...optionalClause
 				},
 			})
 			.pipe(
 				map((response) => {
-					console.log('suppliers response', response);
+					console.log('getFinancialVacancy response', response);
 					if (!response.success)
-						console.error(`suppliers: ${response.message}`);
+						console.error(`getFinancialVacancy: ${response.message}`);
 					return response;
 				})
 			);
-	}
+	};
 
-	getSupplierById(uid: string) {
+	getPhysicalVacancy(
+		DateRefInit: string,
+		DateRefEnd: string,
+		IdLocador?: number,
+		IdTipoImovel?: number
+	) {
+
+		const optionalClause:any = {};
+
+		if(IdLocador) {
+			optionalClause.IdLocador=IdLocador;
+		}
+
+		if(IdTipoImovel) {
+			optionalClause.IdTipoImovel = IdTipoImovel;
+		}
+
 		return this.http
-			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/${uid}/guid`)
+			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/physical-vacancy`, {
+				params: {
+					DateRefInit,
+					DateRefEnd,
+					...optionalClause
+				},
+			})
 			.pipe(
 				map((response) => {
-					console.log('supplier response', response);
-					if (response.success) return response.data;
-					else return console.error(`getSupplier: ${response.message}`);
+					console.log('getPhysicalVacancy response', response);
+					if (!response.success)
+						console.error(`getPhysicalVacancy: ${response.message}`);
+					return response;
 				})
 			);
-	}
+	};
 
-	createSupplier(form: any) {
+	getReceivingPerformance(
+		DateRefInit: string,
+		DateRefEnd: string,
+		IdLocador?: number,
+		IdTipoImovel?: number
+	) {
+
+		const optionalClause:any = {};
+
+		if(IdLocador) {
+			optionalClause.IdLocador=IdLocador;
+		}
+
+		if(IdTipoImovel) {
+			optionalClause.IdTipoImovel = IdTipoImovel;
+		}
+
 		return this.http
-			.post<ApiResponse>(
-				`${env.config.apiUrl}Dashboard/Criar`,
-				JSON.stringify(form, null, 2),
-				httpOptions
-			)
+			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/receiving-performance`, {
+				params: {
+					DateRefInit,
+					DateRefEnd,
+					...optionalClause
+				},
+			})
 			.pipe(
 				map((response) => {
-					console.log('supplier response', response);
-					if (response) return response;
-					else return console.error(`createSupplier: ${response}`);
+					console.log('getPhysicalVacancy response', response);
+					if (!response.success)
+						console.error(`getPhysicalVacancy: ${response.message}`);
+					return response;
 				})
 			);
-	}
+	};
 
-	updateSupplier(uid: string, form: any) {
+	getAreaPrice(
+		DateRefInit: string,
+		DateRefEnd: string,
+		IdLocador?: number,
+		IdTipoImovel?: number
+	) {
+		const optionalClause:any = {};
+
+		if(IdLocador) {
+			optionalClause.IdLocador=IdLocador;
+		}
+
+		if(IdTipoImovel) {
+			optionalClause.IdTipoImovel = IdTipoImovel;
+		}
+
 		return this.http
-			.put<ApiResponse>(
-				`${env.config.apiUrl}Dashboard/${uid}/atualizar`,
-				JSON.stringify(form, null, 2),
-				httpOptions
-			)
+			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/area-price`, {
+				params: {
+					DateRefInit,
+					DateRefEnd,
+					...optionalClause
+				},
+			})
 			.pipe(
 				map((response) => {
-					console.log('client response', response);
-					if (response.success) return response;
-					else return console.error(`getClients: ${response.message}`);
+					console.log('getAreaPrice response', response);
+					if (!response.success)
+						console.error(`getAreaPrice: ${response.message}`);
+					return response;
 				})
 			);
-	}
+	};
+
+	getManagedArea(
+		DateRefInit: string,
+		DateRefEnd: string,
+		IdLocador?: number,
+		IdTipoImovel?: number
+	) {
+		const optionalClause:any = {};
+
+		if(IdLocador) {
+			optionalClause.IdLocador=IdLocador;
+		}
+
+		if(IdTipoImovel) {
+			optionalClause.IdTipoImovel = IdTipoImovel;
+		}
+
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/total-managed-area`, {
+				params: {
+					DateRefInit,
+					DateRefEnd,
+					...optionalClause
+				},
+			})
+			.pipe(
+				map((response) => {
+					console.log('getManagedArea response', response);
+					if (!response.success)
+						console.error(`getManagedArea: ${response.message}`);
+					return response;
+				})
+			);
+
+	};
+
 }
