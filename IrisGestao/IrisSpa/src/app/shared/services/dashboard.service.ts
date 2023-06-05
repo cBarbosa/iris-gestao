@@ -68,7 +68,7 @@ export class DashboardService {
 		}
 
 		return this.http
-			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/financial-vacancy`, {
+			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/physical-vacancy`, {
 				params: {
 					DateRefInit,
 					DateRefEnd,
@@ -103,7 +103,7 @@ export class DashboardService {
 		}
 
 		return this.http
-			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/financial-vacancy`, {
+			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/receiving-performance`, {
 				params: {
 					DateRefInit,
 					DateRefEnd,
@@ -137,7 +137,7 @@ export class DashboardService {
 		}
 
 		return this.http
-			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/financial-vacancy`, {
+			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/area-price`, {
 				params: {
 					DateRefInit,
 					DateRefEnd,

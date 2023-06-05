@@ -25,18 +25,30 @@ public class DashboardController : ControllerBase
         ) =>
         Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel));
     
-    // [HttpGet("physical-vacancy")]
-    // public async Task<IActionResult> GetPhysicalVacancy([FromBody] ConsultaDashboardCommand cmd) =>
-    //     Ok(await contratoAluguelService.GetDashboardPhysicalVacancy(cmd));
-    //
-    // [HttpGet("receiving-performance")]
-    // public async Task<IActionResult> GetReceivingPerformance([FromBody] ConsultaDashboardCommand cmd) =>
-    //     Ok(await contratoAluguelService.GetDashboardReceivingPerformance(cmd));
-    //
-    // [HttpGet("area-price")]
-    // public async Task<IActionResult> GetAreaPrice([FromBody] ConsultaDashboardCommand cmd) =>
-    //     Ok(await contratoAluguelService.GetDashboardAreaPrice(cmd));
-    //
+    [HttpGet("physical-vacancy")]
+    public async Task<IActionResult> GetPhysicalVacancy(
+        [FromQuery] DateTime? DateRefInit,
+        [FromQuery] DateTime? DateRefEnd,
+        [FromQuery] int? IdLocador,
+        [FromQuery] int? IdTipoImovel) =>
+        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel));
+    
+    [HttpGet("receiving-performance")]
+    public async Task<IActionResult> GetReceivingPerformance(
+        [FromQuery] DateTime? DateRefInit,
+        [FromQuery] DateTime? DateRefEnd,
+        [FromQuery] int? IdLocador,
+        [FromQuery] int? IdTipoImovel) =>
+        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel));
+    
+    [HttpGet("area-price")]
+    public async Task<IActionResult> GetAreaPrice(
+        [FromQuery] DateTime? DateRefInit,
+        [FromQuery] DateTime? DateRefEnd,
+        [FromQuery] int? IdLocador,
+        [FromQuery] int? IdTipoImovel) =>
+        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel));
+    
     [HttpGet("total-managed-area")]
     public async Task<IActionResult> GetTotalManagedArea(
         [FromQuery] DateTime? DateRefInit,
