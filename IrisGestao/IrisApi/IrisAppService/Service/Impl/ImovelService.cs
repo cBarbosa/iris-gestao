@@ -201,7 +201,7 @@ public class ImovelService: IImovelService
             foreach (var imovelContrato2 in resultImoveisContrato)
             {
                 ImovelDisponivel imovel = new ImovelDisponivel();
-                if(imovelContrato1)
+                //if(imovelContrato1)
             }
         }
 
