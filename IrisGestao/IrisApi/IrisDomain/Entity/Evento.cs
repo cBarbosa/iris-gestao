@@ -19,9 +19,12 @@ public partial class Evento: BaseEntity<Evento>
     [Column(TypeName = "datetime")]
     public DateTime? DthRealizacao { get; set; }
 
-    [StringLength(50)]
     [Unicode(false)]
-    public string GuidReferencia { get; set; } = null!;
+    public Guid? GuidReferencia { get; set; }
+
+    [StringLength(350)]
+    [Unicode(false)]
+    public string descricao { get; set; } = null!;
 
     public int IdCliente { get; set; }
 

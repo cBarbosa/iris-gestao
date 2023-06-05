@@ -83,9 +83,6 @@ public class UnidadeRepository : Repository<Unidade>, IUnidadeRepository
                         AreaUtil = y.IdImovelNavigation.Unidade.Sum(x => x.AreaUtil),
                         AreaHabitese = y.IdImovelNavigation.Unidade.Sum(x => x.AreaHabitese),
                         NroUnidades = y.IdImovelNavigation.Unidade.Count,
-                        ImgCapa = ImovelRepository.ImagemCapaFake,
-                        Imagens = ImovelRepository.ImagemListFake,
-                        Anexos = ImovelRepository.AnexoListFake,
                         IdCategoriaImovelNavigation = new
                         {
                             Id = y.IdImovelNavigation.IdCategoriaImovelNavigation.Id,

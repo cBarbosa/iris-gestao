@@ -1,6 +1,7 @@
 ﻿using IrisGestao.ApplicationService.Services.Interface;
 using IrisGestao.Domain.Command.Request;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace IrisWebApi.Controllers;
 
@@ -53,9 +54,9 @@ public class EventoController : Controller
 
     [HttpPut("/api/[controller]/{codigo}/atualizar/")]
     [Produces("application/json")]
-    public async Task<IActionResult> Atualizar(int? codigo, [FromBody] CriarEventoCommand cmd)
+    public async Task<IActionResult> Atualizar(Guid uuid, [FromBody] CriarEventoCommand cmd)
     {
-        var result = await eventoService.Update(codigo, cmd);
+        var result = await eventoService.Update(uuid, cmd);
 
         if (result == null)
             return BadRequest("Operação não realizada");
@@ -65,9 +66,9 @@ public class EventoController : Controller
 
     [HttpDelete("/api/[controller]/{codigo}/deletar/")]
     [Produces("application/json")]
-    public async Task<IActionResult> Deletar(int? codigo)
+    public async Task<IActionResult> Deletar(Guid uuid)
     {
-        var result = await eventoService.Delete(codigo);
+        var result = await eventoService.Delete(uuid);
 
         if (result == null)
             return BadRequest("Operação não realizada");

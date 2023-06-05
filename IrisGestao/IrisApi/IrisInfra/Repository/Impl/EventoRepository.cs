@@ -26,6 +26,13 @@ public class EventoRepository: Repository<Evento>, IEventoRepository
         return lstImovel.AsEnumerable();
     }
 
+    public async Task<Evento?> GetByReferenceGuid(Guid guid)
+    {
+        return await DbSet
+            .FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
+    }
+
+
     public IEnumerable<Evento> BuscarEventoPorIdImovel(int codigo)
     {
         var lstUnidades = DbSet.Include(x => x.IdImovelNavigation)

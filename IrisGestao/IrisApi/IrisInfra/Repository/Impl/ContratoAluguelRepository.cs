@@ -302,7 +302,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,
                                 PorcentagemTaxaAdministracao = x.PorcentagemTaxaAdministracao
                             }),
-                        }).OrderByDescending(x=> x.DataCriacao).ToListAsync();
+                        }).OrderBy(x=> x.DataFimContrato).ToListAsync();
 
             var totalCount = contratos.Count();
 

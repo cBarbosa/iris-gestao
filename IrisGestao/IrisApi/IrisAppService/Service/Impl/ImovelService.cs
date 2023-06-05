@@ -12,15 +12,18 @@ public class ImovelService: IImovelService
 {
     private readonly IImovelRepository imovelRepository;
     private readonly IImovelEnderecoRepository imovelEnderecoRepository;
+    private readonly IContratoAluguelImovelRepository contratoAluguelImovelRepository;
     private readonly ILogger<ImovelService> logger;
     
     public ImovelService(
         IImovelRepository imovelRepository
-        , IImovelEnderecoRepository imovelEnderecoRepository
+        , IImovelEnderecoRepository imovelEnderecoRepositor
+        , IContratoAluguelImovelRepository ContratoAluguelImovelRepository
         , ILogger<ImovelService> logger)
     {
         this.imovelRepository = imovelRepository;
         this.imovelEnderecoRepository = imovelEnderecoRepository;
+        this.contratoAluguelImovelRepository = ContratoAluguelImovelRepository;
         this.logger = logger;
     }
 
@@ -185,6 +188,29 @@ public class ImovelService: IImovelService
             : new CommandResult(true, SuccessResponseEnums.Success_1005, imovel);
     }
 
+    public async Task<CommandResult> GetImoveisParaContrato()
+    {
+        var resultImoveis = await imovelRepository.GetImoveisContrato();
+        var resultImoveisContrato = await contratoAluguelImovelRepository.getAllImoveisDoContrato();
+
+        List<ImovelDisponivel> lstImovelDisponivels = new List<ImovelDisponivel>();
+        List<ImovelDisponivel> lstImovelDisponivels1 = new List<ImovelDisponivel>();
+        List<ImovelDisponivel> lstImovelDisponivels2 = new List<ImovelDisponivel>();
+        foreach (var imovelContrato1 in resultImoveis.ToList())
+        {
+            foreach (var imovelContrato2 in resultImoveisContrato)
+            {
+                ImovelDisponivel imovel = new ImovelDisponivel();
+                if(imovelContrato1)
+            }
+        }
+
+        return lstImovelDisponivels == null
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, lstImovelDisponivels);
+    }
+
+
     private static void BindImoveisData(CriarImovelCommand cmd, ref Imovel imovel)
     {
         switch (imovel.GuidReferencia)
@@ -236,5 +262,11 @@ public class ImovelService: IImovelService
         endereco.Cidade = cmd.Cidade;
         endereco.Bairro = cmd.Bairro;
         endereco.UF = cmd.UF;
+    }
+    public class ImovelDisponivel
+    {
+        public int Id { get; set; }
+        public Guid GuidReferencia { get; set; }
+        public string Nome { get; set; }
     }
 }
