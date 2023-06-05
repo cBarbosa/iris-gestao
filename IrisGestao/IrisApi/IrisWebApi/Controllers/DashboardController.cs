@@ -19,9 +19,11 @@ public class DashboardController : ControllerBase
     [HttpGet("financial-vacancy")]
     public async Task<IActionResult> GetFinancialVacancy(
         [FromQuery] DateTime? DateRefInit,
-        [FromQuery] DateTime? DateRefEnd
+        [FromQuery] DateTime? DateRefEnd,
+        [FromQuery] int? IdLocador,
+        [FromQuery] int? IdTipoImovel
         ) =>
-        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit, DateRefEnd));
+        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel));
     
     // [HttpGet("physical-vacancy")]
     // public async Task<IActionResult> GetPhysicalVacancy([FromBody] ConsultaDashboardCommand cmd) =>
@@ -35,7 +37,12 @@ public class DashboardController : ControllerBase
     // public async Task<IActionResult> GetAreaPrice([FromBody] ConsultaDashboardCommand cmd) =>
     //     Ok(await contratoAluguelService.GetDashboardAreaPrice(cmd));
     //
-    // [HttpGet("total-managed-area")]
-    // public async Task<IActionResult> GetTotalManagedArea([FromBody] ConsultaDashboardCommand cmd) =>
-    //     Ok(await contratoAluguelService.GetDashboardTotalManagedArea(cmd));
+    [HttpGet("total-managed-area")]
+    public async Task<IActionResult> GetTotalManagedArea(
+        [FromQuery] DateTime? DateRefInit,
+        [FromQuery] DateTime? DateRefEnd,
+        [FromQuery] int? IdLocador,
+        [FromQuery] int? IdTipoImovel
+        ) =>
+        Ok(await contratoAluguelService.GetDashboardTotalManagedArea(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel));
 }

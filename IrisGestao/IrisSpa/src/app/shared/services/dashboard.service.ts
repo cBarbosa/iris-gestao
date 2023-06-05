@@ -154,4 +154,39 @@ export class DashboardService {
 			);
 	};
 
+	getManagedArea(
+		DateRefInit: string,
+		DateRefEnd: string,
+		IdLocador?: number,
+		IdTipoImovel?: number
+	) {
+		const optionalClause:any = {};
+
+		if(IdLocador) {
+			optionalClause.IdLocador=IdLocador;
+		}
+
+		if(IdTipoImovel) {
+			optionalClause.IdTipoImovel = IdTipoImovel;
+		}
+
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/total-managed-area`, {
+				params: {
+					DateRefInit,
+					DateRefEnd,
+					...optionalClause
+				},
+			})
+			.pipe(
+				map((response) => {
+					console.log('getManagedArea response', response);
+					if (!response.success)
+						console.error(`getManagedArea: ${response.message}`);
+					return response;
+				})
+			);
+
+	};
+
 }

@@ -43,7 +43,7 @@ export class FinancialVacancyComponent implements OnInit {
 		private responsiveService: ResponsiveService,
 		private dashboardService: DashboardService,
 		private clienteService: ClienteService,
-		private commonService: CommonService,
+		private commonService: CommonService
 	) {}
 
 	ngOnInit() {
