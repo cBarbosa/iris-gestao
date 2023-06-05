@@ -65,8 +65,6 @@ export class FinancialVacancyComponent implements OnInit {
 
 		this.isLoading = true;
 
-		console.log(e);
-
 		if ((this.filterPeriodo?.[0], this.filterPeriodo?.[1])) {
 			const startDate = new Date(this.filterPeriodo[0]);
 			startDate.setDate(1);
@@ -136,7 +134,7 @@ export class FinancialVacancyComponent implements OnInit {
 
 	getPhysicalVacancyData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number) {
 		this.dashboardService
-			.getFinancialVacancy(startDateString, endDateString, IdLocador, IdTipoImovel)
+			.getPhysicalVacancy(startDateString, endDateString, IdLocador, IdTipoImovel)
 			.pipe(first())
 			.subscribe({
 				next: (event) => {

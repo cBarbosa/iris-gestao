@@ -22,77 +22,102 @@ export class DashboardService {
 		IdLocador?: number,
 		IdTipoImovel?: number
 	) {
-		const obj:any = {};
+		const optionalClause:any = {};
 
 		if(IdLocador) {
-			obj.IdLocador=IdLocador;
+			optionalClause.IdLocador=IdLocador;
 		}
 
 		if(IdTipoImovel) {
-			obj.IdTipoImovel = IdTipoImovel;
+			optionalClause.IdTipoImovel = IdTipoImovel;
 		}
-
-
 
 		return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/financial-vacancy`, {
 				params: {
 					DateRefInit,
 					DateRefEnd,
-					...obj
+					...optionalClause
 				},
 			})
 			.pipe(
 				map((response) => {
-					console.log('suppliers response', response);
+					console.log('getFinancialVacancy response', response);
 					if (!response.success)
-						console.error(`suppliers: ${response.message}`);
+						console.error(`getFinancialVacancy: ${response.message}`);
 					return response;
 				})
 			);
-	}
+	};
 
-	getSupplierById(uid: string) {
+	getPhysicalVacancy(
+		DateRefInit: string,
+		DateRefEnd: string,
+		IdLocador?: number,
+		IdTipoImovel?: number
+	) {
+
+		const optionalClause:any = {};
+
+		if(IdLocador) {
+			optionalClause.IdLocador=IdLocador;
+		}
+
+		if(IdTipoImovel) {
+			optionalClause.IdTipoImovel = IdTipoImovel;
+		}
+
 		return this.http
-			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/${uid}/guid`)
+			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/financial-vacancy`, {
+				params: {
+					DateRefInit,
+					DateRefEnd,
+					...optionalClause
+				},
+			})
 			.pipe(
 				map((response) => {
-					console.log('supplier response', response);
-					if (response.success) return response.data;
-					else return console.error(`getSupplier: ${response.message}`);
+					console.log('getPhysicalVacancy response', response);
+					if (!response.success)
+						console.error(`getPhysicalVacancy: ${response.message}`);
+					return response;
 				})
 			);
-	}
+	};
 
-	createSupplier(form: any) {
+	getReceivingPerformance(
+		DateRefInit: string,
+		DateRefEnd: string,
+		IdLocador?: number,
+		IdTipoImovel?: number
+	) {
+
+		const optionalClause:any = {};
+
+		if(IdLocador) {
+			optionalClause.IdLocador=IdLocador;
+		}
+
+		if(IdTipoImovel) {
+			optionalClause.IdTipoImovel = IdTipoImovel;
+		}
+
 		return this.http
-			.post<ApiResponse>(
-				`${env.config.apiUrl}Dashboard/Criar`,
-				JSON.stringify(form, null, 2),
-				httpOptions
-			)
+			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/financial-vacancy`, {
+				params: {
+					DateRefInit,
+					DateRefEnd,
+					...optionalClause
+				},
+			})
 			.pipe(
 				map((response) => {
-					console.log('supplier response', response);
-					if (response) return response;
-					else return console.error(`createSupplier: ${response}`);
+					console.log('getPhysicalVacancy response', response);
+					if (!response.success)
+						console.error(`getPhysicalVacancy: ${response.message}`);
+					return response;
 				})
 			);
-	}
+	};
 
-	updateSupplier(uid: string, form: any) {
-		return this.http
-			.put<ApiResponse>(
-				`${env.config.apiUrl}Dashboard/${uid}/atualizar`,
-				JSON.stringify(form, null, 2),
-				httpOptions
-			)
-			.pipe(
-				map((response) => {
-					console.log('client response', response);
-					if (response.success) return response;
-					else return console.error(`getClients: ${response.message}`);
-				})
-			);
-	}
 }

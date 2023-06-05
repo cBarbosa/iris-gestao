@@ -9,6 +9,9 @@ import { CalendarModule } from 'primeng/calendar';
 import { ReceivingPerformanceComponent } from './receiving-performance.component';
 import { ReceivingPerformanceRoutingModule } from './receiving-performance-routing.module';
 import { ChartModule } from 'primeng/chart';
+import { SidebarModule } from 'primeng/sidebar';
+import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
 	declarations: [ReceivingPerformanceComponent],
@@ -21,7 +24,10 @@ import { ChartModule } from 'primeng/chart';
 		NgxMaskModule.forChild(),
 		ButtonModule,
 		CalendarModule,
-		ChartModule
+		ChartModule,
+		SidebarModule,
+		ChartComponent,
+		FormsModule
 	],
 })
 export class ReceivingPerformanceModule { };
