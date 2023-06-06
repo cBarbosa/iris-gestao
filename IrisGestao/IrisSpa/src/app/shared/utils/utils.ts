@@ -1,4 +1,5 @@
 import { AbstractControl } from '@angular/forms';
+import { Chart } from 'chart.js';
 
 export class Utils {
 	static checkHasError(control: AbstractControl<any, any>) {
@@ -160,5 +161,21 @@ export class Utils {
 		const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
 		return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+	}
+
+	static saveChartAsPdf(chart: Chart, filename?: string, title?: string) {
+		import('jspdf').then(({ jsPDF }) => {
+			const doc = new jsPDF('l', 'px', 'a4');
+
+			const base64 = chart.toBase64Image();
+
+			const w = 1122.52 / 2;
+			const h = (chart.height * 1122.52) / 2 / chart.width;
+
+			doc.setFontSize(14);
+			if (title) doc.text(title, 30, 40);
+			doc.addImage(base64, 'JPEG', 30, title ? 80 : 40, w, h);
+			doc.save(`${filename ? filename : 'grafico'}.pdf`);
+		});
 	}
 }

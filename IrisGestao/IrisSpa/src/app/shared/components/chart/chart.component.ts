@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChartModule } from 'primeng/chart';
+import { ChartModule, UIChart } from 'primeng/chart';
+import { Chart } from 'chart.js';
 
 @Component({
 	selector: 'app-chart',
@@ -31,11 +32,31 @@ export class ChartComponent {
 	data: any;
 	options: any;
 
-	configs: any;
+	private configs: any;
+
+	@ViewChild('chart') private chartComponent: UIChart;
+
+	chart: Chart;
 
 	ngOnInit() {
 		this.type = this.dataInput[0]['type'];
 		console.log(this.type);
+
+		const plugin = {
+			id: 'canvasBackgroundColor',
+			beforeDraw: (chart: Chart, args: any, options: any) => {
+				console.log('teste');
+				const { ctx } = chart;
+				ctx.save();
+				ctx.globalCompositeOperation = 'destination-over';
+				ctx.fillStyle = options.color || '#99ffff';
+				ctx.fillRect(0, 0, chart.width, chart.height);
+				ctx.restore();
+			},
+			defaults: {
+				color: 'lightGreen',
+			},
+		};
 
 		this.configs = {
 			doughnut: {
@@ -43,6 +64,7 @@ export class ChartComponent {
 				backgroundColor: ['#641B1E', '#EAEAEA', '#C9D78E'],
 				cutout: '80%',
 				radius: '100%',
+				plugins: [plugin],
 			},
 			line: {
 				type: 'line',
@@ -51,11 +73,13 @@ export class ChartComponent {
 				borderWidth: 2,
 				fill: false,
 				tension: this.tension,
+				plugins: [plugin],
 			},
 			bar: {
 				type: 'bar',
 				label: this.label,
 				borderWidth: 0,
+				plugins: [plugin],
 			},
 			percent: {
 				type: 'doughnut',
@@ -63,6 +87,7 @@ export class ChartComponent {
 				data: [this.dataInput[0]['data'], 100 - +this.dataInput[0]['data']],
 				cutout: '80%',
 				radius: '100%',
+				plugins: [plugin],
 			},
 		};
 
@@ -74,6 +99,9 @@ export class ChartComponent {
 					labels: {
 						color: '#646464',
 					},
+				},
+				canvasBackgroundColor: {
+					color: 'red',
 				},
 			},
 			scales: {
@@ -112,6 +140,9 @@ export class ChartComponent {
 					legend: {
 						display: false,
 					},
+					canvasBackgroundColor: {
+						color: 'red',
+					},
 				},
 				scales: {
 					x: {
@@ -129,6 +160,9 @@ export class ChartComponent {
 				plugins: {
 					legend: {
 						display: false,
+					},
+					canvasBackgroundColor: {
+						color: 'red',
 					},
 				},
 				scales: {
@@ -185,5 +219,11 @@ export class ChartComponent {
 		};
 
 		console.log(this.data);
+	}
+
+	ngAfterViewInit() {
+		if (this.chartComponent) {
+			this.chart = this.chartComponent.chart;
+		}
 	}
 }

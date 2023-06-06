@@ -22,6 +22,7 @@
 		"@angular/platform-browser-dynamic": "^15.0.0",
 		"@angular/router": "^15.0.0",
 		"chart.js": "^4.2.1",
+		"jspdf": "^2.5.1",
 		"latest-version": "^7.0.0",
 		"ngx-currency": "^3.0.0",
 		"ngx-image-cropper": "^6.3.2",

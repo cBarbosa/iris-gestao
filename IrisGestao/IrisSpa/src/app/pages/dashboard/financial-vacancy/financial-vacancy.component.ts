@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
+import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
 import { DropdownItem } from 'src/app/shared/models/types';
 import { ClienteService, CommonService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
@@ -17,7 +18,7 @@ export class FinancialVacancyComponent implements OnInit {
 	data2: any;
 	options: any;
 
-	isLoading: boolean = true;
+	isLoading: boolean = false;
 
 	isMobile: boolean = false;
 	displayMobileFilters: boolean = false;
@@ -38,6 +39,8 @@ export class FinancialVacancyComponent implements OnInit {
 		value: string | null;
 	}[] = [{ label: 'Todos os tipos de imóveis', value: null }];
 
+	@ViewChild('chart') chartComponent: ChartComponent;
+
 	constructor(
 		private router: Router,
 		private responsiveService: ResponsiveService,
@@ -54,6 +57,11 @@ export class FinancialVacancyComponent implements OnInit {
 		});
 
 		this.filter();
+	}
+
+	savePDF() {
+		const chart = this.chartComponent.chart;
+		Utils.saveChartAsPdf(chart, 'vacancia_financeira', 'Vacância Financeira');
 	}
 
 	changeTab(i: number) {
