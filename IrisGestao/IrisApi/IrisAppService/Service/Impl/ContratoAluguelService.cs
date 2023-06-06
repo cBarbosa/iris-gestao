@@ -221,24 +221,25 @@ public class ContratoAluguelService: IContratoAluguelService
         DateTime DateRefEnd,
         int? IdLocador, int? IdTipoImovel)
     {
-        var rnd = new Random();
-        var result = new object[]
-        {
-            new { referencia = "Janeiro", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
-            new { referencia = "Fevereiro", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
-            new { referencia = "Março", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
-            new { referencia = "Abril", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
-            new { referencia = "Maio", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
-            new { referencia = "Junho", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
-            new { referencia = "Julho", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
-            new { referencia = "Agosto", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
-            new { referencia = "Setembro", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
-            new { referencia = "Outubro", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
-            new { referencia = "Novembro", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) },
-            new { referencia = "Dezembro", contratada = rnd.Next(1, 50), potencial = rnd.Next(50, 100), financeira = rnd.Next(40, 80) }
-        };
+        
+        var retorno = await contratoAluguelRepository.GetDashbaordFinancialVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel);
 
-        return await Task.FromResult(new CommandResult(true, SuccessResponseEnums.Success_1005, result));
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+    
+    public async Task<CommandResult> GetDashbaordPhysicalVacancy(
+        DateTime DateRefInit,
+        DateTime DateRefEnd,
+        int? IdLocador, int? IdTipoImovel)
+    {
+        
+        var retorno = await contratoAluguelRepository.GetDashbaordPhysicalVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel);
+
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
     public async Task<CommandResult> GetDashboardTotalManagedArea(
@@ -246,22 +247,17 @@ public class ContratoAluguelService: IContratoAluguelService
         DateTime DateRefEnd,
         int? IdLocador, int? IdTipoImovel)
     {
-        var rnd = new Random();
-        var result = new object[]
-        {
-            new { title = "Coorporativo CNC", percent = Math.Round(rnd.NextDouble() * (30.0 - 10.0) + 30.0, 2), color = $"#{rnd.Next(0x1000000):X6}"},
-            new { title = "Coorporativo Stylos", percent = Math.Round(rnd.NextDouble() * (20.0 - 10.0) + 20.0, 2), color = $"#{rnd.Next(0x1000000):X6}"},
-            new { title = "Varejo CNC", percent = Math.Round(rnd.NextDouble() * (30.0 - 10.0) + 30.0, 2), color = $"#{rnd.Next(0x1000000):X6}"},
-            new { title = "Varejo CNC 2", percent = Math.Round(rnd.NextDouble() * (20.0 - 10.0) + 20.0, 2), color = $"#{rnd.Next(0x1000000):X6}"}
-        };
-
-        return await Task.FromResult(new CommandResult(true, SuccessResponseEnums.Success_1005, result));
+        var retorno = await contratoAluguelRepository.GetDashboardTotalManagedArea(IdLocador, IdTipoImovel);
+    
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
     private async Task CriaContratoAluguelImovel(int idContratoAluguel, List<ContratoAluguelImovelCommand> lstContratoImovel)
     {
         foreach (ContratoAluguelImovelCommand contratoImovel in lstContratoImovel)
-        { 
+        {
             var contratoAluguelImovel = new ContratoAluguelImovel();
             contratoAluguelImovel.IdContratoAluguel = idContratoAluguel;
 

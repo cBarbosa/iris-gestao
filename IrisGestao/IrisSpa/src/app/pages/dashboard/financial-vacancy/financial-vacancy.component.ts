@@ -197,13 +197,13 @@ export class FinancialVacancyComponent implements OnInit {
 				},
 				{
 					type: 'bar',
-					label: 'Receita contratada',
+					label: 'Área contratada',
 					backgroundColor: `#C9D78E`,
 					data: [],
 				},
 				{
 					type: 'bar',
-					label: 'Receita potencial',
+					label: 'Área potencial',
 					backgroundColor: `#641B1E`,
 					data: [],
 				},

@@ -31,7 +31,7 @@ public class DashboardController : ControllerBase
         [FromQuery] DateTime? DateRefEnd,
         [FromQuery] int? IdLocador,
         [FromQuery] int? IdTipoImovel) =>
-        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel));
+        Ok(await contratoAluguelService.GetDashbaordPhysicalVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel));
     
     [HttpGet("receiving-performance")]
     public async Task<IActionResult> GetReceivingPerformance(
