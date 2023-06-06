@@ -107,11 +107,14 @@ const routes: Routes = [
 			},
 			{
 				path: 'dashboard',
-				loadChildren: () => import('./pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
+				loadChildren: () =>
+					import('./pages/dashboard/dashboard.module').then(
+						(m) => m.DashboardModule
+					),
 				canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-				}
+				},
 			},
 			{
 				path: '',

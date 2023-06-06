@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
+import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
 import { DropdownItem } from 'src/app/shared/models/types';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
@@ -15,7 +16,7 @@ export class FinancialVacancyComponent implements OnInit {
 	data: any;
 	options: any;
 
-	isLoading: boolean = true;
+	isLoading: boolean = false;
 
 	isMobile: boolean = false;
 	displayMobileFilters: boolean = false;
@@ -39,6 +40,8 @@ export class FinancialVacancyComponent implements OnInit {
 			value: null,
 		},
 	];
+
+	@ViewChild('chart') chartComponent: ChartComponent;
 
 	constructor(
 		private router: Router,
@@ -79,6 +82,11 @@ export class FinancialVacancyComponent implements OnInit {
 		};
 
 		this.filter();
+	}
+
+	savePDF() {
+		const chart = this.chartComponent.chart;
+		Utils.saveChartAsPdf(chart, 'vacancia_financeira', 'Vacância Financeira');
 	}
 
 	changeTab(i: number) {
