@@ -5,6 +5,7 @@ using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -79,27 +80,17 @@ public class ContratoAluguelService: IContratoAluguelService
     public async Task<CommandResult> Insert(CriarContratoAluguelCommand cmd)
     {
         var contratoAluguel = new ContratoAluguel();
-        if (cmd.GuidCliente.Equals(Guid.Empty))
+        var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidCliente);
+
+        String validacao = validarDados(cmd);
+
+        if (!String.IsNullOrEmpty(validacao))
         {
-            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+            return new CommandResult(false, validacao, null!);
         }
 
-        var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidCliente);
-        if (cliente == null)
-        {
-            return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
-        }
         BindContratoAluguelData(cmd, contratoAluguel);
         contratoAluguel.IdCliente = cliente.Id;
-
-        if(contratoAluguel?.DataOcupacao.Value > contratoAluguel?.DataFimContrato)
-        {
-            return new CommandResult(false, "A data de ocupação do imóvel não pode ser maior que a data fim do contrato", null!);
-        }
-        if (contratoAluguel.PeriodicidadeReajuste > contratoAluguel.PrazoTotalContrato)
-        {
-            return new CommandResult(false, "A periodicidade de reajuste não pode ser maior que o prazo total do contrato", null!);
-        }
 
         try
         {
@@ -124,11 +115,13 @@ public class ContratoAluguelService: IContratoAluguelService
     public async Task<CommandResult> Update(Guid uuid, CriarContratoAluguelCommand cmd)
     {
         var contratoAluguel = new ContratoAluguel();
-        if (cmd == null || uuid.Equals(Guid.Empty))
-        {
-            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
-        }
+        
+        String validacao = validarDados(cmd);
 
+        if (!String.IsNullOrEmpty(validacao))
+        {
+            return new CommandResult(false, validacao, null!);
+        }
         contratoAluguel = await contratoAluguelRepository.GetByGuid(uuid);
         if (contratoAluguel == null)
         {
@@ -143,15 +136,6 @@ public class ContratoAluguelService: IContratoAluguelService
 
         BindContratoAluguelData(cmd, contratoAluguel);
         contratoAluguel.IdCliente = cliente.Id;
-
-        if (contratoAluguel?.DataOcupacao.Value > contratoAluguel?.DataFimContrato)
-        {
-            return new CommandResult(false, "A data de ocupação do imóvel não pode ser maior que a data fim do contrato", null!);
-        }
-        if (contratoAluguel.PeriodicidadeReajuste > contratoAluguel.PrazoTotalContrato)
-        {
-            return new CommandResult(false, "A periodicidade de reajuste não pode ser maior que o prazo total do contrato", null!);
-        }
 
         try
         {
@@ -231,11 +215,49 @@ public class ContratoAluguelService: IContratoAluguelService
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
     }
+    
+    public async Task<CommandResult> GetDashbaordFinancialVacancy(
+        DateTime DateRefInit,
+        DateTime DateRefEnd,
+        int? IdLocador, int? IdTipoImovel)
+    {
+        
+        var retorno = await contratoAluguelRepository.GetDashbaordFinancialVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel);
+
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+    
+    public async Task<CommandResult> GetDashbaordPhysicalVacancy(
+        DateTime DateRefInit,
+        DateTime DateRefEnd,
+        int? IdLocador, int? IdTipoImovel)
+    {
+        
+        var retorno = await contratoAluguelRepository.GetDashbaordPhysicalVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel);
+
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+
+    public async Task<CommandResult> GetDashboardTotalManagedArea(
+        DateTime DateRefInit,
+        DateTime DateRefEnd,
+        int? IdLocador, int? IdTipoImovel)
+    {
+        var retorno = await contratoAluguelRepository.GetDashboardTotalManagedArea(IdLocador, IdTipoImovel);
+    
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
 
     private async Task CriaContratoAluguelImovel(int idContratoAluguel, List<ContratoAluguelImovelCommand> lstContratoImovel)
     {
         foreach (ContratoAluguelImovelCommand contratoImovel in lstContratoImovel)
-        { 
+        {
             var contratoAluguelImovel = new ContratoAluguelImovel();
             contratoAluguelImovel.IdContratoAluguel = idContratoAluguel;
 
@@ -315,7 +337,7 @@ public class ContratoAluguelService: IContratoAluguelService
         ContratoAluguel.PrazoTotalContrato              = cmd.PrazoTotalContrato;
         ContratoAluguel.DataFimContrato                 = cmd.DataInicioContrato.AddMonths(cmd.PrazoTotalContrato);
         ContratoAluguel.DataOcupacao                    = cmd.DataOcupacao;
-        ContratoAluguel.DiaVencimentoAluguel            = cmd.DiaVencimentoAluguel;
+        ContratoAluguel.DiaVencimentoAluguel            = cmd.DataVencimentoPrimeraParcela.Value.Day;
         ContratoAluguel.PeriodicidadeReajuste           = cmd.PeriodicidadeReajuste;
         ContratoAluguel.DataVencimentoPrimeraParcela    = cmd.DataVencimentoPrimeraParcela;
         ContratoAluguel.Status                          = true;
@@ -337,6 +359,23 @@ public class ContratoAluguelService: IContratoAluguelService
         ContratoAluguel.PercentualRetencaoImpostos  = novoPercentualReajuste;
         ContratoAluguel.ValorAluguelLiquido         = valorLiquido;
         ContratoAluguel.DataFimContrato             = ContratoAluguel.DataFimContrato >= dataVencimento ? ContratoAluguel.DataFimContrato : dataVencimento;
+    }
+
+    protected String validarDados(CriarContratoAluguelCommand cmd) 
+    { 
+        var contratoAluguel = new ContratoAluguel(); 
+        string msgRetorno = string.Empty;
+
+        if (cmd?.DataOcupacao.Value > cmd?.DataInicioContrato.AddMonths(cmd.PrazoTotalContrato))
+            msgRetorno += "A data de ocupação do imóvel não pode ser maior que a data fim do contrato";
+
+        if (cmd?.DataOcupacao.Value < cmd?.DataInicioContrato)
+            msgRetorno += "A data de ocupação do imóvel não pode ser menor que a data de início do contrato";
+
+        if (cmd?.PeriodicidadeReajuste > cmd?.PrazoTotalContrato)
+            msgRetorno += "A periodicidade de reajuste não pode ser maior que o prazo total do contrato";
+
+        return msgRetorno;
     }
 
     private static double calculaValorLiquido(double valorAluguel, double? percentualDesconto, double percentualImpostos)

@@ -5,7 +5,6 @@ using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Security.Cryptography.X509Certificates;
 
 namespace IrisGestao.Infraestructure.Repository.Impl;
 
@@ -302,7 +301,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,
                                 PorcentagemTaxaAdministracao = x.PorcentagemTaxaAdministracao
                             }),
-                        }).OrderByDescending(x=> x.DataCriacao).ToListAsync();
+                        }).OrderBy(x=> x.DataFimContrato).ToListAsync();
 
             var totalCount = contratos.Count();
 
@@ -314,6 +313,140 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         catch (Exception ex)
         {
             Logger.LogError(ex.Message);
+        }
+
+        return null!;
+    }
+
+    public async Task<object> GetDashboardTotalManagedArea(int? idLocador, int? idTipoImovel)
+    {
+        try
+        {
+            return await Db.Unidade
+                .Include(u => u.IdImovelNavigation)
+                    .ThenInclude(i => i.IdClienteProprietarioNavigation)
+                .Where(u => (!idLocador.HasValue || idLocador.HasValue && u.IdImovelNavigation.IdClienteProprietario == idLocador)
+                             && (!idTipoImovel.HasValue || idTipoImovel.HasValue && u.IdTipoUnidade == idTipoImovel)
+                            )
+                .GroupBy(
+                    u => u.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
+                    (key, group) => new {
+                        Percent = Math.Round((decimal)group.Count() * 100 / Db.Unidade
+                            .Count(x => !idTipoImovel.HasValue || idTipoImovel.HasValue && x.IdTipoUnidade == idTipoImovel), 2),
+                        Title = key,
+                        Color = $"#{new Random().Next(0x1000000):X6}"
+                    })
+                .OrderByDescending(r => r.Percent)
+                .Select(r => new {
+                    r.Percent,
+                    r.Title,
+                    r.Color
+                })
+                .ToListAsync();
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, e.Message);
+        }
+        return null!;
+    }
+    
+    public async Task<object> GetDashbaordFinancialVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    {
+        var Meses = Enumerable.Range(0, int.MaxValue)
+            .Select(dateRefInit.AddMonths)
+            .TakeWhile(date => date <= dateRefEnd)
+            .Select(date => new { DataMes = date });
+
+        try
+        {
+            var query = Meses
+                .SelectMany(mes => Db.ContratoAluguel
+                    .Where(contrato => mes.DataMes >= contrato.DataInicioContrato && mes.DataMes <= contrato.DataFimContrato && contrato.Status
+                        && (!idLocador.HasValue || idLocador.HasValue && contrato.IdCliente == idLocador)
+                        // && (!idTipoImovel.HasValue || idTipoImovel.HasValue && contrato != null && contrato.ContratoAluguelImovel.Where(x => x.ContratoAluguelUnidade.Where(z => z.IdUnidadeNavigation != null && z.IdUnidadeNavigation != null && z.IdUnidadeNavigation.IdTipoUnidade == idTipoImovel) != null ) != null )
+                    )
+                    .Include(contrato => contrato.IdClienteNavigation)
+                    .Include(contrato => contrato.ContratoAluguelImovel)
+                        .ThenInclude(x => x.ContratoAluguelUnidade)
+                            .ThenInclude(x => x.IdUnidadeNavigation)
+                    .Include(x => x.ContratoAluguelImovel)
+                        .ThenInclude(x => x.IdImovelNavigation)
+                            .ThenInclude(x => x.IdClienteProprietarioNavigation)
+                    .DefaultIfEmpty()
+                    .Select(x => new {Mes = mes, Contrato = x})
+                )
+                .GroupBy(x => new
+                {
+                    Referencia = x.Mes.DataMes.Month.ToString("00") + "-" + x.Mes.DataMes.Year.ToString("0000")
+                })
+                .OrderBy(groupedData => groupedData.Key.Referencia)
+                .Select(groupedData => new
+                {
+                    groupedData.Key.Referencia,
+                    Potencial = groupedData.Sum(x => x.Contrato != null ? x.Contrato.ValorAluguel : 0.0),
+                    Contratada = groupedData.Where(x => x.Contrato != null && x.Contrato.Status)?.Sum(x => x.Contrato != null ? x.Contrato.ValorAluguel : 0.0),
+                    Financeira = groupedData.Where(x => x.Contrato != null && x.Contrato.Status)?.Sum(x => x.Contrato != null ? x.Contrato.ValorAluguel : 0.0) / groupedData.Sum(x => x.Contrato != null ? x.Contrato.ValorAluguel : 1.0)
+                })
+                .ToList();
+
+            return await Task.FromResult(query);
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, e.Message);
+        }
+
+        return null!;
+    }
+    
+    public async Task<object> GetDashbaordPhysicalVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    {
+        var Meses = Enumerable.Range(0, int.MaxValue)
+            .Select(dateRefInit.AddMonths)
+            .TakeWhile(date => date <= dateRefEnd)
+            .Select(date => new { DataMes = date });
+
+        try
+        {
+            var query = Meses
+                .SelectMany(mes => Db.ContratoAluguel
+                    .Where(contrato => mes.DataMes >= contrato.DataInicioContrato && mes.DataMes <= contrato.DataFimContrato && contrato.Status
+                        && (!idLocador.HasValue || idLocador.HasValue && contrato.IdCliente == idLocador)
+                        // && (!idTipoImovel.HasValue || idTipoImovel.HasValue && contrato.ContratoAluguelImovel.Where(x => x.ContratoAluguelUnidade.Where(z => z.IdUnidadeNavigation.IdTipoUnidade == idTipoImovel)))
+                    )
+                    .Include(contrato => contrato.IdClienteNavigation)
+                    .Include(contrato => contrato.ContratoAluguelImovel)
+                        .ThenInclude(x => x.ContratoAluguelUnidade)
+                            .ThenInclude(x => x.IdUnidadeNavigation)
+                    .Include(x => x.ContratoAluguelImovel)
+                        .ThenInclude(x => x.IdImovelNavigation)
+                            .ThenInclude(x => x.IdClienteProprietarioNavigation)
+                    .DefaultIfEmpty()
+                    .Select(x => new {Mes = mes, Contrato = x})
+                )
+                .GroupBy(x => new
+                {
+                    Referencia = x.Mes.DataMes.Month.ToString("00") + "-" + x.Mes.DataMes.Year.ToString("0000")
+                })
+                .OrderBy(groupedData => groupedData.Key.Referencia)
+                .Select(groupedData => new
+                {
+                    groupedData.Key.Referencia,
+                    Potencial = groupedData.Sum(x =>  x.Contrato?.ContratoAluguelImovel?.Sum(y => y.ContratoAluguelUnidade?.Sum(z => z.IdUnidadeNavigation?.AreaUtil))),
+                    Contratada = groupedData.Where(x => x.Contrato != null && x.Contrato.Status)?.Sum(x =>  x.Contrato?.ContratoAluguelImovel?.Sum(y => y.ContratoAluguelUnidade?.Sum(z => z.IdUnidadeNavigation?.AreaUtil))),
+                    Financeira = groupedData.Where(x => x.Contrato != null && x.Contrato.Status)?.Sum(x =>  x.Contrato?.ContratoAluguelImovel?.Sum(y => y.ContratoAluguelUnidade?.Sum(z => z.IdUnidadeNavigation?.AreaUtil)))
+                        / (groupedData.Sum(x =>  x.Contrato?.ContratoAluguelImovel?.Sum(y => y.ContratoAluguelUnidade?.Sum(z => z.IdUnidadeNavigation?.AreaUtil))) > 0
+                                 ? groupedData.Sum(x =>  x.Contrato?.ContratoAluguelImovel?.Sum(y => y.ContratoAluguelUnidade?.Sum(z => z.IdUnidadeNavigation?.AreaUtil)))
+                                 : 1.0m)
+                })
+                .ToList();
+
+            return await Task.FromResult(query);
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, e.Message);
         }
 
         return null!;

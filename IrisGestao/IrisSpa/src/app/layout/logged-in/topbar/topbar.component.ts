@@ -78,21 +78,21 @@ export class TopbarComponent {
 				id: route.startsWith('/supplier/') ? 'current' : '',
 				command: () => this.navigateTo('supplier/listing'),
 			},
-			//{
-			//	label: 'Financeiro',
-			//	items: [
-			//		{
-			//			label: 'Receitas',
-			//			id: route.startsWith('/revenue/') ? 'current' : '',
-			//			command: () => this.navigateTo('revenue/listing'),
-			//		},
-			//		{
-			//			label: 'Despesas',
-			//			id: route.startsWith('/expense/') ? 'current' : '',
-			//			command: () => this.navigateTo('expense/listing'),
-			//		},
-			//	],
-			//},
+			{
+				label: 'Financeiro',
+				items: [
+					{
+						label: 'Receitas',
+						id: route.startsWith('/revenue/') ? 'current' : '',
+						command: () => this.navigateTo('revenue/listing'),
+					},
+					{
+						label: 'Despesas',
+						id: route.startsWith('/expense/') ? 'current' : '',
+						command: () => this.navigateTo('expense/listing'),
+					},
+				],
+			},
 			// {
 			// 	label: 'Prestador de serviços',
 			// },
@@ -124,6 +124,31 @@ export class TopbarComponent {
 			// 		},
 			// 	],
 			// },
+			{
+				label: 'Análises',
+				items: [
+					{
+						label: 'Vacância',
+						id: route.startsWith('/dashboard') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/financial-vacancy')
+					},
+					{
+						label: 'Recebimento',
+						id: route.startsWith('/dashboard') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/receiving-performance')
+					},
+					{
+						label: 'Preço M²',
+						id: route.startsWith('/dashboard') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/area-price')
+					},
+					{
+						label: 'M² Gerenciados',
+						id: route.startsWith('/dashboard') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/managed-area')
+					}
+				]
+			}
 		];
 	}
 

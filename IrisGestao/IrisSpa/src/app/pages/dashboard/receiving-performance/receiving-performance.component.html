@@ -1,1 +1,85 @@
-Receiving Performance
+<div class="header-background"></div>
+<div class="content-wrapper">
+	<div class="content">
+		<header class="content-header">
+			<div class="title" [class.mobile]="isMobile">
+				<h3 class="text-2xl font-bold">Performance de Recebimento</h3>
+				
+				<div class="text-right" *ngIf="isMobile">
+					<button
+						pButton
+						pRipple
+						type="button"
+						icon="pi pi-sliders-h"
+						class="p-button-rounded p-button-text"
+						(click)="openFilters()"
+					></button>
+				</div>
+			</div>
+
+			<div class="options">
+				<ng-container *ngIf="!isMobile">
+					<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+				</ng-container>
+
+				<button
+					pButton
+					type="button"
+					class="p-button-outlined h-9 addButton"
+					(click)="navigateTo('dashboard/receiving-performance')"
+				>
+					Salvar como PDF
+				</button>
+			</div>
+		</header>
+
+		<ng-template #filtersTemplate>
+			<p-dropdown
+				[styleClass]="'mr-2 w-full md:w-44'"
+				placeholder="Locador"
+				[options]="proprietaryOptions"
+				aria-describedby="locador-help"
+				[(ngModel)]="filterLocador"
+				(ngModelChange)="filterClientDebounce($event)"
+			></p-dropdown>
+
+			<p-dropdown
+				[styleClass]="'mr-2 w-full md:w-44'"
+				placeholder="Tipo de imóvel"
+				[options]="categoryOptions"
+				aria-describedby="tipo-imovel-help"
+				[(ngModel)]="filterTipo"
+				(ngModelChange)="filterClientDebounce($event)"
+			></p-dropdown>
+
+			<p-calendar
+				[styleClass]="'mr-2 w-full md:w-44'"
+				placeholder="Período"
+				aria-describedby="periodo-help"
+				[(ngModel)]="filterPeriodo"
+				view="month"
+				selectionMode="range"
+				dateFormat="mm/yy"
+				(ngModelChange)="filterClientDebounce($event)"
+			></p-calendar>
+		</ng-template>
+
+		<ng-container *ngIf="isLoading">
+			<app-spinner styleClass="mt-11"></app-spinner>
+		</ng-container>
+
+		<div class="p-12 bg-white" *ngIf="!isLoading">
+			
+            <h2 class="pb-4 text-lg font-bold">Performance de Recebimento</h2>
+            <app-chart [data]="data.datasets" [labels]="data.labels"></app-chart>
+			
+		</div>
+	</div>
+</div>
+
+<p-sidebar [(visible)]="displayMobileFilters" position="bottom">
+	<ng-template pTemplate="header">Filtros</ng-template>
+	<ng-template pTemplate="content">
+		<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+	</ng-template>
+</p-sidebar>

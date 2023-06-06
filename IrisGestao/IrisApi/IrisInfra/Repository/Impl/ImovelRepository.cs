@@ -1,3 +1,4 @@
+using Azure;
 using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
@@ -5,6 +6,8 @@ using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace IrisGestao.Infraestructure.Repository.Impl;
 
@@ -24,6 +27,38 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                 .Include(x => x.IdCategoriaImovelNavigation)
             .Where(x => x.Id == id)
             .ToListAsync();
+    }
+
+    public async Task<IEnumerable<object>?> GetImoveisContrato()
+    {
+        try
+        {
+            var imoveis = await DbSet
+                        .Include(x => x.Unidade)
+                        .Include(z => z.ContratoAluguelImovel)
+                            .ThenInclude(y => y.ContratoAluguelUnidade)
+                        .Where(x => x.Status
+                        ).Select(x => new
+                        {
+                            GuidReferencia = x.GuidReferencia,
+                            Nome = x.Nome,
+                            Status = x.Status,
+                            Unidade = x.Unidade.Select(y => new
+                            {
+                                GuidReferencia = y.GuidReferencia,
+                                IdImovel = y.IdImovel,
+                                Tipo = y.Tipo,
+                                Status = x.Status
+                            }
+                            ).Where(y => y.Status)
+                        }).ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex.Message);
+        }
+
+        return null!;
     }
 
     public async Task<CommandPagingResult?> GetAllPaging(int? idCategoria, int? idProprietario, string? nome, int limit, int page)
@@ -86,9 +121,6 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                             AreaUtil = x.Unidade.Where(x=> x.Status).Sum(x => x.AreaUtil),
                             AreaHabitese = x.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
                             NroUnidades = x.Unidade.Where(x => x.Status).Count(),
-                            ImgCapa = "../../../../assets/images/imovel.png",
-                            Imagens = ImagemListFake,
-                            Anexos = AnexoListFake,
                             IdCategoriaImovelNavigation = x.IdCategoriaImovelNavigation == null ? null : new 
                             {
                                 Id = x.IdCategoriaImovelNavigation.Id,
@@ -177,9 +209,6 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                             AreaUtil = x.Unidade.Where(x => x.Status).Sum(x => x.AreaUtil),
                             AreaHabitese = x.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
                             NroUnidades = x.Unidade.Where(x => x.Status).Count(),
-                            ImgCapa = ImagemCapaFake,
-                            Imagens = ImagemListFake,
-                            Anexos = AnexoListFake,
                             IdCategoriaImovelNavigation = x.IdCategoriaImovelNavigation == null ? null : new 
                             {
                                 Id = x.IdCategoriaImovelNavigation.Id,
@@ -215,70 +244,4 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
         return await DbSet
             .FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
     }
-
-    public static string ImagemCapaFake => "../../../../assets/images/imovel.png";
-
-    public static List<object> ImagemListFake => new List<object>
-    {
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/1.jpg",
-            Url = ".../../../assets/images/property/1.jpg"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/2.png",
-            Url = ".../../../assets/images/property/2.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/3.png",
-            Url = ".../../../assets/images/property/3.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/4.png",
-            Url = ".../../../assets/images/property/4.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/5.png",
-            Url = ".../../../assets/images/property/5.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/2.png",
-            Url = ".../../../assets/images/property/2.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/4.png",
-            Url = ".../../../assets/images/property/4.png"
-        }
-    };
-    
-    public static List<object> AnexoListFake => new List<object>
-    {
-        new
-        {
-            Nome = "Projeto",
-            Tipo = 1,
-            FileName = "Projeto.pdf",
-            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
-        },
-        new
-        {
-            Nome = "Matricula",
-            FileName = "Matricula.pdf",
-            Tipo = 2,
-            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
-        },
-        new
-        {
-            Nome = "Habite-se",
-            FileName = "habite-se.pdf",
-            Tipo = 3,
-            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
-        }
-    };
 }
