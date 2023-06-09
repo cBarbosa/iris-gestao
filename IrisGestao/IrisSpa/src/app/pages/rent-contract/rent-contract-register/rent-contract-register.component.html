@@ -462,27 +462,27 @@
 				</div>
 
 				<div class="field">
-					<label for="descontoPrazo" class="block">Prazo de desconto</label>
+					<label for="prazoDesconto" class="block">Prazo de desconto</label>
 					<input
-						id="descontoPrazo"
+						id="prazoDesconto"
 						type="text"
-						formControlName="descontoPrazo"
-						aria-describedby="descontoPrazo-help"
+						formControlName="prazoDesconto"
+						aria-describedby="prazoDesconto-help"
 						mask="0*"
 						suffix=" Meses"
 						maxlength="9"
 						pInputText
 					/>
-					<ng-container *ngIf="checkHasError(f['descontoPrazo'])">
+					<ng-container *ngIf="checkHasError(f['prazoDesconto'])">
 						<small
-							id="descontoPrazo-help"
-							*ngIf="f['descontoPrazo'].hasError('required'); else error2"
+							id="prazoDesconto-help"
+							*ngIf="f['prazoDesconto'].hasError('required'); else error2"
 							class="p-error block"
 						>
 							Informe o prazo de desconto
 						</small>
 						<ng-template #error2>
-							<small id="descontoPrazo-help" class="p-error block">
+							<small id="prazoDesconto-help" class="p-error block">
 								Prazo de desconto inválido
 							</small>
 						</ng-template>

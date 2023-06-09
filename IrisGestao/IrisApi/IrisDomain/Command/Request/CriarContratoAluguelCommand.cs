@@ -18,6 +18,8 @@ namespace IrisGestao.Domain.Command.Request
         public double PercentualRetencaoImpostos { get; set; }
         public double ValorAluguelLiquido { get; set; }
         public double? PercentualDescontoAluguel { get; set; }
+
+        public int? PrazoDesconto { get; set; }
         public bool CarenciaAluguel { get; set; }
         public int? PrazoCarencia { get; set; }
         public DateTime DataInicioContrato { get; set; }

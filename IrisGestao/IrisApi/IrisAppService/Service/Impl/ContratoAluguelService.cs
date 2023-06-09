@@ -304,11 +304,28 @@ public class ContratoAluguelService: IContratoAluguelService
         var list3 = lstImoveisVinculados.Except(lstContratoAluguelImovel).ToList();
         var list4 = lstContratoAluguelImovel.Except(lstImoveisVinculados).ToList();
     }
+    
     private static void BindContratoAluguelData(CriarContratoAluguelCommand cmd, ContratoAluguel ContratoAluguel)
     {
-        double valorLiquido;
+        double valorTotal = 0, valorLiquido, valorComImpostos, somaDescontos = 0, somaImpostos =0;
+        int tempoCarencia = 0, tempoDesconto = 0;
 
         valorLiquido = calculaValorLiquido(cmd.ValorAluguel, cmd.PercentualDescontoAluguel, cmd.PercentualRetencaoImpostos);
+        valorComImpostos = calculaValorImpostos(cmd.ValorAluguel, cmd.PercentualRetencaoImpostos);
+
+        if(cmd.CarenciaAluguel)
+        {
+            tempoCarencia = cmd.PrazoCarencia.HasValue ? cmd.PrazoCarencia.Value : tempoCarencia;
+        }
+
+        if (cmd.PrazoDesconto.HasValue)
+        {
+            tempoDesconto = cmd.PrazoDesconto.Value;
+            somaDescontos = valorLiquido * tempoDesconto;
+        }
+
+        somaImpostos = (valorComImpostos * (cmd.PrazoTotalContrato - (tempoCarencia + tempoDesconto)));
+        valorTotal += somaDescontos + somaImpostos;
 
         switch (ContratoAluguel.GuidReferencia)
         {
@@ -328,9 +345,12 @@ public class ContratoAluguelService: IContratoAluguelService
         ContratoAluguel.IdTipoContrato                  = cmd.IdTipoContrato;
         ContratoAluguel.NumeroContrato                  = cmd.NumeroContrato;
         ContratoAluguel.ValorAluguel                    = cmd.ValorAluguel;
+        ContratoAluguel.ValorAluguelLiquido             = valorTotal;
+        ContratoAluguel.ValorComDesconto                = valorLiquido;
+        ContratoAluguel.ValorComImpostos                = valorComImpostos;
         ContratoAluguel.PercentualRetencaoImpostos      = cmd.PercentualRetencaoImpostos;
-        ContratoAluguel.ValorAluguelLiquido             = valorLiquido;
         ContratoAluguel.PercentualDescontoAluguel       = cmd.PercentualDescontoAluguel;
+        ContratoAluguel.PrazoDesconto                   = cmd.PrazoDesconto; 
         ContratoAluguel.CarenciaAluguel                 = cmd.CarenciaAluguel;
         ContratoAluguel.PrazoCarencia                   = cmd.PrazoCarencia;
         ContratoAluguel.DataInicioContrato              = cmd.DataInicioContrato;
@@ -375,6 +395,9 @@ public class ContratoAluguelService: IContratoAluguelService
         if (cmd?.PeriodicidadeReajuste > cmd?.PrazoTotalContrato)
             msgRetorno += "A periodicidade de reajuste não pode ser maior que o prazo total do contrato";
 
+        if (cmd?.DataVencimentoPrimeraParcela.Value < cmd?.DataInicioContrato)
+            msgRetorno += "A data de vencimento da primeira parcela não pode ser menor que a data de início do contrato";
+
         return msgRetorno;
     }
 
@@ -382,7 +405,6 @@ public class ContratoAluguelService: IContratoAluguelService
     {
         double valorComDesconto = valorAluguel;
         double valorImpostos;
-        double valorComImpostos;
         double valorDescontos = 0;
 
         if (percentualDesconto.HasValue)
@@ -394,6 +416,15 @@ public class ContratoAluguelService: IContratoAluguelService
         valorImpostos = calcularPorcentagem(valorComDesconto, percentualImpostos);
 
         return valorComDesconto - valorImpostos;
+    }
+
+    private static double calculaValorImpostos(double valorAluguel, double percentualImpostos)
+    {
+        double valorImpostos;
+
+        valorImpostos = calcularPorcentagem(valorAluguel, percentualImpostos);
+
+        return valorAluguel - valorImpostos;
     }
 
     private static double calcularPorcentagem(double valor, double percentual)

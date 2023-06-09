@@ -48,7 +48,7 @@ public class ImovelService: IImovelService
     public async Task<CommandResult> Insert(CriarImovelCommand cmd)
     {
         var imovel = new Imovel();
-        var endereco = new ImovelEndereco();
+        ImovelEndereco endereco = new ImovelEndereco();
         cmd.GuidReferencia = null;
         
         try

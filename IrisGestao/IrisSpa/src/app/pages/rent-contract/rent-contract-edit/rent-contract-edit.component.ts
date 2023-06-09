@@ -350,6 +350,7 @@ export class RentContractEditComponent {
 				netValue: number;
 				taxRetention: string;
 				discount: string;
+				prazoDesconto: number;
 				readjust: number;
 				rentGrace: boolean;
 				gracePeriod: string;
@@ -368,6 +369,7 @@ export class RentContractEditComponent {
 			valorAluguel: formData.valueInfo.netValue,
 			percentualRetencaoImpostos: +formData.valueInfo.taxRetention,
 			percentualDescontoAluguel: +formData.valueInfo.discount,
+			prazoDesconto: +formData.valueInfo.prazoDesconto,
 			carenciaAluguel: formData.valueInfo.rentGrace,
 			prazoCarencia: +formData.valueInfo.gracePeriod,
 			dataInicioContrato: formData.contractInfo.startDate,

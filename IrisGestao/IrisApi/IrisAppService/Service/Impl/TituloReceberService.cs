@@ -4,7 +4,9 @@ using IrisGestao.Domain.Command.Request;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
+using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using Microsoft.Extensions.Logging;
+using System.Security.Cryptography;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -286,6 +288,10 @@ public class TituloReceberService: ITituloReceberService
     private static void BindTituloReceberByContratoAluguelData(ContratoAluguel contratoAluguel, TituloReceber tituloReceber, List<FaturaTitulo> lstFaturaTitulo)
     {
         int prazo = contratoAluguel.PrazoTotalContrato > 12 ? 12 : contratoAluguel.PrazoTotalContrato;
+        int prazoFaturas = contratoAluguel.PrazoCarencia.HasValue ?
+               (prazo - contratoAluguel.PrazoCarencia.Value) :
+               prazo;
+
         switch (tituloReceber.GuidReferencia)
         {
             case null:
@@ -309,8 +315,8 @@ public class TituloReceberService: ITituloReceberService
         tituloReceber.IdCliente = contratoAluguel?.IdCliente;
         tituloReceber.IdIndiceReajuste = contratoAluguel?.IdIndiceReajuste;
         tituloReceber.IdTipoCreditoAluguel = contratoAluguel?.IdTipoCreditoAluguel;
-        tituloReceber.ValorTitulo = contratoAluguel.ValorAluguelLiquido;
-        tituloReceber.ValorTotalTitulo = contratoAluguel.ValorAluguelLiquido * prazo;
+        tituloReceber.ValorTitulo = contratoAluguel.ValorAluguel;
+        tituloReceber.ValorTotalTitulo = contratoAluguel.ValorAluguelLiquido;
         tituloReceber.Parcelas = prazo;
         tituloReceber.DataVencimentoPrimeraParcela = contratoAluguel.DataVencimentoPrimeraParcela;
         tituloReceber.PorcentagemTaxaAdministracao = contratoAluguel.PercentualRetencaoImpostos;
@@ -320,10 +326,29 @@ public class TituloReceberService: ITituloReceberService
 
     private static List<FaturaTitulo> BindFaturaTituloByContratoAluguelData(ContratoAluguel contratoAluguel, TituloReceber tituloReceber, List<FaturaTitulo> lstFaturaTitulo)
     {
+        int contaDesconto = 1;
         for (int i = 0; i < contratoAluguel.PrazoTotalContrato; i++)
         {
             if (i > 11)
                 break;
+
+            double ValorAPagar = contratoAluguel.ValorComImpostos.Value;
+
+            if (contratoAluguel.PrazoCarencia.HasValue)
+            {
+                if (contratoAluguel.PrazoCarencia > i)
+                {
+                    ValorAPagar = 0.00;
+                }
+                else if(contratoAluguel.PrazoDesconto.HasValue)
+                {
+                    if (contratoAluguel.PrazoDesconto >= contaDesconto)
+                    {
+                        ValorAPagar = contratoAluguel.ValorComDesconto.Value;
+                        contaDesconto++;
+                    }
+                }
+            }
 
             DateTime dataVencimento = tituloReceber.DataVencimentoPrimeraParcela.Value.AddMonths(i);
             int diaVencimento = tituloReceber.DataVencimentoPrimeraParcela.Value.Day > 28 ? 28 : dataVencimento.Day;
@@ -336,7 +361,7 @@ public class TituloReceberService: ITituloReceberService
             faturaTitulo.DataUltimaModificacao  = DateTime.Now;
             faturaTitulo.GuidReferencia         = Guid.NewGuid();
             faturaTitulo.NumeroFatura           = tituloReceber.NumeroTitulo + "/" + (i+1).ToString("D2");
-            faturaTitulo.Valor                  = contratoAluguel.ValorAluguelLiquido;
+            faturaTitulo.Valor                  = ValorAPagar;
             faturaTitulo.DataVencimento         = new DateTime(dataVencimento.Year, dataVencimento.Month, diaVencimento);
 
             lstFaturaTitulo.Add(faturaTitulo);
@@ -375,7 +400,6 @@ public class TituloReceberService: ITituloReceberService
         tituloReceber.IdFormaPagamento                  = cmd.IdFormaPagamento;
         tituloReceber.ValorTitulo                       = valorLiquido;
         tituloReceber.ValorTotalTitulo                  = valorLiquido * cmd.Parcelas;
-        //tituloReceber.DiaPagamento                      = cmd.DataPagamento.Day;
         tituloReceber.Parcelas                          = cmd.Parcelas;
         tituloReceber.PorcentagemTaxaAdministracao      = cmd.PorcentagemImpostoRetido;
 
@@ -453,5 +477,10 @@ public class TituloReceberService: ITituloReceberService
             return valor;
         else
             return (percentual / 100.0) * valor;
+    }
+
+    private static double calcularValorComDesconto(double ValorTitulo, double percentual)
+    {
+        return calcularPorcentagem(ValorTitulo, percentual);
     }
 }
