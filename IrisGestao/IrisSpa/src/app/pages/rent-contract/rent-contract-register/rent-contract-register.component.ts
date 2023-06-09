@@ -214,7 +214,7 @@ export class RentContractRegisterComponent {
 				// valorLiquido: ['', Validators.required],
 				retencao: ['', Validators.required],
 				desconto: [null, Validators.required],
-				descontoPrazo: [null, Validators.required],
+				prazoDesconto: [null, Validators.required],
 				reajuste: [null, Validators.required],
 				periodicidade: [null, Validators.required],
 				carencia: [true, Validators.required],
@@ -503,7 +503,7 @@ export class RentContractRegisterComponent {
 				// valorLiquido: number;
 				retencao: string; // x
 				desconto: string; // x
-				descontoPrazo: string; //???
+				prazoDesconto: string; // x
 				reajuste: number; // x
 				periodicidade: string; // x
 				carencia: boolean; // x
@@ -524,6 +524,7 @@ export class RentContractRegisterComponent {
 			valorAluguel: formData.valuesInfo.valor,
 			percentualRetencaoImpostos: +formData.valuesInfo.retencao,
 			percentualDescontoAluguel: +formData.valuesInfo.desconto,
+			prazoDesconto: +formData.valuesInfo.prazoDesconto,
 			carenciaAluguel: formData.valuesInfo.carencia,
 			prazoCarencia: +formData.valuesInfo.carenciaPrazo,
 			dataInicioContrato: formData.contractInfo.dataInicio,

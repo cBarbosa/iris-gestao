@@ -9,6 +9,7 @@ export type ContratoAluguel = {
 	percentualDescontoAluguel: number;
 	carenciaAluguel: boolean;
 	prazoCarencia: number;
+	prazoDesconto: number;
 	dataInicioContrato: string;
 	prazoTotalContrato: number;
 	dataOcupacao: string;

@@ -294,6 +294,11 @@ public class TituloPagarService: ITituloPagarService
         double valorLiquido;
         valorLiquido = calcularPorcentagemContratoAluguel(contratoAluguel.ValorAluguel, unidadeTaxaAdministracao);
         int prazo = contratoAluguel.PrazoTotalContrato > 12 ? 12 : contratoAluguel.PrazoTotalContrato;
+        int prazoFaturas = contratoAluguel.PrazoCarencia.HasValue ?
+               (prazo - contratoAluguel.PrazoCarencia.Value) :
+               prazo;
+
+
         switch (TituloPagar.GuidReferencia)
         {
             case null:
@@ -318,7 +323,7 @@ public class TituloPagarService: ITituloPagarService
         TituloPagar.IdIndiceReajuste = contratoAluguel?.IdIndiceReajuste;
         TituloPagar.IdTipoCreditoAluguel = contratoAluguel?.IdTipoCreditoAluguel;
         TituloPagar.ValorTitulo = valorLiquido;
-        TituloPagar.ValorTotalTitulo = valorLiquido * prazo;
+        TituloPagar.ValorTotalTitulo = valorLiquido * prazoFaturas;
         TituloPagar.Parcelas = prazo;
         TituloPagar.DataVencimentoPrimeraParcela = contratoAluguel.DataVencimentoPrimeraParcela;
         TituloPagar.PorcentagemTaxaAdministracao = contratoAluguel.PercentualRetencaoImpostos;
@@ -336,6 +341,14 @@ public class TituloPagarService: ITituloPagarService
             DateTime dataVencimento = TituloPagar.DataVencimentoPrimeraParcela.Value.AddMonths(i);
             int diaVencimento = TituloPagar.DataVencimentoPrimeraParcela.Value.Day > 28 ? 28 : dataVencimento.Day;
 
+            double ValorAluguelLiquido = contratoAluguel.ValorAluguelLiquido;
+
+            if (contratoAluguel.PrazoCarencia.HasValue)
+            {
+                if (contratoAluguel.PrazoCarencia > i)
+                    ValorAluguelLiquido = 0.00;
+            }
+
             FaturaTituloPagar faturaTituloPagar      = new FaturaTituloPagar();
             faturaTituloPagar.StatusFatura           = FaturaTituloEnum.A_VENCER;
             faturaTituloPagar.NumeroParcela          = i+1;
@@ -344,7 +357,7 @@ public class TituloPagarService: ITituloPagarService
             faturaTituloPagar.DataUltimaModificacao  = DateTime.Now;
             faturaTituloPagar.GuidReferencia         = Guid.NewGuid();
             faturaTituloPagar.NumeroFatura           = TituloPagar.NumeroTitulo + "/" + (i+1).ToString("D2");
-            faturaTituloPagar.Valor                  = contratoAluguel.ValorAluguelLiquido;
+            faturaTituloPagar.Valor                  = ValorAluguelLiquido;
             faturaTituloPagar.DataVencimento         = new DateTime(dataVencimento.Year, dataVencimento.Month, diaVencimento);
 
             lstFaturaTituloPagar.Add(faturaTituloPagar);

@@ -561,6 +561,37 @@
 								</div>
 
 								<div class="field">
+									<label for="prazoDesconto" class="block">Prazo de desconto</label>
+									<input
+										id="prazoDesconto"
+										type="text"
+										formControlName="prazoDesconto"
+										aria-describedby="prazoDesconto-help"
+										mask="0*"
+										suffix=" Meses"
+										maxlength="9"
+										pInputText
+									/>
+									<ng-container *ngIf="checkHasError(valueInfo['prazoDesconto'])">
+										<small
+											id="grace-period-help"
+											*ngIf="
+												valueInfo['prazoDesconto'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o prazo de desconto
+										</small>
+										<ng-template #error2>
+											<small id="prazoDesconto-help" class="p-error block">
+												Prazo de desconto inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+								
+								<div class="field">
 									<label for="discount" class="block">
 										Índice de reajuste
 									</label>
