@@ -107,13 +107,23 @@
 								<div class="data">
 									<div class="data-label">Endereço</div>
 									<div class="data-value">
-										{{
-											imovel.imovelEndereco[0].rua +
-												", " +
-												imovel.imovelEndereco[0].cidade +
-												" - " +
-												imovel.imovelEndereco[0].uf
-										}}
+										<ng-container
+											*ngIf="
+												imovel.imovelEndereco && imovel.imovelEndereco[0];
+												else naoInformado
+											"
+										>
+											{{
+												imovel.imovelEndereco[0].rua +
+													", " +
+													imovel.imovelEndereco[0].cidade +
+													" - " +
+													imovel.imovelEndereco[0].uf
+											}}
+										</ng-container>
+										<ng-template #naoInformado>
+											<span class="italic text-gray-400">Não informado</span>
+										</ng-template>
 									</div>
 								</div>
 								<div class="data">

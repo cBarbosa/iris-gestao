@@ -561,7 +561,9 @@
 								</div>
 
 								<div class="field">
-									<label for="prazoDesconto" class="block">Prazo de desconto</label>
+									<label for="prazoDesconto" class="block"
+										>Prazo de desconto</label
+									>
 									<input
 										id="prazoDesconto"
 										type="text"
@@ -572,7 +574,9 @@
 										maxlength="9"
 										pInputText
 									/>
-									<ng-container *ngIf="checkHasError(valueInfo['prazoDesconto'])">
+									<ng-container
+										*ngIf="checkHasError(valueInfo['prazoDesconto'])"
+									>
 										<small
 											id="grace-period-help"
 											*ngIf="
@@ -590,7 +594,7 @@
 										</ng-template>
 									</ng-container>
 								</div>
-								
+
 								<div class="field">
 									<label for="discount" class="block">
 										Índice de reajuste
