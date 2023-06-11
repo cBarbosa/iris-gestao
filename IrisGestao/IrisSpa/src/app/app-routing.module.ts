@@ -49,7 +49,7 @@ const routes: Routes = [
 					import('./pages/rent-contract/rent-contract.module').then(
 						(m) => m.RentContractModule
 					),
-				canActivate: [AuthGuard],
+				// canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
