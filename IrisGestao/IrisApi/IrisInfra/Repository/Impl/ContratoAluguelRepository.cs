@@ -457,4 +457,31 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
 
         return null!;
     }
+
+    public async Task<IEnumerable<Object>?> GetImoveisUnidadesContratoAluguelAtivos()
+    {
+        return await DbSet
+                        .Include(x => x.ContratoAluguelImovel)
+                            .ThenInclude(x => x.ContratoAluguelUnidade)
+                        .Where(x => x.Status)
+                        .Select(x => new
+                        {
+                            NumeroContrato = x.NumeroContrato,
+                            Status = x.Status,
+                            ImovelAlugado = x.ContratoAluguelImovel.Select(x => new
+                            {
+                                GuidReferencia = x.IdImovelNavigation.GuidReferencia,
+                                Nome = x.IdImovelNavigation.Nome,
+                                Status = x.IdImovelNavigation.Status,
+                                Unidades = x.ContratoAluguelUnidade.Select(y => new
+                                {
+                                    GuidReferencia = y.IdUnidadeNavigation.GuidReferencia,
+                                    Tipo = y.IdUnidadeNavigation.Tipo,
+                                    Status = y.IdUnidadeNavigation.Status
+                                }).Where(y => y.Status)
+                            }).Where(y => y.Status)
+                        }).ToListAsync();
+    }
+
+
 }

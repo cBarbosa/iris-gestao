@@ -11,5 +11,5 @@ public interface IContratoAluguelRepository : IRepository<ContratoAluguel>, IDis
     Task<object> GetDashbaordFinancialVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel);
     Task<object> GetDashbaordPhysicalVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel);
     Task<object> GetDashboardTotalManagedArea(int? idLocador, int? idTipoImovel);
-    
+    Task<IEnumerable<Object>?> GetImoveisUnidadesContratoAluguelAtivos();
 }

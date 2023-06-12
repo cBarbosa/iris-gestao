@@ -88,7 +88,8 @@ export class ContactRegisterSidebarComponent implements OnInit {
 			throw new Error(
 				"contact-register-sidebar: O Guid de cliente deve ser informado caso o parâmetro 'registerOnSubmit' seja verdadeiro."
 			);
-
+		console.log('Guid cliente >> ' + this.guidClient);
+		console.log('Guid fornecedor >> ' + this.guidSupplier);
 		this.registerForm = this.fb.group({
 			name: [this.data?.nome ?? '', Validators.required],
 			role: [this.data?.cargo ?? ''],

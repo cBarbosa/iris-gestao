@@ -12,4 +12,5 @@ public interface IImovelService
     Task<CommandResult> Delete(int? codigo);
     Task<CommandResult> GetByGuid(Guid uuid);
     Task<CommandResult> AlterarStatus(Guid uuid, bool status);
+    Task<CommandResult> GetImoveisParaContrato();
 }

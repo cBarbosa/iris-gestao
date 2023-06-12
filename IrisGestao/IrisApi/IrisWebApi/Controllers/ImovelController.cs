@@ -30,6 +30,11 @@ public class ImovelController : Controller
     public async Task<IActionResult> GetByGuid([FromRoute] Guid guid) =>
         Ok(await imovelService.GetByGuid(guid));
 
+    [HttpGet("BuscarImoveisDisponiveis")]
+    [Produces("application/json")]
+    public async Task<IActionResult> GetImoveisParaContrato() =>
+    Ok(await imovelService.GetImoveisParaContrato());
+
     [HttpPost("criar")]
     [Produces("application/json")]
     public async Task<IActionResult> Insert([FromBody] CriarImovelCommand cmd)
