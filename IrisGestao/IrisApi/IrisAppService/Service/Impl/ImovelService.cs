@@ -5,6 +5,7 @@ using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -12,18 +13,18 @@ public class ImovelService: IImovelService
 {
     private readonly IImovelRepository imovelRepository;
     private readonly IImovelEnderecoRepository imovelEnderecoRepository;
-    private readonly IContratoAluguelImovelRepository contratoAluguelImovelRepository;
+    private readonly IContratoAluguelRepository ContratoAluguelRepository;
     private readonly ILogger<ImovelService> logger;
     
     public ImovelService(
         IImovelRepository imovelRepository
         , IImovelEnderecoRepository imovelEnderecoRepositor
-        , IContratoAluguelImovelRepository ContratoAluguelImovelRepository
+        , IContratoAluguelRepository ContratoAluguelRepository
         , ILogger<ImovelService> logger)
     {
         this.imovelRepository = imovelRepository;
         this.imovelEnderecoRepository = imovelEnderecoRepository;
-        this.contratoAluguelImovelRepository = ContratoAluguelImovelRepository;
+        this.ContratoAluguelRepository = ContratoAluguelRepository;
         this.logger = logger;
     }
 
@@ -190,18 +191,37 @@ public class ImovelService: IImovelService
 
     public async Task<CommandResult> GetImoveisParaContrato()
     {
-        var resultImoveis = await imovelRepository.GetImoveisContrato();
-        var resultImoveisContrato = await contratoAluguelImovelRepository.getAllImoveisDoContrato();
+        var _resultImoveis = await imovelRepository.GetImoveisContrato();
+        var _resultImoveisContrato = await ContratoAluguelRepository.GetImoveisUnidadesContratoAluguelAtivos();
+
+        string jsonResultImoveis = JsonConvert.SerializeObject(_resultImoveis);
+        List<ImovelDisponivel> resultImoveis = JsonConvert.DeserializeObject<List<ImovelDisponivel>>(jsonResultImoveis);
+        
+        string jsonResultImoveisContrato = JsonConvert.SerializeObject(_resultImoveisContrato);
+        List<ContratoAluguelImoveis> resultImoveisContrato = JsonConvert.DeserializeObject<List<ContratoAluguelImoveis>>(jsonResultImoveisContrato);
+
+
 
         List<ImovelDisponivel> lstImovelDisponivels = new List<ImovelDisponivel>();
         List<ImovelDisponivel> lstImovelDisponivels1 = new List<ImovelDisponivel>();
         List<ImovelDisponivel> lstImovelDisponivels2 = new List<ImovelDisponivel>();
-        foreach (var imovelContrato1 in resultImoveis.ToList())
+        foreach (var imovel in resultImoveis)
         {
-            foreach (var imovelContrato2 in resultImoveisContrato)
+            foreach (var imovelContrato in resultImoveisContrato)
             {
-                ImovelDisponivel imovel = new ImovelDisponivel();
-                //if(imovelContrato1)
+                if(!imovel.GuidReferencia.Equals(imovelContrato.ImovelDisponivel))
+                {
+                    ImovelDisponivel imovelDisponivel = new ImovelDisponivel();
+                    List<UnidadesDisponivel> UnidadeDisponiveis = new List<UnidadesDisponivel>();
+                    imovelDisponivel.GuidReferencia = imovel.GuidReferencia;
+                    imovelDisponivel.Nome = imovel.Nome;
+                    imovelDisponivel.Status = imovel.Status;
+
+                    imovelDisponivel.Unidades = UnidadeDisponiveis;
+
+                    if(imovelDisponivel.Unidades.Count() > 0)
+                        lstImovelDisponivels.Add(imovelDisponivel);
+                }
             }
         }
 
@@ -209,7 +229,6 @@ public class ImovelService: IImovelService
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
             : new CommandResult(true, SuccessResponseEnums.Success_1005, lstImovelDisponivels);
     }
-
 
     private static void BindImoveisData(CriarImovelCommand cmd, ref Imovel imovel)
     {
@@ -263,10 +282,29 @@ public class ImovelService: IImovelService
         endereco.Bairro = cmd.Bairro;
         endereco.UF = cmd.UF;
     }
+
     public class ImovelDisponivel
     {
-        public int Id { get; set; }
-        public Guid GuidReferencia { get; set; }
+        public string GuidReferencia { get; set; }
         public string Nome { get; set; }
+        public bool Status { get; set; }
+        public List<UnidadesDisponivel> Unidades { get; set; }
     }
+
+    public class UnidadesDisponivel
+    {
+        public string GuidReferencia { get; set; }
+        public int IdImovel { get; set; }
+        public string Tipo { get; set; }
+        public bool Status { get; set; }
+    }
+
+    public class ContratoAluguelImoveis
+    {
+        public string NumeroContrato { get; set; }
+        public bool Status { get; set; }
+        public List<ImovelDisponivel> ImovelDisponivel { get; set; }
+    }
+
+
 }

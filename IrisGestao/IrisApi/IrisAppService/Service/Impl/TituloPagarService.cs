@@ -322,8 +322,8 @@ public class TituloPagarService: ITituloPagarService
         TituloPagar.IdCliente = contratoAluguel?.IdCliente;
         TituloPagar.IdIndiceReajuste = contratoAluguel?.IdIndiceReajuste;
         TituloPagar.IdTipoCreditoAluguel = contratoAluguel?.IdTipoCreditoAluguel;
-        TituloPagar.ValorTitulo = valorLiquido;
-        TituloPagar.ValorTotalTitulo = valorLiquido * prazoFaturas;
+        TituloPagar.ValorTitulo = contratoAluguel.ValorAluguel;
+        TituloPagar.ValorTotalTitulo = contratoAluguel.ValorAluguelLiquido;
         TituloPagar.Parcelas = prazo;
         TituloPagar.DataVencimentoPrimeraParcela = contratoAluguel.DataVencimentoPrimeraParcela;
         TituloPagar.PorcentagemTaxaAdministracao = contratoAluguel.PercentualRetencaoImpostos;

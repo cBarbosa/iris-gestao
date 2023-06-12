@@ -204,7 +204,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                                         Id = y.IdTipoUnidadeNavigation.Id,
                                         Nome = y.IdTipoUnidadeNavigation.Nome
                                     }
-                            }).Where(y => y.Ativo).OrderBy(y=> y.Tipo),
+                            }).Where(y => y.Ativo),
                             AreaTotal = x.Unidade.Where(x => x.Status).Sum(x => x.AreaTotal),
                             AreaUtil = x.Unidade.Where(x => x.Status).Sum(x => x.AreaUtil),
                             AreaHabitese = x.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
