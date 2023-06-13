@@ -63,18 +63,19 @@ public class EventoService: IEventoService
     public async Task<CommandResult> Insert(CriarEventoCommand cmd)
     {
         Evento Evento = new Evento();
+        
         if (cmd == null)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
-        var imovel = await imovelRepository.GetByReferenceGuid(cmd.IdImovel);
+        var imovel = await imovelRepository.GetByReferenceGuid(cmd.GuidImovel);
         if (imovel == null)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
 
-        var cliente = await clienteRepository.GetByReferenceGuid(cmd.IdCliente);
+        var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidCliente);
         if (cliente == null)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
@@ -83,7 +84,8 @@ public class EventoService: IEventoService
         Evento.IdImovel  = imovel.Id;
         Evento.IdCliente = cliente.Id;
         BindEventoData(cmd, Evento);
-
+        return new CommandResult(true, SuccessResponseEnums.Success_1000, Evento);
+        /*
         try
         {
             eventoRepository.Insert(Evento);
@@ -94,6 +96,7 @@ public class EventoService: IEventoService
             return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
             throw;
         }
+        */
     }
 
     public async Task<CommandResult> Update(Guid uuid, CriarEventoCommand cmd)
@@ -104,13 +107,13 @@ public class EventoService: IEventoService
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
-        var imovel = await imovelRepository.GetByReferenceGuid(cmd.IdImovel);
+        var imovel = await imovelRepository.GetByReferenceGuid(cmd.GuidImovel);
         if (imovel == null)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
 
-        var cliente = await clienteRepository.GetByReferenceGuid(cmd.IdCliente);
+        var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidCliente);
         if (cliente == null)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);

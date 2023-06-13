@@ -10,7 +10,7 @@ public interface IUnidadeService
     Task<CommandResult> Insert(Guid guidImovel, CriarUnidadeCommand cmd);
     Task<CommandResult> Update(Guid guid, CriarUnidadeCommand cmd);
     Task<CommandResult> Delete(int? codigo);
-    Task<CommandResult> BuscarBuscarUnidadePorImovel(int codigoImovel);
+    Task<CommandResult> BuscarUnidadePorImovel(Guid uuid);
     Task<CommandResult> GetByUid(Guid guid);
     Task<CommandResult> Clone(Guid guid);
     Task<CommandResult> AlterarStatus(Guid guid, bool status);

@@ -190,7 +190,9 @@ export class ExpenseListingComponent {
 									return {
 										nomeTitulo: despesa.nomeTitulo,
 										tipoDocumento: despesa.tipoTituloPagar?.nome,
-										imovel: despesa.imovel?.[0].nome,
+										imovel: despesa.imovel.length > 0 
+											? despesa.imovel?.[0].nome
+											: '',
 										locador: despesa.cliente?.nome,
 										valor: despesa.valorTotalTitulo,
 										dataPagamento: despesa.dataVencimentoPrimeraParcela
