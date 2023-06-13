@@ -5,7 +5,7 @@ namespace IrisGestao.ApplicationService.Repository.Interfaces;
 
 public interface IUnidadeRepository : IRepository<Unidade>, IDisposable
 {
-    IEnumerable<Unidade> BuscarUnidadePorImovel(int codigo);
+    IEnumerable<object?> BuscarUnidadePorImovel(Guid uuid);
     IEnumerable<Unidade> GetById(int codigo);
     IEnumerable<Unidade> GetAll();
     Task<object?> GetByUid(Guid guid);

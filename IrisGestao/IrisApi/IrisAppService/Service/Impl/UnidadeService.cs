@@ -42,10 +42,10 @@ public class UnidadeService: IUnidadeService
             : new CommandResult(true, SuccessResponseEnums.Success_1005, Unidade);
     }
 
-    public async Task<CommandResult> BuscarBuscarUnidadePorImovel(int codigoImovel)
+    public async Task<CommandResult> BuscarUnidadePorImovel(Guid uuid)
     {
 
-        var Unidades = await Task.FromResult(unidadeRepository.BuscarUnidadePorImovel(codigoImovel));
+        var Unidades = await Task.FromResult(unidadeRepository.BuscarUnidadePorImovel(uuid));
 
         return !Unidades.Any()
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)

@@ -24,9 +24,9 @@ public class UnidadeController : ControllerBase
     public async Task<IActionResult> GetByUid([FromRoute] Guid guid) =>
         Ok(await unidadeService.GetByUid(guid));
 
-    [HttpGet("{codigo}/idImovel")]
-    public async Task<IActionResult> BuscarBuscarUnidadePorImovel([FromRoute] int codigo) =>
-        Ok(await unidadeService.BuscarBuscarUnidadePorImovel(codigo));
+    [HttpGet("{guid}/idImovel")]
+    public async Task<IActionResult> BuscarUnidadePorImovel([FromRoute] Guid guid) =>
+        Ok(await unidadeService.BuscarUnidadePorImovel(guid));
 
     [HttpPost("{guid}/criar")]
     public async Task<IActionResult> Insert(Guid guid, [FromBody] CriarUnidadeCommand cmd) =>
