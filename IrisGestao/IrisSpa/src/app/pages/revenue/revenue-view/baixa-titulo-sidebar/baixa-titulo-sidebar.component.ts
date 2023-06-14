@@ -205,6 +205,7 @@ export class BaixaTituloSidebarComponent {
 			this.registerInvoice(this.requestObj)
 				.then(() => {
 					this.openModal();
+					location.reload();
 				})
 				.catch((err) => {
 					this.openModal();

@@ -24,12 +24,13 @@ public partial class ContratoFornecedor: BaseEntity<ContratoFornecedor>
     [Unicode(false)]
     public string DescricaoServico { get; set; } = null!;
 
+    [Column(TypeName = "decimal(8, 6)")]
     public decimal? Percentual { get; set; }
 
     [Column(TypeName = "date")]
     public DateTime DataAtualizacao { get; set; }
 
-    [Column(TypeName = "decimal(18, 0)")]
+    [Column(TypeName = "decimal(18, 2)")]
     public decimal ValorServicoContratado { get; set; }
 
     [Column(TypeName = "date")]

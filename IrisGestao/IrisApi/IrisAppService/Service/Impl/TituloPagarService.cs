@@ -19,6 +19,7 @@ public class TituloPagarService: ITituloPagarService
     private readonly IImovelRepository imovelRepository;
     private readonly IUnidadeRepository unidadeRepository;
     private readonly IClienteRepository clienteRepository;
+    private readonly ITipoTituloRepository tipoTituloRepository;
     private readonly ILogger<ITituloPagarService> logger;
 
     public TituloPagarService(ITituloPagarRepository TituloPagarRepository
@@ -29,6 +30,7 @@ public class TituloPagarService: ITituloPagarService
                         , IUnidadeRepository UnidadeRepository
                         , IClienteRepository ClienteRepository
                         , IContratoAluguelRepository ContratoAluguelRepository
+                        , ITipoTituloRepository TipoTituloRepository
                         , ILogger<ITituloPagarService> logger)
     {
         this.tituloPagarRepository = TituloPagarRepository;
@@ -39,6 +41,7 @@ public class TituloPagarService: ITituloPagarService
         this.unidadeRepository = UnidadeRepository;
         this.clienteRepository = ClienteRepository;
         this.contratoAluguelRepository = ContratoAluguelRepository;
+        this.tipoTituloRepository = TipoTituloRepository;
         this.logger = logger;
     }
 
@@ -123,6 +126,9 @@ public class TituloPagarService: ITituloPagarService
             return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
         }
         int? sequencial = await tituloPagarRepository.GetNumeroTitulo();
+
+        var tipoTitulo = await tipoTituloRepository.GetById(cmd.IdTipoTitulo);
+        TituloPagar.NomeTitulo = tipoTitulo?.Nome;
 
         TituloPagar.Sequencial = sequencial.Value + 1;
         BindTituloPagarData(cmd, TituloPagar, lstFaturaTituloPagar);
@@ -313,8 +319,8 @@ public class TituloPagarService: ITituloPagarService
         }
 
         TituloPagar.NumeroTitulo = TituloPagar.Sequencial + "/" + DateTime.Now.Year;
-        TituloPagar.NomeTitulo = "Aluguel";
-        TituloPagar.IdTipoTitulo = TipoTituloReceberEnum.ALUGUEL;
+        TituloPagar.NomeTitulo = "Taxa de administração";
+        TituloPagar.IdTipoTitulo = TipoTituloReceberEnum.TAXA_ADMINISTRACAO;
         TituloPagar.IdFormaPagamento = FormaPagamentoEnum.BOLETO;
         TituloPagar.Status = true;
         TituloPagar.DataFimTitulo = contratoAluguel.DataFimContrato;
@@ -386,7 +392,7 @@ public class TituloPagarService: ITituloPagarService
                 break;
         }
 
-        TituloPagar.NomeTitulo                        = cmd.NomeTitulo;
+        TituloPagar.NomeTitulo                        = String.IsNullOrEmpty(cmd.NomeTitulo) ? TituloPagar.NomeTitulo : cmd.NomeTitulo;
         TituloPagar.IdTipoTitulo                      = cmd.IdTipoTitulo;
         TituloPagar.DataFimTitulo                     = cmd.DataVencimentoPrimeraParcela.AddMonths(cmd.Parcelas);
         TituloPagar.DataVencimentoPrimeraParcela      = cmd.DataVencimentoPrimeraParcela;

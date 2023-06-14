@@ -12,16 +12,16 @@ public partial class ContratoAluguelHistoricoReajuste : BaseEntity<ContratoAlugu
 
     public int IdContratoAluguel { get; set; }
 
-    [Column(TypeName = "decimal(18, 0)")]
+    [Column(TypeName = "decimal(18, 2)")]
     public double ValorAluguelAnterior { get; set; }
 
-    [Column(TypeName = "decimal(18, 0)")]
+    [Column(TypeName = "decimal(18, 2)")]
     public double ValorAluguelNovo { get; set; }
 
-    [Column(TypeName = "decimal(3, 0)")]
+    [Column(TypeName = "decimal(8, 6)")]
     public double? PercentualReajusteAnterior { get; set; }
 
-    [Column(TypeName = "decimal(3, 0)")]
+    [Column(TypeName = "decimal(8, 6)")]
     public double? PercentualReajusteNovo { get; set; }
     
     [Unicode(false)]

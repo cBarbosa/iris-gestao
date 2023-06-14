@@ -76,7 +76,7 @@ export class ExpenseService {
 		}
 	) {
 		return this.http.put<ApiResponse>(
-			`${env.config.apiUrl}FaturaTitulo/${guid}/atualizar`,
+			`${env.config.apiUrl}FaturaTituloPagar/${guid}/baixarFatura`,
 			JSON.stringify(baixaObj, null, 2),
 			httpOptions
 		);

@@ -117,10 +117,9 @@ public class FaturaTituloPagarService : IFaturaTituloPagarService
         FaturaTituloPagar.ValorRealPago              = cmd.ValorRealPago;
         FaturaTituloPagar.DescricaoBaixaFatura       = cmd.DescricaoBaixaFatura;
     }
-    
+
     private static int calculaDiasAtraso(DateTime dataVencimento, DateTime DataPagamento)
     {
-        int diasAtraso = (DataPagamento - dataVencimento).Days;
-        return diasAtraso < 0 ? 0 : diasAtraso;
+        return (DataPagamento - dataVencimento).Days;
     }
 }

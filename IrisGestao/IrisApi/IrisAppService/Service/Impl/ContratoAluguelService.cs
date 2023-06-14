@@ -366,13 +366,13 @@ public class ContratoAluguelService: IContratoAluguelService
     private static void BindContratoAluguelHistoricoReajusteData(double novoPercentualReajuste, ContratoAluguelHistoricoReajusteCommand cmd, ContratoAluguel ContratoAluguel)
     {
         double valorLiquido;
-        valorLiquido = calculaValorLiquido(ContratoAluguel.ValorAluguel, ContratoAluguel.PercentualDescontoAluguel, novoPercentualReajuste);
+        valorLiquido = calculaValorLiquido(ContratoAluguel.ValorAluguel, null, novoPercentualReajuste, true);
         DateTime dataVencimento                     = ContratoAluguel.DataFimContrato.AddMonths(12);
 
         cmd.IdContratoAluguel                       = ContratoAluguel.Id;
         cmd.PercentualReajusteAntigo                = ContratoAluguel.PercentualRetencaoImpostos;
         cmd.PercentualReajusteNovo                  = novoPercentualReajuste;
-        cmd.ValorAluguelAnterior                    = ContratoAluguel.ValorAluguelLiquido;
+        cmd.ValorAluguelAnterior                    = ContratoAluguel.ValorComImpostos.HasValue ? ContratoAluguel.ValorComImpostos.Value : ContratoAluguel.ValorAluguel;
         cmd.ValorAluguelNovo                        = valorLiquido;
 
         ContratoAluguel.DataUltimaModificacao       = DateTime.Now;
@@ -401,13 +401,13 @@ public class ContratoAluguelService: IContratoAluguelService
         return msgRetorno;
     }
 
-    private static double calculaValorLiquido(double valorAluguel, double? percentualDesconto, double percentualImpostos)
+    private static double calculaValorLiquido(double valorAluguel, double? percentualDesconto, double percentualImpostos, bool reajuste = false)
     {
         double valorComDesconto = valorAluguel;
         double valorImpostos;
         double valorDescontos = 0;
 
-        if (percentualDesconto.HasValue)
+        if (!reajuste && percentualDesconto.HasValue)
         {
             valorDescontos = calcularPorcentagem(valorAluguel, percentualDesconto.Value);
             valorComDesconto = valorAluguel - valorDescontos;

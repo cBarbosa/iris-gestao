@@ -198,6 +198,7 @@ public class ContatoService: IContatoService
             default:
                 contato.GuidReferencia = contato.GuidReferencia;
                 contato.DataUltimaModificacao = DateTime.Now;
+                contato.DataCriacao = contato.DataCriacao;
                 break;
         }
 
@@ -208,6 +209,5 @@ public class ContatoService: IContatoService
         contato.Email           = cmd.Email;
         contato.DataNascimento  = cmd.DataNascimento.HasValue ? cmd.DataNascimento : null;
         contato.Cargo           = cmd.Cargo;
-        contato.DataCriacao     = contato.DataCriacao;
     }
 }
