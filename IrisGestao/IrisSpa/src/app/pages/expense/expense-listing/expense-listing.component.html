@@ -95,11 +95,10 @@
 					<tr *ngIf="!isLoadingExpenses && !noRestults">
 						<th>Nome</th>
 						<th>Imóvel</th>
-						<th>Número do Título</th>
 						<th>Locador</th>
 						<th>Valor</th>
 						<th>Tipo de documento</th>
-						<th>Data Pagamento/Vencimento</th>
+						<th>Data Vencimento</th>
 						<th></th>
 					</tr>
 				</ng-template>
@@ -112,8 +111,8 @@
 						<td>{{ expense.tipoDocumento }}</td>
 						<td>
 							{{
-								expense.dataPagamento
-									? (expense.dataPagamento | date : "shortDate")
+								expense.dataVencimento
+									? (expense.dataVencimento | date : "shortDate")
 									: "-"
 							}}
 						</td>

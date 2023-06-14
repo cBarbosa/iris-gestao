@@ -62,6 +62,7 @@ export class BaixaTituloSidebarComponent {
 		valorAluguel: number;
 		dataPagamento: Date | null;
 		diasAtraso: number;
+		observacoes: string;
 	} | null;
 
 	registerForm: FormGroup;
@@ -105,6 +106,8 @@ export class BaixaTituloSidebarComponent {
 
 	ngOnInit() {
 		console.log('Fatura detalhes: >> ' + JSON.stringify(this.data));
+		console.log('this.guidExpense: >> ' + JSON.stringify(this.guidExpense));
+		
 
 		if (this.registerOnSubmit && !this.guidExpense)
 			throw new Error(
@@ -137,6 +140,7 @@ export class BaixaTituloSidebarComponent {
 				},
 				Validators.required,
 			],
+			observacoes: [this.data?.observacoes ?? '', Validators.required],
 		});
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
@@ -167,19 +171,21 @@ export class BaixaTituloSidebarComponent {
 			dataPagamento: editFormData.dataPagamento
 				? editFormData.dataPagamento.toISOString()
 				: '',
-			valorRealPago: editFormData.valorTotal, // ??
+			valorRealPago: editFormData.valorAluguel, // ??
 			DescricaoBaixaFatura: editFormData.observacoes,
 		};
 
 		console.log('on register', baixaObj);
 
 		// if (this.onSubmitForm) this.onSubmitForm(contactObj);
+		console.log('chamar função  >> '+ this.guidExpense);
 
 		if (this.registerOnSubmit && this.guidExpense)
 			this.registerInvoice(baixaObj)
 				.then(() => {
 					this.openModal();
-					if (this.onSubmitForm) this.onSubmitForm(baixaObj);
+					//if (this.onSubmitForm) this.onSubmitForm(baixaObj);					
+					location.reload();
 				})
 				.catch((err) => {
 					this.openModal();

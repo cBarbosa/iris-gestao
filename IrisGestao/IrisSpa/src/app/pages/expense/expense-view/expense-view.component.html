@@ -9,7 +9,7 @@
 	<div class="expense-view">
 		<div class="content">
 			<section class="expense">
-				<h2>Detalhe da receita</h2>
+				<h2>Detalhe da Despesa</h2>
 
 				<div class="main-card">
 					<header>
@@ -68,13 +68,7 @@
 								</div>
 							</div>
 							<div class="expense-data">
-								<div class="data-label">Creditar para</div>
-								<div class="data-value">
-									{{ expense?.['creditoAluguel'].nome }}
-								</div>
-							</div>
-							<div class="expense-data">
-								<div class="data-label">Locador</div>
+								<div class="data-label">Locatário </div>
 								<div class="data-value">
 									{{ expense?.['cliente'].nome }}
 								</div>
@@ -122,7 +116,7 @@
 					<ng-template pTemplate="header">
 						<tr>
 							<th>Nº Parcela</th>
-							<th>Valor do aluguel pago</th>
+							<th>Valor da Fatura</th>
 							<th>Data do pagamento</th>
 							<th>Dias de atraso</th>
 							<th>Data de Vencimento</th>
@@ -205,7 +199,7 @@
 								[card]="{
 									infos: [
 										{
-											label: 'Valor do aluguel pago',
+											label: 'Valor pago',
 											data: fatura.valorFatura,
 											pipe: cardPipes['currency']
 										},
@@ -335,36 +329,14 @@
 							: faturaSelected?.diasAtraso) + ' dia'
 					: '0 dia',
 				span: true
-			}
+			},
+			{
+				label: 'Observação da baixa',
+				data: faturaSelected?.descricaoBaixaFatura,
+				span: true
+			},
 		]"
 	></app-detail-sidebar>
-
-	<h3 class="mt-3 font-bold">Anexo nota fiscal</h3>
-
-	<div class="document-list">
-		<app-upload-list
-			[guid]="faturaSelected?.guidReferencia"
-			[editable]="false"
-		></app-upload-list>
-		<!-- <div class="document file" [class.empty]="!faturaSelected?.nfFile">
-			<span>{{ faturaSelected?.nfFile.name }}</span>
-			<span class="buttons">
-				<button
-					pButton
-					type="button"
-					class="p-button-rounded p-button-text"
-					(click)="
-						downloadFile(
-							faturaSelected?.nfFile.url,
-							faturaSelected?.nfFile.name
-						)
-					"
-				>
-					<i class="ph-download-simple"></i>
-				</button>
-			</span>
-		</div> -->
-	</div>
 
 	<button
 		pButton

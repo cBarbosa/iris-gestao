@@ -195,8 +195,8 @@ export class ExpenseListingComponent {
 											: '',
 										locador: despesa.cliente?.nome,
 										valor: despesa.valorTotalTitulo,
-										dataPagamento: despesa.dataVencimentoPrimeraParcela
-											? new Date(despesa.dataVencimentoPrimeraParcela)
+										dataVencimento: despesa.dataFimTitulo
+											? new Date(despesa.dataFimTitulo)
 											: null,
 										action: '',
 										guidReferencia: despesa.guidReferencia,

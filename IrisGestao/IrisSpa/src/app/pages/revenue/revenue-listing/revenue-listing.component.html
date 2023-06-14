@@ -98,7 +98,7 @@
 						<th>Número do Título</th>
 						<th>Locatário</th>
 						<th>Valor</th>
-						<th>Data Pagamento/Vencimento</th>
+						<th>Data Vencimento</th>
 						<th></th>
 					</tr>
 				</ng-template>
@@ -111,8 +111,8 @@
 						<td>{{ revenue.valor | currency }}</td>
 						<td>
 							{{
-								revenue.dataPagamento
-									? (revenue.dataPagamento | date : "shortDate")
+								revenue.dataVencimento
+									? (revenue.dataVencimento | date : "shortDate")
 									: "-"
 							}}
 						</td>

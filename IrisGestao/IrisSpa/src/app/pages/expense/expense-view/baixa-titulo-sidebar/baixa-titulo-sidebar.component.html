@@ -4,7 +4,7 @@
 	(ngSubmit)="onSubmit($event)"
 >
 	<div class="field">
-		<label for="valorAluguel" class="block">Valor do aluguel pago</label>
+		<label for="valorAluguel" class="block">Valor pago</label>
 		<input
 			id="valorAluguel"
 			type="text"
@@ -19,11 +19,11 @@
 				*ngIf="f['valorAluguel'].hasError('required'); else error2"
 				class="p-error block"
 			>
-				Informe o valor do aluguel pago
+				Informe o Valor pago
 			</small>
 			<ng-template #error2>
 				<small id="valorAluguel-help" class="p-error block">
-					Valor do aluguel pago inválido
+					Valor pago inválido
 				</small>
 			</ng-template>
 		</ng-container>
@@ -109,6 +109,30 @@
 			<ng-template #error2>
 				<small id="dataVencimento-help" class="p-error block">
 					Data de vencimento inválida
+				</small>
+			</ng-template>
+		</ng-container>
+	</div>
+	<div class="field">
+		<label for="observacoes" class="block">Observação da baixa</label>
+		<textarea
+			rows="3"
+			id="observacoes"
+			formControlName="observacoes"
+			aria-describedby="observacoes-help"
+			pInputTextarea
+		></textarea>
+		<ng-container *ngIf="checkHasError(f['observacoes'])">
+			<small
+				id="observacoes-help"
+				*ngIf="f['observacoes'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe a observação da baixa
+			</small>
+			<ng-template #error2>
+				<small id="observacoes-help" class="p-error block">
+					Observação da baixa inválida
 				</small>
 			</ng-template>
 		</ng-container>
