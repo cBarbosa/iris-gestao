@@ -13,6 +13,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { DetailSidebarComponent } from 'src/app/shared/components/detail-sidebar/detail-sidebar.component';
 import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
 import { BaixaTituloSidebarComponent } from './baixa-titulo-sidebar/baixa-titulo-sidebar.component';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
 	declarations: [ExpenseViewComponent],
@@ -23,6 +24,7 @@ import { BaixaTituloSidebarComponent } from './baixa-titulo-sidebar/baixa-titulo
 		PanelModule,
 		TableModule,
 		TagModule,
+		ButtonModule,
 		CardItemComponent,
 		PropertyListComponent,
 		SidebarModule,
