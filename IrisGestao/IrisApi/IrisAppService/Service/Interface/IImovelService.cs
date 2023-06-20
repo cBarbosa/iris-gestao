@@ -13,4 +13,5 @@ public interface IImovelService
     Task<CommandResult> GetByGuid(Guid uuid);
     Task<CommandResult> AlterarStatus(Guid uuid, bool status);
     Task<CommandResult> GetImoveisParaContrato();
+    Task<CommandResult> Query();
 }

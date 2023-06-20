@@ -230,6 +230,12 @@ public class ImovelService: IImovelService
             : new CommandResult(true, SuccessResponseEnums.Success_1005, lstImovelDisponivels);
     }
 
+    public async Task<CommandResult> Query()
+    {
+        var result = await imovelRepository.Query();
+        return new CommandResult(true, SuccessResponseEnums.Success_1001, result);
+    }
+
     private static void BindImoveisData(CriarImovelCommand cmd, ref Imovel imovel)
     {
         switch (imovel.GuidReferencia)

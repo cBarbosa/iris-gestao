@@ -10,4 +10,5 @@ public interface IImovelRepository : IRepository<Imovel>, IDisposable
     Task<object?> GetByGuid(Guid guid);
     Task<Imovel?> GetByReferenceGuid(Guid guid);
     Task<IEnumerable<Object>?> GetImoveisContrato();
+    Task<object> Query();
 }

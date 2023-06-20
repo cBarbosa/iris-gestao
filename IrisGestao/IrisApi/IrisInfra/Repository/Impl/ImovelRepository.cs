@@ -244,4 +244,22 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
         return await DbSet
             .FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
     }
+    
+    public async Task<object> Query()
+    {
+        var result = Db.Unidade
+            .Where(u => Db.ContratoAluguelUnidade
+                .All(c => c.IdUnidade != u.Id))
+            .Select(u => new
+            {
+                u.IdImovelNavigation.Nome,
+                u.Tipo,
+                u.GuidReferencia,
+                u.Id,
+                u.IdImovel
+            })
+            .ToList();
+
+        return result;
+    }
 }
