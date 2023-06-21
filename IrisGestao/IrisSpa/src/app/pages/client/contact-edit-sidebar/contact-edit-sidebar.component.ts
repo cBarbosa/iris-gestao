@@ -19,7 +19,7 @@ import { first } from 'rxjs';
 import { NgxMaskModule } from 'ngx-mask';
 import { CalendarModule } from 'primeng/calendar';
 import {
-	EmailValidator,
+	EmailOrUrlValidator,
 	PastDateValidator,
 } from 'src/app/shared/validators/custom-validators';
 
@@ -67,7 +67,7 @@ export class ContactEditSidebarComponent implements OnInit {
 					: null,
 				PastDateValidator,
 			],
-			email: [this.data.email, EmailValidator],
+			email: [this.data.email, EmailOrUrlValidator],
 			telephone: [this.data.telefone],
 		});
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();

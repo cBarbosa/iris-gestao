@@ -205,7 +205,7 @@ export class BaixaTituloSidebarComponent {
 			this.registerInvoice(this.requestObj)
 				.then(() => {
 					this.openModal();
-					location.reload();
+					// location.reload();
 				})
 				.catch((err) => {
 					this.openModal();
@@ -273,9 +273,17 @@ export class BaixaTituloSidebarComponent {
 		this.displayModal = true;
 	}
 
-	closeModal(success = false) {
+	closeModal(success = false, reload = false) {
 		this.displayModal = false;
-		if (success && this.onSubmitForm) this.onSubmitForm(this.requestObj);
+		if (success) {
+			if (reload) {
+				location.reload();
+			}
+
+			if (this.onSubmitForm) {
+				this.onSubmitForm(this.requestObj);
+			}
+		}
 	}
 
 	onFileSelect(e: any) {
