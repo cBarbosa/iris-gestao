@@ -25,7 +25,7 @@ import { Utils } from 'src/app/shared/utils';
 import { InputTextModule } from 'primeng/inputtext';
 import { Contato } from 'src/app/shared/models/contato.model';
 import {
-	EmailValidator,
+	EmailOrUrlValidator,
 	PastDateValidator,
 } from 'src/app/shared/validators/custom-validators';
 
@@ -94,7 +94,7 @@ export class ContactRegisterSidebarComponent implements OnInit {
 			name: [this.data?.nome ?? '', Validators.required],
 			role: [this.data?.cargo ?? ''],
 			birthday: [this.data?.dataNascimento ?? null, PastDateValidator],
-			email: [this.data?.email ?? '', EmailValidator],
+			email: [this.data?.email ?? '', EmailOrUrlValidator],
 			telephone: [this.data?.telefone ?? ''],
 		});
 

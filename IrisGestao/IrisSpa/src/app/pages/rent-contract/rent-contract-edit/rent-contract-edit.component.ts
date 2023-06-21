@@ -14,6 +14,7 @@ import { DropdownItem } from 'src/app/shared/models/types';
 import { CommonService, DominiosService } from 'src/app/shared/services';
 import { first } from 'rxjs';
 import { ContratoAluguel } from 'src/app/shared/models/contrato-aluguel.model';
+import { Imovel } from 'src/app/shared/models';
 
 @Component({
 	selector: 'app-rent-contract-edit',
@@ -26,6 +27,8 @@ export class RentContractEditComponent {
 	contractGuid: string;
 	isLoading = false;
 	invalidGuid = false;
+
+	imovel: any;
 
 	data: any;
 
@@ -179,6 +182,8 @@ export class RentContractEditComponent {
 					this.data = event.data[0];
 
 					console.log('>>>', this.data);
+
+					this.imovel = this.data.imovelAlugado[0];
 
 					this.editForm.controls['contractInfo'].patchValue({
 						name: this.data.numeroContrato,

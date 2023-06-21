@@ -14,6 +14,7 @@ import { DetailSidebarComponent } from 'src/app/shared/components/detail-sidebar
 import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
 import { BaixaTituloSidebarComponent } from './baixa-titulo-sidebar/baixa-titulo-sidebar.component';
 import { ButtonModule } from 'primeng/button';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @NgModule({
 	declarations: [ExpenseViewComponent],
