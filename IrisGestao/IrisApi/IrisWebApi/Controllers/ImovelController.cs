@@ -54,8 +54,5 @@ public class ImovelController : ControllerBase
     [HttpDelete("{codigo}/deletar")]
     public async Task<IActionResult> Deletar(int? codigo)
         => Ok(await imovelService.Delete(codigo));
-    
-    [HttpGet("test")]
-    public async Task<IActionResult> Query()
-        => Ok(await imovelService.Query());
+
 }

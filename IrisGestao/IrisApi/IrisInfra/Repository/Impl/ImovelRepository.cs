@@ -29,38 +29,6 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<object>?> GetImoveisContrato()
-    {
-        try
-        {
-            var imoveis = await DbSet
-                        .Include(x => x.Unidade)
-                        .Include(z => z.ContratoAluguelImovel)
-                            .ThenInclude(y => y.ContratoAluguelUnidade)
-                        .Where(x => x.Status
-                        ).Select(x => new
-                        {
-                            GuidReferencia = x.GuidReferencia,
-                            Nome = x.Nome,
-                            Status = x.Status,
-                            Unidade = x.Unidade.Select(y => new
-                            {
-                                GuidReferencia = y.GuidReferencia,
-                                IdImovel = y.IdImovel,
-                                Tipo = y.Tipo,
-                                Status = x.Status
-                            }
-                            ).Where(y => y.Status)
-                        }).ToListAsync();
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex.Message);
-        }
-
-        return null!;
-    }
-
     public async Task<CommandPagingResult?> GetAllPaging(int? idCategoria, int? idProprietario, string? nome, int limit, int page)
     {
         var skip = (page - 1) * limit;
@@ -245,21 +213,40 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
             .FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
     }
     
-    public async Task<object> Query()
+    public async Task<object> GetImoveisParaContrato()
     {
+        
         var result = Db.Unidade
             .Where(u => Db.ContratoAluguelUnidade
-                .All(c => c.IdUnidade != u.Id))
+                .All(c => c.IdUnidade != u.Id) && u.Status)
             .Select(u => new
             {
-                u.IdImovelNavigation.Nome,
-                u.Tipo,
-                u.GuidReferencia,
-                u.Id,
-                u.IdImovel
-            })
+                IdImovel = u.IdImovelNavigation.Id,
+                NomeImovel = u.IdImovelNavigation.Nome,
+                GuidImovel = u.IdImovelNavigation.GuidReferencia,
+                NomeUnidade = u.Tipo,
+                GuidReferenciaUnidade = u.GuidReferencia,
+            }).OrderBy(x => x.NomeImovel).OrderBy(x=> x.NomeUnidade)
             .ToList();
-
+/*        
+        var result = Db.Unidade
+                .Join(Db.Imovel,
+                    u => u.IdImovel,
+                    imovel => imovel.Id,
+                    (u, imovel) => new { Unidade = u, Imovel = imovel })
+                .GroupJoin(Db.ContratoAluguelUnidade,
+                    u => u.Unidade.Id,
+                    contrato => contrato.IdUnidade,
+                    (u, contratos) => new { Unidade = u.Unidade, Imovel = u.Imovel, Contratos = contratos })
+                .Where(u => u.Contratos.All(c => c.IdUnidade == null))
+                .Select(u => new { 
+                    u.Imovel.Nome, 
+                    u.Imovel.GuidReferencia,
+                    u.Unidade.Tipo, 
+                    u.Unidade.Id, 
+                    u.Unidade.IdImovel })
+                .ToList();
+*/
         return result;
     }
 }

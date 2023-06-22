@@ -4,6 +4,7 @@ using IrisGestao.Domain.Command.Request;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -191,49 +192,38 @@ public class ImovelService: IImovelService
 
     public async Task<CommandResult> GetImoveisParaContrato()
     {
-        var _resultImoveis = await imovelRepository.GetImoveisContrato();
-        var _resultImoveisContrato = await ContratoAluguelRepository.GetImoveisUnidadesContratoAluguelAtivos();
+        var result = await imovelRepository.GetImoveisParaContrato();
+        string jsonResultImoveis = JsonConvert.SerializeObject(result);
+        List<ImoveisDisponiveisJSON> resultUnidades = JsonConvert.DeserializeObject<List<ImoveisDisponiveisJSON>>(jsonResultImoveis);
+        List<ImoveisDisponiveis> resultado = new List<ImoveisDisponiveis>();
 
-        string jsonResultImoveis = JsonConvert.SerializeObject(_resultImoveis);
-        List<ImovelDisponivel> resultImoveis = JsonConvert.DeserializeObject<List<ImovelDisponivel>>(jsonResultImoveis);
-        
-        string jsonResultImoveisContrato = JsonConvert.SerializeObject(_resultImoveisContrato);
-        List<ContratoAluguelImoveis> resultImoveisContrato = JsonConvert.DeserializeObject<List<ContratoAluguelImoveis>>(jsonResultImoveisContrato);
-
-
-
-        List<ImovelDisponivel> lstImovelDisponivels = new List<ImovelDisponivel>();
-        List<ImovelDisponivel> lstImovelDisponivels1 = new List<ImovelDisponivel>();
-        List<ImovelDisponivel> lstImovelDisponivels2 = new List<ImovelDisponivel>();
-        foreach (var imovel in resultImoveis)
+        foreach (var group in resultUnidades)
         {
-            foreach (var imovelContrato in resultImoveisContrato)
+            ImoveisDisponiveis imovel = new ImoveisDisponiveis();
+            ImoveisDisponiveis imovelLocalizado = resultado.FirstOrDefault(x=> x.GuidImovel.ToString().Equals(group.GuidImovel.ToString()));
+            
+            UnidadesDisponiveis unidade = new UnidadesDisponiveis();
+            List<UnidadesDisponiveis> unidadesDisponiveis = new List<UnidadesDisponiveis>();
+
+            if(imovelLocalizado != null)
             {
-                if(!imovel.GuidReferencia.Equals(imovelContrato.ImovelDisponivel))
-                {
-                    ImovelDisponivel imovelDisponivel = new ImovelDisponivel();
-                    List<UnidadesDisponivel> UnidadeDisponiveis = new List<UnidadesDisponivel>();
-                    imovelDisponivel.GuidReferencia = imovel.GuidReferencia;
-                    imovelDisponivel.Nome = imovel.Nome;
-                    imovelDisponivel.Status = imovel.Status;
-
-                    imovelDisponivel.Unidades = UnidadeDisponiveis;
-
-                    if(imovelDisponivel.Unidades.Count() > 0)
-                        lstImovelDisponivels.Add(imovelDisponivel);
-                }
+                unidade.GuidUnidade = group.GuidReferenciaUnidade;
+                unidade.NomeUnidade = group.NomeUnidade;
+                imovelLocalizado.lstUnidade.Add(unidade);
+            }
+            else
+            {
+                imovel.NomeImovel = group.NomeImovel;
+                imovel.GuidImovel = group.GuidImovel;
+                unidade.GuidUnidade = group.GuidReferenciaUnidade;
+                unidade.NomeUnidade = group.NomeUnidade;
+                unidadesDisponiveis.Add(unidade);
+                imovel.lstUnidade = unidadesDisponiveis;
+                resultado.Add(imovel);
             }
         }
-
-        return lstImovelDisponivels == null
-            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
-            : new CommandResult(true, SuccessResponseEnums.Success_1005, lstImovelDisponivels);
-    }
-
-    public async Task<CommandResult> Query()
-    {
-        var result = await imovelRepository.Query();
-        return new CommandResult(true, SuccessResponseEnums.Success_1001, result);
+        
+        return new CommandResult(true, SuccessResponseEnums.Success_1001, resultado);
     }
 
     private static void BindImoveisData(CriarImovelCommand cmd, ref Imovel imovel)
@@ -289,28 +279,25 @@ public class ImovelService: IImovelService
         endereco.UF = cmd.UF;
     }
 
-    public class ImovelDisponivel
+    public class ImoveisDisponiveis
     {
-        public string GuidReferencia { get; set; }
-        public string Nome { get; set; }
-        public bool Status { get; set; }
-        public List<UnidadesDisponivel> Unidades { get; set; }
+        public string NomeImovel { get; set; }
+        public Guid GuidImovel { get; set; }
+        public List<UnidadesDisponiveis> lstUnidade { get; set; }
     }
 
-    public class UnidadesDisponivel
+    public class UnidadesDisponiveis
     {
-        public string GuidReferencia { get; set; }
+        public string NomeUnidade { get; set; }
+        public Guid GuidUnidade { get; set; }
+    }
+
+    public class ImoveisDisponiveisJSON
+    {
         public int IdImovel { get; set; }
-        public string Tipo { get; set; }
-        public bool Status { get; set; }
+        public string NomeImovel { get; set; }
+        public Guid GuidImovel { get; set; }
+        public string NomeUnidade { get; set; }
+        public Guid GuidReferenciaUnidade { get; set; }
     }
-
-    public class ContratoAluguelImoveis
-    {
-        public string NumeroContrato { get; set; }
-        public bool Status { get; set; }
-        public List<ImovelDisponivel> ImovelDisponivel { get; set; }
-    }
-
-
 }
