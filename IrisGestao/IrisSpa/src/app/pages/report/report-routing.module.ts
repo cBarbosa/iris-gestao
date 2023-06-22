@@ -5,8 +5,8 @@ const routes: Routes = [
 	{
 		path: 'leased-area',
 		loadChildren: () =>
-			import('./report-leased-area/report-leased-area.component').then(
-				(m) => m.ReportLeasedAreaComponent
+			import('./report-leased-area/report-leased-area.module').then(
+				(m) => m.ReportLeasedAreaModule
 			),
 		data: {
 			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
