@@ -78,38 +78,46 @@
 						<th>Locador</th>
 						<th>Imóvel</th>
 						<th>Locatário</th>
-                        <th>Área total</th>
-                        <th>Área Útil</th>
-                        <th>Área Habite-se</th>
-                        <th>Aluguel contratado</th>
-                        <th>Aluguel Potencial</th>
+						<th>Área total</th>
+						<th>Área Útil</th>
+						<th>Área Habite-se</th>
+						<th>Aluguel contratado</th>
+						<th>Aluguel Potencial</th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-supplier>
 					<tr>
 						<td class="font-bold">{{ supplier.name }}</td>
-						<td>{{ supplier.cpf_cnpj  }}</td>
+						<td>{{ supplier.cpf_cnpj }}</td>
 						<td>{{ supplier.phone }}</td>
 						<td>{{ supplier.email }}</td>
 					</tr>
 				</ng-template>
-                <tfoot>
-                    <tr>
-                        <td rowspan="2">Total</td>
-                        <td>Área total</td>
-                        <td>Área útil</td>
-                        <td>Habite-se</td>
-                        <td>Aluguel contratado</td>
-                        <td>Aluguel potencial</td>
-                    </tr>
-                    <tr>
-                        <td>3.000 m²</td>
-                        <td>5.000 m²</td>
-                        <td>3.000 m²</td>
-                        <td>R$ 110.000,00</td>
-                        <td>R$ 230.000,00</td>
-                    </tr>
-                </tfoot>
+				<ng-template pTemplate="footer">
+					<tr class="bg-[#262626]">
+						<td colspan="4" class="bg-transparent text-white">Total</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-sm font-normal">Área total</div>
+							<div>3.000 m²</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-sm font-normal">Área útil</div>
+							<div>5.000 m²</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-sm font-normal">Habite-se</div>
+							<div>3.000 m²</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-sm font-normal">Aluguel contratado</div>
+							<div>R$ 110.000,00</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-sm font-normal">Aluguel potencial</div>
+							<div>R$ 230.000,00</div>
+						</td>
+					</tr>
+				</ng-template>
 			</p-table>
 
 			<!-- <ng-container *ngIf="isMobile">
