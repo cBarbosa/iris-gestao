@@ -346,6 +346,9 @@ export class PropertyRegisterComponent {
 		// if (step === 2) this.propertyTypeForm.markAllAsTouched();
 		// if (step === 3) this.legalInfoForm.markAllAsTouched();
 
+		console.log('step', step);
+		console.log('steplist', this.stepList);
+
 		this.stepList = this.stepList.map((entry: Step, i: number) => {
 			const stepData: Step = {
 				label: entry.label,
@@ -360,11 +363,43 @@ export class PropertyRegisterComponent {
 				stepData.isVisited = true;
 			}
 
+			if (step === stepListIndex) {
+				stepData.isCurrent = true;
+			}
+
+			console.log(i, ':');
+			console.log('stepListIndex', stepListIndex);
+			console.log('entry', entry);
+			console.log('stepData', stepData);
+
 			if (stepListIndex === 1) {
 				stepData.isValid = this.propertyTypeForm.valid ? true : false;
 
+				// if (stepData.isValid) {
+				// 	const unitTypeValue = this.legalInfoForm.controls['unitType'].value;
+
+				// 	if (unitTypeValue === 1) {
+				// 		stepData.isValid = this.propertyTypeEdCorpSalaPavForm.valid
+				// 			? true
+				// 			: false;
+				// 	} else if (unitTypeValue === 2 || unitTypeValue === 3) {
+				// 		stepData.isValid = this.propertyTypeEdCorpSalaPavForm.valid
+				// 			? this.propertyTypeSalaPavForm.valid
+				// 				? true
+				// 				: false
+				// 			: false;
+				// 	}
+				// }
+				console.log('stepData after 1', stepData);
+			} else if (stepListIndex === 2) {
+				stepData.isValid = this.legalInfoForm.valid ? true : false;
+
 				if (stepData.isValid) {
 					const unitTypeValue = this.legalInfoForm.controls['unitType'].value;
+
+					// if (unitTypeValue === 2 || unitTypeValue === 3) {
+					// 	stepData.isValid = this.legalInfoSalaPavForm.valid;
+					// }
 
 					if (unitTypeValue === 1) {
 						stepData.isValid = this.propertyTypeEdCorpSalaPavForm.valid
@@ -378,18 +413,10 @@ export class PropertyRegisterComponent {
 							: false;
 					}
 				}
-			} else if (stepListIndex === 2) {
-				stepData.isValid = this.legalInfoForm.valid ? true : false;
-
-				if (stepData.isValid) {
-					const unitTypeValue = this.legalInfoForm.controls['unitType'].value;
-
-					if (unitTypeValue === 2 || unitTypeValue === 3) {
-						stepData.isValid = this.legalInfoSalaPavForm.valid;
-					}
-				}
+				console.log('stepData after 2', stepData);
 			} else if (stepListIndex === 3) {
 				stepData.isValid = this.documentsForm.valid ? true : false;
+				console.log('stepData after 3', stepData);
 			}
 
 			if (step > stepListIndex) {
@@ -397,10 +424,6 @@ export class PropertyRegisterComponent {
 				} else if (stepListIndex === 3) {
 					stepData.isValid = this.legalInfoForm.valid ? true : false;
 				}
-			}
-
-			if (step === stepListIndex) {
-				stepData.isCurrent = true;
 			}
 
 			return stepData;

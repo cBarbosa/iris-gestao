@@ -28,7 +28,7 @@
 						<input
 							id="name"
 							type="text"
-							value="Edifício corporativo"
+							[value]="imovel?.unidades?.[0].idTipoUnidadeNavigation.nome ?? 'Não informado'"
 							aria-describedby="name-help"
 							maxlength="100"
 							pInputText
@@ -41,7 +41,7 @@
 						<input
 							id="name"
 							type="text"
-							value="Edi. José Maria Lopes"
+							[value]="imovel?.nome ?? 'Não informado'"
 							aria-describedby="name-help"
 							maxlength="100"
 							pInputText
@@ -53,11 +53,33 @@
 						<img src="../../../../assets/images/imovel.png" alt="edit-photo" />
 					</div>
 
-					<h4>Ed. José Maria Lopes</h4>
-					<span>SQS 415 Bloco C</span>
-					<span>Edifício corporativo</span>
+					<h4>{{ imovel?.nome ?? "Não informado" }}</h4>
+					<span>
+						<ng-container
+							*ngIf="
+								imovel.imovelEndereco && imovel.imovelEndereco[0];
+								else naoInformado
+							"
+						>
+							{{
+								imovel.imovelEndereco[0].rua +
+									", " +
+									imovel.imovelEndereco[0].cidade +
+									" - " +
+									imovel.imovelEndereco[0].uf
+							}}
+						</ng-container>
+						<ng-template #naoInformado>
+							<span class="italic text-gray-400">Endereço não informado</span>
+						</ng-template>
+					</span>
 
-					<h5>Unidade</h5>
+					<br />
+					<span
+						>{{imovel?.unidades?.[0].idTipoUnidadeNavigation.nome ?? 'Não informado'}}</span
+					>
+
+					<h5 class="mt-3">Unidade</h5>
 					<!-- <div class="unit-list">
 					<div class="mt-1.5">
 						<p-checkbox

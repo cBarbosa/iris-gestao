@@ -19,6 +19,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @Component({
 	selector: 'app-baixa-titulo-sidebar',
@@ -29,6 +30,7 @@ import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-
 		ReactiveFormsModule,
 		NgxMaskModule,
 		InputTextModule,
+		InputTextareaModule,
 		CalendarModule,
 		FileUploadComponent,
 		NgxCurrencyModule,
@@ -107,7 +109,6 @@ export class BaixaTituloSidebarComponent {
 	ngOnInit() {
 		console.log('Fatura detalhes: >> ' + JSON.stringify(this.data));
 		console.log('this.guidExpense: >> ' + JSON.stringify(this.guidExpense));
-		
 
 		if (this.registerOnSubmit && !this.guidExpense)
 			throw new Error(
@@ -178,13 +179,13 @@ export class BaixaTituloSidebarComponent {
 		console.log('on register', baixaObj);
 
 		// if (this.onSubmitForm) this.onSubmitForm(contactObj);
-		console.log('chamar função  >> '+ this.guidExpense);
+		console.log('chamar função  >> ' + this.guidExpense);
 
 		if (this.registerOnSubmit && this.guidExpense)
 			this.registerInvoice(baixaObj)
 				.then(() => {
 					this.openModal();
-					//if (this.onSubmitForm) this.onSubmitForm(baixaObj);					
+					//if (this.onSubmitForm) this.onSubmitForm(baixaObj);
 					location.reload();
 				})
 				.catch((err) => {

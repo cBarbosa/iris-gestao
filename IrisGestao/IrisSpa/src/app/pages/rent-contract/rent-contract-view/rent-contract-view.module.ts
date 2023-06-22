@@ -15,6 +15,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { NgxMaskModule } from 'ngx-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
+import { AttachmentListComponent } from 'src/app/shared/components/attachment-list/attachment-list.component';
 
 @NgModule({
 	declarations: [RentContractViewComponent],
@@ -33,6 +34,7 @@ import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-
 		InputTextModule,
 		ResponsiveDialogComponent,
 		NgxMaskModule.forChild(),
+		AttachmentListComponent,
 	],
 })
 export class RentContractViewModule {}
