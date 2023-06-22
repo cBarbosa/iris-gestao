@@ -5,7 +5,6 @@ using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -249,6 +248,20 @@ public class ContratoAluguelService: IContratoAluguelService
     {
         var retorno = await contratoAluguelRepository.GetDashboardTotalManagedArea(IdLocador, IdTipoImovel);
     
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+
+    public async Task<CommandResult> GetReportLeasedArea(
+        bool? status,
+        int? idImovel,
+        int? idTipoImovel,
+        int? idLocador,
+        int? idLocatario)
+    {
+        var retorno = await contratoAluguelRepository.GetReportLeasedArea(status, idImovel, idTipoImovel, idLocador, idLocatario);
+        
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
