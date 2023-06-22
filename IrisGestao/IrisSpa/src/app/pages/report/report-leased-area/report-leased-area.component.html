@@ -28,14 +28,14 @@
 					type="button"
 					class="p-button-outlined ml-3 h-9 addButton"
 				>
-					<i class="pi pi-plus mr-3"></i>
+					<i class="pi pi-download mr-3"></i>
 					Exportar
 				</button>
 			</div>
 		</header>
 
 		<ng-template #filtersTemplate>
-			<span class="p-input-icon-left w-full md:w-44">
+			<!-- <span class="p-input-icon-left w-full md:w-44">
 				<i class="pi pi-search"></i>
 				<input
 					pInputText
@@ -46,7 +46,42 @@
 					type="text"
 					placeholder="Buscar fornecedor"
 				/>
-			</span>
+			</span> -->
+
+			<p-dropdown
+				styleClass="w-full md:w-[10rem]"
+				[options]="opcoesImovel"
+				[(ngModel)]="filterImovel"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown>
+
+			<p-dropdown
+				styleClass="w-full md:w-[9rem]"
+				[options]="opcoesTipoImovel"
+				[(ngModel)]="filterTipoImovel"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown>
+
+			<p-dropdown
+				styleClass="w-full md:w-[8rem]"
+				[options]="opcoesLocador"
+				[(ngModel)]="filterLocador"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown>
+
+			<p-dropdown
+				styleClass="w-full md:w-[8rem]"
+				[options]="opcoesLocatario"
+				[(ngModel)]="filterLocatario"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown>
+
+			<p-dropdown
+				styleClass="w-full md:w-[7rem]"
+				[options]="opcoesStatus"
+				[(ngModel)]="filterStatus"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown>
 		</ng-template>
 
 		<ng-container>
@@ -64,7 +99,7 @@
 				[value]="resultEntries"
 				styleClass="p-datatable-striped"
 				[tableStyle]="{ 'min-width': '50rem' }"
-				[paginator]="!noRestults && !isLoading"
+				[paginator]="false"
 				[rows]="rows"
 				[(first)]="first"
 				responsiveLayout="scroll"
@@ -97,23 +132,23 @@
 					<tr class="bg-[#262626]">
 						<td colspan="4" class="bg-transparent text-white">Total</td>
 						<td class="bg-transparent text-white">
-							<div class="mb-1 text-sm font-normal">Área total</div>
+							<div class="mb-1 text-xs font-normal">Área total</div>
 							<div>3.000 m²</div>
 						</td>
 						<td class="bg-transparent text-white">
-							<div class="mb-1 text-sm font-normal">Área útil</div>
+							<div class="mb-1 text-xs font-normal">Área útil</div>
 							<div>5.000 m²</div>
 						</td>
 						<td class="bg-transparent text-white">
-							<div class="mb-1 text-sm font-normal">Habite-se</div>
+							<div class="mb-1 text-xs font-normal">Área Habite-se</div>
 							<div>3.000 m²</div>
 						</td>
 						<td class="bg-transparent text-white">
-							<div class="mb-1 text-sm font-normal">Aluguel contratado</div>
+							<div class="mb-1 text-xs font-normal">Aluguel contratado</div>
 							<div>R$ 110.000,00</div>
 						</td>
 						<td class="bg-transparent text-white">
-							<div class="mb-1 text-sm font-normal">Aluguel potencial</div>
+							<div class="mb-1 text-xs font-normal">Aluguel potencial</div>
 							<div>R$ 230.000,00</div>
 						</td>
 					</tr>
