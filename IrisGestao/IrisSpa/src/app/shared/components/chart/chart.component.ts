@@ -45,7 +45,7 @@ export class ChartComponent {
 		const plugin = {
 			id: 'canvasBackgroundColor',
 			beforeDraw: (chart: Chart, args: any, options: any) => {
-				console.log('teste');
+				console.log('options', options);
 				const { ctx } = chart;
 				ctx.save();
 				ctx.globalCompositeOperation = 'destination-over';
@@ -114,6 +114,7 @@ export class ChartComponent {
 					},
 				},
 				y: {
+					position: 'right',
 					ticks: {
 						color: '#646464',
 						callback: (val: any, index: any) => {
@@ -130,9 +131,19 @@ export class ChartComponent {
 				},
 			},
 		};
+
+		const lineOps = {
+			scales: {
+				y: {
+                    display: true,
+                    position: 'right',
+				}
+			}
+		};
+
 		this.options = {
-			line: lineBar,
 			bar: lineBar,
+			line: lineOps,
 			doughnut: {
 				maintainAspectRatio: true,
 				aspectRatio: 1,
@@ -153,7 +164,6 @@ export class ChartComponent {
 					},
 				},
 			},
-
 			percent: {
 				maintainAspectRatio: true,
 				aspectRatio: 1,
