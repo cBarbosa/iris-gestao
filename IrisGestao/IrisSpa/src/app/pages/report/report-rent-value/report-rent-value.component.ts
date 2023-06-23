@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
@@ -10,6 +10,8 @@ import { Utils } from 'src/app/shared/utils';
   styleUrls: ['./report-rent-value.component.scss']
 })
 export class ReportRentValueComponent {
+	@ViewChild('reportToPdf', {read: ElementRef}) childElement: ElementRef<HTMLElement>;
+	
 	isLoading: boolean = false;
 	isMobile: boolean = false;
 	displayMobileFilters: boolean = false;
@@ -65,7 +67,7 @@ export class ReportRentValueComponent {
 		private responsiveService: ResponsiveService
 	) {}
 
-	ngOnInit(): void {}
+	ngOnInit(): void {};
 
 	filterResult = (e?: Event, page: number = 1, stack: boolean = false) => {
 		console.log(e);
@@ -91,4 +93,8 @@ export class ReportRentValueComponent {
 			left: 0,
 		});
 	}
+
+	exportarPdf(): void {
+		Utils.saveReportAsPdf(this.childElement.nativeElement, 'valor-aluguel', 'Relatório Valor de Aluguel');
+	};
 }
