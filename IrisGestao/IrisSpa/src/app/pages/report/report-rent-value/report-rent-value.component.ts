@@ -5,24 +5,30 @@ import { ResponsiveService } from 'src/app/shared/services/responsive-service.se
 import { Utils } from 'src/app/shared/utils';
 
 @Component({
-	selector: 'app-report-leased-area',
-	templateUrl: './report-leased-area.component.html',
-	styleUrls: ['./report-leased-area.component.scss'],
+  selector: 'app-report-rent-value',
+  templateUrl: './report-rent-value.component.html',
+  styleUrls: ['./report-rent-value.component.scss']
 })
-export class ReportLeasedAreaComponent {
+export class ReportRentValueComponent {
 	@ViewChild('reportToPdf', {read: ElementRef}) childElement: ElementRef<HTMLElement>;
 	
 	isLoading: boolean = false;
 	isMobile: boolean = false;
 	displayMobileFilters: boolean = false;
-	totalAreaCount: number;
 	noRestults: boolean = false;
-	filterText: string = '';
+	totalAreaCount: number;
+
 	resultEntries: any[];
 
 	first = 0;
 	rows = 10;
-	pageIndex = 1;
+
+	filterImovel: string;
+	filterTipoImovel: string;
+	filterLocador: string;
+	filterLocatario: string;
+	filterStatus: string;
+
 
 	opcoesImovel = [
 		{
@@ -54,26 +60,17 @@ export class ReportLeasedAreaComponent {
 			value: null,
 		},
 	];
-
-	filterImovel: string;
-	filterTipoImovel: string;
-	filterLocador: string;
-	filterLocatario: string;
-	filterStatus: string;
-
-	constructor(
+  
+  constructor(
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private responsiveService: ResponsiveService
 	) {}
 
-	ngOnInit(): void {}
+	ngOnInit(): void {};
 
 	filterResult = (e?: Event, page: number = 1, stack: boolean = false) => {
 		console.log(e);
-
-		// if (stack) return this.getPage(page, this.filterText);
-		// else return this.setEntries(page, this.filterText);
 	};
 
 	loadResultPage(event: LazyLoadEvent): void {
@@ -98,6 +95,6 @@ export class ReportLeasedAreaComponent {
 	}
 
 	exportarPdf(): void {
-		Utils.saveReportAsPdf(this.childElement.nativeElement, 'area-locada', 'Relatório área locada m²');
+		Utils.saveReportAsPdf(this.childElement.nativeElement, 'valor-aluguel', 'Relatório Valor de Aluguel');
 	};
 }

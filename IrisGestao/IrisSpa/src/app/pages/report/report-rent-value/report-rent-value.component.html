@@ -4,7 +4,7 @@
 		<header class="list-header">
 			<div class="flex justify-between items-center" [class.mb-2]="isMobile">
 				<h3 class="text-2xl font-bold">
-					Relatório área locada m²
+					Relatório de Valor de Aluguel
 					<span class="ml-2 text-sm">{{ totalAreaCount }}</span>
 				</h3>
 				<button
@@ -115,11 +115,12 @@
 						<th>Locador</th>
 						<th>Imóvel</th>
 						<th>Locatário</th>
-						<th>Área total</th>
-						<th>Área Útil</th>
-						<th>Área Habite-se</th>
+						<th>Área Selecionada</th>
+						
 						<th>Aluguel contratado</th>
 						<th>Aluguel Potencial</th>
+                        <th>Preço/m²</th>
+                        <th>Preço mês referência</th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-supplier>
@@ -134,15 +135,7 @@
 					<tr class="bg-[#262626]">
 						<td colspan="4" class="bg-transparent text-white">Total</td>
 						<td class="bg-transparent text-white">
-							<div class="mb-1 text-xs font-normal">Área total</div>
-							<div>3.000 m²</div>
-						</td>
-						<td class="bg-transparent text-white">
-							<div class="mb-1 text-xs font-normal">Área útil</div>
-							<div>5.000 m²</div>
-						</td>
-						<td class="bg-transparent text-white">
-							<div class="mb-1 text-xs font-normal">Área Habite-se</div>
+							<div class="mb-1 text-xs font-normal">Área selecionada</div>
 							<div>3.000 m²</div>
 						</td>
 						<td class="bg-transparent text-white">
@@ -151,6 +144,14 @@
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Aluguel potencial</div>
+							<div>R$ 110.000,00</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Preço/m²</div>
+							<div>R$ 110.000,00</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Preço mês referência</div>
 							<div>R$ 230.000,00</div>
 						</td>
 					</tr>

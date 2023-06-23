@@ -510,6 +510,28 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
             .SqlQueryAsync<SpLeasedAreaResult>("Exec Sp_LeasedArea @Status, @IdImovel, @IdTipoImovel, @IdLocatario",
                 parameters.ToArray());
     }
-    
+
+    public async Task<IEnumerable<SpRentValueResult>?> GetReportRentValue(
+        bool? status,
+        int? idImovel,
+        int? idTipoImovel,
+        int? idLocador,
+        int? idLocatario)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@Status", SqlDbType.Bit)
+                {Value = status.HasValue ? status : DBNull.Value, IsNullable = true},
+            new ("@IdImovel", SqlDbType.Int)
+                {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true},
+            new ("@IdTipoImovel", SqlDbType.Int)
+                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true},
+            new ("@IdLocatario", SqlDbType.Int)
+                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpRentValueResult>("Exec Sp_RentValue @Status, @IdImovel, @IdTipoImovel, @IdLocatario",
+                parameters.ToArray());
+    }
 }
 
