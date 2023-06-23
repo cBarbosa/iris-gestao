@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, PipeTransform } from '@angular/core';
+import { Component, PipeTransform, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api';
 import { first } from 'rxjs';
@@ -14,6 +14,8 @@ import { Utils } from 'src/app/shared/utils';
 	styleUrls: ['./report-leased-area.component.scss'],
 })
 export class ReportLeasedAreaComponent {
+	@ViewChild('reportToPdf', {read: ElementRef}) childElement: ElementRef<HTMLElement>;
+	
 	isLoading: boolean = false;
 	isMobile: boolean = false;
 	displayMobileFilters: boolean = false;
@@ -152,5 +154,9 @@ export class ReportLeasedAreaComponent {
 
 	navigateTo = (route: string): void => {
 		this.router.navigate([route]);
+  };
+  
+	exportarPdf(): void {
+		Utils.saveReportAsPdf(this.childElement.nativeElement, 'area-locada', 'Relatório área locada m²');
 	};
 }

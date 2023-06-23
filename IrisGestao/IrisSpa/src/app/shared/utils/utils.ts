@@ -178,4 +178,28 @@ export class Utils {
 			doc.save(`${filename ? filename : 'grafico'}.pdf`);
 		});
 	}
+
+	static saveReportAsPdf(element: HTMLElement, filename?: string, title?: string) {
+
+		import('jspdf').then(({ jsPDF }) => {
+			var doc = new jsPDF('l', 'px', 'a4');
+
+			doc.html(element, {
+				callback: function(pdf) {
+					pdf.setFontSize(14);
+					if (title) pdf.text(title, 30, 20);
+					// Save the PDF
+					pdf.save(`${filename ? filename : 'report'}.pdf`);
+				},
+				margin: [10, 10, 10, 10],
+				autoPaging: 'text',
+				x: 30,
+				y: 30,
+				width: 550, //target width in the PDF document
+				windowWidth: 1300 //window width in CSS pixels
+			});
+
+		});
+	}
+
 }

@@ -1,5 +1,6 @@
 ﻿using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Entity;
+using IrisGestao.Domain.Procs;
 
 namespace IrisGestao.ApplicationService.Repository.Interfaces;
 
@@ -12,4 +13,6 @@ public interface IContratoAluguelRepository : IRepository<ContratoAluguel>, IDis
     Task<object> GetDashbaordPhysicalVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel);
     Task<object> GetDashboardTotalManagedArea(int? idLocador, int? idTipoImovel);
     Task<IEnumerable<Object>?> GetImoveisUnidadesContratoAluguelAtivos();
+    Task<IEnumerable<SpLeasedAreaResult>?> GetReportLeasedArea(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
+    Task<IEnumerable<SpRentValueResult>?> GetReportRentValue(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
 }
