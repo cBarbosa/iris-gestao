@@ -40,6 +40,7 @@ export class FinancialVacancyComponent implements OnInit {
 	}[] = [{ label: 'Todos os tipos de imóveis', value: null }];
 
 	@ViewChild('chart') chartComponent: ChartComponent;
+	@ViewChild('newChart') newChartComponent: ChartComponent;
 
 	constructor(
 		private router: Router,
@@ -59,10 +60,19 @@ export class FinancialVacancyComponent implements OnInit {
 		this.filter();
 	}
 
-	savePDF() {
-		const chart = this.chartComponent.chart;
-		Utils.saveChartAsPdf(chart, 'vacancia_financeira', 'Vacância Financeira');
-	}
+	savePDF():void {
+		const chartRef = this.tabIndex === 0
+			? this.chartComponent.chart
+			: this.newChartComponent.chart;
+		const fileName = this.tabIndex === 0
+			? `vacancia_financeira`
+			: `vacancia_fisica`;
+		const title = this.tabIndex === 0
+			? `Vacancia Financeira`
+			: `Vacancia Física`;
+
+		Utils.saveChartAsPdf(chartRef, fileName, title);
+	};
 
 	changeTab(i: number) {
 		this.tabIndex = i;
@@ -122,13 +132,13 @@ export class FinancialVacancyComponent implements OnInit {
 					this.data.labels = [];
 					this.data.datasets[1].data = []; // contratada
 					this.data.datasets[2].data = []; // potencial
-					this.data.datasets[0].data = []; // financeira
+					this.data.datasets[0].data = []; // fisica
 
 					event.data.forEach((item: any) => {
 						this.data.labels.push(item.referencia);
 						this.data.datasets[1].data.push(item.contratada); // contratada
 						this.data.datasets[2].data.push(item.potencial); // potencial
-						this.data.datasets[0].data.push(item.financeira); // financeira
+						this.data.datasets[0].data.push(item.fisica); // fisica
 					});
 				},
 				error: () => {
