@@ -9,8 +9,9 @@ import { ButtonModule } from 'primeng/button';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 import { ReportLeasedAreaRoutingModule } from './report-leased-area-routing.module';
 import { ReportLeasedAreaComponent } from './report-leased-area.component';
-import { CpfCnpjPipeModule } from 'src/app/shared/pipes';
+import { AreaPipeModule, CpfCnpjPipeModule } from 'src/app/shared/pipes';
 import { SidebarModule } from 'primeng/sidebar';
+import { CardItemComponent } from 'src/app/shared/components/card-item/card-item.component';
 
 @NgModule({
 	declarations: [ReportLeasedAreaComponent],
@@ -25,7 +26,9 @@ import { SidebarModule } from 'primeng/sidebar';
 		ButtonModule,
 		SpinnerComponent,
 		SidebarModule,
-		CpfCnpjPipeModule
+		CpfCnpjPipeModule,
+		AreaPipeModule,
+		CardItemComponent,
 	],
 })
 export class ReportLeasedAreaModule {}
