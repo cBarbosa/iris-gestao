@@ -12,16 +12,16 @@ const routes: Routes = [
 			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 		},
 	},
-	// {
-	// 	path: 'details/:guid',
-	// 	loadChildren: () =>
-	// 		import('./revenue-view/revenue-view.module').then(
-	// 			(m) => m.RevenueViewModule
-	// 		),
-	// 	data: {
-	// 		role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-	// 	},
-	// },
+	{
+		path: 'rent-amount',
+		loadChildren: () =>
+			import('./report-rent-value/report-rent-value.module').then(
+				(m) => m.ReportRentValueModule
+			),
+		data: {
+			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+		},
+	},
 	// {
 	// 	path: 'edit/:guid',
 	// 	loadChildren: () =>
