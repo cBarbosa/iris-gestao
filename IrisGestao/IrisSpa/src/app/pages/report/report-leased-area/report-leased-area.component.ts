@@ -1,6 +1,10 @@
-import { Component } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { Component, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api';
+import { first } from 'rxjs';
+import { AreaPipe } from 'src/app/shared/pipes/area.pipe';
+import { ReportLeasedAreaService } from 'src/app/shared/services/anexo.service copy';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -17,6 +21,17 @@ export class ReportLeasedAreaComponent {
 	noRestults: boolean = false;
 	filterText: string = '';
 	resultEntries: any[];
+	cardPipes: Record<string, PipeTransform>;
+
+	totalSum:
+		| {
+				area: number;
+				areaUtil: number;
+				areaHabitese: number;
+				aluguelContratado: number;
+				aluguelPotencial: number;
+		  }
+		| undefined;
 
 	first = 0;
 	rows = 10;
@@ -62,10 +77,50 @@ export class ReportLeasedAreaComponent {
 	constructor(
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private reportLeasedAreaService: ReportLeasedAreaService
 	) {}
 
-	ngOnInit(): void {}
+	ngOnInit(): void {
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
+
+		this.cardPipes = {
+			area: new AreaPipe(),
+			currency: new CurrencyPipe('pt-BR', 'R$'),
+		};
+
+		this.reportLeasedAreaService
+			.getLeasedArea()
+			.pipe(first())
+			.subscribe({
+				next: (data) => {
+					if (data) {
+						this.resultEntries = data;
+
+						this.totalSum = data.reduce(
+							(acc, entry) => {
+								acc.area += entry.somaAreaTotal;
+								acc.areaUtil += entry.somaAreaUtil;
+								acc.areaHabitese += entry.somaAreaHabitese;
+								acc.aluguelContratado += entry.somaValorAluguel;
+								acc.aluguelPotencial += entry.somaValorPotencial;
+
+								return acc;
+							},
+							{
+								area: 0,
+								areaUtil: 0,
+								areaHabitese: 0,
+								aluguelContratado: 0,
+								aluguelPotencial: 0,
+							}
+						);
+					}
+				},
+			});
+	}
 
 	filterResult = (e?: Event, page: number = 1, stack: boolean = false) => {
 		console.log(e);
@@ -94,4 +149,8 @@ export class ReportLeasedAreaComponent {
 			left: 0,
 		});
 	}
+
+	navigateTo = (route: string): void => {
+		this.router.navigate([route]);
+	};
 }

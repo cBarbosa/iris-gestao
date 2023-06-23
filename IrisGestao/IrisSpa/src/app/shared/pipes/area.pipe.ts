@@ -3,7 +3,9 @@ import { MaskPipe, MaskApplierService } from 'ngx-mask';
 
 @Pipe({ name: 'area' })
 export class AreaPipe implements PipeTransform {
-	transform(value: string | number, unit: string = 'm'): string {
+	transform(value: string | number | undefined, unit: string = 'm'): string {
+		if (value === undefined) return '';
+
 		const ngxMaskPipe = new MaskPipe(
 			new MaskApplierService({
 				suffix: ' ' + unit + '²',

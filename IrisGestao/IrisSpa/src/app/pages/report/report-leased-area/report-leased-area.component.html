@@ -120,12 +120,17 @@
 						<th>Aluguel Potencial</th>
 					</tr>
 				</ng-template>
-				<ng-template pTemplate="body" let-supplier>
+				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="font-bold">{{ supplier.name }}</td>
-						<td>{{ supplier.cpf_cnpj }}</td>
-						<td>{{ supplier.phone }}</td>
-						<td>{{ supplier.email }}</td>
+						<td class="font-bold">{{ entry.numCentroCusto }}</td>
+						<td>{{ entry.nomeLocador ?? "-" }}</td>
+						<td>{{ entry.nomeImovel }}</td>
+						<td>{{ entry.nomeLocatario }}</td>
+						<td>{{ entry.somaAreaTotal | area }}</td>
+						<td>{{ entry.somaAreaUtil | area }}</td>
+						<td>{{ entry.somaAreaHabitese | area }}</td>
+						<td>{{ entry.somaValorAluguel | currency }}</td>
+						<td>{{ entry.somaValorPotencial | currency }}</td>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="footer">
@@ -133,69 +138,90 @@
 						<td colspan="4" class="bg-transparent text-white">Total</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Área total</div>
-							<div>3.000 m²</div>
+							<div>{{ totalSum?.area | area }}</div>
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Área útil</div>
-							<div>5.000 m²</div>
+							<div>{{ totalSum?.areaUtil | area }}</div>
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Área Habite-se</div>
-							<div>3.000 m²</div>
+							<div>{{ totalSum?.areaHabitese | area }}</div>
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Aluguel contratado</div>
-							<div>R$ 110.000,00</div>
+							<div>{{ totalSum?.aluguelContratado | currency }}</div>
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Aluguel potencial</div>
-							<div>R$ 230.000,00</div>
+							<div>{{ totalSum?.aluguelPotencial | currency }}</div>
 						</td>
 					</tr>
 				</ng-template>
 			</p-table>
 
-			<!-- <ng-container *ngIf="isMobile">
+			<ng-container *ngIf="isMobile">
 				<div class="cardList">
-					<ng-container *ngFor="let supplier of resultEntries">
+					<ng-container *ngFor="let entry of resultEntries">
 						<app-card-item
 							[card]="{
 								infos: [
 									{
-										label: 'Nome',
-										data: supplier.name
+										label: 'Centro de custo',
+										data: entry.numCentroCusto
 									},
 									{
-										label: 'CPF/CNPJ',
-										data: supplier.cpf_cnpj,
-										pipe: cardPipes['cpfcnpj']
+										label: 'Locador',
+										data: entry.nomeLocador ?? '-'
 									},
 									{
-										label: 'Telefone',
-										data: supplier.phone,
-										pipe: cardPipes['telefone']
+										label: 'Imóvel',
+										data: entry.nomeImovel
 									},
 									{
-										label: 'Email',
-										data: supplier.email
+										label: 'Locatário',
+										data: entry.nomeLocatario
+									},
+									{
+										label: 'Área total',
+										data: entry.somaAreaTotal,
+										pipe: cardPipes['area']
+									},
+									{
+										label: 'Área Útil',
+										data: entry.somaAreaUtil,
+										pipe: cardPipes['area']
+									},
+									{
+										label: 'Área Habite-se',
+										data: entry.somaAreaHabitese,
+										pipe: cardPipes['area']
+									},
+									{
+										label: 'Aluguel contratado',
+										data: entry.somaValorAluguel,
+										pipe: cardPipes['currency']
+									},
+									{
+										label: 'Aluguel Potencial',
+										data: entry.somaValorPotencial,
+										pipe: cardPipes['currency']
 									}
 								]
 							}"
 						>
-							<button
+							<!-- <button
 								pButton
 								type="button"
 								class="p-button-text h-7 font-bold"
-								(click)="
-									navigateTo('supplier/details/' + supplier.guidReferencia)
-								"
+								(click)="navigateTo('supplier/details/' + entry.guidReferencia)"
 							>
 								Ver detalhes
-							</button>
+							</button> -->
 						</app-card-item>
 					</ng-container>
 
-					<div class="mx-5 mt-5">
+					<!-- <div class="mx-5 mt-5">
 						<button
 							pButton
 							type="button"
@@ -205,16 +231,40 @@
 						>
 							Carregar mais
 						</button>
+					</div> -->
+				</div>
+				<div
+					class="flex flex-wrap gap-x-5 gap-y-7 p-4 justify-between bg-[#262626]"
+				>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Área total</div>
+						<div>{{ totalSum?.area | area }}</div>
+					</div>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Área útil</div>
+						<div>{{ totalSum?.areaUtil | area }}</div>
+					</div>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Área Habite-se</div>
+						<div>{{ totalSum?.areaHabitese | area }}</div>
+					</div>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Aluguel contratado</div>
+						<div>{{ totalSum?.aluguelContratado | currency }}</div>
+					</div>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Aluguel potencial</div>
+						<div>{{ totalSum?.aluguelPotencial | currency }}</div>
 					</div>
 				</div>
-			</ng-container> -->
+			</ng-container>
 		</ng-container>
 	</div>
 </div>
 
-<!-- <p-sidebar [(visible)]="displayMobileFilters" position="bottom">
+<p-sidebar [(visible)]="displayMobileFilters" position="bottom">
 	<ng-template pTemplate="header">Filtros</ng-template>
 	<ng-template pTemplate="content">
 		<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
 	</ng-template>
-</p-sidebar> -->
+</p-sidebar>
