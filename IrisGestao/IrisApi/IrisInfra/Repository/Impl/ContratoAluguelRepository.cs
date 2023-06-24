@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Data;
+﻿using System.Data;
 using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
@@ -20,6 +19,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
     {
         
     }
+    
     public async Task<ContratoAluguel?> GetByGuid(Guid guid)
     {
         return await DbSet.FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
@@ -362,7 +362,11 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         return null!;
     }
     
-    public async Task<object> GetDashbaordFinancialVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    public async Task<IEnumerable<SpFinancialVacancyResult>?> GetDashbaordFinancialVacancy(
+        DateTime dateRefInit,
+        DateTime dateRefEnd,
+        int? idLocador,
+        int? idTipoImovel)
     {
         var parameters = new List<SqlParameter> {
             new ("@DataInicioContrato", SqlDbType.Date)
@@ -376,60 +380,26 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         };
 
         return await Db
-            .SqlQueryAsync<SPFinancialVacancyResult>("Exec Sp_FinancialVacancy @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade",
+            .SqlQueryAsync<SpFinancialVacancyResult>("Exec Sp_FinancialVacancy @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade",
                 parameters.ToArray());
     }
     
-    public async Task<object> GetDashbaordPhysicalVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    public async Task<IEnumerable<SpPhysicalVacancyResult>?> GetDashbaordPhysicalVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
     {
-        var Meses = Enumerable.Range(0, int.MaxValue)
-            .Select(dateRefInit.AddMonths)
-            .TakeWhile(date => date <= dateRefEnd)
-            .Select(date => new { DataMes = date });
+        var parameters = new List<SqlParameter> {
+            new ("@DataInicioContrato", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimContrato", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@ClienteID", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
+            new ("@TipoUnidade", SqlDbType.Int)
+                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true}
+        };
 
-        try
-        {
-            var query = Meses
-                .SelectMany(mes => Db.ContratoAluguel
-                    .Where(contrato => mes.DataMes >= contrato.DataInicioContrato && mes.DataMes <= contrato.DataFimContrato && contrato.Status
-                        && (!idLocador.HasValue || idLocador.HasValue && contrato.IdCliente == idLocador)
-                        // && (!idTipoImovel.HasValue || idTipoImovel.HasValue && contrato.ContratoAluguelImovel.Where(x => x.ContratoAluguelUnidade.Where(z => z.IdUnidadeNavigation.IdTipoUnidade == idTipoImovel)))
-                    )
-                    .Include(contrato => contrato.IdClienteNavigation)
-                    .Include(contrato => contrato.ContratoAluguelImovel)
-                        .ThenInclude(x => x.ContratoAluguelUnidade)
-                            .ThenInclude(x => x.IdUnidadeNavigation)
-                    .Include(x => x.ContratoAluguelImovel)
-                        .ThenInclude(x => x.IdImovelNavigation)
-                            .ThenInclude(x => x.IdClienteProprietarioNavigation)
-                    .DefaultIfEmpty()
-                    .Select(x => new {Mes = mes, Contrato = x})
-                )
-                .GroupBy(x => new
-                {
-                    Referencia = x.Mes.DataMes.Month.ToString("00") + "-" + x.Mes.DataMes.Year.ToString("0000")
-                })
-                .OrderBy(groupedData => groupedData.Key.Referencia)
-                .Select(groupedData => new
-                {
-                    groupedData.Key.Referencia,
-                    Potencial = groupedData.Sum(x =>  x.Contrato?.ContratoAluguelImovel?.Sum(y => y.ContratoAluguelUnidade?.Sum(z => z.IdUnidadeNavigation?.AreaUtil))),
-                    Contratada = groupedData.Where(x => x.Contrato != null && x.Contrato.Status)?.Sum(x =>  x.Contrato?.ContratoAluguelImovel?.Sum(y => y.ContratoAluguelUnidade?.Sum(z => z.IdUnidadeNavigation?.AreaUtil))),
-                    Financeira = groupedData.Where(x => x.Contrato != null && x.Contrato.Status)?.Sum(x =>  x.Contrato?.ContratoAluguelImovel?.Sum(y => y.ContratoAluguelUnidade?.Sum(z => z.IdUnidadeNavigation?.AreaUtil)))
-                        / (groupedData.Sum(x =>  x.Contrato?.ContratoAluguelImovel?.Sum(y => y.ContratoAluguelUnidade?.Sum(z => z.IdUnidadeNavigation?.AreaUtil))) > 0
-                                 ? groupedData.Sum(x =>  x.Contrato?.ContratoAluguelImovel?.Sum(y => y.ContratoAluguelUnidade?.Sum(z => z.IdUnidadeNavigation?.AreaUtil)))
-                                 : 1.0m)
-                })
-                .ToList();
-
-            return await Task.FromResult(query);
-        }
-        catch (Exception e)
-        {
-            Logger.LogError(e, e.Message);
-        }
-
-        return null!;
+        return await Db
+            .SqlQueryAsync<SpPhysicalVacancyResult>("Exec Sp_PhysicalVacancy @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade",
+                parameters.ToArray());
     }
 
     public async Task<IEnumerable<Object>?> GetImoveisUnidadesContratoAluguelAtivos()
@@ -503,4 +473,3 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                 parameters.ToArray());
     }
 }
-

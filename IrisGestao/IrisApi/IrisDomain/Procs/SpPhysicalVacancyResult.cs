@@ -1,6 +1,6 @@
 ﻿namespace IrisGestao.Domain.Procs;
 
-public partial class SPFinancialVacancyResult
+public partial class SpPhysicalVacancyResult
 {
     public string Referencia { get; set; }
     public decimal? Contratada { get; set; }

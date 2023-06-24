@@ -1,8 +1,7 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
 import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
-import { DropdownItem } from 'src/app/shared/models/types';
 import { ClienteService, CommonService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
@@ -132,13 +131,13 @@ export class FinancialVacancyComponent implements OnInit {
 					this.data.labels = [];
 					this.data.datasets[1].data = []; // contratada
 					this.data.datasets[2].data = []; // potencial
-					this.data.datasets[0].data = []; // fisica
+					this.data.datasets[0].data = []; // financeira
 
 					event.data.forEach((item: any) => {
 						this.data.labels.push(item.referencia);
 						this.data.datasets[1].data.push(item.contratada); // contratada
 						this.data.datasets[2].data.push(item.potencial); // potencial
-						this.data.datasets[0].data.push(item.fisica); // fisica
+						this.data.datasets[0].data.push(item.financeira); // financeira
 					});
 				},
 				error: () => {
@@ -160,13 +159,13 @@ export class FinancialVacancyComponent implements OnInit {
 					this.data2.labels = [];
 					this.data2.datasets[1].data = []; // contratada
 					this.data2.datasets[2].data = []; // potencial
-					this.data2.datasets[0].data = []; // financeira
+					this.data2.datasets[0].data = []; // fisica
 
 					event.data.forEach((item: any) => {
 						this.data2.labels.push(item.referencia);
 						this.data2.datasets[1].data.push(item.contratada); // contratada
 						this.data2.datasets[2].data.push(item.potencial); // potencial
-						this.data2.datasets[0].data.push(item.financeira); // financeira
+						this.data2.datasets[0].data.push(item.fisica); // financeira
 					});
 				},
 				error: () => {
