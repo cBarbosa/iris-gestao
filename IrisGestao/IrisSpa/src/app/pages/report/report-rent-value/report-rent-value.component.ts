@@ -1,6 +1,10 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { Component, ElementRef, PipeTransform, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api';
+import { first } from 'rxjs';
+import { AreaPipe } from 'src/app/shared/pipes/area.pipe';
+import { ReportService } from 'src/app/shared/services';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -29,6 +33,17 @@ export class ReportRentValueComponent {
 	filterLocatario: string;
 	filterStatus: string;
 
+	cardPipes: Record<string, PipeTransform>;
+
+	totalSum:
+		| {
+				area: number;
+				aluguelContratado: number;
+				aluguelPotencial: number;
+				precoM2: number;
+				precoMesReferencia: number;
+		  }
+		| undefined;
 
 	opcoesImovel = [
 		{
@@ -64,10 +79,23 @@ export class ReportRentValueComponent {
   constructor(
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private reportService: ReportService
 	) {}
 
-	ngOnInit(): void {};
+	ngOnInit(): void {
+
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
+
+		this.cardPipes = {
+			area: new AreaPipe(),
+			currency: new CurrencyPipe('pt-BR', 'R$'),
+		};
+
+		this.getData();
+	};
 
 	filterResult = (e?: Event, page: number = 1, stack: boolean = false) => {
 		console.log(e);
@@ -96,5 +124,38 @@ export class ReportRentValueComponent {
 
 	exportarPdf(): void {
 		Utils.saveReportAsPdf(this.childElement.nativeElement, 'valor-aluguel', 'Relatório Valor de Aluguel');
+	};
+
+	getData() : void {
+		this.reportService
+			.getRentValue()
+			.pipe(first())
+			.subscribe({
+				next: (data) => {
+					if (data) {
+						this.resultEntries = data;
+
+						this.totalSum = data.reduce(
+							(acc, entry) => {
+								acc.area += entry.somaAreaUtil;
+								acc.aluguelContratado += entry.somaValorAluguel;
+								acc.aluguelPotencial += entry.somaValorPotencial;
+								acc.precoM2 += entry.somaPrecoM2;
+								acc.precoMesReferencia += entry.precoMesReferencia;
+
+								return acc;
+							},
+							{
+								area: 0,
+								aluguelContratado: 0,
+								aluguelPotencial: 0,
+								precoM2: 0,
+								precoMesReferencia: 0,
+							}
+						);
+					}
+				},
+			});
+	
 	};
 }

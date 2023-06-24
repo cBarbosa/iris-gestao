@@ -1,10 +1,8 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map} from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
 import { environment as env } from '../../../environments/environment';
-
-import { first } from 'rxjs/internal/operators/first';
 
 type LeasedArea = {
 	nomeImovel: string;
@@ -17,6 +15,17 @@ type LeasedArea = {
 	somaValorPotencial: number;
 };
 
+type RentValue = {
+	nomeImovel: string;
+	numCentroCusto: number;
+	nomeLocatario: string;
+	somaAreaUtil: number;
+	somaValorAluguel: number;
+	somaPrecoM2: number;
+	somaValorPotencial: number;
+	precoMesReferencia: number;
+};
+
 const httpOptions = {
 	headers: new HttpHeaders({
 		'Content-Type': 'multipart/form-data',
@@ -26,7 +35,7 @@ const httpOptions = {
 @Injectable({
 	providedIn: 'root',
 })
-export class ReportLeasedAreaService {
+export class ReportService {
 	constructor(private http: HttpClient) {}
 
 	getLeasedArea(
@@ -42,7 +51,7 @@ export class ReportLeasedAreaService {
 					Status: status ?? '',
 					IdImovel: imovelId ?? '',
 					IdTipoImovel: tipoImovelId ?? '',
-					IdLocatario: locadorId ?? '',
+					IdLocatario: locatarioId ?? '',
 					IdLocador: locadorId ?? '',
 				},
 			})
@@ -54,5 +63,33 @@ export class ReportLeasedAreaService {
 					return response.data;
 				})
 			);
-	}
+	};
+
+	getRentValue(
+		imovelId?: number,
+		status?: boolean,
+		tipoImovelId?: number,
+		locatarioId?: number,
+		locadorId?: number
+	) {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Report/rent-value`, {
+				params: {
+					Status: status ?? '',
+					IdImovel: imovelId ?? '',
+					IdTipoImovel: tipoImovelId ?? '',
+					IdLocatario: locatarioId ?? '',
+					IdLocador: locadorId ?? '',
+				},
+			})
+			.pipe(
+				map((response): RentValue[] | null => {
+					console.debug('response', response);
+					if (!response.success)
+						console.error(`getRentValue: ${response.message}`);
+					return response.data;
+				})
+			);
+	};
+
 }
