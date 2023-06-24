@@ -16,7 +16,7 @@ import { Utils } from 'src/app/shared/utils';
 export class ReportRentValueComponent {
 	@ViewChild('reportToPdf', {read: ElementRef}) childElement: ElementRef<HTMLElement>;
 	
-	isLoading: boolean = false;
+	isLoading: boolean = true;
 	isMobile: boolean = false;
 	displayMobileFilters: boolean = false;
 	noRestults: boolean = false;
@@ -127,6 +127,8 @@ export class ReportRentValueComponent {
 	};
 
 	getData() : void {
+		this.isLoading = true;
+
 		this.reportService
 			.getRentValue()
 			.pipe(first())
@@ -154,7 +156,7 @@ export class ReportRentValueComponent {
 							}
 						);
 					}
-				},
+				}, complete : () => this.isLoading = false,
 			});
 	
 	};

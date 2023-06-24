@@ -16,7 +16,7 @@ import { Utils } from 'src/app/shared/utils';
 export class ReportLeasedAreaComponent {
 	@ViewChild('reportToPdf', {read: ElementRef}) childElement: ElementRef<HTMLElement>;
 	
-	isLoading: boolean = false;
+	isLoading: boolean = true;
 	isMobile: boolean = false;
 	displayMobileFilters: boolean = false;
 	totalAreaCount: number;
@@ -93,35 +93,7 @@ export class ReportLeasedAreaComponent {
 			currency: new CurrencyPipe('pt-BR', 'R$'),
 		};
 
-		this.reportLeasedAreaService
-			.getLeasedArea()
-			.pipe(first())
-			.subscribe({
-				next: (data) => {
-					if (data) {
-						this.resultEntries = data;
-
-						this.totalSum = data.reduce(
-							(acc, entry) => {
-								acc.area += entry.somaAreaTotal;
-								acc.areaUtil += entry.somaAreaUtil;
-								acc.areaHabitese += entry.somaAreaHabitese;
-								acc.aluguelContratado += entry.somaValorAluguel;
-								acc.aluguelPotencial += entry.somaValorPotencial;
-
-								return acc;
-							},
-							{
-								area: 0,
-								areaUtil: 0,
-								areaHabitese: 0,
-								aluguelContratado: 0,
-								aluguelPotencial: 0,
-							}
-						);
-					}
-				},
-			});
+		this.getData();
 	}
 
 	filterResult = (e?: Event, page: number = 1, stack: boolean = false) => {
@@ -158,5 +130,38 @@ export class ReportLeasedAreaComponent {
   
 	exportarPdf(): void {
 		Utils.saveReportAsPdf(this.childElement.nativeElement, 'area-locada', 'Relatório área locada m²');
+	};
+
+	getData():void {
+
+		this.reportLeasedAreaService
+			.getLeasedArea()
+			.pipe(first())
+			.subscribe({
+				next: (data) => {
+					if (data) {
+						this.resultEntries = data;
+
+						this.totalSum = data.reduce(
+							(acc, entry) => {
+								acc.area += entry.somaAreaTotal;
+								acc.areaUtil += entry.somaAreaUtil;
+								acc.areaHabitese += entry.somaAreaHabitese;
+								acc.aluguelContratado += entry.somaValorAluguel;
+								acc.aluguelPotencial += entry.somaValorPotencial;
+
+								return acc;
+							},
+							{
+								area: 0,
+								areaUtil: 0,
+								areaHabitese: 0,
+								aluguelContratado: 0,
+								aluguelPotencial: 0,
+							}
+						);
+					}
+				}, complete : () => this.isLoading = false
+			});
 	};
 }
