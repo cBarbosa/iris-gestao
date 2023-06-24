@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api';
 import { first } from 'rxjs';
 import { AreaPipe } from 'src/app/shared/pipes/area.pipe';
-import { ReportLeasedAreaService } from 'src/app/shared/services/anexo.service copy';
+import { ReportService } from 'src/app/shared/services';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -80,7 +80,7 @@ export class ReportLeasedAreaComponent {
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private responsiveService: ResponsiveService,
-		private reportLeasedAreaService: ReportLeasedAreaService
+		private reportLeasedAreaService: ReportService
 	) {}
 
 	ngOnInit(): void {

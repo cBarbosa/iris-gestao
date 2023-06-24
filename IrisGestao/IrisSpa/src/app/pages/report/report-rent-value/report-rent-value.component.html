@@ -116,19 +116,24 @@
 						<th>Imóvel</th>
 						<th>Locatário</th>
 						<th>Área Selecionada</th>
-						
 						<th>Aluguel contratado</th>
 						<th>Aluguel Potencial</th>
                         <th>Preço/m²</th>
                         <th>Preço mês referência</th>
 					</tr>
 				</ng-template>
-				<ng-template pTemplate="body" let-supplier>
+				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="font-bold">{{ supplier.name }}</td>
-						<td>{{ supplier.cpf_cnpj }}</td>
-						<td>{{ supplier.phone }}</td>
-						<td>{{ supplier.email }}</td>
+						<td class="font-bold">{{ entry.numCentroCusto }}</td>
+						<td>{{ entry.nomeLocador ?? "-" }}</td>
+						<td>{{ entry.nomeImovel }}</td>
+						<td>{{ entry.nomeLocatario }}</td>
+
+						<td>{{ entry.somaAreaUtil | area }}</td>
+						<td>{{ entry.somaValorAluguel | currency }}</td>
+						<td>{{ entry.somaValorPotencial | currency }}</td>
+						<td>{{ entry.somaPrecoM2 | currency }}</td>
+						<td>{{ entry.somaPrecoMesReferencia | currency }}</td>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="footer">
@@ -136,69 +141,90 @@
 						<td colspan="4" class="bg-transparent text-white">Total</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Área selecionada</div>
-							<div>3.000 m²</div>
+							<div>{{ totalSum?.area | area }}</div>
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Aluguel contratado</div>
-							<div>R$ 110.000,00</div>
+							<div>{{ totalSum?.aluguelContratado | currency }}</div>
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Aluguel potencial</div>
-							<div>R$ 110.000,00</div>
+							<div>{{ totalSum?.aluguelPotencial | currency }}</div>
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Preço/m²</div>
-							<div>R$ 110.000,00</div>
+							<div>{{ totalSum?.precoM2 | currency }}</div>
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Preço mês referência</div>
-							<div>R$ 230.000,00</div>
+							<div>{{ totalSum?.precoMesReferencia | currency }}</div>
 						</td>
 					</tr>
 				</ng-template>
 			</p-table>
 
-			<!-- <ng-container *ngIf="isMobile">
+			<ng-container *ngIf="isMobile">
 				<div class="cardList">
-					<ng-container *ngFor="let supplier of resultEntries">
+					<ng-container *ngFor="let entry of resultEntries">
 						<app-card-item
 							[card]="{
 								infos: [
 									{
-										label: 'Nome',
-										data: supplier.name
+										label: 'Centro de custo',
+										data: entry.numCentroCusto
 									},
 									{
-										label: 'CPF/CNPJ',
-										data: supplier.cpf_cnpj,
-										pipe: cardPipes['cpfcnpj']
+										label: 'Locador',
+										data: entry.nomeLocador ?? '-'
 									},
 									{
-										label: 'Telefone',
-										data: supplier.phone,
-										pipe: cardPipes['telefone']
+										label: 'Imóvel',
+										data: entry.nomeImovel
 									},
 									{
-										label: 'Email',
-										data: supplier.email
+										label: 'Locatário',
+										data: entry.nomeLocatario
+									},
+									{
+										label: 'Área selecionada',
+										data: entry.somaAreaUtil,
+										pipe: cardPipes['area']
+									},
+									{
+										label: 'Aluguel contratado',
+										data: entry.somaValorAluguel,
+										pipe: cardPipes['currency']
+									},
+									{
+										label: 'Aluguel Potencial',
+										data: entry.somaValorPotencial,
+										pipe: cardPipes['currency']
+									},
+									{
+										label: 'Preço/m²',
+										data: entry.somaPrecoM2,
+										pipe: cardPipes['currency']
+									},
+									{
+										label: 'Preço mês referência',
+										data: entry.somaPrecoMesReferencia,
+										pipe: cardPipes['currency']
 									}
 								]
 							}"
 						>
-							<button
+							<!-- <button
 								pButton
 								type="button"
 								class="p-button-text h-7 font-bold"
-								(click)="
-									navigateTo('supplier/details/' + supplier.guidReferencia)
-								"
+								(click)="navigateTo('supplier/details/' + entry.guidReferencia)"
 							>
 								Ver detalhes
-							</button>
+							</button> -->
 						</app-card-item>
 					</ng-container>
 
-					<div class="mx-5 mt-5">
+					<!-- <div class="mx-5 mt-5">
 						<button
 							pButton
 							type="button"
@@ -208,9 +234,34 @@
 						>
 							Carregar mais
 						</button>
+					</div> -->
+				</div>
+				<div
+					class="flex flex-wrap gap-x-5 gap-y-7 p-4 justify-between bg-[#262626]"
+				>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Área selecionada</div>
+						<div>{{ totalSum?.area | area }}</div>
+					</div>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Aluguel contratado</div>
+						<div>{{ totalSum?.aluguelContratado | currency }}</div>
+					</div>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Aluguel potencial</div>
+						<div>{{ totalSum?.aluguelPotencial | currency }}</div>
+					</div>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Preço/m²</div>
+						<div>{{ totalSum?.precoM2 | currency }}</div>
+					</div>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Preço mês referência</div>
+						<div>{{ totalSum?.precoMesReferencia | currency }}</div>
 					</div>
 				</div>
-			</ng-container> -->
+			</ng-container>
+
 		</ng-container>
 	</div>
 </div>

@@ -7,10 +7,11 @@ import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
-import { CpfCnpjPipeModule } from 'src/app/shared/pipes';
+import { AreaPipeModule, CpfCnpjPipeModule } from 'src/app/shared/pipes';
 import { SidebarModule } from 'primeng/sidebar';
 import { ReportRentValueComponent } from './report-rent-value.component';
 import { ReportRentValueRoutingModule } from './report-rent-value-routing.module';
+import { CardItemComponent } from 'src/app/shared/components/card-item/card-item.component';
 
 @NgModule({
 	declarations: [ReportRentValueComponent],
@@ -25,7 +26,9 @@ import { ReportRentValueRoutingModule } from './report-rent-value-routing.module
 		ButtonModule,
 		SpinnerComponent,
 		SidebarModule,
-		CpfCnpjPipeModule
+		CpfCnpjPipeModule,
+		AreaPipeModule,
+		CardItemComponent,
 	],
 })
 export class ReportRentValueModule {}
