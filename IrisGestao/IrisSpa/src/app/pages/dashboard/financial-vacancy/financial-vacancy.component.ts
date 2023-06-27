@@ -99,9 +99,9 @@ export class FinancialVacancyComponent implements OnInit {
 			const idTipo = this.filterTipo ?? null;
 
 			if(this.tabIndex == 0)
-				this.getFinancialVacancyData(startDateString, endDateString, idLocador, idTipo);
-			else
 				this.getPhysicalVacancyData(startDateString, endDateString, idLocador, idTipo);
+			else
+				this.getFinancialVacancyData(startDateString, endDateString, idLocador, idTipo);
 		}
 
 		// this.setClientEntries(1, this.filterText, this.filterType);
