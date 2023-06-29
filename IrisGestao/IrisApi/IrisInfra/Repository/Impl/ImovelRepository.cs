@@ -142,6 +142,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                         .Include(x => x.ImovelEndereco)
                         .Include(x => x.Unidade)
                             .ThenInclude(y => y.IdTipoUnidadeNavigation)
+                        .Include(x=> x.Evento)
                         .Where(x => x.GuidReferencia.Equals(guid))
                         .Select(x => new
                         {
@@ -202,7 +203,33 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                                         Id = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Id,
                                         Nome = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Nome,
                                     }
-                            }
+                            },
+                            Eventos = x.Evento.Select(y => new
+                            {
+                                GuidReferenciaEvento = y.GuidReferencia,
+                                DataRealizacao = y.DthRealizacao,
+                                Nome           = y.Nome,
+                                Descricao      = y.descricao,
+                                TipoEvento = y.IdTipoEventoNavigation == null
+                                    ? null
+                                    : new
+                                    {
+                                        Id = y.IdTipoEventoNavigation.Id,
+                                        Nome = y.IdTipoEventoNavigation.Nome
+                                },
+                                ClienteVisitante = y.IdClienteNavigation == null
+                                    ? null
+                                    : new
+                                    {
+                                        GuidReferenciaVisitante = y.IdClienteNavigation.GuidReferencia,
+                                        Nome = y.IdClienteNavigation.Nome
+                                    },
+                                UnidadesVisitadas = y.EventoUnidade.Select(y => new
+                                {
+                                    GuidReferenciaUnidadeVisitada = y.IdUnidadeNavigation.GuidReferencia,
+                                    Tipo = y.IdUnidadeNavigation.Tipo
+                                })
+                            }),
                         })
                     .FirstOrDefaultAsync();
     }
