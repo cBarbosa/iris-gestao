@@ -1,4 +1,5 @@
-﻿using IrisGestao.ApplicationService.Services.Interface;
+﻿using IrisGestao.ApplicationService.Service.Impl;
+using IrisGestao.ApplicationService.Services.Interface;
 using IrisGestao.Domain.Command.Request;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,8 +20,11 @@ public class EventoController : Controller
     // GET
     [HttpGet("/api/[controller]")]
     [Produces("application/json")]
-   public async Task<IActionResult> GetAll() =>
-        Ok(await eventoService.GetAll());
+    public async Task<IActionResult> GetAll(
+      [FromQuery] int? limit = 10
+    , [FromQuery] int? page = 1)
+       => Ok(await eventoService.GetAllPaging(limit ?? 10, page ?? 1));
+
 
     // GET
     [HttpGet("/api/[controller]/{codigo}/id/")]

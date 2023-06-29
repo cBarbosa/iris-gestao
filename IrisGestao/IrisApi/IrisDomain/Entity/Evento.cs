@@ -45,4 +45,8 @@ public partial class Evento: BaseEntity<Evento>
     [ForeignKey("IdTipoEvento")]
     [InverseProperty("Evento")]
     public virtual TipoEvento IdTipoEventoNavigation { get; set; } = null!;
+
+    [InverseProperty("IdEventoNavigation")]
+    public virtual ICollection<EventoUnidade> EventoUnidade { get; } = new List<EventoUnidade>();
+
 }

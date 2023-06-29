@@ -12,15 +12,21 @@ namespace IrisGestao.ApplicationService.Service.Impl;
 public class EventoService: IEventoService
 {
     private readonly IEventoRepository eventoRepository;
+    private readonly IEventoUnidadeRepository eventoUnidadeRepository;
     private readonly IImovelRepository imovelRepository;
+    private readonly IUnidadeRepository unidadeRepository;
     private readonly IClienteRepository clienteRepository;
 
-    public EventoService(IEventoRepository EventoRepository, 
+    public EventoService(IEventoRepository EventoRepository,
+        IEventoUnidadeRepository EventoUnidadeRepository,
         IImovelRepository ImovelRepository,
+        IUnidadeRepository UnidadeRepository,
         IClienteRepository ClienteRepository)
     {
         this.eventoRepository = EventoRepository;
+        this.eventoUnidadeRepository = EventoUnidadeRepository;
         this.imovelRepository = ImovelRepository;
+        this.unidadeRepository = UnidadeRepository;
         this.clienteRepository = ClienteRepository;
     }
 
@@ -31,6 +37,15 @@ public class EventoService: IEventoService
         return !Eventos.Any()
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
             : new CommandResult(true, SuccessResponseEnums.Success_1005, Eventos);
+    }
+
+    public async Task<CommandResult> GetAllPaging(int limit, int page)
+    {
+        var result = await eventoRepository.GetAllPaging(limit, page);
+
+        return result == null
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, result);
     }
 
     public async Task<CommandResult> GetById(int codigo)
@@ -63,6 +78,7 @@ public class EventoService: IEventoService
     public async Task<CommandResult> Insert(CriarEventoCommand cmd)
     {
         Evento Evento = new Evento();
+        List<EventoUnidade> lstEventoUnidade = new List<EventoUnidade>();
         
         if (cmd == null)
         {
@@ -84,11 +100,20 @@ public class EventoService: IEventoService
         Evento.IdImovel  = imovel.Id;
         Evento.IdCliente = cliente.Id;
         BindEventoData(cmd, Evento);
-        return new CommandResult(true, SuccessResponseEnums.Success_1000, Evento);
-        /*
+
         try
         {
             eventoRepository.Insert(Evento);
+            foreach (var guidUnidade in cmd.lstUnidades)
+            {
+                EventoUnidade eventoUnidade = new EventoUnidade();
+                var unidade = await unidadeRepository.GetByReferenceGuid(guidUnidade);
+                eventoUnidade.IdEvento = Evento.Id;
+                eventoUnidade.IdUnidade = unidade.Id;
+
+                eventoUnidadeRepository.Insert(eventoUnidade);
+            }           
+            
             return new CommandResult(true, SuccessResponseEnums.Success_1000, Evento);
         }
         catch (Exception)
@@ -96,7 +121,6 @@ public class EventoService: IEventoService
             return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
             throw;
         }
-        */
     }
 
     public async Task<CommandResult> Update(Guid uuid, CriarEventoCommand cmd)
