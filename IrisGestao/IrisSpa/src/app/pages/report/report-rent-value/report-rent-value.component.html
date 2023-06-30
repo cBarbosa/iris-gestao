@@ -125,9 +125,9 @@
 				<ng-template pTemplate="body" let-entry>
 					<tr>
 						<td class="font-bold">{{ entry.numCentroCusto }}</td>
-						<td>{{ entry.nomeLocador ?? "-" }}</td>
+						<td>{{ entry.nomeLocatario ?? "-" }}</td>
 						<td>{{ entry.nomeImovel }}</td>
-						<td>{{ entry.nomeLocatario }}</td>
+						<td>{{ entry.nomeLocador ?? '-' }}</td>
 
 						<td>{{ entry.somaAreaUtil | area }}</td>
 						<td>{{ entry.somaValorAluguel | currency }}</td>
