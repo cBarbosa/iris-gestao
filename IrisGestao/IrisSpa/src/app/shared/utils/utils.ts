@@ -181,24 +181,93 @@ export class Utils {
 
 	static saveReportAsPdf(element: HTMLElement, filename?: string, title?: string) {
 
+		const imgLogo = new Image().src = 'assets/images/topbar-logo.png';
+
 		import('jspdf').then(({ jsPDF }) => {
 			var doc = new jsPDF('l', 'px', 'a4');
+
+			const pageCount = doc.internal.pages.length -1;
+
+			// add Header
+			doc.setTextColor(150);
+			doc.setFont('helvetica', 'bold');
+			doc.setFontSize(16);
+			doc.text(`IRIS Gestão Imobiliária`, doc.internal.pageSize.getWidth() / 2, 15, {align: 'center'});
+			doc.addImage(imgLogo, 'png', 530, 5, 93, 27);
+			doc.line(20, 35, doc.internal.pageSize.getWidth() - 20, 35);
+			// Header end
 
 			doc.html(element, {
 				callback: function(pdf) {
 					pdf.setFontSize(14);
-					if (title) pdf.text(title, 30, 20);
+					if (title) pdf.text(title, 30, 50);
 					// Save the PDF
 					pdf.save(`${filename ? filename : 'report'}.pdf`);
 				},
 				margin: [10, 10, 10, 10],
 				autoPaging: 'text',
 				x: 30,
-				y: 30,
+				y: 60,
 				width: 550, //target width in the PDF document
 				windowWidth: 1300 //window width in CSS pixels
 			});
 
+			// add footer
+			doc.setFont('helvetica', 'italic');
+  			doc.setFontSize(5);
+			for (var i = 1; i <= pageCount; i++) {
+				doc.setPage(i)
+				doc.text(`Página ${i} de ${pageCount}`, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() - 10, {align: 'center'});
+			};
+			doc.text(`Gerado em ${new Date().toLocaleString('pt-BR')}`, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() - 5, {align: 'center'});
+			// footer end
+
+		});
+	}
+
+	static saveChartsAsPdf(chart: Chart, chart2: Chart, filename?: string, title?: string) {
+
+		const imgLogo = new Image().src = 'assets/images/topbar-logo.png';
+
+		import('jspdf').then(({ jsPDF }) => {
+			const doc = new jsPDF('p', 'px', 'a4');
+			const pageCount = doc.internal.pages.length -1;
+
+			// add Header
+			doc.setTextColor(150);
+			doc.setFont('helvetica', 'bold');
+			doc.setFontSize(16);
+			doc.text(`IRIS Gestão Imobiliária`, doc.internal.pageSize.getWidth() / 2, 15, {align: 'center'});
+			doc.addImage(imgLogo, 'png', 340, 5, 93, 27);
+			doc.line(20, 35, doc.internal.pageSize.getWidth() - 20, 35);
+			// Header end
+
+			const base64 = chart.toBase64Image();
+			const base64New = chart2.toBase64Image();
+			const refWindow = 790.0; // 1122.52
+
+			const w = refWindow / 2;
+			const h = (chart.height * refWindow) / 2 / chart.width;
+
+			doc.setTextColor(0);
+			doc.setFontSize(14);
+			
+			if (title) doc.text(title, 30, 50);
+			doc.addImage(base64, 'JPEG', 30, title ? 70 : 40, w, h);
+			doc.text(`Percentual`, 30, 100 + h);
+			doc.addImage(base64New, 'JPEG', 30, (title ? 120 : 40) + h, w, h);
+			
+			// add footer
+			doc.setFont('helvetica', 'italic');
+  			doc.setFontSize(5);
+			for (var i = 1; i <= pageCount; i++) {
+				doc.setPage(i)
+				doc.text(`Página ${i} de ${pageCount}`, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() - 10, {align: 'center'});
+			};
+			doc.text(`Gerado em ${new Date().toLocaleString('pt-BR')}`, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() - 5, {align: 'center'});
+			// footer end
+
+			doc.save(`${filename ? filename : 'grafico'}.pdf`);
 		});
 	}
 

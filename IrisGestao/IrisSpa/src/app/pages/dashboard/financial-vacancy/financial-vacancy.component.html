@@ -94,8 +94,18 @@
 						#newChart
 					></app-chart>
 				</p-tabPanel>
-				
+
 			</p-tabView>
+
+			<span class="py-8 text-lg font-bold">
+				Percentual
+			</span>
+
+			<app-chart
+				[data]="data3.datasets"
+				[labels]="data3.labels"
+				#lineChart
+			></app-chart>
 		</div>
 	</div>
 </div>

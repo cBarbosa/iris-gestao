@@ -15,6 +15,7 @@ import { Utils } from 'src/app/shared/utils';
 export class FinancialVacancyComponent implements OnInit {
 	data: any;
 	data2: any;
+	data3: any;
 	options: any;
 
 	isLoading: boolean = false;
@@ -40,6 +41,7 @@ export class FinancialVacancyComponent implements OnInit {
 
 	@ViewChild('chart') chartComponent: ChartComponent;
 	@ViewChild('newChart') newChartComponent: ChartComponent;
+	@ViewChild('lineChart') lineChartComponent: ChartComponent;
 
 	constructor(
 		private router: Router,
@@ -47,9 +49,9 @@ export class FinancialVacancyComponent implements OnInit {
 		private dashboardService: DashboardService,
 		private clienteService: ClienteService,
 		private commonService: CommonService
-	) {}
+	) { };
 
-	ngOnInit() {
+	ngOnInit():void {
 		this.init();
 
 		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
@@ -57,12 +59,13 @@ export class FinancialVacancyComponent implements OnInit {
 		});
 
 		this.filter();
-	}
+	};
 
 	savePDF():void {
 		const chartRef = this.tabIndex === 0
 			? this.chartComponent.chart
 			: this.newChartComponent.chart;
+
 		const fileName = this.tabIndex === 0
 			? `vacancia_financeira`
 			: `vacancia_fisica`;
@@ -70,7 +73,7 @@ export class FinancialVacancyComponent implements OnInit {
 			? `Vacancia Financeira`
 			: `Vacancia Física`;
 
-		Utils.saveChartAsPdf(chartRef, fileName, title);
+		Utils.saveChartsAsPdf(chartRef, this.lineChartComponent.chart, fileName, title);
 	};
 
 	changeTab(i: number) {
@@ -98,6 +101,7 @@ export class FinancialVacancyComponent implements OnInit {
 			const idLocador = this.filterLocador ?? null;
 			const idTipo = this.filterTipo ?? null;
 
+			console.log(this.tabIndex);
 			if(this.tabIndex == 0)
 				this.getPhysicalVacancyData(startDateString, endDateString, idLocador, idTipo);
 			else
@@ -128,16 +132,18 @@ export class FinancialVacancyComponent implements OnInit {
 			.subscribe({
 				next: (event) => {
 
-					this.data.labels = [];
-					this.data.datasets[1].data = []; // contratada
-					this.data.datasets[2].data = []; // potencial
-					this.data.datasets[0].data = []; // financeira
+					this.data2.labels = [];
+					this.data3.labels = [];
+					this.data2.datasets[0].data = []; // contratada
+					this.data2.datasets[1].data = []; // potencial
+					this.data3.datasets[0].data = []; // financeira
 
 					event.data.forEach((item: any) => {
-						this.data.labels.push(item.referencia);
-						this.data.datasets[1].data.push(item.contratada); // contratada
-						this.data.datasets[2].data.push(item.potencial); // potencial
-						this.data.datasets[0].data.push(item.financeira); // financeira
+						this.data2.labels.push(item.referencia);
+						this.data3.labels.push(item.referencia);
+						this.data2.datasets[0].data.push(item.contratada); // contratada
+						this.data2.datasets[1].data.push(item.potencial); // potencial
+						this.data3.datasets[0].data.push(item.financeira); // financeira
 					});
 				},
 				error: () => {
@@ -145,6 +151,7 @@ export class FinancialVacancyComponent implements OnInit {
 				},
 				complete: () => {
 					this.isLoading = false;
+					console.log(this.data);
 				}
 			});
 	};
@@ -155,17 +162,18 @@ export class FinancialVacancyComponent implements OnInit {
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
-
-					this.data2.labels = [];
-					this.data2.datasets[1].data = []; // contratada
-					this.data2.datasets[2].data = []; // potencial
-					this.data2.datasets[0].data = []; // fisica
+					this.data.labels = [];
+					this.data3.labels = [];
+					this.data.datasets[0].data = []; // contratada
+					this.data.datasets[1].data = []; // potencial
+					this.data3.datasets[0].data = []; // fisica
 
 					event.data.forEach((item: any) => {
-						this.data2.labels.push(item.referencia);
-						this.data2.datasets[1].data.push(item.contratada); // contratada
-						this.data2.datasets[2].data.push(item.potencial); // potencial
-						this.data2.datasets[0].data.push(item.fisica); // financeira
+						this.data.labels.push(item.referencia);
+						this.data3.labels.push(item.referencia);
+						this.data.datasets[0].data.push(item.contratada); // contratada
+						this.data.datasets[1].data.push(item.potencial); // potencial
+						this.data3.datasets[0].data.push(item.fisica); // financeira
 					});
 				},
 				error: () => {
@@ -173,6 +181,7 @@ export class FinancialVacancyComponent implements OnInit {
 				},
 				complete: () => {
 					this.isLoading = false;
+					console.log(this.data2);
 				}
 			});
 	};
@@ -182,12 +191,6 @@ export class FinancialVacancyComponent implements OnInit {
 		this.data = {
 			labels: [],
 			datasets: [
-				{
-					type: 'line',
-					label: 'Vacância financeira',
-					borderColor: '#D08175',
-					data: [],
-				},
 				{
 					type: 'bar',
 					label: 'Receita contratada',
@@ -207,12 +210,6 @@ export class FinancialVacancyComponent implements OnInit {
 			labels: [],
 			datasets: [
 				{
-					type: 'line',
-					label: 'Vacância financeira',
-					borderColor: '#D08175',
-					data: [],
-				},
-				{
 					type: 'bar',
 					label: 'Área contratada',
 					backgroundColor: `#C9D78E`,
@@ -227,12 +224,23 @@ export class FinancialVacancyComponent implements OnInit {
 			],
 		};
 
+		this.data3 = {
+			labels: [],
+			datasets: [
+				{
+					type: 'line',
+					label: 'Vacância financeira',
+					borderColor: '#D08175',
+					data: [],
+				}
+			],
+		};
+
 		const currYear = new Date().getFullYear();
 		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 31)];
 
 		this.getOwnersListData();
 		this.getUnitTypesData();
-
 	};
 
 	truncateChar(text: string): string {
