@@ -119,7 +119,7 @@ export class ChartComponent {
 						color: '#646464',
 						callback: (val: any, index: any) => {
 							// Hide every 2nd tick label
-							return val + '%';
+							return `${val}`;
 						},
 					},
 					grid: {
