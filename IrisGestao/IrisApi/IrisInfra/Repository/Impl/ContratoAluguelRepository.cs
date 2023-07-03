@@ -30,7 +30,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         return await DbSet
                         .Include(y => y.IdClienteNavigation)
                             .ThenInclude(y=> y.IdTipoClienteNavigation)
-                        .Include(x => x.ContratoAluguelImovel )
+                        .Include(x => x.ContratoAluguelImovel)
                             .ThenInclude(x=> x.ContratoAluguelUnidade)
                         .Include(x => x.IdIndiceReajusteNavigation)
                         .Where(x => x.GuidReferencia.Equals(guid) && x.Status)
@@ -118,6 +118,27 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 {
                                     Id                      = x.IdImovelNavigation.IdCategoriaImovelNavigation.Id,
                                     Nome                    = x.IdImovelNavigation.IdCategoriaImovelNavigation.Nome
+                                },
+                                IdClienteProprietarioNavigation = x.IdImovelNavigation.IdClienteProprietarioNavigation == null ? null : new
+                                {
+                                    Id = x.IdImovelNavigation.IdClienteProprietarioNavigation.Id,
+                                    GuidReferencia = x.IdImovelNavigation.IdClienteProprietarioNavigation.GuidReferencia,
+                                    CpfCnpj = x.IdImovelNavigation.IdClienteProprietarioNavigation.CpfCnpj,
+                                    Nome = x.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
+                                    Telefone = x.IdImovelNavigation.IdClienteProprietarioNavigation.Telefone,
+                                    Email = x.IdImovelNavigation.IdClienteProprietarioNavigation.Email,
+                                    Cep = x.IdImovelNavigation.IdClienteProprietarioNavigation.Cep,
+                                    Endereco = x.IdImovelNavigation.IdClienteProprietarioNavigation.Endereco,
+                                    Bairro = x.IdImovelNavigation.IdClienteProprietarioNavigation.Bairro,
+                                    Cidade = x.IdImovelNavigation.IdClienteProprietarioNavigation.Cidade,
+                                    Estado = x.IdImovelNavigation.IdClienteProprietarioNavigation.Estado,
+                                    IdTipoClienteNavigation = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation == null
+                                    ? null
+                                    : new
+                                    {
+                                        Id = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Id,
+                                        Nome = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Nome,
+                                    }
                                 },
                                 Unidades = x.ContratoAluguelUnidade.Select(y => new
                                 {
@@ -296,7 +317,22 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 {
                                     Id = x.IdImovelNavigation.IdCategoriaImovelNavigation.Id,
                                     Nome = x.IdImovelNavigation.IdCategoriaImovelNavigation.Nome
-                                }
+                                },
+                                IdClienteProprietarioNavigation = x.IdImovelNavigation.IdClienteProprietarioNavigation == null ? null : new
+                                {
+                                    GuidReferencia = x.IdImovelNavigation.IdClienteProprietarioNavigation.GuidReferencia,
+                                    CpfCnpj = x.IdImovelNavigation.IdClienteProprietarioNavigation.CpfCnpj,
+                                    Nome = x.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
+                                    Telefone = x.IdImovelNavigation.IdClienteProprietarioNavigation.Telefone,
+                                    Email = x.IdImovelNavigation.IdClienteProprietarioNavigation.Email,
+                                    IdTipoClienteNavigation = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation == null
+                                    ? null
+                                    : new
+                                    {
+                                        Id = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Id,
+                                        Nome = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Nome,
+                                    }
+                                },
                             }),
                             TituloReceber = x.TituloReceber.Select(x => new
                             {

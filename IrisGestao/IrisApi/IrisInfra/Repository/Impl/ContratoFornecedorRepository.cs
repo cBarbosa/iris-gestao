@@ -4,6 +4,7 @@ using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Security.Cryptography.X509Certificates;
 
 namespace IrisGestao.Infraestructure.Repository.Impl;
 
@@ -133,6 +134,7 @@ public class ContratoFornecedorRepository : Repository<ContratoFornecedor>, ICon
         {
             var contratos = await DbSet
                         .Include(x => x.IdFornecedorNavigation)
+                        .Include( x=> x.IdImovelNavigation)
                         .Where(x => x.Status
                                     && (!string.IsNullOrEmpty(numeroContrato)
                                         ? x.NumeroContrato.Contains(numeroContrato!)
@@ -171,7 +173,34 @@ public class ContratoFornecedorRepository : Repository<ContratoFornecedor>, ICon
                                     DataAtualização         = z.DataUltimaModificacao,
                                     guidReferenciaContato   = z.GuidReferencia,
                                 })
-                            }
+                            },
+                            Imovel = x.IdImovelNavigation == null ? null : new
+                            {
+                                GuidReferencia = x.IdImovelNavigation.GuidReferencia,
+                                Nome = x.IdImovelNavigation.Nome,
+                                NumCentroCusto = x.IdImovelNavigation.NumCentroCusto,
+                                Status = x.IdImovelNavigation.Status,
+                                IdCategoriaImovelNavigation = x.IdImovelNavigation.IdCategoriaImovelNavigation == null ? null : new
+                                {
+                                    Id = x.IdImovelNavigation.IdCategoriaImovelNavigation.Id,
+                                    Nome = x.IdImovelNavigation.IdCategoriaImovelNavigation.Nome
+                                },
+                                Proprietario = x.IdImovelNavigation.IdClienteProprietarioNavigation == null ? null : new
+                                {
+                                    GuidReferencia = x.IdImovelNavigation.IdClienteProprietarioNavigation.GuidReferencia,
+                                    CpfCnpj = x.IdImovelNavigation.IdClienteProprietarioNavigation.CpfCnpj,
+                                    Nome = x.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
+                                    Telefone = x.IdImovelNavigation.IdClienteProprietarioNavigation.Telefone,
+                                    Email = x.IdImovelNavigation.IdClienteProprietarioNavigation.Email,
+                                    IdTipoClienteNavigation = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation == null
+                                    ? null
+                                    : new
+                                    {
+                                        Id = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Id,
+                                        Nome = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Nome,
+                                    }
+                                },
+                            },
                         }).OrderByDescending(x => x.DataCriacao).ToListAsync();
 
             var totalCount = contratos.Count();

@@ -185,6 +185,19 @@
 								>
 									Dar baixa na Fatura
 								</button>
+								<!--button
+									pButton
+									type="button"
+									class="p-button-filled h-9 w-full justify-center text-sm"
+									(click)="setCurrentFatura(fatura); showEditarBaixaVisible()"
+									*ngIf="
+										fatura.statusFatura === 'Vencido' ||
+											fatura.statusFatura === 'A vencer';
+										else detalhesBtn
+									"
+								>
+									Editar Fatura
+								</button-->
 								<ng-template #detalhesBtn>
 									<button
 										pButton
@@ -339,24 +352,6 @@
 				[guid]="faturaSelected?.guidReferencia"
 				[editable]="false"
 			></app-upload-list>
-			<!-- <div class="document file" [class.empty]="!faturaSelected?.nfFile">
-			<span>{{ faturaSelected?.nfFile.name }}</span>
-			<span class="buttons">
-				<button
-					pButton
-					type="button"
-					class="p-button-rounded p-button-text"
-					(click)="
-						downloadFile(
-							faturaSelected?.nfFile.url,
-							faturaSelected?.nfFile.name
-						)
-					"
-				>
-					<i class="ph-download-simple"></i>
-				</button>
-			</span>
-		</div> -->
 		</div>
 
 		<button
@@ -368,6 +363,23 @@
 		</button>
 	</ng-template>
 </p-sidebar>
+
+<!--
+<p-sidebar [(visible)]="editarBaixaVisible" position="right">
+	<ng-template pTemplate="header">
+		<h2 class="text-xl font-bold">Baixa de Fatura</h2>
+	</ng-template>
+	<ng-template pTemplate="content">
+		<app-edicao-titulo-sidebar
+			[data]="getFaturaFormData(faturaSelected)"
+			[cancel]="hideBaixaTitulo"
+			[onSubmitForm]="hideBaixaTitulo"
+			[registerOnSubmit]="true"
+			[guidExpense]="faturaSelected.guidReferencia"
+		></app-edicao-titulo-sidebar>
+	</ng-template>
+</p-sidebar>
+!-->
 
 <p-sidebar [(visible)]="baixaTituloVisible" position="right">
 	<ng-template pTemplate="header">

@@ -282,16 +282,16 @@ export class RentContractRegisterComponent {
 			}
 		});
 
-		this.imovelService.getProperties(100, 1).subscribe((event) => {
+		this.imovelService.getImoveisDisponiveis().subscribe((event) => {
 			if (event) {
-				event.data.items.forEach((item: any) => {
+				event.forEach((item: any) => {
 					this.buildings.push({
-						label: item.nome,
+						label: item.nomeImovel,
 						value: {
-							guid: item.guidReferencia,
-							name: item.nome,
+							guid: item.guidImovel,
+							name: item.nomeImovel,
 						},
-						units: item.unidade,
+						units: item.lstUnidade,
 					});
 				});
 			}
@@ -731,10 +731,10 @@ export class RentContractRegisterComponent {
 
 		building?.['units']?.forEach((item: any) => {
 			this.units.push({
-				label: item.tipo,
+				label: item.nomeUnidade,
 				value: {
-					guid: item.guidReferencia,
-					name: item.tipo,
+					guid: item.guidUnidade,
+					name: item.nomeUnidade,
 				},
 			});
 		});

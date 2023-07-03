@@ -192,6 +192,7 @@ export class RevenueListingComponent {
 										numeroTitulo: receita.numeroTitulo,
 										imovel: receita.imoveil?.[0].nome,
 										locatario: receita.cliente?.nome,
+										proprietario: receita.imoveil?.[0].idClienteProprietarioNavigation?.nome,
 										valor: receita.valorTotalTitulo,
 										dataVencimento: receita.dataFimTitulo
 											? new Date(receita.dataFimTitulo)
