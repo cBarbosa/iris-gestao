@@ -194,6 +194,7 @@ export class ExpenseListingComponent {
 											? despesa.imovel?.[0].nome
 											: '',
 										locador: despesa.cliente?.nome,
+										proprietario: despesa.imovel?.[0].idClienteProprietarioNavigation?.nome,
 										valor: despesa.valorTotalTitulo,
 										dataVencimento: despesa.dataFimTitulo
 											? new Date(despesa.dataFimTitulo)

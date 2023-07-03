@@ -26,6 +26,7 @@ export class RevenueViewComponent {
 	faturaSelected: any;
 
 	detalheBaixaVisible = false;
+	editarBaixaVisible = false;
 	baixaTituloVisible = false;
 
 	constructor(
@@ -111,12 +112,20 @@ export class RevenueViewComponent {
 
 	showDetalheBaixa = (): void => {
 		this.detalheBaixaVisible = true;
+		this.baixaTituloVisible = false;		
+		this.editarBaixaVisible = false;
+	};
+
+	showEditarBaixaVisible = (): void => {
+		this.detalheBaixaVisible = false;
 		this.baixaTituloVisible = false;
+		this.editarBaixaVisible = true;
 	};
 
 	showBaixaTitulo = (): void => {
 		this.detalheBaixaVisible = false;
 		this.baixaTituloVisible = true;
+		this.editarBaixaVisible = false;
 	};
 
 	hideDetalheBaixa = () => {

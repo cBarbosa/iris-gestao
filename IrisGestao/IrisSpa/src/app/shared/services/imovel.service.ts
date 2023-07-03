@@ -66,6 +66,19 @@ export class ImovelService {
 		);
 	}
 
+	getImoveisDisponiveis() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Imovel/BuscarImoveisDisponiveis`)
+			.pipe(
+				map((response) => {
+					console.log('response', response);
+					if (!response.success)
+						console.error(`getProperty: ${response.message}`);
+					return response.data;
+				})
+			);
+	}
+
 	registerProperty(propertyObj: Property) {
 		return this.http.post<ApiResponse>(
 			`${env.config.apiUrl}Imovel/Criar`,
