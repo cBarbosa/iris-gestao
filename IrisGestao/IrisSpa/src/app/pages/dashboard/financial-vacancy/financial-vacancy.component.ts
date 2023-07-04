@@ -134,15 +134,15 @@ export class FinancialVacancyComponent implements OnInit {
 
 					this.data2.labels = [];
 					this.data3.labels = [];
-					this.data2.datasets[0].data = []; // contratada
-					this.data2.datasets[1].data = []; // potencial
+					this.data2.datasets[1].data = []; // contratada
+					this.data2.datasets[0].data = []; // potencial
 					this.data3.datasets[0].data = []; // financeira
 
 					event.data.forEach((item: any) => {
 						this.data2.labels.push(item.referencia);
 						this.data3.labels.push(item.referencia);
-						this.data2.datasets[0].data.push(item.contratada); // contratada
-						this.data2.datasets[1].data.push(item.potencial); // potencial
+						this.data2.datasets[1].data.push(item.contratada); // contratada
+						this.data2.datasets[0].data.push(item.potencial); // potencial
 						this.data3.datasets[0].data.push(item.financeira); // financeira
 					});
 				},
@@ -164,15 +164,15 @@ export class FinancialVacancyComponent implements OnInit {
 				next: (event) => {
 					this.data.labels = [];
 					this.data3.labels = [];
-					this.data.datasets[0].data = []; // contratada
-					this.data.datasets[1].data = []; // potencial
+					this.data.datasets[1].data = []; // contratada
+					this.data.datasets[0].data = []; // potencial
 					this.data3.datasets[0].data = []; // fisica
 
 					event.data.forEach((item: any) => {
 						this.data.labels.push(item.referencia);
 						this.data3.labels.push(item.referencia);
-						this.data.datasets[0].data.push(item.contratada); // contratada
-						this.data.datasets[1].data.push(item.potencial); // potencial
+						this.data.datasets[1].data.push(item.contratada); // contratada
+						this.data.datasets[0].data.push(item.potencial); // potencial
 						this.data3.datasets[0].data.push(item.fisica); // financeira
 					});
 				},
@@ -193,16 +193,16 @@ export class FinancialVacancyComponent implements OnInit {
 			datasets: [
 				{
 					type: 'bar',
-					label: 'Receita contratada',
-					backgroundColor: `#C9D78E`,
-					data: [],
-				},
-				{
-					type: 'bar',
 					label: 'Receita potencial',
 					backgroundColor: `#641B1E`,
 					data: [],
 				},
+				{
+					type: 'bar',
+					label: 'Receita contratada',
+					backgroundColor: `#C9D78E`,
+					data: [],
+				}
 			],
 		};
 
@@ -211,16 +211,16 @@ export class FinancialVacancyComponent implements OnInit {
 			datasets: [
 				{
 					type: 'bar',
-					label: 'Área contratada',
-					backgroundColor: `#C9D78E`,
-					data: [],
-				},
-				{
-					type: 'bar',
 					label: 'Área potencial',
 					backgroundColor: `#641B1E`,
 					data: [],
 				},
+				{
+					type: 'bar',
+					label: 'Área contratada',
+					backgroundColor: `#C9D78E`,
+					data: [],
+				}
 			],
 		};
 
