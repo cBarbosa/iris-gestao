@@ -346,7 +346,8 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 DataCriacao = x.DataCriacao,
                                 DataAtualização = x.DataUltimaModificacao,
                                 DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,
-                                PorcentagemTaxaAdministracao = x.PorcentagemTaxaAdministracao
+                                PorcentagemTaxaAdministracao = x.PorcentagemTaxaAdministracao,
+                                DataUltimaFatura = x.FaturaTitulo.FirstOrDefault().DataVencimento.Value
                             }),
                         }).OrderBy(x=> x.DataFimContrato).ToListAsync();
 

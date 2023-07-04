@@ -111,8 +111,8 @@
 						<td>{{ expense.tipoDocumento }}</td>
 						<td>
 							{{
-								expense.dataVencimento
-									? (expense.dataVencimento | date : "shortDate")
+								expense.dataUltimaParcela
+									? (expense.dataUltimaParcela | date : "shortDate")
 									: "-"
 							}}
 						</td>
