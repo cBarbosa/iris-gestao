@@ -70,8 +70,8 @@ export class FinancialVacancyComponent implements OnInit {
 			? `vacancia_financeira`
 			: `vacancia_fisica`;
 		const title = this.tabIndex === 0
-			? `Vacancia Financeira`
-			: `Vacancia Física`;
+			? `Vacância Financeira`
+			: `Vacância Física`;
 
 		Utils.saveChartsAsPdf(chartRef, this.lineChartComponent.chart, fileName, title);
 	};
