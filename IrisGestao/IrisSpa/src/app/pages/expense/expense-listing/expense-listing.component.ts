@@ -199,6 +199,9 @@ export class ExpenseListingComponent {
 										dataVencimento: despesa.dataFimTitulo
 											? new Date(despesa.dataFimTitulo)
 											: null,
+										dataUltimaParcela: despesa.dataUltimaParcela
+											? new Date(despesa.dataUltimaParcela)
+											: null,
 										action: '',
 										guidReferencia: despesa.guidReferencia,
 									};

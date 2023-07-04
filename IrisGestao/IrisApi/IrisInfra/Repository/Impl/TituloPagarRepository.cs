@@ -216,6 +216,7 @@ public class TituloPagarRepository : Repository<TituloPagar>, ITituloPagarReposi
                             DataCriacao = x.DataCriacao,
                             DataAtualização = x.DataUltimaModificacao,
                             DataFimTitulo = x.DataFimTitulo,
+                            DataUltimaParcela = x.FaturaTituloPagar.OrderByDescending(x=> x.DataVencimento.Value).FirstOrDefault().DataVencimento.Value,
                             TipoTituloPagar = x.IdTipoTituloNavigation == null ? null : new
                             {
                                 Id = x.IdTipoTituloNavigation.Id,

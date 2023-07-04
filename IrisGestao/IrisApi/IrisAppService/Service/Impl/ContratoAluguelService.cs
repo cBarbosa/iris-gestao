@@ -392,16 +392,19 @@ public class ContratoAluguelService: IContratoAluguelService
 
     private static void BindContratoAluguelHistoricoReajusteData(double novoPercentualReajuste, ContratoAluguelHistoricoReajusteCommand cmd, ContratoAluguel ContratoAluguel)
     {
-        double valorLiquido;
-        valorLiquido = calculaValorLiquido(ContratoAluguel.ValorAluguel, null, novoPercentualReajuste, true);
+        double valorLiquido, novoValorAluguel;
+        novoValorAluguel = calculaValorReajuste(ContratoAluguel.ValorAluguel, novoPercentualReajuste);
+        valorLiquido = calculaValorImpostos(novoValorAluguel, novoPercentualReajuste);
         DateTime dataVencimento                     = ContratoAluguel.DataFimContrato.AddMonths(12);
 
         cmd.IdContratoAluguel                       = ContratoAluguel.Id;
         cmd.PercentualReajusteAntigo                = ContratoAluguel.PercentualRetencaoImpostos;
         cmd.PercentualReajusteNovo                  = novoPercentualReajuste;
         cmd.ValorAluguelAnterior                    = ContratoAluguel.ValorComImpostos.HasValue ? ContratoAluguel.ValorComImpostos.Value : ContratoAluguel.ValorAluguel;
-        cmd.ValorAluguelNovo                        = valorLiquido;
+        cmd.ValorAluguelNovo                        = novoValorAluguel;
 
+        ContratoAluguel.ValorAluguel                = novoValorAluguel;
+        ContratoAluguel.ValorAluguelLiquido         = valorLiquido;
         ContratoAluguel.DataUltimaModificacao       = DateTime.Now;
         ContratoAluguel.PercentualRetencaoImpostos  = novoPercentualReajuste;
         ContratoAluguel.ValorAluguelLiquido         = valorLiquido;
@@ -452,6 +455,15 @@ public class ContratoAluguelService: IContratoAluguelService
         valorImpostos = calcularPorcentagem(valorAluguel, percentualImpostos);
 
         return valorAluguel - valorImpostos;
+    }
+
+    private static double calculaValorReajuste(double valorAluguel, double percentualImpostos)
+    {
+        double valorImpostos;
+
+        valorImpostos = calcularPorcentagem(valorAluguel, percentualImpostos);
+
+        return valorAluguel + valorImpostos;
     }
 
     private static double calcularPorcentagem(double valor, double percentual)

@@ -195,7 +195,10 @@ export class RevenueListingComponent {
 										proprietario: receita.imoveil?.[0].idClienteProprietarioNavigation?.nome,
 										valor: receita.valorTotalTitulo,
 										dataVencimento: receita.dataFimTitulo
-											? new Date(receita.dataFimTitulo)
+										? new Date(receita.dataFimTitulo)
+										: null,
+										dataUltimaParcela: receita.dataUltimaParcela
+											? new Date(receita.dataUltimaParcela)
 											: null,
 										action: '',
 										guidReferencia: receita.guidReferencia,

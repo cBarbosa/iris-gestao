@@ -111,8 +111,8 @@
 						<td>{{ revenue.valor | currency }}</td>
 						<td>
 							{{
-								revenue.dataVencimento
-									? (revenue.dataVencimento | date : "shortDate")
+								revenue.dataUltimaParcela
+									? (revenue.dataUltimaParcela | date : "shortDate")
 									: "-"
 							}}
 						</td>

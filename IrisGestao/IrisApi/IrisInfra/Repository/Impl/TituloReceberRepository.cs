@@ -210,6 +210,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                             DataCriacao = x.DataCriacao,
                             DataFimTitulo = x.DataFimTitulo,
                             DataAtualização = x.DataUltimaModificacao,
+                            DataUltimaParcela = x.FaturaTitulo.OrderByDescending(x=> x.DataVencimento.Value).FirstOrDefault().DataVencimento.Value,
                             TipoTituloReceber = x.IdTipoTituloNavigation == null ? null : new
                             {
                                 Id = x.IdTipoTituloNavigation.Id,
