@@ -13,6 +13,10 @@ import { Utils } from 'src/app/shared/utils';
 	styleUrls: ['./financial-vacancy.component.scss'],
 })
 export class FinancialVacancyComponent implements OnInit {
+	@ViewChild('chart') chartComponent: ChartComponent;
+	@ViewChild('newChart') newChartComponent: ChartComponent;
+	@ViewChild('lineChart') lineChartComponent: ChartComponent;
+
 	data: any;
 	data2: any;
 	data3: any;
@@ -26,6 +30,7 @@ export class FinancialVacancyComponent implements OnInit {
 	filterLocador: number;
 	filterTipo: number;
 	filterPeriodo: Date[];
+	filterArea: number;
 
 	tabIndex: number = 0;
 
@@ -39,9 +44,15 @@ export class FinancialVacancyComponent implements OnInit {
 		value: string | null;
 	}[] = [{ label: 'Todos os tipos de imóveis', value: null }];
 
-	@ViewChild('chart') chartComponent: ChartComponent;
-	@ViewChild('newChart') newChartComponent: ChartComponent;
-	@ViewChild('lineChart') lineChartComponent: ChartComponent;
+	areaOptions: {
+		label: string;
+		value: string | null;
+	}[] = [
+		{ label: 'Todos os tipos de áreas', value: null },
+		{ label: 'Área Útil', value: '1' },
+		{ label: 'Área Total', value: '2' },
+		{ label: 'Área Habite-se', value: '3' }
+	];
 
 	constructor(
 		private router: Router,
@@ -100,12 +111,12 @@ export class FinancialVacancyComponent implements OnInit {
 			const endDateString = endDate.toISOString().split('T')[0];
 			const idLocador = this.filterLocador ?? null;
 			const idTipo = this.filterTipo ?? null;
+			const idTipoArea = this.filterArea ?? null;
 
-			console.log(this.tabIndex);
 			if(this.tabIndex == 0)
-				this.getPhysicalVacancyData(startDateString, endDateString, idLocador, idTipo);
-			else
 				this.getFinancialVacancyData(startDateString, endDateString, idLocador, idTipo);
+			else
+				this.getPhysicalVacancyDataArea(startDateString, endDateString, idLocador, idTipo, idTipoArea);
 		}
 
 		// this.setClientEntries(1, this.filterText, this.filterType);
@@ -125,9 +136,15 @@ export class FinancialVacancyComponent implements OnInit {
 		this.router.navigate([route]);
 	}
 
-	getFinancialVacancyData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number) {
-		this.dashboardService
-			.getFinancialVacancy(startDateString, endDateString, IdLocador, IdTipoImovel)
+	getPhysicalVacancyDataArea(
+		startDateString: string,
+		endDateString: string,
+		IdLocador?: number,
+		IdTipoImovel?: number,
+		IdTipoArea?: number) {
+
+		this.dashboardService // resultado invertido
+			.getFinancialVacancy(startDateString, endDateString, IdLocador, IdTipoImovel, IdTipoArea)
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
@@ -156,7 +173,7 @@ export class FinancialVacancyComponent implements OnInit {
 			});
 	};
 
-	getPhysicalVacancyData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number) {
+	getFinancialVacancyData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number) {
 		this.dashboardService
 			.getPhysicalVacancy(startDateString, endDateString, IdLocador, IdTipoImovel)
 			.pipe(first())
@@ -256,7 +273,7 @@ export class FinancialVacancyComponent implements OnInit {
 
 	getOwnersListData() {
 		this.clienteService
-			.getListaProprietarios()
+			.getListaProprietariosNew()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {

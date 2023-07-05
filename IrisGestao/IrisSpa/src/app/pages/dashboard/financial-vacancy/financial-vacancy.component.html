@@ -58,6 +58,16 @@
 				(ngModelChange)="filterClientDebounce($event)"
 			></p-dropdown>
 
+			<p-dropdown
+				[styleClass]="'mr-2 w-full md:w-44'"
+				placeholder="Tipo de área"
+				[options]="areaOptions"
+				aria-describedby="tipo-area-help"
+				[(ngModel)]="filterArea"
+				(ngModelChange)="filterClientDebounce($event)"
+				*ngIf="tabIndex == 1"
+			></p-dropdown>
+
 			<p-calendar
 				[styleClass]="'mr-2 w-full md:w-44'"
 				placeholder="Período"

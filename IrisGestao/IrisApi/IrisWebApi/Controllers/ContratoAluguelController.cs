@@ -1,11 +1,11 @@
-﻿using IrisGestao.ApplicationService.Service.Impl;
-using IrisGestao.ApplicationService.Services.Interface;
+﻿using IrisGestao.ApplicationService.Services.Interface;
 using IrisGestao.Domain.Command.Request;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IrisWebApi.Controllers;
 
 [Route("api/[controller]")]
+[Produces("application/json")]
 [ApiController]
 public class ContratoAluguelController : Controller
 {
@@ -17,12 +17,10 @@ public class ContratoAluguelController : Controller
     }
 
     [HttpGet("{guid}/guid/")]
-    [Produces("application/json")]
     public async Task<IActionResult> GetByGuid([FromRoute] Guid guid) =>
         Ok(await contratoAluguelService.GetByGuid(guid));
 
     [HttpGet]
-    [Produces("application/json")]
     public async Task<IActionResult> GetAll(
        [FromQuery] int? idTipoImovel
        , [FromQuery] int? idBaseReajuste
@@ -31,16 +29,20 @@ public class ContratoAluguelController : Controller
        , [FromQuery] string? numeroContrato
        , [FromQuery] int? limit = 10
        , [FromQuery] int? page = 1) =>
-        Ok(await contratoAluguelService.GetAllPaging(idTipoImovel, idBaseReajuste, dthInicioVigencia, dthFimVigencia, numeroContrato, limit ?? 10, page ?? 1));
+        Ok(await contratoAluguelService.GetAllPaging(idTipoImovel,
+            idBaseReajuste,
+            dthInicioVigencia,
+            dthFimVigencia,
+            numeroContrato,
+            limit ?? 10,
+            page ?? 1));
 
     [HttpPost("criar")]
-    [Produces("application/json")]
     public async Task<IActionResult> Cadatrar([FromBody] CriarContratoAluguelCommand cmd) =>
         Ok(await contratoAluguelService.Insert(cmd));
 
 
     [HttpPut("{guid}/atualizar")]
-    [Produces("application/json")]
     public async Task<IActionResult> Atualizar(
         Guid guid,
         [FromBody] CriarContratoAluguelCommand cmd)
@@ -54,7 +56,6 @@ public class ContratoAluguelController : Controller
     }
 
     [HttpPut("{guid}/{status}/alterar-status")]
-    [Produces("application/json")]
     public async Task<IActionResult> AlterarStatus(
     Guid guid,
     bool status)
@@ -65,7 +66,6 @@ public class ContratoAluguelController : Controller
     }
 
     [HttpPost("{guid}/{percentual}/reajustar-contrato")]
-    [Produces("application/json")]
     public async Task<IActionResult> ReajustarContrato(
     Guid guid,
     double percentual)
@@ -74,4 +74,12 @@ public class ContratoAluguelController : Controller
 
         return Ok(result);
     }
+    
+    [HttpGet("lista-proprietarios")]
+    public async Task<IActionResult> GetProprietarios() =>
+        Ok(await contratoAluguelService.GetAllActiveOwners());
+    
+    [HttpGet("lista-imoveis")]
+    public async Task<IActionResult> GetImoveis() =>
+        Ok(await contratoAluguelService.GetAllActiveProperties());
 }
