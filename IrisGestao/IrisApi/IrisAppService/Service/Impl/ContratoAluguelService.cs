@@ -414,7 +414,7 @@ public class ContratoAluguelService: IContratoAluguelService
     {
         double valorLiquido, novoValorAluguel;
         novoValorAluguel = calculaValorReajuste(ContratoAluguel.ValorAluguel, novoPercentualReajuste);
-        valorLiquido = calculaValorImpostos(novoValorAluguel, novoPercentualReajuste);
+        valorLiquido = calculaValorImpostos(novoValorAluguel, ContratoAluguel.PercentualRetencaoImpostos);
         DateTime dataVencimento                             = ContratoAluguel.DataFimContrato.AddMonths(12);
 
         cmd.IdContratoAluguel                               = ContratoAluguel.Id;
