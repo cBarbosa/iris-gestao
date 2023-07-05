@@ -254,7 +254,7 @@ export class Utils {
 			
 			if (title) doc.text(title, 30, 50);
 			doc.addImage(base64, 'JPEG', 30, title ? 70 : 40, w, h);
-			doc.text(`Vacância Física`, 30, 100 + h);
+			doc.text(`${title}`, 30, 100 + h);
 			doc.addImage(base64New, 'JPEG', 30, (title ? 120 : 40) + h, w, h);
 			
 			// add footer
