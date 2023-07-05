@@ -403,7 +403,8 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         DateTime dateRefInit,
         DateTime dateRefEnd,
         int? idLocador,
-        int? idTipoImovel)
+        int? idTipoImovel,
+        int? idTipoArea)
     {
         var parameters = new List<SqlParameter> {
             new ("@DataInicioContrato", SqlDbType.Date)
@@ -413,11 +414,13 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
             new ("@ClienteID", SqlDbType.Int)
                 {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
             new ("@TipoUnidade", SqlDbType.Int)
-                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true}
+                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true},
+            new ("@TipoArea", SqlDbType.Int)
+                {Value = idTipoArea.HasValue ? idTipoArea : DBNull.Value, IsNullable = true}
         };
 
         return await Db
-            .SqlQueryAsync<SpFinancialVacancyResult>("Exec Sp_FinancialVacancy @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade",
+            .SqlQueryAsync<SpFinancialVacancyResult>("Exec Sp_FinancialVacancy @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade, @TipoArea",
                 parameters.ToArray());
     }
     
@@ -508,5 +511,44 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         return await Db
             .SqlQueryAsync<SpRentValueResult>("Exec Sp_RentValue @Status, @IdImovel, @IdTipoImovel, @IdLocatario",
                 parameters.ToArray());
+    }
+
+    public async Task<IEnumerable<dynamic>> GetAllActiveProperties()
+    {
+        var retorno = await DbSet
+            .Include(x => x.ContratoAluguelImovel)
+                .ThenInclude(y => y.IdImovelNavigation)
+            .Where(x => x.Status
+                        && DateTime.Now > x.DataInicioContrato && DateTime.Now < x.DataFimContrato)
+            .Select(x => new
+            {
+                x.ContratoAluguelImovel.First().IdImovelNavigation.Id,
+                x.ContratoAluguelImovel.First().IdImovelNavigation.Nome,
+            })
+            .Distinct()
+            .OrderBy(x => x.Nome)
+            .ToListAsync();
+
+        return retorno;
+    }
+
+    public async Task<IEnumerable<dynamic>> GetAllActiveOwners()
+    {
+        var retorno = await DbSet
+            .Include(x => x.ContratoAluguelImovel)
+            .ThenInclude(y => y.IdImovelNavigation)
+            .ThenInclude(z => z.IdClienteProprietarioNavigation)
+            .Where(x => x.Status
+                        && DateTime.Now > x.DataInicioContrato && DateTime.Now < x.DataFimContrato)
+            .Select(x => new
+            {
+                x.ContratoAluguelImovel.First().IdImovelNavigation.IdClienteProprietarioNavigation.Id,
+                x.ContratoAluguelImovel.First().IdImovelNavigation.IdClienteProprietarioNavigation.Nome
+            })
+            .Distinct()
+            .OrderBy(x => x.Nome)
+            .ToListAsync();
+
+        return retorno;
     }
 }

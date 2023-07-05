@@ -1,5 +1,4 @@
 ﻿using IrisGestao.ApplicationService.Services.Interface;
-using IrisGestao.Domain.Command.Request;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IrisWebApi.Controllers;
@@ -21,9 +20,10 @@ public class DashboardController : ControllerBase
         [FromQuery] DateTime? DateRefInit,
         [FromQuery] DateTime? DateRefEnd,
         [FromQuery] int? IdLocador,
-        [FromQuery] int? IdTipoImovel
+        [FromQuery] int? IdTipoImovel,
+        [FromQuery] int? IdTipoArea
         ) =>
-        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel));
+        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel, IdTipoArea));
     
     [HttpGet("physical-vacancy")]
     public async Task<IActionResult> GetPhysicalVacancy(
@@ -39,7 +39,7 @@ public class DashboardController : ControllerBase
         [FromQuery] DateTime? DateRefEnd,
         [FromQuery] int? IdLocador,
         [FromQuery] int? IdTipoImovel) =>
-        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel));
+        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel, null));
     
     [HttpGet("area-price")]
     public async Task<IActionResult> GetAreaPrice(
@@ -47,7 +47,7 @@ public class DashboardController : ControllerBase
         [FromQuery] DateTime? DateRefEnd,
         [FromQuery] int? IdLocador,
         [FromQuery] int? IdTipoImovel) =>
-        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel));
+        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel, null));
     
     [HttpGet("total-managed-area")]
     public async Task<IActionResult> GetTotalManagedArea(

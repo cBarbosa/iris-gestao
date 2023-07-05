@@ -40,7 +40,6 @@ export class ChartComponent {
 
 	ngOnInit() {
 		this.type = this.dataInput[0]['type'];
-		console.log(this.type);
 
 		const plugin = {
 			id: 'canvasBackgroundColor',
@@ -227,8 +226,6 @@ export class ChartComponent {
 			// 	},
 			// ],
 		};
-
-		console.log(this.data);
 	}
 
 	ngAfterViewInit() {

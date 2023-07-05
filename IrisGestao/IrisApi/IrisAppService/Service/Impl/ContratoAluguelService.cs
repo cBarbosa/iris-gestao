@@ -218,10 +218,12 @@ public class ContratoAluguelService: IContratoAluguelService
     public async Task<CommandResult> GetDashbaordFinancialVacancy(
         DateTime DateRefInit,
         DateTime DateRefEnd,
-        int? IdLocador, int? IdTipoImovel)
+        int? IdLocador,
+        int? IdTipoImovel,
+        int? IdTipoArea)
     {
         
-        var retorno = await contratoAluguelRepository.GetDashbaordFinancialVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel);
+        var retorno = await contratoAluguelRepository.GetDashbaordFinancialVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel, IdTipoArea);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -276,6 +278,24 @@ public class ContratoAluguelService: IContratoAluguelService
     {
         var retorno = await contratoAluguelRepository.GetReportRentValue(status, idImovel, idTipoImovel, idLocador, idLocatario);
         
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+
+    public async Task<CommandResult> GetAllActiveProperties()
+    {
+        var retorno = await contratoAluguelRepository.GetAllActiveProperties();
+     
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+    
+    public async Task<CommandResult> GetAllActiveOwners()
+    {
+        var retorno = await contratoAluguelRepository.GetAllActiveOwners();
+     
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);

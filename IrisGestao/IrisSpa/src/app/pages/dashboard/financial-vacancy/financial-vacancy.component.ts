@@ -13,6 +13,10 @@ import { Utils } from 'src/app/shared/utils';
 	styleUrls: ['./financial-vacancy.component.scss'],
 })
 export class FinancialVacancyComponent implements OnInit {
+	@ViewChild('chart') chartComponent: ChartComponent;
+	@ViewChild('newChart') newChartComponent: ChartComponent;
+	@ViewChild('lineChart') lineChartComponent: ChartComponent;
+
 	data: any;
 	data2: any;
 	data3: any;
@@ -26,6 +30,7 @@ export class FinancialVacancyComponent implements OnInit {
 	filterLocador: number;
 	filterTipo: number;
 	filterPeriodo: Date[];
+	filterArea: number;
 
 	tabIndex: number = 0;
 
@@ -39,9 +44,15 @@ export class FinancialVacancyComponent implements OnInit {
 		value: string | null;
 	}[] = [{ label: 'Todos os tipos de imóveis', value: null }];
 
-	@ViewChild('chart') chartComponent: ChartComponent;
-	@ViewChild('newChart') newChartComponent: ChartComponent;
-	@ViewChild('lineChart') lineChartComponent: ChartComponent;
+	areaOptions: {
+		label: string;
+		value: string | null;
+	}[] = [
+		{ label: 'Todos os tipos de áreas', value: null },
+		{ label: 'Área Útil', value: '1' },
+		{ label: 'Área Total', value: '2' },
+		{ label: 'Área Habite-se', value: '3' }
+	];
 
 	constructor(
 		private router: Router,
@@ -70,8 +81,8 @@ export class FinancialVacancyComponent implements OnInit {
 			? `vacancia_financeira`
 			: `vacancia_fisica`;
 		const title = this.tabIndex === 0
-			? `Vacancia Financeira`
-			: `Vacancia Física`;
+			? `Vacância Financeira`
+			: `Vacância Física`;
 
 		Utils.saveChartsAsPdf(chartRef, this.lineChartComponent.chart, fileName, title);
 	};
@@ -100,12 +111,12 @@ export class FinancialVacancyComponent implements OnInit {
 			const endDateString = endDate.toISOString().split('T')[0];
 			const idLocador = this.filterLocador ?? null;
 			const idTipo = this.filterTipo ?? null;
+			const idTipoArea = this.filterArea ?? null;
 
-			console.log(this.tabIndex);
 			if(this.tabIndex == 0)
-				this.getPhysicalVacancyData(startDateString, endDateString, idLocador, idTipo);
-			else
 				this.getFinancialVacancyData(startDateString, endDateString, idLocador, idTipo);
+			else
+				this.getPhysicalVacancyDataArea(startDateString, endDateString, idLocador, idTipo, idTipoArea);
 		}
 
 		// this.setClientEntries(1, this.filterText, this.filterType);
@@ -125,24 +136,30 @@ export class FinancialVacancyComponent implements OnInit {
 		this.router.navigate([route]);
 	}
 
-	getFinancialVacancyData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number) {
-		this.dashboardService
-			.getFinancialVacancy(startDateString, endDateString, IdLocador, IdTipoImovel)
+	getPhysicalVacancyDataArea(
+		startDateString: string,
+		endDateString: string,
+		IdLocador?: number,
+		IdTipoImovel?: number,
+		IdTipoArea?: number) {
+
+		this.dashboardService // resultado invertido
+			.getFinancialVacancy(startDateString, endDateString, IdLocador, IdTipoImovel, IdTipoArea)
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
 
 					this.data2.labels = [];
 					this.data3.labels = [];
-					this.data2.datasets[0].data = []; // contratada
-					this.data2.datasets[1].data = []; // potencial
+					this.data2.datasets[1].data = []; // contratada
+					this.data2.datasets[0].data = []; // potencial
 					this.data3.datasets[0].data = []; // financeira
 
 					event.data.forEach((item: any) => {
 						this.data2.labels.push(item.referencia);
 						this.data3.labels.push(item.referencia);
-						this.data2.datasets[0].data.push(item.contratada); // contratada
-						this.data2.datasets[1].data.push(item.potencial); // potencial
+						this.data2.datasets[1].data.push(item.contratada); // contratada
+						this.data2.datasets[0].data.push(item.potencial); // potencial
 						this.data3.datasets[0].data.push(item.financeira); // financeira
 					});
 				},
@@ -156,7 +173,7 @@ export class FinancialVacancyComponent implements OnInit {
 			});
 	};
 
-	getPhysicalVacancyData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number) {
+	getFinancialVacancyData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number) {
 		this.dashboardService
 			.getPhysicalVacancy(startDateString, endDateString, IdLocador, IdTipoImovel)
 			.pipe(first())
@@ -164,15 +181,15 @@ export class FinancialVacancyComponent implements OnInit {
 				next: (event) => {
 					this.data.labels = [];
 					this.data3.labels = [];
-					this.data.datasets[0].data = []; // contratada
-					this.data.datasets[1].data = []; // potencial
+					this.data.datasets[1].data = []; // contratada
+					this.data.datasets[0].data = []; // potencial
 					this.data3.datasets[0].data = []; // fisica
 
 					event.data.forEach((item: any) => {
 						this.data.labels.push(item.referencia);
 						this.data3.labels.push(item.referencia);
-						this.data.datasets[0].data.push(item.contratada); // contratada
-						this.data.datasets[1].data.push(item.potencial); // potencial
+						this.data.datasets[1].data.push(item.contratada); // contratada
+						this.data.datasets[0].data.push(item.potencial); // potencial
 						this.data3.datasets[0].data.push(item.fisica); // financeira
 					});
 				},
@@ -193,16 +210,16 @@ export class FinancialVacancyComponent implements OnInit {
 			datasets: [
 				{
 					type: 'bar',
-					label: 'Receita contratada',
-					backgroundColor: `#C9D78E`,
-					data: [],
-				},
-				{
-					type: 'bar',
 					label: 'Receita potencial',
 					backgroundColor: `#641B1E`,
 					data: [],
 				},
+				{
+					type: 'bar',
+					label: 'Receita contratada',
+					backgroundColor: `#C9D78E`,
+					data: [],
+				}
 			],
 		};
 
@@ -211,16 +228,16 @@ export class FinancialVacancyComponent implements OnInit {
 			datasets: [
 				{
 					type: 'bar',
-					label: 'Área contratada',
-					backgroundColor: `#C9D78E`,
-					data: [],
-				},
-				{
-					type: 'bar',
 					label: 'Área potencial',
 					backgroundColor: `#641B1E`,
 					data: [],
 				},
+				{
+					type: 'bar',
+					label: 'Área contratada',
+					backgroundColor: `#C9D78E`,
+					data: [],
+				}
 			],
 		};
 
@@ -256,7 +273,7 @@ export class FinancialVacancyComponent implements OnInit {
 
 	getOwnersListData() {
 		this.clienteService
-			.getListaProprietarios()
+			.getListaProprietariosNew()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {

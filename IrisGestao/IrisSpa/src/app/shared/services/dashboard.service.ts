@@ -20,7 +20,8 @@ export class DashboardService {
 		DateRefInit: string,
 		DateRefEnd: string,
 		IdLocador?: number,
-		IdTipoImovel?: number
+		IdTipoImovel?: number,
+		IdTipoArea?: number,
 	) {
 		const optionalClause:any = {};
 
@@ -30,6 +31,10 @@ export class DashboardService {
 
 		if(IdTipoImovel) {
 			optionalClause.IdTipoImovel = IdTipoImovel;
+		}
+
+		if(IdTipoArea) {
+			optionalClause.IdTipoArea = IdTipoArea;
 		}
 
 		return this.http
