@@ -107,9 +107,17 @@
 
 			</p-tabView>
 
-			<span class="py-8 text-lg font-bold">
-				Vacância física
-			</span>
+			<ng-container *ngIf="tabIndex == 0">
+				<span class="py-8 text-lg font-bold">
+					Vacância financeira
+				</span>
+			</ng-container>
+
+			<ng-container *ngIf="tabIndex == 1">
+				<span class="py-8 text-lg font-bold">
+					Vacância física
+				</span>
+			</ng-container>
 
 			<app-chart
 				[data]="data3.datasets"

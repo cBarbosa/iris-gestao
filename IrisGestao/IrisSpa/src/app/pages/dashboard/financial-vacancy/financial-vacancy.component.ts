@@ -151,16 +151,17 @@ export class FinancialVacancyComponent implements OnInit {
 
 					this.data2.labels = [];
 					this.data3.labels = [];
-					this.data2.datasets[1].data = []; // contratada
-					this.data2.datasets[0].data = []; // potencial
-					this.data3.datasets[0].data = []; // financeira
+					this.data2.datasets[1].data = [];
+					this.data2.datasets[0].data = [];
+					this.data3.datasets[0].data = [];
+					this.data3.datasets[0].label = ['Vacância física'];
 
 					event.data.forEach((item: any) => {
 						this.data2.labels.push(item.referencia);
 						this.data3.labels.push(item.referencia);
-						this.data2.datasets[1].data.push(item.contratada); // contratada
-						this.data2.datasets[0].data.push(item.potencial); // potencial
-						this.data3.datasets[0].data.push(item.financeira); // financeira
+						this.data2.datasets[1].data.push(item.contratada);
+						this.data2.datasets[0].data.push(item.potencial);
+						this.data3.datasets[0].data.push(item.financeira);
 					});
 				},
 				error: () => {
@@ -168,7 +169,6 @@ export class FinancialVacancyComponent implements OnInit {
 				},
 				complete: () => {
 					this.isLoading = false;
-					console.log(this.data);
 				}
 			});
 	};
@@ -181,16 +181,17 @@ export class FinancialVacancyComponent implements OnInit {
 				next: (event) => {
 					this.data.labels = [];
 					this.data3.labels = [];
-					this.data.datasets[1].data = []; // contratada
-					this.data.datasets[0].data = []; // potencial
-					this.data3.datasets[0].data = []; // fisica
+					this.data.datasets[1].data = [];
+					this.data.datasets[0].data = [];
+					this.data3.datasets[0].data = [];
+					this.data3.datasets[0].label = ['Vacância financeira'];
 
 					event.data.forEach((item: any) => {
 						this.data.labels.push(item.referencia);
 						this.data3.labels.push(item.referencia);
-						this.data.datasets[1].data.push(item.contratada); // contratada
-						this.data.datasets[0].data.push(item.potencial); // potencial
-						this.data3.datasets[0].data.push(item.fisica); // financeira
+						this.data.datasets[1].data.push(item.contratada);
+						this.data.datasets[0].data.push(item.potencial);
+						this.data3.datasets[0].data.push(item.fisica);
 					});
 				},
 				error: () => {
@@ -198,7 +199,6 @@ export class FinancialVacancyComponent implements OnInit {
 				},
 				complete: () => {
 					this.isLoading = false;
-					console.log(this.data2);
 				}
 			});
 	};
