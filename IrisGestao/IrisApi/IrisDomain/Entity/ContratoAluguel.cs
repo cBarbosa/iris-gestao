@@ -36,6 +36,10 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
     public double PercentualRetencaoImpostos { get; set; }
 
     [Column(TypeName = "decimal(8, 6)")]
+    public double? PercentualRetencaoImpostosReajuste { get; set; } = null!;
+
+
+    [Column(TypeName = "decimal(8, 6)")]
     public double? PercentualDescontoAluguel { get; set; }
     public int? PrazoDesconto { get; set; }
 

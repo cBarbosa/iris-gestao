@@ -395,20 +395,19 @@ public class ContratoAluguelService: IContratoAluguelService
         double valorLiquido, novoValorAluguel;
         novoValorAluguel = calculaValorReajuste(ContratoAluguel.ValorAluguel, novoPercentualReajuste);
         valorLiquido = calculaValorImpostos(novoValorAluguel, novoPercentualReajuste);
-        DateTime dataVencimento                     = ContratoAluguel.DataFimContrato.AddMonths(12);
+        DateTime dataVencimento                             = ContratoAluguel.DataFimContrato.AddMonths(12);
 
-        cmd.IdContratoAluguel                       = ContratoAluguel.Id;
-        cmd.PercentualReajusteAntigo                = ContratoAluguel.PercentualRetencaoImpostos;
-        cmd.PercentualReajusteNovo                  = novoPercentualReajuste;
-        cmd.ValorAluguelAnterior                    = ContratoAluguel.ValorComImpostos.HasValue ? ContratoAluguel.ValorComImpostos.Value : ContratoAluguel.ValorAluguel;
-        cmd.ValorAluguelNovo                        = novoValorAluguel;
+        cmd.IdContratoAluguel                               = ContratoAluguel.Id;
+        cmd.PercentualReajusteAntigo                        = ContratoAluguel.PercentualRetencaoImpostos;
+        cmd.PercentualReajusteNovo                          = novoPercentualReajuste;
+        cmd.ValorAluguelAnterior                            = ContratoAluguel.ValorAluguel;
+        cmd.ValorAluguelNovo                                = novoValorAluguel;
 
-        ContratoAluguel.ValorAluguel                = novoValorAluguel;
-        ContratoAluguel.ValorAluguelLiquido         = valorLiquido;
-        ContratoAluguel.DataUltimaModificacao       = DateTime.Now;
-        ContratoAluguel.PercentualRetencaoImpostos  = novoPercentualReajuste;
-        ContratoAluguel.ValorAluguelLiquido         = valorLiquido;
-        ContratoAluguel.DataFimContrato             = ContratoAluguel.DataFimContrato >= dataVencimento ? ContratoAluguel.DataFimContrato : dataVencimento;
+        ContratoAluguel.ValorAluguel                        = novoValorAluguel;
+        ContratoAluguel.ValorAluguelLiquido                 = valorLiquido;
+        ContratoAluguel.DataUltimaModificacao               = DateTime.Now;
+        ContratoAluguel.PercentualRetencaoImpostosReajuste  = novoPercentualReajuste;
+        ContratoAluguel.DataFimContrato                     = ContratoAluguel.DataFimContrato >= dataVencimento ? ContratoAluguel.DataFimContrato : dataVencimento;
     }
 
     protected String validarDados(CriarContratoAluguelCommand cmd) 
