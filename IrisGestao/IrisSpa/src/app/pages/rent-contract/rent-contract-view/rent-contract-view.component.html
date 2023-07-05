@@ -383,8 +383,8 @@
 											<td>{{ reajuste.dataCriacao | date : "short" }}</td>
 											<td>{{ reajuste.percentualReajusteAntigo }}%</td>
 											<td>{{ reajuste.percentualReajusteNovo }}%</td>
-											<td>R$ {{ reajuste.valorAluguelAnterior }}</td>
-											<td>R$ {{ reajuste.valorAluguelNovo }}</td>
+											<td>{{ reajuste.valorAluguelAnterior  | currency }}</td>
+											<td>{{ reajuste.valorAluguelNovo | currency }}</td>
 										</tr>
 									</ng-template>
 								</p-table>
