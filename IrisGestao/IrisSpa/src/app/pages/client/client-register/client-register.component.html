@@ -200,7 +200,7 @@
 				</div>
 
 				<div class="field">
-					<label for="Email" class="block">Email</label>
+					<label for="Email" class="block">Email / Site</label>
 					<input
 						id="Email"
 						type="email"
@@ -215,11 +215,11 @@
 							*ngIf="f['Email'].hasError('required'); else error2"
 							class="p-error block"
 						>
-							Informe o email
+							Informe o email ou site
 						</small>
 						<ng-template #error2>
 							<small id="email-help" class="p-error block">
-								Email inválido
+								Email ou Site inválidos
 							</small>
 						</ng-template>
 					</ng-container>
