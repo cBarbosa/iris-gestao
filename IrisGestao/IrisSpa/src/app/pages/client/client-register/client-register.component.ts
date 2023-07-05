@@ -19,6 +19,7 @@ import {
 	CpfCnpjValidator,
 	CpfValidator,
 	EmailValidator,
+	EmailOrUrlValidator,
 	PastDateValidator,
 } from 'src/app/shared/validators/custom-validators';
 import { CommonService } from 'src/app/shared/services/common.service';
@@ -149,7 +150,7 @@ export class ClientRegisterComponent implements OnInit {
 				Nome: ['', Validators.required],
 				razaoSocial: [''],
 				DataNascimento: [null, [PastDateValidator]],
-				Email: ['', [Validators.required, EmailValidator]],
+				Email: ['', [Validators.required, EmailOrUrlValidator]],
 				Telefone: ['', [Validators.required]],
 			}),
 			addressInfo: this.fb.group({
