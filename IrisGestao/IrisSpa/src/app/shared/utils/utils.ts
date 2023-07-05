@@ -1,5 +1,6 @@
 import { AbstractControl } from '@angular/forms';
 import { Chart } from 'chart.js';
+import * as XLSX from 'xlsx';
 
 export class Utils {
 	static checkHasError(control: AbstractControl<any, any>) {
@@ -270,5 +271,26 @@ export class Utils {
 			doc.save(`${filename ? filename : 'grafico'}.pdf`);
 		});
 	}
+
+	static saveReportAsExcell(element: HTMLElement, filename?: string, title?: string) {
+
+			const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+  			const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  			XLSX.utils.book_append_sheet(wb, ws, `${filename}`);
+  
+			/* save to file */
+			XLSX.writeFile(wb, `${filename}.xlsx`);
+
+		// import('xlsx').then(({ XLSX }) => {
+
+		// 	const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+  		// 	const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  		// 	XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  
+		// 	/* save to file */
+		// 	XLSX.writeFile(wb, 'SheetJS.xlsx');
+		// });
+
+	};
 
 }

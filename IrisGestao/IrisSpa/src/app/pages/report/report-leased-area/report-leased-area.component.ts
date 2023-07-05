@@ -1,7 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, PipeTransform, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LazyLoadEvent } from 'primeng/api';
+import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { first } from 'rxjs';
 import { AreaPipe } from 'src/app/shared/pipes/area.pipe';
 import { ReportService } from 'src/app/shared/services';
@@ -76,6 +76,28 @@ export class ReportLeasedAreaComponent {
 	filterLocatario: string;
 	filterStatus: string;
 
+	items: MenuItem[] = [
+		{
+			label: 'Opções',
+			items: [
+				{
+					label: 'PDF',
+					icon: 'pi pi-file-pdf',
+					command: () => {
+						this.exportarPdf();
+					}
+				},
+				{
+					label: 'Excel',
+					icon: 'pi pi-file-excel',
+					command: () => {
+						this.exportarExcell();
+					}
+				}
+			]
+		}
+	];
+
 	constructor(
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
@@ -130,6 +152,10 @@ export class ReportLeasedAreaComponent {
   
 	exportarPdf(): void {
 		Utils.saveReportAsPdf(this.childElement.nativeElement, 'area-locada', 'Relatório área locada m²');
+	};
+
+	exportarExcell(): void {
+		Utils.saveReportAsExcell(this.childElement.nativeElement, 'area-locada', 'Relatório área locada m²');
 	};
 
 	getData():void {

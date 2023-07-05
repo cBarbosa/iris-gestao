@@ -12,6 +12,7 @@ import { ReportLeasedAreaComponent } from './report-leased-area.component';
 import { AreaPipeModule, CpfCnpjPipeModule } from 'src/app/shared/pipes';
 import { SidebarModule } from 'primeng/sidebar';
 import { CardItemComponent } from 'src/app/shared/components/card-item/card-item.component';
+import { MenuModule } from 'primeng/menu';
 
 @NgModule({
 	declarations: [ReportLeasedAreaComponent],
@@ -29,6 +30,7 @@ import { CardItemComponent } from 'src/app/shared/components/card-item/card-item
 		CpfCnpjPipeModule,
 		AreaPipeModule,
 		CardItemComponent,
+		MenuModule
 	],
 })
 export class ReportLeasedAreaModule {}
