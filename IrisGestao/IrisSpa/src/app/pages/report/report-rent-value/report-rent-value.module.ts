@@ -12,6 +12,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { ReportRentValueComponent } from './report-rent-value.component';
 import { ReportRentValueRoutingModule } from './report-rent-value-routing.module';
 import { CardItemComponent } from 'src/app/shared/components/card-item/card-item.component';
+import { MenuModule } from 'primeng/menu';
 
 @NgModule({
 	declarations: [ReportRentValueComponent],
@@ -29,6 +30,7 @@ import { CardItemComponent } from 'src/app/shared/components/card-item/card-item
 		CpfCnpjPipeModule,
 		AreaPipeModule,
 		CardItemComponent,
+		MenuModule
 	],
 })
 export class ReportRentValueModule {}

@@ -1,7 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, ElementRef, PipeTransform, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LazyLoadEvent } from 'primeng/api';
+import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { first } from 'rxjs';
 import { AreaPipe } from 'src/app/shared/pipes/area.pipe';
 import { ReportService } from 'src/app/shared/services';
@@ -74,6 +74,28 @@ export class ReportRentValueComponent {
 			label: 'Status',
 			value: null,
 		},
+	];
+
+	items: MenuItem[] = [
+		{
+			label: 'Opções',
+			items: [
+				{
+					label: 'PDF',
+					icon: 'pi pi-file-pdf',
+					command: () => {
+						this.exportarPdf();
+					}
+				},
+				{
+					label: 'Excel',
+					icon: 'pi pi-file-excel',
+					command: () => {
+						this.exportarExcell();
+					}
+				}
+			]
+		}
 	];
   
   constructor(
@@ -159,5 +181,9 @@ export class ReportRentValueComponent {
 				}, complete : () => this.isLoading = false,
 			});
 	
+	};
+
+	exportarExcell(): void {
+		Utils.saveReportAsExcell(this.childElement.nativeElement, 'valor-aluguel', 'Relatório Valor de Aluguel');
 	};
 }
