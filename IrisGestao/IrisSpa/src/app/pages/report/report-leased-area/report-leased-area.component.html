@@ -82,6 +82,7 @@
 				[options]="opcoesLocatario"
 				[(ngModel)]="filterLocatario"
 				(ngModelChange)="filterResultDebounce($event)"
+				[hidden]="true"
 			></p-dropdown>
 
 			<p-dropdown
@@ -89,6 +90,7 @@
 				[options]="opcoesStatus"
 				[(ngModel)]="filterStatus"
 				(ngModelChange)="filterResultDebounce($event)"
+				[hidden]="true"
 			></p-dropdown>
 		</ng-template>
 
