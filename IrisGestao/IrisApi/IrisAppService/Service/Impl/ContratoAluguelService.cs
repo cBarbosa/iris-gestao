@@ -274,9 +274,10 @@ public class ContratoAluguelService: IContratoAluguelService
         int? idImovel,
         int? idTipoImovel,
         int? idLocador,
-        int? idLocatario)
+        int? idLocatario,
+        DateTime? dateRef)
     {
-        var retorno = await contratoAluguelRepository.GetReportRentValue(status, idImovel, idTipoImovel, idLocador, idLocatario);
+        var retorno = await contratoAluguelRepository.GetReportRentValue(status, idImovel, idTipoImovel, idLocador, idLocatario, dateRef);
         
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)

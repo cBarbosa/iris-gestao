@@ -27,11 +27,12 @@ export class ReportRentValueComponent {
 	first = 0;
 	rows = 10;
 
-	filterImovel: string;
-	filterTipoImovel: string;
-	filterLocador: string;
-	filterLocatario: string;
-	filterStatus: string;
+	filterImovel: number;
+	filterTipoImovel: number;
+	filterLocador: number;
+	filterLocatario: number;
+	filterStatus: boolean;
+	filterReferencia: Date;
 
 	cardPipes: Record<string, PipeTransform>;
 
@@ -118,14 +119,38 @@ export class ReportRentValueComponent {
 			currency: new CurrencyPipe('pt-BR', 'R$'),
 		};
 
-		this.getData();
+		this.init();
+	};
+
+	init():void {
+		const currYear = new Date().getFullYear();
+		const currMonth = new Date().getMonth();
+		
+		this.filterReferencia = new Date(currYear, currMonth, 1);
+
+		this.filterResult();
 	};
 
 	filterResult = (e?: Event, page: number = 1, stack: boolean = false) => {
+
 		console.log(e);
+		console.log(page);
+		console.log(stack);
+
+		this.isLoading = true;
+
+		const dateString = this.filterReferencia.toISOString().split('T')[0];
+		const idLocador = this.filterLocador ?? null;
+		const idTipo = this.filterTipoImovel ?? null;
+		const idImovel = this.filterImovel ?? null;
+		const status = this.filterStatus ?? null;
+
+		this.getData(idImovel, status, idTipo, undefined, idLocador, dateString);
+
 	};
 
 	loadResultPage(event: LazyLoadEvent): void {
+		console.log(event);
 		if (event.first != null) {
 			const page = Math.floor(event.first / this.rows) + 1;
 			this.filterResult(undefined, page);
@@ -150,11 +175,18 @@ export class ReportRentValueComponent {
 		Utils.saveReportAsPdf(this.childElement.nativeElement, 'valor-aluguel', 'Relatório Valor de Aluguel');
 	};
 
-	getData() : void {
+	getData(
+		imovelId?: number,
+		status?: boolean,
+		tipoImovelId?: number,
+		locatarioId?: number,
+		locadorId?: number,
+		dateRef?: string) : void {
+
 		this.isLoading = true;
 
 		this.reportService
-			.getRentValue()
+			.getRentValue(imovelId, status, tipoImovelId, locatarioId, locadorId, dateRef)
 			.pipe(first())
 			.subscribe({
 				next: (data) => {
@@ -179,7 +211,11 @@ export class ReportRentValueComponent {
 							}
 						);
 					}
-				}, complete : () => this.isLoading = false,
+				},
+				error: () => {
+					console.error(console.error);
+				},
+				complete : () => this.isLoading = false,
 			});
 	
 	};
@@ -195,7 +231,7 @@ export class ReportRentValueComponent {
 			.subscribe({
 				next: (e: any) => {
 					if (e.success) {
-						this.opcoesTipoImovel.push(
+						this.opcoesLocador.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),
