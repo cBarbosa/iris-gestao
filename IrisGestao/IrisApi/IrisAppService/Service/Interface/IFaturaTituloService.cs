@@ -6,4 +6,5 @@ namespace IrisGestao.ApplicationService.Services.Interface;
 public interface IFaturaTituloService
 {
     Task<CommandResult> Update(Guid uuid, BaixaDeFaturaCommand cmd);
+    Task<CommandResult> BaixarFatura(Guid uuid, BaixaDeFaturaCommand cmd);
 }

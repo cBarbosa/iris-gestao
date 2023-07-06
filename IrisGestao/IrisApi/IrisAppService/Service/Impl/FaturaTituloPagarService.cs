@@ -107,15 +107,17 @@ public class FaturaTituloPagarService : IFaturaTituloPagarService
                 break;
         }
 
+        FaturaTituloPagar.DataVencimento = cmd.DataVencimento;
+        FaturaTituloPagar.Valor          = cmd.Valor;
+        /*
         FaturaTituloPagar.NumeroNotaFiscal           = cmd.NumeroNotaFiscal;
         FaturaTituloPagar.DataEmissaoNotaFiscal      = cmd.DataEmissaoNotaFiscal;
         FaturaTituloPagar.DataEnvio                  = cmd.DataEnvio;
         FaturaTituloPagar.Status                     = true;
         //FaturaTituloPagar.StatusFatura               = FaturaTituloEnum.PAGO;
-        FaturaTituloPagar.DataVencimento             = cmd.DataVencimento;
         FaturaTituloPagar.DataPagamento              = cmd.DataPagamento;
         FaturaTituloPagar.ValorRealPago              = cmd.ValorRealPago;
-        FaturaTituloPagar.DescricaoBaixaFatura       = cmd.DescricaoBaixaFatura;
+        FaturaTituloPagar.DescricaoBaixaFatura       = cmd.DescricaoBaixaFatura;*/
     }
 
     private static int calculaDiasAtraso(DateTime dataVencimento, DateTime DataPagamento)

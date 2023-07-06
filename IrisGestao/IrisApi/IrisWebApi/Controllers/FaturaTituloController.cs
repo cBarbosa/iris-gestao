@@ -25,4 +25,15 @@ public class FaturaTituloController : Controller
 
         return Ok(result);
     }
+
+    [HttpPut("{guid}/baixarFatura")]
+    [Produces("application/json")]
+    public async Task<IActionResult> BaixarFatura(
+    Guid guid,
+    [FromBody] BaixaDeFaturaCommand cmd)
+    {
+        var result = await faturaTituloService.BaixarFatura(guid, cmd);
+
+        return Ok(result);
+    }
 }
