@@ -56,6 +56,14 @@
 				/>
 			</span> -->
 
+			<p-calendar
+				[styleClass]="'mr-2 w-full md:w-44'"
+				placeholder="Referência"
+				aria-describedby="periodo-help"
+				view="month"
+				dateFormat="mm/yy"
+			></p-calendar>
+
 			<p-dropdown
 				styleClass="w-full md:w-[10rem]"
 				[options]="opcoesImovel"
@@ -84,12 +92,12 @@
 				(ngModelChange)="filterResultDebounce($event)"
 			></p-dropdown>
 
-			<p-dropdown
+			<!-- <p-dropdown
 				styleClass="w-full md:w-[7rem]"
 				[options]="opcoesStatus"
 				[(ngModel)]="filterStatus"
 				(ngModelChange)="filterResultDebounce($event)"
-			></p-dropdown>
+			></p-dropdown> -->
 		</ng-template>
 
 		<ng-container>
@@ -160,7 +168,7 @@
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Preço/m²</div>
-							<div>{{ totalSum?.precoM2 | currency }}</div>
+							<div>{{ (totalSum?.aluguelContratado ?? 0) / (totalSum?.area ?? 1) | currency }}</div>
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Preço mês referência</div>
@@ -260,7 +268,7 @@
 					</div>
 					<div class="bg-transparent text-white">
 						<div class="mb-1 text-xs font-normal">Preço/m²</div>
-						<div>{{ totalSum?.precoM2 | currency }}</div>
+						<div>{{ (totalSum?.aluguelContratado ?? 0) / (totalSum?.area ?? 1) | currency }}</div>
 					</div>
 					<div class="bg-transparent text-white">
 						<div class="mb-1 text-xs font-normal">Preço mês referência</div>

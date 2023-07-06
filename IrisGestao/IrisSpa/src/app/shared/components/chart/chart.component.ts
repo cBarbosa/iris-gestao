@@ -136,6 +136,15 @@ export class ChartComponent {
 				y: {
                     display: true,
                     position: 'right',
+					suggestedMin: 0.0,
+                	suggestedMax: 100.0,
+					ticks: {
+						color: '#646464',
+						callback: (val: any, index: any) => {
+							// Hide every 2nd tick label
+							return `${val} %`;
+						},
+					},
 				}
 			}
 		};
