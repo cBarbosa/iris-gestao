@@ -15,6 +15,7 @@ import { UploadListComponent } from 'src/app/shared/components/upload-list/uploa
 import { BaixaTituloSidebarComponent } from './baixa-titulo-sidebar/baixa-titulo-sidebar.component';
 import { ButtonModule } from 'primeng/button';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { EdicaoTituloSidebarComponent } from './edicao-titulo-sidebar/edicao-titulo-sidebar.component';
 
 @NgModule({
 	declarations: [ExpenseViewComponent],
@@ -32,6 +33,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 		DetailSidebarComponent,
 		UploadListComponent,
 		BaixaTituloSidebarComponent,
+		EdicaoTituloSidebarComponent,
 	],
 })
 export class ExpenseViewModule {}

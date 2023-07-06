@@ -12,6 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { NgxMaskModule } from 'ngx-mask';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { InputTextModule } from 'primeng/inputtext';
+import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
 
 @NgModule({
 	declarations: [SupplierContractEditComponent],
@@ -27,7 +28,7 @@ import { InputTextModule } from 'primeng/inputtext';
 		ButtonModule,
 		NgxMaskModule.forChild(),
 		NgxCurrencyModule,
-
+		UploadListComponent,
 		InputTextModule,
 	],
 })

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
 	AbstractControl,
@@ -19,8 +19,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
-import { SidebarModule } from 'primeng/sidebar';
-import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @Component({
 	selector: 'app-edicao-titulo-sidebar',
@@ -31,12 +29,10 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 		ReactiveFormsModule,
 		NgxMaskModule,
 		InputTextModule,
-		InputTextareaModule,
 		CalendarModule,
 		FileUploadComponent,
 		NgxCurrencyModule,
 		ResponsiveDialogComponent,
-		SidebarModule,
 	],
 	templateUrl: './edicao-titulo-sidebar.component.html',
 	styleUrls: ['./edicao-titulo-sidebar.component.scss'],
@@ -59,34 +55,30 @@ export class EdicaoTituloSidebarComponent {
 	cancel: Function;
 
 	@Input()
-	isVisible: boolean = false;
-
-	@Output() isVisibleChange = new EventEmitter<boolean>();
-
-	@Input()
 	data: {
-		dataCriacao: string;
-		dataUltimaModificacao: string;
-		dataVencimento: string;
-		descricaoBaixaFatura: string;
-		guidReferencia: string;
-		numeroFatura: string;
-		numeroParcela: number;
-		status: boolean;
-		statusFatura: string;
-		valorFatura: number;
+		guidFatura: string | null;
+		numeroFatura: string | null;
+		dataEnvio: Date | null;
+		dataEmissao: Date | null;
+		anexoNf: string;
 	} | null;
 
-	form: FormGroup;
+	registerForm: FormGroup;
 
 	onInputDate: Function;
 	onBlurDate: Function;
 
 	selectedFile: File;
 
-	displayModal: boolean = false;
+	opcoesDescricao: DropdownItem[] = [
+		{
+			label: 'Selecione',
+			value: null,
+			disabled: true,
+		},
+	];
 
-	editSuccess = false;
+	displayModal: boolean = false;
 
 	modalContent: {
 		isError?: boolean;
@@ -112,19 +104,23 @@ export class EdicaoTituloSidebarComponent {
 
 	ngOnInit() {
 		console.log('Fatura detalhes: >> ' + JSON.stringify(this.data));
-		console.log('guid: >> ' + this.guidExpense);
 
 		if (this.registerOnSubmit && !this.guidExpense)
 			throw new Error(
-				"edicao-titulo-sidebar: O Guid de receita deve ser informado caso o parâmetro 'registerOnSubmit' seja verdadeiro."
+				"contact-register-sidebar: O Guid de receita deve ser informado caso o parâmetro 'registerOnSubmit' seja verdadeiro."
 			);
 
-		this.form = this.fb.group({
-			numeroNotaFiscal: [
+		this.registerForm = this.fb.group({
+			numeroFatura: [
 				{ value: this.data?.numeroFatura ?? null, disabled: true },
+				Validators.required,
 			],
-			valor: [this.data?.valorFatura ?? null, Validators.required],
-			dataVencimento: [this.data?.dataVencimento ?? null, Validators.required],
+			dataEnvio: [
+				{ value: this.data?.dataEnvio ?? null, disabled: true },
+				Validators.required,
+			],
+			dataEmissao: [this.data?.dataEmissao ?? null, Validators.required],
+			anexoNf: [this.data?.anexoNf ?? null, Validators.required],
 		});
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
@@ -133,47 +129,30 @@ export class EdicaoTituloSidebarComponent {
 	}
 
 	get f(): { [key: string]: AbstractControl<any, any> } {
-		return this.form.controls;
+		return this.registerForm.controls;
 	}
 
 	checkHasError(control: AbstractControl) {
 		return Utils.checkHasError(control);
 	}
 
-	onSidebarHide() {
-		this.isVisibleChange.emit(false);
-	}
-
-	onSidebarShow() {
-		console.log('patching values', this.data);
-		this.form.setValue({
-			valor: this.data?.valorFatura,
-			numeroNotaFiscal: this.data?.numeroFatura,
-			dataVencimento: this.data?.dataVencimento
-				? new Date(this.data?.dataVencimento)
-				: '',
-		});
-	}
-
 	onSubmit(e: any) {
-		if (this.form.invalid) {
-			this.form.markAllAsTouched();
+		if (this.registerForm.invalid) {
+			this.registerForm.markAllAsTouched();
 			return;
 		}
 
-		const editFormData = this.form.getRawValue();
+		const editFormData = this.registerForm.getRawValue();
 
 		const edicaoObj = {
-			valor: editFormData.valor,
-			valorRealPago: null,
-			dataPagamento: null,
-			dataVencimento: editFormData.dataVencimento,
-			numeroNotaFiscal: editFormData.numeroNotaFiscal,
-			dataEmissaoNotaFiscal: editFormData.dataEmissaoNotaFiscal,
-			dataEnvio: editFormData.dataEnvio,
-			porcentagemImpostoRetido: null,
-			valorLiquidoTaxaAdministracao: null,
-			descricaoBaixaFatura: null,
+			dataVencimento: editFormData.dataVencimento
+				? editFormData.dataVencimento.toISOString()
+				: '',
+			dataPagamento: editFormData.dataPagamento
+				? editFormData.dataPagamento.toISOString()
+				: '',
+			valorRealPago: editFormData.valorTotal, // ??
+			DescricaoBaixaFatura: editFormData.observacoes,
 		};
 
 		console.log('on register', edicaoObj);
@@ -181,7 +160,7 @@ export class EdicaoTituloSidebarComponent {
 		// if (this.onSubmitForm) this.onSubmitForm(contactObj);
 
 		if (this.registerOnSubmit && this.guidExpense)
-			this.editInvoice(edicaoObj)
+			this.registerInvoice(edicaoObj)
 				.then(() => {
 					this.openModal();
 					if (this.onSubmitForm) this.onSubmitForm(edicaoObj);
@@ -195,33 +174,24 @@ export class EdicaoTituloSidebarComponent {
 		}
 	}
 
-	editInvoice(edicaoObj: {
-		valor: number;
-		valorRealPago: number | null;
-		dataPagamento: string | null;
+	registerInvoice(edicaoObj: {
 		dataVencimento: string;
-		numeroNotaFiscal: string;
-		dataEmissaoNotaFiscal: string;
-		dataEnvio: string;
-		porcentagemImpostoRetido: number | null;
-		valorLiquidoTaxaAdministracao: number | null;
-		descricaoBaixaFatura: string | null;
+		dataPagamento: string;
+		valorRealPago: number;
+		DescricaoBaixaFatura: string;
 	}): Promise<unknown> {
 		return new Promise((res, rej) => {
 			this.expenseService
-				.editarFatura(this.guidExpense!, edicaoObj)
+				.baixarParcela(this.guidExpense!, edicaoObj)
 				.pipe(first())
 				.subscribe({
 					next: (response) => {
 						if (response.success) {
 							this.modalContent = {
-								header: 'Edição realizada com sucesso',
+								header: 'Cadastro realizado com sucesso',
 								message: response.message ?? '',
 								isError: false,
 							};
-
-							this.editSuccess = true;
-
 							res(response);
 
 							const formData = new FormData();
@@ -235,7 +205,7 @@ export class EdicaoTituloSidebarComponent {
 							);
 						} else {
 							this.modalContent = {
-								header: 'Edição não realizado',
+								header: 'Cadastro não realizado',
 								message: response.message ?? '',
 								isError: true,
 							};
@@ -244,7 +214,7 @@ export class EdicaoTituloSidebarComponent {
 					},
 					error: (err) => {
 						this.modalContent = {
-							header: 'Edição não realizado',
+							header: 'Cadastro não realizado',
 							message: 'Houve um erro no envio de dados',
 							isError: true,
 						};
@@ -260,11 +230,6 @@ export class EdicaoTituloSidebarComponent {
 
 	closeModal() {
 		this.displayModal = false;
-
-		if (this.editSuccess) {
-			this.editSuccess = false;
-			location.reload();
-		}
 	}
 
 	onFileSelect(e: any) {
@@ -272,7 +237,6 @@ export class EdicaoTituloSidebarComponent {
 	}
 
 	cancelEdit() {
-		this.isVisible = false;
 		this.cancel();
 	}
 }

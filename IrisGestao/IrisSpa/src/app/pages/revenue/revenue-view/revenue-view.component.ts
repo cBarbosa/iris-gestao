@@ -112,14 +112,19 @@ export class RevenueViewComponent {
 
 	showDetalheBaixa = (): void => {
 		this.detalheBaixaVisible = true;
-		this.baixaTituloVisible = false;		
+		this.baixaTituloVisible = false;
 		this.editarBaixaVisible = false;
 	};
 
 	showEditarBaixaVisible = (): void => {
 		this.detalheBaixaVisible = false;
 		this.baixaTituloVisible = false;
-		this.editarBaixaVisible = true;
+		if (
+			this.faturaSelected.statusFatura === 'Vencido' ||
+			this.faturaSelected.statusFatura === 'A vencer'
+		)
+			this.editarBaixaVisible = true;
+		else this.editarBaixaVisible = false;
 	};
 
 	showBaixaTitulo = (): void => {

@@ -9,7 +9,6 @@ import {
 	Validators,
 } from '@angular/forms';
 import { DropdownItem } from 'src/app/shared/models/types';
-import { ExpenseService } from 'src/app/shared/services/expense.service';
 import { AnexoService } from 'src/app/shared/services/anexo.service';
 import { Utils } from 'src/app/shared/utils';
 import { first } from 'rxjs';
@@ -20,7 +19,8 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-
 import { NgxCurrencyModule } from 'ngx-currency';
 import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
 import { SidebarModule } from 'primeng/sidebar';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputTextarea, InputTextareaModule } from 'primeng/inputtextarea';
+import { RevenueService } from 'src/app/shared/services/revenue.service';
 
 @Component({
 	selector: 'app-edicao-titulo-sidebar',
@@ -106,7 +106,7 @@ export class EdicaoTituloSidebarComponent {
 
 	constructor(
 		private fb: FormBuilder,
-		private expenseService: ExpenseService,
+		private revenueService: RevenueService,
 		private anexoService: AnexoService
 	) {}
 
@@ -165,15 +165,7 @@ export class EdicaoTituloSidebarComponent {
 
 		const edicaoObj = {
 			valor: editFormData.valor,
-			valorRealPago: null,
-			dataPagamento: null,
 			dataVencimento: editFormData.dataVencimento,
-			numeroNotaFiscal: editFormData.numeroNotaFiscal,
-			dataEmissaoNotaFiscal: editFormData.dataEmissaoNotaFiscal,
-			dataEnvio: editFormData.dataEnvio,
-			porcentagemImpostoRetido: null,
-			valorLiquidoTaxaAdministracao: null,
-			descricaoBaixaFatura: null,
 		};
 
 		console.log('on register', edicaoObj);
@@ -197,18 +189,10 @@ export class EdicaoTituloSidebarComponent {
 
 	editInvoice(edicaoObj: {
 		valor: number;
-		valorRealPago: number | null;
-		dataPagamento: string | null;
 		dataVencimento: string;
-		numeroNotaFiscal: string;
-		dataEmissaoNotaFiscal: string;
-		dataEnvio: string;
-		porcentagemImpostoRetido: number | null;
-		valorLiquidoTaxaAdministracao: number | null;
-		descricaoBaixaFatura: string | null;
 	}): Promise<unknown> {
 		return new Promise((res, rej) => {
-			this.expenseService
+			this.revenueService
 				.editarFatura(this.guidExpense!, edicaoObj)
 				.pipe(first())
 				.subscribe({
