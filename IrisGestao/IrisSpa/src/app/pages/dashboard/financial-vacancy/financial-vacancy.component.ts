@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
 import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
-import { ClienteService, CommonService } from 'src/app/shared/services';
+import { CommonService, RentContractService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
@@ -58,7 +58,7 @@ export class FinancialVacancyComponent implements OnInit {
 		private router: Router,
 		private responsiveService: ResponsiveService,
 		private dashboardService: DashboardService,
-		private clienteService: ClienteService,
+		private rentContract: RentContractService,
 		private commonService: CommonService
 	) { };
 
@@ -272,8 +272,8 @@ export class FinancialVacancyComponent implements OnInit {
 	};
 
 	getOwnersListData() {
-		this.clienteService
-			.getListaProprietariosNew()
+		this.rentContract
+			.getActiveOwners()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {

@@ -82,4 +82,29 @@ export class RentContractService {
 			httpOptions
 		);
 	}
+
+	getActiveOwners() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}ContratoAluguel/lista-proprietarios`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getListaProprietariosNew: ${response.message}`);
+					return response;
+				})
+			);
+	};
+
+
+	getActiveProperties() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}ContratoAluguel/lista-imoveis`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getListaProprietariosNew: ${response.message}`);
+					return response;
+				})
+			);
+	};
 }
