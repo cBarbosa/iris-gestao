@@ -90,6 +90,16 @@
 			}
 		}
 
+		section.fatura {
+			::ng-deep {
+				.action {
+					.p-button {
+						padding: 0.75rem;
+					}
+				}
+			}
+		}
+
 		section.attachments {
 			.attachments-card {
 				background-color: #ffffff;

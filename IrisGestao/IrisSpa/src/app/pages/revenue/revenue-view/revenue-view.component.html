@@ -171,33 +171,37 @@
 									></p-tag>
 								</ng-template>
 							</td>
-							<td class="action w-[13rem]">
-								<button
-									pButton
-									type="button"
-									class="p-button-filled h-9 w-full justify-center text-sm"
-									(click)="setCurrentFatura(fatura); showBaixaTitulo()"
+							<td class="action w-[13rem] flex gap-2">
+								<ng-container
 									*ngIf="
 										fatura.statusFatura === 'Vencido' ||
 											fatura.statusFatura === 'A vencer';
 										else detalhesBtn
 									"
 								>
-									Dar baixa na Fatura
-								</button>
-								<!--button
-									pButton
-									type="button"
-									class="p-button-filled h-9 w-full justify-center text-sm"
-									(click)="setCurrentFatura(fatura); showEditarBaixaVisible()"
-									*ngIf="
-										fatura.statusFatura === 'Vencido' ||
-											fatura.statusFatura === 'A vencer';
-										else detalhesBtn
-									"
-								>
-									Editar Fatura
-								</button-->
+									<button
+										pButton
+										type="button"
+										class="p-button-filled h-9 w-full justify-center text-sm"
+										(click)="setCurrentFatura(fatura); showBaixaTitulo()"
+									>
+										Dar baixa
+									</button>
+
+									<button
+										pButton
+										type="button"
+										class="p-button-outlined h-9 justify-center text-sm"
+										(click)="setCurrentFatura(fatura); showEditarBaixaVisible()"
+										*ngIf="
+											fatura.statusFatura === 'Vencido' ||
+												fatura.statusFatura === 'A vencer';
+											else detalhesBtn
+										"
+									>
+										Editar
+									</button>
+								</ng-container>
 								<ng-template #detalhesBtn>
 									<button
 										pButton
@@ -312,8 +316,8 @@
 					label: 'Dias de atraso',
 					data: faturaSelected?.diasAtraso
 						? faturaSelected?.diasAtraso > 1
-								? faturaSelected?.diasAtraso + ' dias'
-								: faturaSelected?.diasAtraso + ' dia'
+							? faturaSelected?.diasAtraso + ' dias'
+							: faturaSelected?.diasAtraso + ' dia'
 						: faturaSelected?.diasAtraso,
 					span: true
 				},
@@ -341,7 +345,7 @@
 					label: 'Observação da baixa',
 					data: faturaSelected?.descricaoBaixaFatura,
 					span: true
-				},
+				}
 			]"
 		></app-detail-sidebar>
 
@@ -365,21 +369,15 @@
 </p-sidebar>
 
 <!--
-<p-sidebar [(visible)]="editarBaixaVisible" position="right">
-	<ng-template pTemplate="header">
-		<h2 class="text-xl font-bold">Baixa de Fatura</h2>
-	</ng-template>
-	<ng-template pTemplate="content">
-		<app-edicao-titulo-sidebar
-			[data]="getFaturaFormData(faturaSelected)"
-			[cancel]="hideBaixaTitulo"
-			[onSubmitForm]="hideBaixaTitulo"
-			[registerOnSubmit]="true"
-			[guidExpense]="faturaSelected.guidReferencia"
-		></app-edicao-titulo-sidebar>
-	</ng-template>
-</p-sidebar>
 !-->
+<app-edicao-titulo-sidebar
+	[data]="faturaSelected"
+	[cancel]="hideBaixaTitulo"
+	[onSubmitForm]="hideBaixaTitulo"
+	[registerOnSubmit]="!!faturaSelected"
+	[guidExpense]="faturaSelected?.guidReferencia"
+	[(isVisible)]="editarBaixaVisible"
+></app-edicao-titulo-sidebar>
 
 <p-sidebar [(visible)]="baixaTituloVisible" position="right">
 	<ng-template pTemplate="header">

@@ -121,6 +121,9 @@
 						(selectedEvent)="setSelectedUnits($event)"
 						*ngIf="propertyGuid"
 					></app-unit-select>
+
+					<h5 class="mt-3">Anexos</h5>
+					<app-upload-list [guid]="contractGuid"></app-upload-list>
 				</section>
 
 				<section class="aditional-data">

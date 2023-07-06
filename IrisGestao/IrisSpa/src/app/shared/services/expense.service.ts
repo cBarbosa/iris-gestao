@@ -81,4 +81,18 @@ export class ExpenseService {
 			httpOptions
 		);
 	}
+
+	editarFatura(
+		guid: string,
+		faturaObj: {
+			valor: number;
+			dataVencimento: string;
+		}
+	) {
+		return this.http.put<ApiResponse>(
+			`${env.config.apiUrl}FaturaTituloPagar/${guid}/atualizar`,
+			JSON.stringify(faturaObj, null, 2),
+			httpOptions
+		);
+	}
 }

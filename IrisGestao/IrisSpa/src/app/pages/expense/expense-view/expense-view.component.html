@@ -68,7 +68,7 @@
 								</div>
 							</div>
 							<div class="expense-data">
-								<div class="data-label">Locatário </div>
+								<div class="data-label">Locatário</div>
 								<div class="data-value">
 									{{ expense?.['cliente'].nome }}
 								</div>
@@ -163,20 +163,46 @@
 									></p-tag>
 								</ng-template>
 							</td>
-							<td class="action w-[13rem]">
-								<button
-									pButton
-									type="button"
-									class="p-button-filled h-9 w-full justify-center text-sm"
-									(click)="setCurrentFatura(fatura); showBaixaTitulo()"
+							<td class="action w-[13rem] flex gap-2">
+								<ng-container
 									*ngIf="
 										fatura.statusFatura === 'Vencido' ||
 											fatura.statusFatura === 'A vencer';
 										else detalhesBtn
 									"
 								>
-									Dar baixa na Fatura
-								</button>
+									<!-- <button
+										pButton
+										type="button"
+										class="p-button-filled h-9 w-full justify-center text-sm"
+										(click)="setCurrentFatura(fatura); showBaixaTitulo()"
+									>
+										Dar baixa na Fatura
+									</button> -->
+
+									<button
+										pButton
+										type="button"
+										class="p-button-filled h-9 grow justify-center text-sm"
+										(click)="setCurrentFatura(fatura); showBaixaTitulo()"
+									>
+										Dar baixa
+									</button>
+
+									<button
+										pButton
+										type="button"
+										class="p-button-outlined h-9 justify-center text-sm"
+										(click)="setCurrentFatura(fatura); showEdicaoTitulo()"
+										*ngIf="
+											fatura.statusFatura === 'Vencido' ||
+												fatura.statusFatura === 'A vencer';
+											else detalhesBtn
+										"
+									>
+										Editar
+									</button>
+								</ng-container>
 								<ng-template #detalhesBtn>
 									<button
 										pButton
@@ -334,7 +360,7 @@
 				label: 'Observação da baixa',
 				data: faturaSelected?.descricaoBaixaFatura,
 				span: true
-			},
+			}
 		]"
 	></app-detail-sidebar>
 
@@ -362,17 +388,27 @@
 	</ng-template>
 </p-sidebar>
 
-<p-sidebar [(visible)]="edicaoTituloVisible" position="right">
+<!-- <p-sidebar [(visible)]="edicaoTituloVisible" position="right">
 	<ng-template pTemplate="header">
 		<h2 class="text-xl font-bold">Edição</h2>
 	</ng-template>
-	<ng-template pTemplate="content">
-		<app-baixa-titulo-sidebar
-			[data]="getFaturaFormData(faturaSelected)"
-			[cancel]="hideEdicaoTitulo"
-			[onSubmitForm]="hideEdicaoTitulo"
-			[registerOnSubmit]="true"
-			[guidExpense]="faturaSelected.guidReferencia"
-		></app-baixa-titulo-sidebar>
-	</ng-template>
-</p-sidebar>
+	<ng-template pTemplate="content"> -->
+<app-edicao-titulo-sidebar
+	[data]="faturaSelected"
+	[cancel]="hideEdicaoTitulo"
+	[onSubmitForm]="hideEdicaoTitulo"
+	[registerOnSubmit]="!!faturaSelected"
+	[guidExpense]="faturaSelected?.guidReferencia"
+	[(isVisible)]="edicaoTituloVisible"
+></app-edicao-titulo-sidebar>
+
+<!-- <app-edicao-titulo-sidebar
+	[data]="faturaSelected"
+	[cancel]="hideBaixaTitulo"
+	[onSubmitForm]="hideBaixaTitulo"
+	[registerOnSubmit]="!!faturaSelected"
+	[guidExpense]="faturaSelected?.guidReferencia"
+	[(isVisible)]="editarBaixaVisible"
+></app-edicao-titulo-sidebar> -->
+<!-- </ng-template>
+</p-sidebar> -->

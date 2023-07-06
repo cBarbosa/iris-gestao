@@ -41,7 +41,6 @@
 				<input
 					pInputText
 					class="w-full md:w-52"
-					[class.white-theme]="!isMobile"
 					[(ngModel)]="filterTitulo"
 					(ngModelChange)="filterRevenuesDebounce($event)"
 					type="text"
@@ -58,9 +57,7 @@
 			></p-dropdown> -->
 
 			<p-dropdown
-				[styleClass]="
-					'w-full md:w-[12.6rem]' + (isMobile ? '' : ' white-theme')
-				"
+				styleClass="w-full md:w-[12.6rem]"
 				placeholder="Tipo de Recebimento"
 				[options]="opcoesTipo"
 				[(ngModel)]="filterTipo"
