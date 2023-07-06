@@ -495,7 +495,8 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         int? idImovel,
         int? idTipoImovel,
         int? idLocador,
-        int? idLocatario)
+        int? idLocatario,
+        DateTime? dateRef)
     {
         var parameters = new List<SqlParameter> {
             new ("@Status", SqlDbType.Bit)
@@ -505,11 +506,13 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
             new ("@IdTipoImovel", SqlDbType.Int)
                 {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true},
             new ("@IdLocatario", SqlDbType.Int)
-                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true}
+                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true},
+            new ("@DataReferencia", SqlDbType.Date)
+                {Value = dateRef ?? DateTime.Today}
         };
 
         return await Db
-            .SqlQueryAsync<SpRentValueResult>("Exec Sp_RentValue @Status, @IdImovel, @IdTipoImovel, @IdLocatario",
+            .SqlQueryAsync<SpRentValueResult>("Exec Sp_RentValue @Status, @IdImovel, @IdTipoImovel, @IdLocatario, @DataReferencia",
                 parameters.ToArray());
     }
 

@@ -70,7 +70,8 @@ export class ReportService {
 		status?: boolean,
 		tipoImovelId?: number,
 		locatarioId?: number,
-		locadorId?: number
+		locadorId?: number,
+		dateRef?: string
 	) {
 		return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Report/rent-value`, {
@@ -80,6 +81,7 @@ export class ReportService {
 					IdTipoImovel: tipoImovelId ?? '',
 					IdLocatario: locatarioId ?? '',
 					IdLocador: locadorId ?? '',
+					DateRef: dateRef ?? ''
 				},
 			})
 			.pipe(

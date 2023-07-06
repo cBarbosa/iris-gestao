@@ -31,7 +31,8 @@ public class ReportController : ControllerBase
         [FromQuery] int? IdLocador,
         [FromQuery] int? IdTipoImovel,
         [FromQuery] int? IdLocatario,
-        [FromQuery] bool? Status
+        [FromQuery] bool? Status,
+        [FromQuery] DateTime? DateRef
     ) =>
-        Ok(await contratoAluguelService.GetReportRentValue(Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario));
+        Ok(await contratoAluguelService.GetReportRentValue(Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario, DateRef));
 }
