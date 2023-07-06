@@ -1,10 +1,22 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, ElementRef, PipeTransform, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { LazyLoadEvent, MenuItem } from 'primeng/api';
+import {
+	Component,
+	ElementRef,
+	PipeTransform,
+	ViewChild
+} from '@angular/core';
+import { Router } from '@angular/router';
+import {
+	LazyLoadEvent,
+	MenuItem
+} from 'primeng/api';
 import { first } from 'rxjs';
 import { AreaPipe } from 'src/app/shared/pipes/area.pipe';
-import { ClienteService, CommonService, ReportService } from 'src/app/shared/services';
+import {
+	CommonService,
+	RentContractService,
+	ReportService
+} from 'src/app/shared/services';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -101,10 +113,9 @@ export class ReportRentValueComponent {
   
   constructor(
 		private router: Router,
-		private activatedRoute: ActivatedRoute,
 		private responsiveService: ResponsiveService,
 		private reportService: ReportService,
-		private clienteService: ClienteService,
+		private rentContract: RentContractService,
 		private commonService: CommonService
 	) {}
 
@@ -129,14 +140,12 @@ export class ReportRentValueComponent {
 		this.filterReferencia = new Date(currYear, currMonth, 1);
 
 		this.filterResult();
+		this.getOwnersListData();
+		this.getUnitTypesData();
+		this.getPropertiesListData();
 	};
 
 	filterResult = (e?: Event, page: number = 1, stack: boolean = false) => {
-
-		console.log(e);
-		console.log(page);
-		console.log(stack);
-
 		this.isLoading = true;
 
 		const dateString = this.filterReferencia.toISOString().split('T')[0];
@@ -150,7 +159,6 @@ export class ReportRentValueComponent {
 	};
 
 	loadResultPage(event: LazyLoadEvent): void {
-		console.log(event);
 		if (event.first != null) {
 			const page = Math.floor(event.first / this.rows) + 1;
 			this.filterResult(undefined, page);
@@ -225,13 +233,36 @@ export class ReportRentValueComponent {
 	};
 
 	getOwnersListData() {
-		this.clienteService
-			.getListaProprietariosNew()
+		this.rentContract
+			.getActiveOwners()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {
 					if (e.success) {
 						this.opcoesLocador.push(
+							...e.data.map((item: any) => {
+								return {
+									label: this.truncateChar(item.nome),
+									value: item.id,
+								};
+							})
+						);
+					} else console.error(e.message);
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+	};
+
+	getPropertiesListData() {
+		this.rentContract
+			.getActiveProperties()
+			.pipe(first())
+			.subscribe({
+				next: (e: any) => {
+					if (e.success) {
+						this.opcoesImovel.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),
