@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { first } from 'rxjs';
 import { AreaPipe } from 'src/app/shared/pipes/area.pipe';
-import { ReportService } from 'src/app/shared/services';
+import { ClienteService, CommonService, ReportService } from 'src/app/shared/services';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -102,7 +102,9 @@ export class ReportRentValueComponent {
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private responsiveService: ResponsiveService,
-		private reportService: ReportService
+		private reportService: ReportService,
+		private clienteService: ClienteService,
+		private commonService: CommonService
 	) {}
 
 	ngOnInit(): void {
@@ -166,7 +168,6 @@ export class ReportRentValueComponent {
 								acc.aluguelPotencial += entry.somaValorPotencial;
 								acc.precoM2 += entry.somaPrecoM2;
 								acc.precoMesReferencia += entry.precoMesReferencia;
-
 								return acc;
 							},
 							{
@@ -185,5 +186,62 @@ export class ReportRentValueComponent {
 
 	exportarExcell(): void {
 		Utils.saveReportAsExcell(this.childElement.nativeElement, 'valor-aluguel', 'Relatório Valor de Aluguel');
+	};
+
+	getOwnersListData() {
+		this.clienteService
+			.getListaProprietariosNew()
+			.pipe(first())
+			.subscribe({
+				next: (e: any) => {
+					if (e.success) {
+						this.opcoesTipoImovel.push(
+							...e.data.map((item: any) => {
+								return {
+									label: this.truncateChar(item.nome),
+									value: item.id,
+								};
+							})
+						);
+					} else console.error(e.message);
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+	};
+
+	getUnitTypesData() {
+		this.commonService
+			.getUnitType()
+			.pipe(first())
+			.subscribe({
+				next: (e: any) => {
+					if (e.success) {
+						this.opcoesTipoImovel.push(
+							...e.data.map((item: any) => {
+								return {
+									label: this.truncateChar(item.nome),
+									value: item.id,
+								};
+							})
+						);
+					} else console.error(e.message);
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+	};
+
+	truncateChar(text: string): string {
+		const charlimit = 48;
+		if (!text || text.length <= charlimit) {
+			return text;
+		}
+
+		const without_html = text.replace(/<(?:.|\n)*?>/gm, '');
+		const shortened = without_html.substring(0, charlimit) + '...';
+		return shortened;
 	};
 }

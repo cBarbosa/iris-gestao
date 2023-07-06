@@ -13,6 +13,7 @@ import { ReportRentValueComponent } from './report-rent-value.component';
 import { ReportRentValueRoutingModule } from './report-rent-value-routing.module';
 import { CardItemComponent } from 'src/app/shared/components/card-item/card-item.component';
 import { MenuModule } from 'primeng/menu';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
 	declarations: [ReportRentValueComponent],
@@ -30,7 +31,8 @@ import { MenuModule } from 'primeng/menu';
 		CpfCnpjPipeModule,
 		AreaPipeModule,
 		CardItemComponent,
-		MenuModule
+		MenuModule,
+		CalendarModule
 	],
 })
 export class ReportRentValueModule {}

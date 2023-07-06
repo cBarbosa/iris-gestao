@@ -161,7 +161,7 @@ export class FinancialVacancyComponent implements OnInit {
 						this.data3.labels.push(item.referencia);
 						this.data2.datasets[1].data.push(item.contratada);
 						this.data2.datasets[0].data.push(item.potencial);
-						this.data3.datasets[0].data.push(item.financeira);
+						this.data3.datasets[0].data.push(item.financeira * 100.0);
 					});
 				},
 				error: () => {
@@ -191,7 +191,7 @@ export class FinancialVacancyComponent implements OnInit {
 						this.data3.labels.push(item.referencia);
 						this.data.datasets[1].data.push(item.contratada);
 						this.data.datasets[0].data.push(item.potencial);
-						this.data3.datasets[0].data.push(item.fisica);
+						this.data3.datasets[0].data.push(item.fisica * 100.0);
 					});
 				},
 				error: () => {
