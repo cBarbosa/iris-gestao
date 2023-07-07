@@ -14,32 +14,33 @@
 		</ng-template>
 		<ng-template pTemplate="content">
 			<div class="field">
-				<label for="numeroNotaFiscal" class="block">Número da NF</label>
+				<label for="numeroParcela" class="block">Número da Fatura</label>
 				<input
-					id="numeroNotaFiscal"
+					id="numeroParcela"
 					type="text"
-					formControlName="numeroNotaFiscal"
-					aria-describedby="numeroNotaFiscal-help"
+					formControlName="numeroParcela"
+					aria-describedby="numeroParcela-help"
 					pInputText
+					readonly
 				/>
-				<ng-container *ngIf="checkHasError(f['numeroNotaFiscal'])">
+				<ng-container *ngIf="checkHasError(f['numeroParcela'])">
 					<small
-						id="numeroNotaFiscal-help"
-						*ngIf="f['numeroNotaFiscal'].hasError('required'); else error2"
+						id="numeroParcela-help"
+						*ngIf="f['numeroParcela'].hasError('required'); else error2"
 						class="p-error block"
 					>
-						Informe o número da NF
+						Informe o número da Fatura
 					</small>
 					<ng-template #error2>
-						<small id="numeroNotaFiscal-help" class="p-error block">
-							Número da NF inválido
+						<small id="numeroParcela-help" class="p-error block">
+							Número da Fatura inválido
 						</small>
 					</ng-template>
 				</ng-container>
 			</div>
 
 			<div class="field">
-				<label for="valor" class="block">Valor da NF</label>
+				<label for="valor" class="block">Valor da fatura</label>
 				<input
 					id="valor"
 					type="text"
@@ -54,11 +55,11 @@
 						*ngIf="f['valor'].hasError('required'); else error2"
 						class="p-error block"
 					>
-						Informe o valor da NF
+						Informe o valor da Fatura
 					</small>
 					<ng-template #error2>
 						<small id="valor-help" class="p-error block">
-							Valor da NF inválido
+							Valor da Fatura inválido
 						</small>
 					</ng-template>
 				</ng-container>
@@ -66,7 +67,7 @@
 
 			<div class="field">
 				<label for="dataVencimento" class="block">
-					Data de vencimento da NF
+					Data de vencimento da fatura
 				</label>
 				<p-calendar
 					id="dataVencimento"
@@ -135,7 +136,7 @@
 					pButton
 					pRipple
 					type="submit"
-					label="Confirmar Baixa"
+					label="Editar Fatura"
 					class="h-11 w-full"
 				></button>
 			</div>

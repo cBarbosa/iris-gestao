@@ -14,24 +14,24 @@
 		</ng-template>
 		<ng-template pTemplate="content">
 			<div class="field">
-				<label for="numeroNotaFiscal" class="block">Número da NF</label>
+				<label for="numeroParcela" class="block">Número da Fatura</label>
 				<input
-					id="numeroNotaFiscal"
+					id="numeroParcela"
 					type="text"
-					formControlName="numeroNotaFiscal"
-					aria-describedby="numeroNotaFiscal-help"
+					formControlName="numeroParcela"
+					aria-describedby="numeroParcela-help"
 					pInputText
 				/>
-				<ng-container *ngIf="checkHasError(f['numeroNotaFiscal'])">
+				<ng-container *ngIf="checkHasError(f['numeroParcela'])">
 					<small
-						id="numeroNotaFiscal-help"
-						*ngIf="f['numeroNotaFiscal'].hasError('required'); else error2"
+						id="numeroParcela-help"
+						*ngIf="f['numeroParcela'].hasError('required'); else error2"
 						class="p-error block"
 					>
 						Informe o número da NF
 					</small>
 					<ng-template #error2>
-						<small id="numeroNotaFiscal-help" class="p-error block">
+						<small id="numeroParcela-help" class="p-error block">
 							Número da NF inválido
 						</small>
 					</ng-template>
@@ -39,7 +39,7 @@
 			</div>
 
 			<div class="field">
-				<label for="valor" class="block">Valor da NF</label>
+				<label for="valor" class="block">Valor da Fatura</label>
 				<input
 					id="valor"
 					type="text"
@@ -66,7 +66,7 @@
 
 			<div class="field">
 				<label for="dataVencimento" class="block">
-					Data de vencimento da NF
+					Data de vencimento da fatura
 				</label>
 				<p-calendar
 					id="dataVencimento"
@@ -135,7 +135,7 @@
 					pButton
 					pRipple
 					type="submit"
-					label="Confirmar Baixa"
+					label="Editar Fatura"
 					class="h-11 w-full"
 				></button>
 			</div>
