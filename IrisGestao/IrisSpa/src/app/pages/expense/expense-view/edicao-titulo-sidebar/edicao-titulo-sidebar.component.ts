@@ -123,6 +123,9 @@ export class EdicaoTituloSidebarComponent {
 			numeroNotaFiscal: [
 				{ value: this.data?.numeroFatura ?? null, disabled: true },
 			],
+			numeroParcela: [
+				{ value: this.data?.numeroParcela ?? null, disabled: true},
+			],
 			valor: [this.data?.valorFatura ?? null, Validators.required],
 			dataVencimento: [this.data?.dataVencimento ?? null, Validators.required],
 		});
@@ -149,6 +152,7 @@ export class EdicaoTituloSidebarComponent {
 		this.form.setValue({
 			valor: this.data?.valorFatura,
 			numeroNotaFiscal: this.data?.numeroFatura,
+			numeroParcela: this.data?.numeroParcela,
 			dataVencimento: this.data?.dataVencimento
 				? new Date(this.data?.dataVencimento)
 				: '',
