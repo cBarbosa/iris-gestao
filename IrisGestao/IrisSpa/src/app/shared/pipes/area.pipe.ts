@@ -12,6 +12,7 @@ export class AreaPipe implements PipeTransform {
 				prefix: '',
 				thousandSeparator: ',',
 				decimalMarker: ['.', ','],
+				// leadZero: true,
 				clearIfNotMatch: false,
 				showTemplate: false,
 				showMaskTyped: false,
@@ -38,14 +39,20 @@ export class AreaPipe implements PipeTransform {
 				validation: false,
 				separatorLimit: '',
 				allowNegativeNumbers: false,
-				leadZeroDateTime: false,
+				leadZeroDateTime: true,
 				triggerOnMaskChange: true,
 				maskFilled: new EventEmitter(),
 				patterns: {},
 			})
 		);
 
-		let valorFormatado = ngxMaskPipe.transform(value + '', 'separator.2');
+		let valueStr = value + '';
+
+		if (valueStr.at(-2) === '.') valueStr = valueStr + '0';
+		else if (valueStr.at(-1) === '.') valueStr = valueStr + '00';
+		else valueStr = valueStr + '.00';
+
+		let valorFormatado = ngxMaskPipe.transform(valueStr + '', 'separator.2');
 
 		valorFormatado = valorFormatado
 			.replace('.', '-')
