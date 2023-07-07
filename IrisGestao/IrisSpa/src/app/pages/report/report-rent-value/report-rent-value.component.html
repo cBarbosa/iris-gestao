@@ -151,7 +151,7 @@
 						<td>{{ entry.somaValorAluguel | currency }}</td>
 						<td>{{ entry.somaValorPotencial | currency }}</td>
 						<td>{{ entry.somaPrecoM2 | currency }}</td>
-						<td>{{ entry.precoMesReferencia | currency }}</td>
+						<td>{{ entry.precoMesReferencia | percent : "2.2-2" }}</td>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="footer">
@@ -175,7 +175,7 @@
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Preço mês referência</div>
-							<div>{{ totalSum?.precoMesReferencia | currency }}</div>
+							<div>{{ totalSum?.precoMesReferencia | percent : "2.2-2" }}</div>
 						</td>
 					</tr>
 				</ng-template>
@@ -226,7 +226,7 @@
 									{
 										label: 'Preço mês referência',
 										data: entry.somaPrecoMesReferencia,
-										pipe: cardPipes['currency']
+										pipe: cardPipes['percent']
 									}
 								]
 							}"
@@ -275,7 +275,7 @@
 					</div>
 					<div class="bg-transparent text-white">
 						<div class="mb-1 text-xs font-normal">Preço mês referência</div>
-						<div>{{ totalSum?.precoMesReferencia | currency }}</div>
+						<div>{{ totalSum?.precoMesReferencia | percent : "2.2-2" }}</div>
 					</div>
 				</div>
 			</ng-container>

@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, PercentPipe } from '@angular/common';
 import {
 	Component,
 	ElementRef,
@@ -128,6 +128,7 @@ export class ReportRentValueComponent {
 		this.cardPipes = {
 			area: new AreaPipe(),
 			currency: new CurrencyPipe('pt-BR', 'R$'),
+			percent: new PercentPipe("2.2-2")
 		};
 
 		this.init();
