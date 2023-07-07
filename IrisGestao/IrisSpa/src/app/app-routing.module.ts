@@ -17,7 +17,7 @@ const routes: Routes = [
 				path: 'home',
 				loadChildren: () =>
 					import('./pages/home/home.module').then((m) => m.HomeModule),
-				canActivate: [AuthGuard],
+				// canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
@@ -29,7 +29,7 @@ const routes: Routes = [
 					import('./pages/property/property.module').then(
 						(m) => m.PropertyModule
 					),
-				canActivate: [AuthGuard],
+				// canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
@@ -38,7 +38,7 @@ const routes: Routes = [
 				path: 'client',
 				loadChildren: () =>
 					import('./pages/client/client.module').then((m) => m.ClientModule),
-				canActivate: [AuthGuard],
+				// canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
@@ -60,7 +60,7 @@ const routes: Routes = [
 					import('./pages/supplier-contract/supplier-contract.module').then(
 						(m) => m.SupplierContractModule
 					),
-				canActivate: [AuthGuard],
+				// canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
@@ -71,7 +71,7 @@ const routes: Routes = [
 					import('./pages/supplier/supplier.module').then(
 						(m) => m.SupplierModule
 					),
-				canActivate: [AuthGuard],
+				// canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
@@ -80,7 +80,7 @@ const routes: Routes = [
 				path: 'revenue',
 				loadChildren: () =>
 					import('./pages/revenue/revenue.module').then((m) => m.RevenueModule),
-				canActivate: [AuthGuard],
+				// canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
@@ -89,7 +89,7 @@ const routes: Routes = [
 				path: 'expense',
 				loadChildren: () =>
 					import('./pages/expense/expense.module').then((m) => m.ExpenseModule),
-				canActivate: [AuthGuard],
+				// canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
@@ -100,7 +100,7 @@ const routes: Routes = [
 					import('./pages/construction/construction.module').then(
 						(m) => m.ConstructionModule
 					),
-				canActivate: [AuthGuard],
+				// canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
@@ -111,7 +111,16 @@ const routes: Routes = [
 					import('./pages/dashboard/dashboard.module').then(
 						(m) => m.DashboardModule
 					),
-				canActivate: [AuthGuard],
+				// canActivate: [AuthGuard],
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
+				path: 'report',
+				loadChildren: () =>
+					import('./pages/report/report.module').then((m) => m.ReportModule),
+				// canActivate: [AuthGuard],
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
