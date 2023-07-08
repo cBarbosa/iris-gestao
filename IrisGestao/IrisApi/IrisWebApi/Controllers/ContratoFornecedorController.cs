@@ -32,6 +32,20 @@ public class ContratoFornecedorController : Controller
     public async Task<IActionResult> Cadatrar([FromBody] CriarContratoFornecedorCommand cmd) =>
         Ok(await contratoFornecedorService.Insert(cmd));
 
+    [HttpPut("{guid}/atualizar")]
+    [Produces("application/json")]
+    public async Task<IActionResult> Atualizar(
+    Guid guid,
+    [FromBody] CriarContratoFornecedorCommand cmd)
+    {
+        var result = await contratoFornecedorService.Update(guid, cmd);
+
+        if (result == null)
+            return BadRequest("Operação não realizada");
+
+        return Ok(result);
+    }
+
     [HttpPut("{guid}/{status}/alterar-status")]
     [Produces("application/json")]
     public async Task<IActionResult> AlterarStatus(

@@ -555,6 +555,10 @@
 
 				.p-dropdown-label {
 				}
+
+				&:not(.p-disabled):hover {
+					border-color: #641b1e;
+				}
 			}
 
 			&.ng-pristine,
@@ -585,7 +589,7 @@
 
 			&.ng-touched:not(.ng-invalid):hover,
 			&.ng-pristine:hover {
-				.p-dropdown {
+				.p-dropdown:not(.p-disabled) {
 					border-color: #641b1e;
 
 					&.white-theme {

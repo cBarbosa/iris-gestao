@@ -32,6 +32,16 @@ const routes: Routes = [
 			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 		},
 	},
+	{
+		path: 'edit/:guid',
+		loadChildren: () =>
+			import('./supplier-contract-edit/supplier-contract-edit.module').then(
+				(m) => m.SupplierContractEditModule
+			),
+		data: {
+			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+		},
+	},
 ];
 
 @NgModule({

@@ -45,6 +45,7 @@ public partial class IrisContext : DbContext
     public virtual DbSet<DespesaProprietario> DespesaProprietario { get; set; } = null!;
 
     public virtual DbSet<Evento> Evento { get; set; } = null!;
+    public virtual DbSet<EventoUnidade> EventoUnidade { get; set; } = null!;
 
     public virtual DbSet<FaturaTitulo> FaturaTitulo { get; set; } = null!;
 
@@ -286,6 +287,19 @@ public partial class IrisContext : DbContext
             entity.HasOne(d => d.IdTipoEventoNavigation).WithMany(p => p.Evento)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_TipoEvento_Evento");
+        });
+
+        modelBuilder.Entity<EventoUnidade>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__EventoUnidade__3214EC07C8AD6C60");
+
+            entity.HasOne(d => d.IdEventoNavigation).WithMany(p => p.EventoUnidade)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_EventoUnidade_Evento");
+
+            entity.HasOne(d => d.IdUnidadeNavigation).WithMany(p => p.EventoUnidade)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_EventoUnidade_Unidade");
         });
 
         modelBuilder.Entity<FaturaTitulo>(entity =>

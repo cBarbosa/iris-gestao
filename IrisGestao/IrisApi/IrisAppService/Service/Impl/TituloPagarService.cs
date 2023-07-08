@@ -19,6 +19,7 @@ public class TituloPagarService: ITituloPagarService
     private readonly IImovelRepository imovelRepository;
     private readonly IUnidadeRepository unidadeRepository;
     private readonly IClienteRepository clienteRepository;
+    private readonly ITipoTituloRepository tipoTituloRepository;
     private readonly ILogger<ITituloPagarService> logger;
 
     public TituloPagarService(ITituloPagarRepository TituloPagarRepository
@@ -29,6 +30,7 @@ public class TituloPagarService: ITituloPagarService
                         , IUnidadeRepository UnidadeRepository
                         , IClienteRepository ClienteRepository
                         , IContratoAluguelRepository ContratoAluguelRepository
+                        , ITipoTituloRepository TipoTituloRepository
                         , ILogger<ITituloPagarService> logger)
     {
         this.tituloPagarRepository = TituloPagarRepository;
@@ -39,6 +41,7 @@ public class TituloPagarService: ITituloPagarService
         this.unidadeRepository = UnidadeRepository;
         this.clienteRepository = ClienteRepository;
         this.contratoAluguelRepository = ContratoAluguelRepository;
+        this.tipoTituloRepository = TipoTituloRepository;
         this.logger = logger;
     }
 
@@ -123,6 +126,9 @@ public class TituloPagarService: ITituloPagarService
             return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
         }
         int? sequencial = await tituloPagarRepository.GetNumeroTitulo();
+
+        var tipoTitulo = await tipoTituloRepository.GetById(cmd.IdTipoTitulo);
+        TituloPagar.NomeTitulo = tipoTitulo?.Nome;
 
         TituloPagar.Sequencial = sequencial.Value + 1;
         BindTituloPagarData(cmd, TituloPagar, lstFaturaTituloPagar);
@@ -291,9 +297,22 @@ public class TituloPagarService: ITituloPagarService
 
     private static void BindTituloPagarByContratoAluguelData(ContratoAluguel contratoAluguel, TituloPagar TituloPagar, List<FaturaTituloPagar> lstFaturaTituloPagar, Double unidadeTaxaAdministracao)
     {
-        double valorLiquido;
-        valorLiquido = calcularPorcentagemContratoAluguel(contratoAluguel.ValorAluguel, unidadeTaxaAdministracao);
+        double ValorAPagar = 0;
         int prazo = contratoAluguel.PrazoTotalContrato > 12 ? 12 : contratoAluguel.PrazoTotalContrato;
+        int prazoFaturas = contratoAluguel.PrazoCarencia.HasValue ?
+               (prazo - contratoAluguel.PrazoCarencia.Value) :
+               prazo;
+        int prazoDesconto = contratoAluguel.PrazoDesconto.HasValue ? contratoAluguel.PrazoDesconto.Value : 0;
+        int prazoImpostos = prazoFaturas - prazoDesconto;
+
+        if (contratoAluguel.PrazoDesconto.HasValue)
+        {
+            ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorComDesconto.Value, unidadeTaxaAdministracao) * prazoDesconto;
+        }
+
+        ValorAPagar += calcularPorcentagemContratoAluguel(contratoAluguel.ValorComImpostos.Value, unidadeTaxaAdministracao) * prazoImpostos;
+ 
+
         switch (TituloPagar.GuidReferencia)
         {
             case null:
@@ -308,8 +327,8 @@ public class TituloPagarService: ITituloPagarService
         }
 
         TituloPagar.NumeroTitulo = TituloPagar.Sequencial + "/" + DateTime.Now.Year;
-        TituloPagar.NomeTitulo = "Aluguel";
-        TituloPagar.IdTipoTitulo = TipoTituloReceberEnum.ALUGUEL;
+        TituloPagar.NomeTitulo = "Taxa de administração";
+        TituloPagar.IdTipoTitulo = TipoTituloReceberEnum.TAXA_ADMINISTRACAO;
         TituloPagar.IdFormaPagamento = FormaPagamentoEnum.BOLETO;
         TituloPagar.Status = true;
         TituloPagar.DataFimTitulo = contratoAluguel.DataFimContrato;
@@ -317,17 +336,18 @@ public class TituloPagarService: ITituloPagarService
         TituloPagar.IdCliente = contratoAluguel?.IdCliente;
         TituloPagar.IdIndiceReajuste = contratoAluguel?.IdIndiceReajuste;
         TituloPagar.IdTipoCreditoAluguel = contratoAluguel?.IdTipoCreditoAluguel;
-        TituloPagar.ValorTitulo = valorLiquido;
-        TituloPagar.ValorTotalTitulo = valorLiquido * prazo;
+        TituloPagar.ValorTitulo = calcularPorcentagemContratoAluguel(contratoAluguel.ValorComImpostos.Value, unidadeTaxaAdministracao);
+        TituloPagar.ValorTotalTitulo = ValorAPagar;
         TituloPagar.Parcelas = prazo;
         TituloPagar.DataVencimentoPrimeraParcela = contratoAluguel.DataVencimentoPrimeraParcela;
         TituloPagar.PorcentagemTaxaAdministracao = contratoAluguel.PercentualRetencaoImpostos;
 
-        BindFaturaTituloByContratoAluguelData(contratoAluguel, TituloPagar, lstFaturaTituloPagar);
+        BindFaturaTituloByContratoAluguelData(contratoAluguel, TituloPagar, lstFaturaTituloPagar, unidadeTaxaAdministracao);
     }
 
-    private static List<FaturaTituloPagar> BindFaturaTituloByContratoAluguelData(ContratoAluguel contratoAluguel, TituloPagar TituloPagar, List<FaturaTituloPagar> lstFaturaTituloPagar)
+    private static List<FaturaTituloPagar> BindFaturaTituloByContratoAluguelData(ContratoAluguel contratoAluguel, TituloPagar TituloPagar, List<FaturaTituloPagar> lstFaturaTituloPagar, Double unidadeTaxaAdministracao)
     {
+        int contaDesconto = 1;
         for (int i = 0; i < contratoAluguel.PrazoTotalContrato; i++)
         {
             if (i > 11)
@@ -335,6 +355,35 @@ public class TituloPagarService: ITituloPagarService
 
             DateTime dataVencimento = TituloPagar.DataVencimentoPrimeraParcela.Value.AddMonths(i);
             int diaVencimento = TituloPagar.DataVencimentoPrimeraParcela.Value.Day > 28 ? 28 : dataVencimento.Day;
+            double ValorAPagar = 0;
+
+            if (contratoAluguel.PrazoCarencia.HasValue)
+            {
+                if (contratoAluguel.PrazoCarencia > i)
+                {
+                    ValorAPagar = 0.00;
+                }
+                else if (contratoAluguel.PrazoDesconto.HasValue)
+                {
+                    if (contratoAluguel.PrazoDesconto >= contaDesconto)
+                    {
+                        ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorComDesconto.Value, unidadeTaxaAdministracao);
+                        contaDesconto++;
+                    }
+                    else
+                    {
+                        ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorComImpostos.Value, unidadeTaxaAdministracao);
+                    }
+                }
+                else
+                {
+                    ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorComImpostos.Value, unidadeTaxaAdministracao);
+                }
+            }
+            else
+            {
+                ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorComImpostos.Value, unidadeTaxaAdministracao);
+            }
 
             FaturaTituloPagar faturaTituloPagar      = new FaturaTituloPagar();
             faturaTituloPagar.StatusFatura           = FaturaTituloEnum.A_VENCER;
@@ -344,7 +393,7 @@ public class TituloPagarService: ITituloPagarService
             faturaTituloPagar.DataUltimaModificacao  = DateTime.Now;
             faturaTituloPagar.GuidReferencia         = Guid.NewGuid();
             faturaTituloPagar.NumeroFatura           = TituloPagar.NumeroTitulo + "/" + (i+1).ToString("D2");
-            faturaTituloPagar.Valor                  = contratoAluguel.ValorAluguelLiquido;
+            faturaTituloPagar.Valor                  = ValorAPagar;
             faturaTituloPagar.DataVencimento         = new DateTime(dataVencimento.Year, dataVencimento.Month, diaVencimento);
 
             lstFaturaTituloPagar.Add(faturaTituloPagar);
@@ -354,6 +403,7 @@ public class TituloPagarService: ITituloPagarService
 
     private static void BindTituloPagarData(CriarTituloPagarCommand cmd, TituloPagar TituloPagar,  List<FaturaTituloPagar> lstFaturaTituloPagar)
     {
+        Boolean criacao = false;
         double valorLiquido;
         valorLiquido = calcularPorcentagem(cmd.ValorTitulo, cmd.PorcentagemImpostoRetido);
         switch (TituloPagar.GuidReferencia)
@@ -364,6 +414,7 @@ public class TituloPagarService: ITituloPagarService
                 TituloPagar.DataUltimaModificacao = DateTime.Now;
                 TituloPagar.NumeroTitulo = TituloPagar.Sequencial + "/" + DateTime.Now.Year;
                 TituloPagar.Status = true;
+                criacao = true;
                 break;
             default:
                 TituloPagar.GuidReferencia = TituloPagar.GuidReferencia;
@@ -371,7 +422,7 @@ public class TituloPagarService: ITituloPagarService
                 break;
         }
 
-        TituloPagar.NomeTitulo                        = cmd.NomeTitulo;
+        TituloPagar.NomeTitulo                        = String.IsNullOrEmpty(cmd.NomeTitulo) ? TituloPagar.NomeTitulo : cmd.NomeTitulo;
         TituloPagar.IdTipoTitulo                      = cmd.IdTipoTitulo;
         TituloPagar.DataFimTitulo                     = cmd.DataVencimentoPrimeraParcela.AddMonths(cmd.Parcelas);
         TituloPagar.DataVencimentoPrimeraParcela      = cmd.DataVencimentoPrimeraParcela;
@@ -385,7 +436,7 @@ public class TituloPagarService: ITituloPagarService
         TituloPagar.Parcelas                          = cmd.Parcelas;
         TituloPagar.PorcentagemTaxaAdministracao      = cmd.PorcentagemImpostoRetido;
 
-        if(TituloPagar.Id == 0)
+        if (criacao)
             BindFaturaTituloData(TituloPagar, lstFaturaTituloPagar);
     }
 
@@ -415,17 +466,18 @@ public class TituloPagarService: ITituloPagarService
         return lstFaturaTituloPagar;
     }
 
-    private static void BindTituloPagarReajusteData(ContratoAluguel contratoAluguel, TituloPagar TituloPagar, List<FaturaTituloPagar> lstFaturaTituloPagar)
+    private static void BindTituloPagarReajusteData(ContratoAluguel contratoAluguel, TituloPagar tituloPagar, List<FaturaTituloPagar> lstFaturaTituloPagar)
     {
-        TituloPagar.DataUltimaModificacao = DateTime.Now;
-        TituloPagar.DataFimTitulo = TituloPagar.DataFimTitulo.Value.AddMonths(12);
-        
-        TituloPagar.ValorTitulo = contratoAluguel.ValorAluguelLiquido;
-        TituloPagar.ValorTotalTitulo = (TituloPagar.ValorTotalTitulo + (contratoAluguel.ValorAluguelLiquido * 12));
-        TituloPagar.Parcelas = TituloPagar.Parcelas + 12;
-        TituloPagar.PorcentagemTaxaAdministracao = contratoAluguel.PercentualRetencaoImpostos;
+        DateTime dataVencimento = tituloPagar.DataFimTitulo.Value.AddMonths(12);
+        tituloPagar.DataUltimaModificacao = DateTime.Now;
+        tituloPagar.DataFimTitulo = tituloPagar.DataFimTitulo.Value >= dataVencimento ? tituloPagar.DataFimTitulo : dataVencimento;
 
-        BindFaturaTituloReajusteData(TituloPagar, lstFaturaTituloPagar);
+        tituloPagar.ValorTitulo = contratoAluguel.ValorAluguelLiquido;
+        tituloPagar.ValorTotalTitulo = (tituloPagar.ValorTotalTitulo + (contratoAluguel.ValorAluguelLiquido * 12));
+        tituloPagar.Parcelas = tituloPagar.Parcelas + 12;
+        tituloPagar.PorcentagemTaxaAdministracao = contratoAluguel.PercentualRetencaoImpostos;
+
+        BindFaturaTituloReajusteData(tituloPagar, lstFaturaTituloPagar);
     }
 
     private static List<FaturaTituloPagar> BindFaturaTituloReajusteData(TituloPagar TituloPagar, List<FaturaTituloPagar> lstFaturaTituloPagar)

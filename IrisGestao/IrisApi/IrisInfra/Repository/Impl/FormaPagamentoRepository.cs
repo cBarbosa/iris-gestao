@@ -16,6 +16,6 @@ public class FormaPagamentoRepository : Repository<FormaPagamento>, IFormaPagame
 
     public async Task<IEnumerable<Bancos>> GetBancos()
     {
-        return await Db.Bancos.ToListAsync();
+        return await Db.Bancos.OrderBy(x=> x.Descricao).ToListAsync();
     }
 }

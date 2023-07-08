@@ -40,6 +40,40 @@ public class FaturaTituloService : IFaturaTituloService
         }
 
         cmd.GuidFatura = uuid;
+        BindEditarFaturaData(cmd, faturaTitulo);
+
+        try
+        {
+            faturaTituloRepository.Update(faturaTitulo);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, faturaTitulo);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+    }
+
+    public async Task<CommandResult> BaixarFatura(Guid uuid, BaixaDeFaturaCommand cmd)
+    {
+        if (cmd == null || uuid.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var faturaTitulo = await faturaTituloRepository.GetByReferenceGuid(uuid);
+
+        if (faturaTitulo == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+        else if (faturaTitulo.StatusFatura.Equals(FaturaTituloEnum.INATIVO) ||
+                faturaTitulo.StatusFatura.Equals(FaturaTituloEnum.PAGO))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1009, null!);
+        }
+
+        cmd.GuidFatura = uuid;
         BindBaixaDeFaturaData(cmd, faturaTitulo);
 
         try
@@ -56,7 +90,7 @@ public class FaturaTituloService : IFaturaTituloService
 
     private static void BindBaixaDeFaturaData(BaixaDeFaturaCommand cmd, FaturaTitulo faturaTitulo)
     {
-        int diasAtraso = calculaDiasAtraso(cmd.DataVencimento, cmd.DataPagamento);
+        int diasAtraso = calculaDiasAtraso(cmd.DataVencimento.Value, cmd.DataPagamento.Value);
         switch (faturaTitulo.GuidReferencia)
         {
             case null:
@@ -70,17 +104,25 @@ public class FaturaTituloService : IFaturaTituloService
                 break;
         }
 
-        faturaTitulo.NumeroNotaFiscal           = cmd.NumeroNotaFiscal;
-        faturaTitulo.DataEmissaoNotaFiscal      = cmd.DataEmissaoNotaFiscal;
+        //faturaTitulo.NumeroNotaFiscal           = cmd.NumeroNotaFiscal;
+        //faturaTitulo.DataEmissaoNotaFiscal      = cmd.DataEmissaoNotaFiscal;
         faturaTitulo.Status                     = true;
         faturaTitulo.StatusFatura               = FaturaTituloEnum.PAGO;
-        faturaTitulo.DataVencimento             = cmd.DataVencimento;
+        //faturaTitulo.DataVencimento             = cmd.DataVencimento;
         faturaTitulo.DataPagamento              = cmd.DataPagamento;
         faturaTitulo.ValorRealPago              = cmd.ValorRealPago;
         faturaTitulo.DiasAtraso                 = diasAtraso > 0 ? diasAtraso : 0;
         faturaTitulo.DescricaoBaixaFatura       = cmd.DescricaoBaixaFatura;
     }
 
+    private static void BindEditarFaturaData(BaixaDeFaturaCommand cmd, FaturaTitulo faturaTitulo)
+    {
+        faturaTitulo.GuidReferencia = faturaTitulo.GuidReferencia;
+        faturaTitulo.DataUltimaModificacao = DateTime.Now;
+        
+        faturaTitulo.DataVencimento = cmd.DataVencimento;
+        faturaTitulo.Valor = cmd.Valor;
+    }
     private static int calculaDiasAtraso(DateTime dataVencimento, DateTime DataPagamento)
     {
         return (DataPagamento - dataVencimento).Days;

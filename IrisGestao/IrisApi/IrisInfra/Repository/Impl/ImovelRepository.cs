@@ -1,3 +1,4 @@
+using Azure;
 using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
@@ -5,6 +6,8 @@ using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace IrisGestao.Infraestructure.Repository.Impl;
 
@@ -86,9 +89,6 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                             AreaUtil = x.Unidade.Where(x=> x.Status).Sum(x => x.AreaUtil),
                             AreaHabitese = x.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
                             NroUnidades = x.Unidade.Where(x => x.Status).Count(),
-                            ImgCapa = "../../../../assets/images/imovel.png",
-                            Imagens = ImagemListFake,
-                            Anexos = AnexoListFake,
                             IdCategoriaImovelNavigation = x.IdCategoriaImovelNavigation == null ? null : new 
                             {
                                 Id = x.IdCategoriaImovelNavigation.Id,
@@ -142,6 +142,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                         .Include(x => x.ImovelEndereco)
                         .Include(x => x.Unidade)
                             .ThenInclude(y => y.IdTipoUnidadeNavigation)
+                        .Include(x=> x.Evento)
                         .Where(x => x.GuidReferencia.Equals(guid))
                         .Select(x => new
                         {
@@ -172,14 +173,11 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                                         Id = y.IdTipoUnidadeNavigation.Id,
                                         Nome = y.IdTipoUnidadeNavigation.Nome
                                     }
-                            }).Where(y => y.Ativo),
+                            }).Where(y => y.Ativo).OrderBy(x=> x.Tipo).ToList(),
                             AreaTotal = x.Unidade.Where(x => x.Status).Sum(x => x.AreaTotal),
                             AreaUtil = x.Unidade.Where(x => x.Status).Sum(x => x.AreaUtil),
                             AreaHabitese = x.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
                             NroUnidades = x.Unidade.Where(x => x.Status).Count(),
-                            ImgCapa = ImagemCapaFake,
-                            Imagens = ImagemListFake,
-                            Anexos = AnexoListFake,
                             IdCategoriaImovelNavigation = x.IdCategoriaImovelNavigation == null ? null : new 
                             {
                                 Id = x.IdCategoriaImovelNavigation.Id,
@@ -205,7 +203,33 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                                         Id = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Id,
                                         Nome = x.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Nome,
                                     }
-                            }
+                            },
+                            Eventos = x.Evento.Select(y => new
+                            {
+                                GuidReferenciaEvento = y.GuidReferencia,
+                                DataRealizacao = y.DthRealizacao,
+                                Nome           = y.Nome,
+                                Descricao      = y.descricao,
+                                TipoEvento = y.IdTipoEventoNavigation == null
+                                    ? null
+                                    : new
+                                    {
+                                        Id = y.IdTipoEventoNavigation.Id,
+                                        Nome = y.IdTipoEventoNavigation.Nome
+                                },
+                                ClienteVisitante = y.IdClienteNavigation == null
+                                    ? null
+                                    : new
+                                    {
+                                        GuidReferenciaVisitante = y.IdClienteNavigation.GuidReferencia,
+                                        Nome = y.IdClienteNavigation.Nome
+                                    },
+                                UnidadesVisitadas = y.EventoUnidade.Select(y => new
+                                {
+                                    GuidReferenciaUnidadeVisitada = y.IdUnidadeNavigation.GuidReferencia,
+                                    Tipo = y.IdUnidadeNavigation.Tipo
+                                })
+                            }),
                         })
                     .FirstOrDefaultAsync();
     }
@@ -215,70 +239,41 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
         return await DbSet
             .FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
     }
-
-    public static string ImagemCapaFake => "../../../../assets/images/imovel.png";
-
-    public static List<object> ImagemListFake => new List<object>
-    {
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/1.jpg",
-            Url = ".../../../assets/images/property/1.jpg"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/2.png",
-            Url = ".../../../assets/images/property/2.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/3.png",
-            Url = ".../../../assets/images/property/3.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/4.png",
-            Url = ".../../../assets/images/property/4.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/5.png",
-            Url = ".../../../assets/images/property/5.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/2.png",
-            Url = ".../../../assets/images/property/2.png"
-        },
-        new
-        {
-            ThumbUrl =".../../../assets/images/property/4.png",
-            Url = ".../../../assets/images/property/4.png"
-        }
-    };
     
-    public static List<object> AnexoListFake => new List<object>
+    public async Task<object> GetImoveisParaContrato()
     {
-        new
-        {
-            Nome = "Projeto",
-            Tipo = 1,
-            FileName = "Projeto.pdf",
-            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
-        },
-        new
-        {
-            Nome = "Matricula",
-            FileName = "Matricula.pdf",
-            Tipo = 2,
-            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
-        },
-        new
-        {
-            Nome = "Habite-se",
-            FileName = "habite-se.pdf",
-            Tipo = 3,
-            URI = "https://www.angeloni.com.br/files/images/2/1F/AC/manualpdf.pdf"
-        }
-    };
+        
+        var result = Db.Unidade
+            .Where(u => Db.ContratoAluguelUnidade
+                .All(c => c.IdUnidade != u.Id) && u.Status)
+            .Select(u => new
+            {
+                IdImovel = u.IdImovelNavigation.Id,
+                NomeImovel = u.IdImovelNavigation.Nome,
+                GuidImovel = u.IdImovelNavigation.GuidReferencia,
+                NomeUnidade = u.Tipo,
+                GuidReferenciaUnidade = u.GuidReferencia,
+            }).OrderBy(x => x.NomeImovel).OrderBy(x=> x.NomeUnidade)
+            .ToList();
+/*        
+        var result = Db.Unidade
+                .Join(Db.Imovel,
+                    u => u.IdImovel,
+                    imovel => imovel.Id,
+                    (u, imovel) => new { Unidade = u, Imovel = imovel })
+                .GroupJoin(Db.ContratoAluguelUnidade,
+                    u => u.Unidade.Id,
+                    contrato => contrato.IdUnidade,
+                    (u, contratos) => new { Unidade = u.Unidade, Imovel = u.Imovel, Contratos = contratos })
+                .Where(u => u.Contratos.All(c => c.IdUnidade == null))
+                .Select(u => new { 
+                    u.Imovel.Nome, 
+                    u.Imovel.GuidReferencia,
+                    u.Unidade.Tipo, 
+                    u.Unidade.Id, 
+                    u.Unidade.IdImovel })
+                .ToList();
+*/
+        return result;
+    }
 }

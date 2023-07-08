@@ -16,6 +16,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { DetailSidebarComponent } from 'src/app/shared/components/detail-sidebar/detail-sidebar.component';
 import { BaixaTituloSidebarComponent } from './baixa-titulo-sidebar/baixa-titulo-sidebar.component';
 import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
+import { EdicaoTituloSidebarComponent } from '../../revenue/revenue-view/edicao-titulo-sidebar/edicao-titulo-sidebar.component';
 
 @NgModule({
 	declarations: [RevenueViewComponent],
@@ -34,6 +35,7 @@ import { UploadListComponent } from 'src/app/shared/components/upload-list/uploa
 		SidebarModule,
 		DetailSidebarComponent,
 		BaixaTituloSidebarComponent,
+		EdicaoTituloSidebarComponent,
 		UploadListComponent,
 	],
 })

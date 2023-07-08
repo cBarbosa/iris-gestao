@@ -128,8 +128,14 @@ export class RevenueEditComponent {
 					this.revenue = data;
 
 					this.imovel.nome = data.imoveis[0].nome;
-					const { rua, bairro, cidade, uf } = data.imoveis[0].imovelEndereco[0];
-					this.imovel.endereco = `${rua}, ${bairro}, ${cidade} - ${uf}`;
+
+					if (data.imoveis[0]?.imovelEndereco[0]) {
+						const { rua, bairro, cidade, uf } =
+							data.imoveis[0].imovelEndereco[0];
+						this.imovel.endereco = `${rua}, ${bairro}, ${cidade} - ${uf}`;
+					} else {
+						this.imovel.endereco = 'Sem endereço';
+					}
 
 					this.editForm.patchValue({
 						nomeConta: data.nomeTitulo,

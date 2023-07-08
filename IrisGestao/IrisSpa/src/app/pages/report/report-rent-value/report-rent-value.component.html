@@ -1,0 +1,292 @@
+<div class="header-background"></div>
+<div class="content-wrapper">
+	<div class="content">
+		<header class="list-header">
+			<div class="flex justify-between items-center" [class.mb-2]="isMobile">
+				<h3 class="text-2xl font-bold">
+					Relatório de Valor de Aluguel
+					<span class="ml-2 text-sm">{{ totalAreaCount }}</span>
+				</h3>
+				<button
+					pButton
+					pRipple
+					type="button"
+					icon="pi pi-sliders-h"
+					class="p-button-rounded p-button-text"
+					*ngIf="isMobile"
+					(click)="openFilters()"
+				></button>
+			</div>
+
+			<div class="options">
+				<ng-container *ngIf="!isMobile">
+					<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+				</ng-container>
+
+				<button
+					pButton
+					type="button"
+					class="p-button-outlined ml-3 h-9 addButton"
+					(click)="menu.toggle($event)"
+				>
+					<i class="pi pi-download mr-3"></i>
+					Exportar
+				</button>
+
+				<p-menu
+					#menu
+					[model]="items"
+					[popup]="true"
+				>
+				</p-menu>
+			</div>
+		</header>
+
+		<ng-template #filtersTemplate>
+			<!-- <span class="p-input-icon-left w-full md:w-44">
+				<i class="pi pi-search"></i>
+				<input
+					pInputText
+					class="w-full md:w-44"
+					[class.white-theme]="!isMobile"
+					[(ngModel)]="filterText"
+					(ngModelChange)="filterResultDebounce($event)"
+					type="text"
+					placeholder="Buscar fornecedor"
+				/>
+			</span> -->
+
+			<p-calendar
+				[styleClass]="'mr-2 w-full md:w-44'"
+				placeholder="Referência"
+				aria-describedby="periodo-help"
+				view="month"
+				dateFormat="mm/yy"
+				[(ngModel)]="filterReferencia"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-calendar>
+
+			<p-dropdown
+				styleClass="w-full md:w-[10rem]"
+				[options]="opcoesImovel"
+				[(ngModel)]="filterImovel"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown>
+
+			<p-dropdown
+				styleClass="w-full md:w-[9rem]"
+				[options]="opcoesTipoImovel"
+				[(ngModel)]="filterTipoImovel"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown>
+
+			<p-dropdown
+				styleClass="w-full md:w-[8rem]"
+				[options]="opcoesLocador"
+				[(ngModel)]="filterLocador"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown>
+
+			<p-dropdown
+				styleClass="w-full md:w-[8rem]"
+				[options]="opcoesLocatario"
+				[(ngModel)]="filterLocatario"
+				(ngModelChange)="filterResultDebounce($event)"
+				[hidden]="true"
+			></p-dropdown>
+
+			<!-- <p-dropdown
+				styleClass="w-full md:w-[7rem]"
+				[options]="opcoesStatus"
+				[(ngModel)]="filterStatus"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown> -->
+		</ng-template>
+
+		<ng-container>
+			<ng-container *ngIf="isLoading">
+				<app-spinner styleClass="mt-11"></app-spinner>
+			</ng-container>
+			<ng-container *ngIf="!isLoading && noRestults">
+				<div class="no-results-warn">
+					<span>Nenhum resultado</span>
+				</div>
+			</ng-container>
+
+			<p-table
+				*ngIf="!isMobile"
+				[value]="resultEntries"
+				styleClass="p-datatable-striped"
+				[tableStyle]="{ 'min-width': '50rem' }"
+				[paginator]="false"
+				[rows]="rows"
+				[(first)]="first"
+				responsiveLayout="scroll"
+				[totalRecords]="totalAreaCount"
+				[lazy]="true"
+				(onLazyLoad)="loadResultPage($event)"
+				#reportToPdf
+			>
+				<ng-template pTemplate="header">
+					<tr *ngIf="!isLoading && !noRestults">
+						<th>Centro de custo</th>
+						<th>Locador</th>
+						<th>Imóvel</th>
+						<th>Locatário</th>
+						<th>Área Selecionada</th>
+						<th>Aluguel contratado</th>
+						<th>Aluguel Potencial</th>
+                        <th>Preço/m²</th>
+                        <th>Preço mês referência</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-entry>
+					<tr>
+						<td class="font-bold">{{ entry.numCentroCusto }}</td>
+						<td class="max-w-[120px]">{{ entry.nomeLocatario ?? "-" }}</td>
+						<td class="max-w-[120px]">{{ entry.nomeImovel }}</td>
+						<td class="max-w-[120px]">{{ entry.nomeLocador ?? '-' }}</td>
+
+						<td>{{ entry.somaAreaUtil | area }}</td>
+						<td>{{ entry.somaValorAluguel | currency }}</td>
+						<td>{{ entry.somaValorPotencial | currency }}</td>
+						<td>{{ entry.somaPrecoM2 | currency }}</td>
+						<td>{{ entry.precoMesReferencia | percent : "2.2-2" }}</td>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="footer">
+					<tr class="bg-[#262626]">
+						<td colspan="4" class="bg-transparent text-white">Total</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Área selecionada</div>
+							<div>{{ totalSum?.area | area }}</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Aluguel contratado</div>
+							<div>{{ totalSum?.aluguelContratado | currency }}</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Aluguel potencial</div>
+							<div>{{ totalSum?.aluguelPotencial | currency }}</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Preço/m²</div>
+							<div>{{ (totalSum?.aluguelContratado ?? 0) / (totalSum?.area ?? 1) | currency }}</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Preço mês referência</div>
+							<div>{{ totalSum?.precoMesReferencia | percent : "2.2-2" }}</div>
+						</td>
+					</tr>
+				</ng-template>
+			</p-table>
+
+			<ng-container *ngIf="isMobile">
+				<div class="cardList">
+					<ng-container *ngFor="let entry of resultEntries">
+						<app-card-item
+							[card]="{
+								infos: [
+									{
+										label: 'Centro de custo',
+										data: entry.numCentroCusto
+									},
+									{
+										label: 'Locador',
+										data: entry.nomeLocador ?? '-'
+									},
+									{
+										label: 'Imóvel',
+										data: entry.nomeImovel
+									},
+									{
+										label: 'Locatário',
+										data: entry.nomeLocatario
+									},
+									{
+										label: 'Área selecionada',
+										data: entry.somaAreaUtil,
+										pipe: cardPipes['area']
+									},
+									{
+										label: 'Aluguel contratado',
+										data: entry.somaValorAluguel,
+										pipe: cardPipes['currency']
+									},
+									{
+										label: 'Aluguel Potencial',
+										data: entry.somaValorPotencial,
+										pipe: cardPipes['currency']
+									},
+									{
+										label: 'Preço/m²',
+										data: entry.somaPrecoM2,
+										pipe: cardPipes['currency']
+									},
+									{
+										label: 'Preço mês referência',
+										data: entry.somaPrecoMesReferencia,
+										pipe: cardPipes['percent']
+									}
+								]
+							}"
+						>
+							<!-- <button
+								pButton
+								type="button"
+								class="p-button-text h-7 font-bold"
+								(click)="navigateTo('supplier/details/' + entry.guidReferencia)"
+							>
+								Ver detalhes
+							</button> -->
+						</app-card-item>
+					</ng-container>
+
+					<!-- <div class="mx-5 mt-5">
+						<button
+							pButton
+							type="button"
+							class="p-button-outlined h-9 justify-center w-full"
+							(click)="loadSuppliersEntries()"
+							*ngIf="suppliersEntries.length < totalSupplierCount"
+						>
+							Carregar mais
+						</button>
+					</div> -->
+				</div>
+				<div
+					class="flex flex-wrap gap-x-5 gap-y-7 p-4 justify-between bg-[#262626]"
+				>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Área selecionada</div>
+						<div>{{ totalSum?.area | area }}</div>
+					</div>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Aluguel contratado</div>
+						<div>{{ totalSum?.aluguelContratado | currency }}</div>
+					</div>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Aluguel potencial</div>
+						<div>{{ totalSum?.aluguelPotencial | currency }}</div>
+					</div>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Preço/m²</div>
+						<div>{{ (totalSum?.aluguelContratado ?? 0) / (totalSum?.area ?? 1) | currency }}</div>
+					</div>
+					<div class="bg-transparent text-white">
+						<div class="mb-1 text-xs font-normal">Preço mês referência</div>
+						<div>{{ totalSum?.precoMesReferencia | percent : "2.2-2" }}</div>
+					</div>
+				</div>
+			</ng-container>
+
+		</ng-container>
+	</div>
+</div>
+
+<!-- <p-sidebar [(visible)]="displayMobileFilters" position="bottom">
+	<ng-template pTemplate="header">Filtros</ng-template>
+	<ng-template pTemplate="content">
+		<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+	</ng-template>
+</p-sidebar> -->

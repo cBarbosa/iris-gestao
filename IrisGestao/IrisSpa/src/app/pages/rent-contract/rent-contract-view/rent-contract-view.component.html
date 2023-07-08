@@ -57,15 +57,26 @@
 						</div>
 						<div class="data-divider">&nbsp;</div>
 						<div class="data">
-							<button
-								pButton
-								type="button"
-								class="p-button-outlined h-8"
-								(click)="navigateTo('contract/edit/' + contract.guidReferencia)"
-								disabled
-							>
-								Editar contrato
-							</button>
+							<div class="flex gap-3 flex-wrap">
+								<button
+									pButton
+									type="button"
+									class="p-button-outlined h-8"
+									(click)="
+										navigateTo('rent-contract/edit/' + contract.guidReferencia)
+									"
+								>
+									Editar contrato
+								</button>
+								<button
+									pButton
+									type="button"
+									class="p-button-outlined h-8"
+									(click)="showAdjustment()"
+								>
+									Reajustar contrato
+								</button>
+							</div>
 						</div>
 					</div>
 				</header>
@@ -96,13 +107,23 @@
 								<div class="data">
 									<div class="data-label">Endereço</div>
 									<div class="data-value">
-										{{
-											imovel.imovelEndereco[0].rua +
-												", " +
-												imovel.imovelEndereco[0].cidade +
-												" - " +
-												imovel.imovelEndereco[0].uf
-										}}
+										<ng-container
+											*ngIf="
+												imovel.imovelEndereco && imovel.imovelEndereco[0];
+												else naoInformado
+											"
+										>
+											{{
+												imovel.imovelEndereco[0].rua +
+													", " +
+													imovel.imovelEndereco[0].cidade +
+													" - " +
+													imovel.imovelEndereco[0].uf
+											}}
+										</ng-container>
+										<ng-template #naoInformado>
+											<span class="italic text-gray-400">Não informado</span>
+										</ng-template>
 									</div>
 								</div>
 								<div class="data">
@@ -289,7 +310,7 @@
 									<span class="label">Habite-se</span>
 								</a>
 							</div> -->
-							<div class="attachments-card">
+							<!-- <div class="attachments-card">
 								<button
 									type="button"
 									class="attachment"
@@ -340,6 +361,33 @@
 									</span>
 									<span class="label">Habite-se</span>
 								</button>
+							</div> -->
+							<app-attachment-list [guid]="guid"></app-attachment-list>
+						</p-accordionTab>
+
+						<!-- Histórico de reajuste -->
+						<p-accordionTab header="Histórico de reajuste">
+							<div>
+								<p-table [value]="contract.historicoReajuste" class="w-full">
+									<ng-template pTemplate="header">
+										<tr class="bg-gray-100">
+											<th>Data</th>
+											<th>% de reajuste anterior</th>
+											<th>% de reajuste novo</th>
+											<th>Valor Aluguel anteiror</th>
+											<th>Valor aluguel novo</th>
+										</tr>
+									</ng-template>
+									<ng-template pTemplate="body" let-reajuste>
+										<tr class="even:bg-gray-50">
+											<td>{{ reajuste.dataCriacao | date : "short" }}</td>
+											<td>{{ reajuste.percentualReajusteAntigo }}%</td>
+											<td>{{ reajuste.percentualReajusteNovo }}%</td>
+											<td>{{ reajuste.valorAluguelAnterior  | currency }}</td>
+											<td>{{ reajuste.valorAluguelNovo | currency }}</td>
+										</tr>
+									</ng-template>
+								</p-table>
 							</div>
 						</p-accordionTab>
 					</p-accordion>
@@ -382,8 +430,95 @@
 			pRipple
 			type="button"
 			label="Fechar"
-			class="p-button h-9 w-full"
+			class="p-button-outlined h-9 w-full"
 			(click)="hideContacts()"
 		></button
 	></ng-template>
 </p-sidebar>
+
+<p-sidebar [(visible)]="adjustVisible" position="right">
+	<ng-template pTemplate="header">
+		<h4>Reajustar contrato</h4>
+	</ng-template>
+	<ng-template pTemplate="content">
+		<div class="field">
+			<label for="tax-retention" class="block"> % de ajuste </label>
+			<input
+				id="tax-retention"
+				type="text"
+				[(ngModel)]="taxRetention"
+				aria-describedby="tax-retention-help"
+				mask="percent"
+				suffix="%"
+				[dropSpecialCharacters]="false"
+				pInputText
+			/>
+			<!-- <ng-container *ngIf="checkHasError(valueInfo['taxRetention'])">
+				<small
+					id="tax-retention-help"
+					*ngIf="valueInfo['taxRetention'].hasError('required'); else error2"
+					class="p-error block"
+				>
+					Informe a % de retenção de impostos
+				</small>
+				<ng-template #error2>
+					<small id="tax-retention-help" class="p-error block">
+						% de retenção de impostos inválida
+					</small>
+				</ng-template>
+			</ng-container> -->
+		</div>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<div class="flex gap-4">
+			<button
+				pButton
+				pRipple
+				type="button"
+				label="Fechar"
+				class="p-button-outlined h-9 w-full"
+				[disabled]="isAdjusting"
+				(click)="hideAdjustment()"
+			></button>
+			<button
+				pButton
+				pRipple
+				type="button"
+				label="Editar"
+				class="p-button h-9 w-full"
+				[disabled]="isAdjusting"
+				(click)="adjustContract()"
+			></button>
+		</div>
+	</ng-template>
+</p-sidebar>
+
+<app-responsive-dialog
+	[isMobile]="isMobile"
+	[visible]="displayModal"
+	styleClass="form-modal"
+>
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+
+		<button
+			pButton
+			label="Fechar"
+			(click)="closeModal(hideAdjustment)"
+		></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</app-responsive-dialog>

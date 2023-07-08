@@ -24,9 +24,10 @@
 								type="button"
 								class="p-element h-9 p-button p-component p-button-outlined"
 								(click)="
-									navigateTo('supplier/register/' + contract.guidReferencia)
+									navigateTo(
+										'supplier-contract/edit/' + contract.guidReferencia
+									)
 								"
-								[disabled]="true"
 							>
 								Editar contrato
 							</button>

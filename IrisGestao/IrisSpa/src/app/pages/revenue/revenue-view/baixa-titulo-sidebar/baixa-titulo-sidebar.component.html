@@ -83,7 +83,7 @@
 	</div>
 
 	<div class="field">
-		<label for="valorAluguel" class="block">Valor do aluguel pago</label>
+		<label for="valorAluguel" class="block">Valor pago</label>
 		<input
 			id="valorAluguel"
 			type="text"
@@ -98,11 +98,11 @@
 				*ngIf="f['valorAluguel'].hasError('required'); else error2"
 				class="p-error block"
 			>
-				Informe o valor do aluguel pago
+				Informe o Valor pago
 			</small>
 			<ng-template #error2>
 				<small id="valorAluguel-help" class="p-error block">
-					Valor do aluguel pago inválido
+					Valor pago inválido
 				</small>
 			</ng-template>
 		</ng-container>
@@ -268,7 +268,7 @@
 			{{ modalContent.message }}
 		</p>
 
-		<button pButton label="Continuar" (click)="closeModal(true)"></button>
+		<button pButton label="Continuar" (click)="closeModal(true, true)"></button>
 	</div>
 	<ng-template #error>
 		<div class="modal-error">

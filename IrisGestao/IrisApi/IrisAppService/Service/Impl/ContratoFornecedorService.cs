@@ -58,7 +58,7 @@ public class ContratoFornecedorService: IContratoFornecedorService
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
             : new CommandResult(true, SuccessResponseEnums.Success_1005, ContratoFornecedor);
     }
-    
+
     public async Task<CommandResult> Insert(CriarContratoFornecedorCommand cmd)
     {
         var contratoFornecedor = new ContratoFornecedor();
@@ -95,7 +95,51 @@ public class ContratoFornecedorService: IContratoFornecedorService
             return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
         }
     }
-    
+
+    public async Task<CommandResult> Update(Guid uuid, CriarContratoFornecedorCommand cmd)
+    {
+        var contratoFornecedor = new ContratoFornecedor();
+        if (cmd == null || uuid.Equals(Guid.Empty)
+            || cmd.GuidFornecedor.Equals(Guid.Empty) || cmd.GuidImovel.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var fornecedor = await fornecedorRepository.GetByReferenceGuid(cmd.GuidFornecedor.Value);
+        if (fornecedor == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Imovel", null!);
+        }
+
+        var imovel = await imovelRepository.GetByReferenceGuid(cmd.GuidImovel.Value);
+        if (imovel == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
+        }
+
+        contratoFornecedor = await contratoFornecedorRepository.GetByGuid(uuid);
+        if (contratoFornecedor == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Contrato", null!);
+        }
+
+        BindContratoFornecedorData(cmd, contratoFornecedor);
+        contratoFornecedor.IdFornecedor = fornecedor.Id;
+        contratoFornecedor.IdImovel = imovel.Id;
+
+        try
+        {
+            contratoFornecedorRepository.Update(contratoFornecedor);
+
+            return new CommandResult(true, SuccessResponseEnums.Success_1000, contratoFornecedor);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
+        }
+    }
+
     public async Task<CommandResult> AlterarStatus(Guid uuid, bool status)
     {
         if (uuid.Equals(Guid.Empty)){
@@ -155,6 +199,6 @@ public class ContratoFornecedorService: IContratoFornecedorService
 
     private static int calculaMes(DateTime dataInicio, DateTime dataFim)
     {
-        return ((dataInicio.Year - dataFim.Year) * 12) + dataInicio.Month - dataFim.Month;
+        return ((dataFim.Year - dataInicio.Year) * 12) + dataFim.Month - dataInicio.Month;
     }
 }

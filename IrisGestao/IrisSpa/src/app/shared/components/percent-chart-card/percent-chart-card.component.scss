@@ -1,0 +1,16 @@
+:host {
+	min-width: 20rem;
+	max-width: 25rem;
+}
+.relative-size {
+	font-size: 15cqw;
+}
+
+::ng-deep {
+	p-chart.p-element {
+		> div {
+			display: flex;
+			justify-content: center;
+		}
+	}
+}

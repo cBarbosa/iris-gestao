@@ -73,12 +73,14 @@ public class FaturaTituloPagarService : IFaturaTituloPagarService
             return new CommandResult(false, ErrorResponseEnums.Error_1009, null!);
         }
 
+        int diasAtraso = calculaDiasAtraso(faturaTituloPagar.DataVencimento.Value, cmd.DataPagamento);
+
         faturaTituloPagar.StatusFatura = FaturaTituloEnum.PAGO;
         faturaTituloPagar.DescricaoBaixaFatura = cmd.DescricaoBaixaFatura;
         faturaTituloPagar.DataPagamento = cmd.DataPagamento;
         faturaTituloPagar.ValorRealPago = cmd.ValorRealPago;
         faturaTituloPagar.DataUltimaModificacao = DateTime.Now;
-        faturaTituloPagar.DiasAtraso = calculaDiasAtraso(faturaTituloPagar.DataVencimento.Value, cmd.DataPagamento);
+        faturaTituloPagar.DiasAtraso = diasAtraso > 0 ? diasAtraso : 0;
 
         try
         {
@@ -107,20 +109,21 @@ public class FaturaTituloPagarService : IFaturaTituloPagarService
                 break;
         }
 
+        FaturaTituloPagar.DataVencimento = cmd.DataVencimento;
+        FaturaTituloPagar.Valor          = cmd.Valor;
+        /*
         FaturaTituloPagar.NumeroNotaFiscal           = cmd.NumeroNotaFiscal;
         FaturaTituloPagar.DataEmissaoNotaFiscal      = cmd.DataEmissaoNotaFiscal;
         FaturaTituloPagar.DataEnvio                  = cmd.DataEnvio;
         FaturaTituloPagar.Status                     = true;
         //FaturaTituloPagar.StatusFatura               = FaturaTituloEnum.PAGO;
-        FaturaTituloPagar.DataVencimento             = cmd.DataVencimento;
         FaturaTituloPagar.DataPagamento              = cmd.DataPagamento;
         FaturaTituloPagar.ValorRealPago              = cmd.ValorRealPago;
-        FaturaTituloPagar.DescricaoBaixaFatura       = cmd.DescricaoBaixaFatura;
+        FaturaTituloPagar.DescricaoBaixaFatura       = cmd.DescricaoBaixaFatura;*/
     }
-    
+
     private static int calculaDiasAtraso(DateTime dataVencimento, DateTime DataPagamento)
     {
-        int diasAtraso = (DataPagamento - dataVencimento).Days;
-        return diasAtraso < 0 ? 0 : diasAtraso;
+        return (DataPagamento - dataVencimento).Days;
     }
 }

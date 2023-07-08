@@ -121,10 +121,16 @@ export class ExpenseViewComponent {
 		this.baixaTituloVisible = true;
 		this.edicaoTituloVisible = false;
 	};
+
 	showEdicaoTitulo = (): void => {
 		this.detalheBaixaVisible = false;
 		this.baixaTituloVisible = false;
-		this.edicaoTituloVisible = true;
+		if (
+			this.faturaSelected.statusFatura === 'Vencido' ||
+			this.faturaSelected.statusFatura === 'A vencer'
+		)
+			this.edicaoTituloVisible = true;
+		else this.edicaoTituloVisible = false;
 	};
 
 	hideDetalheBaixa = () => {

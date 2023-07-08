@@ -204,6 +204,7 @@ export class RentContractRegisterComponent {
 				locatario: [null, Validators.required],
 				dataInicio: [null, Validators.required],
 				// dataFim: [null, Validators.required],
+				prazoTotalContrato:  [null, Validators.required],
 				dataOcupacao: [null, Validators.required],
 				//dataVencimento: [1, Validators.required],
 				dataVencimentoPrimeraParcela: [null, Validators.required],
@@ -213,7 +214,7 @@ export class RentContractRegisterComponent {
 				// valorLiquido: ['', Validators.required],
 				retencao: ['', Validators.required],
 				desconto: [null, Validators.required],
-				descontoPrazo: [null, Validators.required],
+				prazoDesconto: [null, Validators.required],
 				reajuste: [null, Validators.required],
 				periodicidade: [null, Validators.required],
 				carencia: [true, Validators.required],
@@ -281,16 +282,16 @@ export class RentContractRegisterComponent {
 			}
 		});
 
-		this.imovelService.getProperties(100, 1).subscribe((event) => {
+		this.imovelService.getImoveisDisponiveis().subscribe((event) => {
 			if (event) {
-				event.data.items.forEach((item: any) => {
+				event.forEach((item: any) => {
 					this.buildings.push({
-						label: item.nome,
+						label: item.nomeImovel,
 						value: {
-							guid: item.guidReferencia,
-							name: item.nome,
+							guid: item.guidImovel,
+							name: item.nomeImovel,
 						},
-						units: item.unidade,
+						units: item.lstUnidade,
 					});
 				});
 			}
@@ -492,6 +493,7 @@ export class RentContractRegisterComponent {
 				locatario: string; // x
 				dataInicio: string; // x
 				// dataFim: string;
+				prazoTotalContrato: number;
 				dataOcupacao: string; // x
 				dataVencimento: number; // x
 				dataVencimentoPrimeraParcela: string;
@@ -501,7 +503,7 @@ export class RentContractRegisterComponent {
 				// valorLiquido: number;
 				retencao: string; // x
 				desconto: string; // x
-				descontoPrazo: string; //???
+				prazoDesconto: string; // x
 				reajuste: number; // x
 				periodicidade: string; // x
 				carencia: boolean; // x
@@ -522,10 +524,11 @@ export class RentContractRegisterComponent {
 			valorAluguel: formData.valuesInfo.valor,
 			percentualRetencaoImpostos: +formData.valuesInfo.retencao,
 			percentualDescontoAluguel: +formData.valuesInfo.desconto,
+			prazoDesconto: +formData.valuesInfo.prazoDesconto,
 			carenciaAluguel: formData.valuesInfo.carencia,
 			prazoCarencia: +formData.valuesInfo.carenciaPrazo,
 			dataInicioContrato: formData.contractInfo.dataInicio,
-			prazoTotalContrato: +formData.valuesInfo.descontoPrazo, //???
+			prazoTotalContrato: +formData.contractInfo.prazoTotalContrato, //???
 			dataOcupacao: formData.contractInfo.dataOcupacao,
 			diaVencimentoAluguel: formData.contractInfo.dataVencimento,
 			dataVencimentoPrimeraParcela:
@@ -728,10 +731,10 @@ export class RentContractRegisterComponent {
 
 		building?.['units']?.forEach((item: any) => {
 			this.units.push({
-				label: item.tipo,
+				label: item.nomeUnidade,
 				value: {
-					guid: item.guidReferencia,
-					name: item.tipo,
+					guid: item.guidUnidade,
+					name: item.nomeUnidade,
 				},
 			});
 		});

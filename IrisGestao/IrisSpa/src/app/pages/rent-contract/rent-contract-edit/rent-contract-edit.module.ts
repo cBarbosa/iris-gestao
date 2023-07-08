@@ -14,6 +14,9 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { AccordionModule } from 'primeng/accordion';
 import { CalendarModule } from 'primeng/calendar';
+import { UnitSelectComponent } from 'src/app/shared/components/unit-select/unit-select.component';
+import { AttachmentListComponent } from 'src/app/shared/components/attachment-list/attachment-list.component';
+import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
 
 @NgModule({
 	declarations: [RentContractEditComponent],
@@ -32,6 +35,8 @@ import { CalendarModule } from 'primeng/calendar';
 		CheckboxModule,
 		AccordionModule,
 		CalendarModule,
+		UnitSelectComponent,
+		UploadListComponent,
 	],
 })
 export class RentContractEditModule {}
