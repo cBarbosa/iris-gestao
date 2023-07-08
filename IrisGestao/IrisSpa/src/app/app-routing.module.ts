@@ -106,35 +106,6 @@ const routes: Routes = [
 				},
 			},
 			{
-				path: 'dashboard',
-				loadChildren: () =>
-					import('./pages/dashboard/dashboard.module').then(
-						(m) => m.DashboardModule
-					),
-				// canActivate: [AuthGuard],
-				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-				},
-			},
-			{
-				path: 'report',
-				loadChildren: () =>
-					import('./pages/report/report.module').then((m) => m.ReportModule),
-				// canActivate: [AuthGuard],
-				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-				},
-			},
-			{
-				path: 'report',
-				loadChildren: () =>
-					import('./pages/report/report.module').then((m) => m.ReportModule),
-				// canActivate: [AuthGuard],
-				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-				},
-			},
-			{
 				path: '',
 				redirectTo: 'home',
 				pathMatch: 'full',
