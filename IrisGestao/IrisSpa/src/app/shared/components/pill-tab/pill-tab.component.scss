@@ -1,0 +1,19 @@
+.pill-tab {
+	display: grid;
+	grid-template-rows: 1fr;
+	grid-auto-flow: column;
+	border: solid 1px var(--dark-red);
+	border-radius: 999px;
+	overflow: hidden;
+
+	button {
+		@apply px-6 py-1 text-sm;
+		display: block;
+		color: var(--dark-red);
+
+		&.active {
+			color: white;
+			background: var(--dark-red);
+		}
+	}
+}

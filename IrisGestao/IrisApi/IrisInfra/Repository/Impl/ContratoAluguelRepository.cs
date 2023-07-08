@@ -1,11 +1,14 @@
-﻿using IrisGestao.ApplicationService.Repository.Interfaces;
+﻿using System.Data;
+using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
+using IrisGestao.Domain.Procs;
+using IrisGestao.Infraestructure.ORM;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Security.Cryptography.X509Certificates;
 
 namespace IrisGestao.Infraestructure.Repository.Impl;
 
@@ -16,6 +19,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
     {
         
     }
+    
     public async Task<ContratoAluguel?> GetByGuid(Guid guid)
     {
         return await DbSet.FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
@@ -26,7 +30,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         return await DbSet
                         .Include(y => y.IdClienteNavigation)
                             .ThenInclude(y=> y.IdTipoClienteNavigation)
-                        .Include(x => x.ContratoAluguelImovel )
+                        .Include(x => x.ContratoAluguelImovel)
                             .ThenInclude(x=> x.ContratoAluguelUnidade)
                         .Include(x => x.IdIndiceReajusteNavigation)
                         .Where(x => x.GuidReferencia.Equals(guid) && x.Status)
@@ -34,9 +38,12 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                         {
                             NumeroContrato                  = x.NumeroContrato,
                             ValorAluguel                    = x.ValorAluguel,
-                            PercentualRetencaoImpostos      = x.PercentualRetencaoImpostos,
                             ValorAluguelLiquido             = x.ValorAluguelLiquido,
+                            ValorComDesconto                = x.ValorComDesconto,
+                            ValorComImopstos                = x.ValorComImpostos,
+                            PercentualRetencaoImpostos      = x.PercentualRetencaoImpostos,
                             PercentualDescontoAluguel       = x.PercentualDescontoAluguel,
+                            PrazoDesconto                   = x.PrazoDesconto,
                             CarenciaAluguel                 = x.CarenciaAluguel,
                             PrazoCarencia                   = x.PrazoCarencia,
                             DataInicioContrato              = x.DataInicioContrato,
@@ -112,6 +119,27 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                     Id                      = x.IdImovelNavigation.IdCategoriaImovelNavigation.Id,
                                     Nome                    = x.IdImovelNavigation.IdCategoriaImovelNavigation.Nome
                                 },
+                                IdClienteProprietarioNavigation = x.IdImovelNavigation.IdClienteProprietarioNavigation == null ? null : new
+                                {
+                                    Id = x.IdImovelNavigation.IdClienteProprietarioNavigation.Id,
+                                    GuidReferencia = x.IdImovelNavigation.IdClienteProprietarioNavigation.GuidReferencia,
+                                    CpfCnpj = x.IdImovelNavigation.IdClienteProprietarioNavigation.CpfCnpj,
+                                    Nome = x.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
+                                    Telefone = x.IdImovelNavigation.IdClienteProprietarioNavigation.Telefone,
+                                    Email = x.IdImovelNavigation.IdClienteProprietarioNavigation.Email,
+                                    Cep = x.IdImovelNavigation.IdClienteProprietarioNavigation.Cep,
+                                    Endereco = x.IdImovelNavigation.IdClienteProprietarioNavigation.Endereco,
+                                    Bairro = x.IdImovelNavigation.IdClienteProprietarioNavigation.Bairro,
+                                    Cidade = x.IdImovelNavigation.IdClienteProprietarioNavigation.Cidade,
+                                    Estado = x.IdImovelNavigation.IdClienteProprietarioNavigation.Estado,
+                                    IdTipoClienteNavigation = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation == null
+                                    ? null
+                                    : new
+                                    {
+                                        Id = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Id,
+                                        Nome = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Nome,
+                                    }
+                                },
                                 Unidades = x.ContratoAluguelUnidade.Select(y => new
                                 {
                                     IdUnidae                = y.IdUnidadeNavigation.Id, 
@@ -145,7 +173,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 Status = x.Status,
                                 Parcelas = x.Parcelas,
                                 ValorTitulo = x.ValorTitulo,
-                                ValorTotalTitulo = x.ValorTitulo,
+                                ValorTotalTitulo = x.ValorTotalTitulo,
                                 DataCriacao = x.DataCriacao,
                                 DataAtualização = x.DataUltimaModificacao,
                                 DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,
@@ -242,9 +270,12 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                         {
                             NumeroContrato = x.NumeroContrato,
                             ValorAluguel = x.ValorAluguel,
-                            PercentualRetencaoImpostos = x.PercentualRetencaoImpostos,
                             ValorAluguelLiquido = x.ValorAluguelLiquido,
+                            ValorComDesconto = x.ValorComDesconto,
+                            ValorComImopstos = x.ValorComImpostos,
+                            PercentualRetencaoImpostos = x.PercentualRetencaoImpostos,
                             PercentualDescontoAluguel = x.PercentualDescontoAluguel,
+                            PrazoDesconto = x.PrazoDesconto,
                             CarenciaAluguel = x.CarenciaAluguel,
                             PrazoCarencia = x.PrazoCarencia,
                             DataInicioContrato = x.DataInicioContrato,
@@ -286,7 +317,22 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 {
                                     Id = x.IdImovelNavigation.IdCategoriaImovelNavigation.Id,
                                     Nome = x.IdImovelNavigation.IdCategoriaImovelNavigation.Nome
-                                }
+                                },
+                                IdClienteProprietarioNavigation = x.IdImovelNavigation.IdClienteProprietarioNavigation == null ? null : new
+                                {
+                                    GuidReferencia = x.IdImovelNavigation.IdClienteProprietarioNavigation.GuidReferencia,
+                                    CpfCnpj = x.IdImovelNavigation.IdClienteProprietarioNavigation.CpfCnpj,
+                                    Nome = x.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
+                                    Telefone = x.IdImovelNavigation.IdClienteProprietarioNavigation.Telefone,
+                                    Email = x.IdImovelNavigation.IdClienteProprietarioNavigation.Email,
+                                    IdTipoClienteNavigation = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation == null
+                                    ? null
+                                    : new
+                                    {
+                                        Id = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Id,
+                                        Nome = x.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Nome,
+                                    }
+                                },
                             }),
                             TituloReceber = x.TituloReceber.Select(x => new
                             {
@@ -300,9 +346,10 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 DataCriacao = x.DataCriacao,
                                 DataAtualização = x.DataUltimaModificacao,
                                 DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,
-                                PorcentagemTaxaAdministracao = x.PorcentagemTaxaAdministracao
+                                PorcentagemTaxaAdministracao = x.PorcentagemTaxaAdministracao,
+                                DataUltimaFatura = x.FaturaTitulo.FirstOrDefault().DataVencimento.Value
                             }),
-                        }).OrderByDescending(x=> x.DataCriacao).ToListAsync();
+                        }).OrderBy(x=> x.DataFimContrato).ToListAsync();
 
             var totalCount = contratos.Count();
 
@@ -317,5 +364,194 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         }
 
         return null!;
+    }
+
+    public async Task<object> GetDashboardTotalManagedArea(int? idLocador, int? idTipoImovel)
+    {
+        try
+        {
+            return await Db.Unidade
+                .Include(u => u.IdImovelNavigation)
+                    .ThenInclude(i => i.IdClienteProprietarioNavigation)
+                .Where(u => (!idLocador.HasValue || idLocador.HasValue && u.IdImovelNavigation.IdClienteProprietario == idLocador)
+                             && (!idTipoImovel.HasValue || idTipoImovel.HasValue && u.IdTipoUnidade == idTipoImovel)
+                            )
+                .GroupBy(
+                    u => u.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
+                    (key, group) => new {
+                        Percent = Math.Round((decimal)group.Count() * 100 / Db.Unidade
+                            .Count(x => !idTipoImovel.HasValue || idTipoImovel.HasValue && x.IdTipoUnidade == idTipoImovel), 2),
+                        Title = key,
+                        Color = $"#{new Random().Next(0x1000000):X6}"
+                    })
+                .OrderByDescending(r => r.Percent)
+                .Select(r => new {
+                    r.Percent,
+                    r.Title,
+                    r.Color
+                })
+                .ToListAsync();
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, e.Message);
+        }
+        return null!;
+    }
+    
+    public async Task<IEnumerable<SpFinancialVacancyResult>?> GetDashbaordFinancialVacancy(
+        DateTime dateRefInit,
+        DateTime dateRefEnd,
+        int? idLocador,
+        int? idTipoImovel,
+        int? idTipoArea)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@DataInicioContrato", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimContrato", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@ClienteID", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
+            new ("@TipoUnidade", SqlDbType.Int)
+                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true},
+            new ("@TipoArea", SqlDbType.Int)
+                {Value = idTipoArea.HasValue ? idTipoArea : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpFinancialVacancyResult>("Exec Sp_FinancialVacancy @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade, @TipoArea",
+                parameters.ToArray());
+    }
+    
+    public async Task<IEnumerable<SpPhysicalVacancyResult>?> GetDashbaordPhysicalVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@DataInicioContrato", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimContrato", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@ClienteID", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
+            new ("@TipoUnidade", SqlDbType.Int)
+                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpPhysicalVacancyResult>("Exec Sp_PhysicalVacancy @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade",
+                parameters.ToArray());
+    }
+
+    public async Task<IEnumerable<Object>?> GetImoveisUnidadesContratoAluguelAtivos()
+    {
+        return await DbSet
+                        .Include(x => x.ContratoAluguelImovel)
+                            .ThenInclude(x => x.ContratoAluguelUnidade)
+                        .Where(x => x.Status)
+                        .Select(x => new
+                        {
+                            NumeroContrato = x.NumeroContrato,
+                            Status = x.Status,
+                            ImovelAlugado = x.ContratoAluguelImovel.Select(x => new
+                            {
+                                GuidReferencia = x.IdImovelNavigation.GuidReferencia,
+                                Nome = x.IdImovelNavigation.Nome,
+                                Status = x.IdImovelNavigation.Status,
+                                Unidades = x.ContratoAluguelUnidade.Select(y => new
+                                {
+                                    GuidReferencia = y.IdUnidadeNavigation.GuidReferencia,
+                                    Tipo = y.IdUnidadeNavigation.Tipo,
+                                    Status = y.IdUnidadeNavigation.Status
+                                }).Where(y => y.Status)
+                            }).Where(y => y.Status)
+                        }).ToListAsync();
+    }
+
+    public async Task<IEnumerable<SpLeasedAreaResult>?> GetReportLeasedArea(
+        bool? status,
+        int? idImovel,
+        int? idTipoImovel,
+        int? idLocador,
+        int? idLocatario)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@Status", SqlDbType.Bit)
+                {Value = status.HasValue ? status : DBNull.Value, IsNullable = true},
+            new ("@IdImovel", SqlDbType.Int)
+                {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true},
+            new ("@IdTipoImovel", SqlDbType.Int)
+                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true},
+            new ("@IdLocatario", SqlDbType.Int)
+                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpLeasedAreaResult>("Exec Sp_LeasedArea @Status, @IdImovel, @IdTipoImovel, @IdLocatario",
+                parameters.ToArray());
+    }
+
+    public async Task<IEnumerable<SpRentValueResult>?> GetReportRentValue(
+        bool? status,
+        int? idImovel,
+        int? idTipoImovel,
+        int? idLocador,
+        int? idLocatario,
+        DateTime? dateRef)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@Status", SqlDbType.Bit)
+                {Value = status.HasValue ? status : DBNull.Value, IsNullable = true},
+            new ("@IdImovel", SqlDbType.Int)
+                {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true},
+            new ("@IdTipoImovel", SqlDbType.Int)
+                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true},
+            new ("@IdLocatario", SqlDbType.Int)
+                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true},
+            new ("@DataReferencia", SqlDbType.Date)
+                {Value = dateRef ?? DateTime.Today}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpRentValueResult>("Exec Sp_RentValue @Status, @IdImovel, @IdTipoImovel, @IdLocatario, @DataReferencia",
+                parameters.ToArray());
+    }
+
+    public async Task<IEnumerable<dynamic>> GetAllActiveProperties()
+    {
+        var retorno = await DbSet
+            .Include(x => x.ContratoAluguelImovel)
+                .ThenInclude(y => y.IdImovelNavigation)
+            .Where(x => x.Status
+                        && DateTime.Now > x.DataInicioContrato && DateTime.Now < x.DataFimContrato)
+            .Select(x => new
+            {
+                x.ContratoAluguelImovel.First().IdImovelNavigation.Id,
+                x.ContratoAluguelImovel.First().IdImovelNavigation.Nome,
+            })
+            .Distinct()
+            .OrderBy(x => x.Nome)
+            .ToListAsync();
+
+        return retorno;
+    }
+
+    public async Task<IEnumerable<dynamic>> GetAllActiveOwners()
+    {
+        var retorno = await DbSet
+            .Include(x => x.ContratoAluguelImovel)
+            .ThenInclude(y => y.IdImovelNavigation)
+            .ThenInclude(z => z.IdClienteProprietarioNavigation)
+            .Where(x => x.Status
+                        && DateTime.Now > x.DataInicioContrato && DateTime.Now < x.DataFimContrato)
+            .Select(x => new
+            {
+                x.ContratoAluguelImovel.First().IdImovelNavigation.IdClienteProprietarioNavigation.Id,
+                x.ContratoAluguelImovel.First().IdImovelNavigation.IdClienteProprietarioNavigation.Nome
+            })
+            .Distinct()
+            .OrderBy(x => x.Nome)
+            .ToListAsync();
+
+        return retorno;
     }
 }

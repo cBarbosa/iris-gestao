@@ -66,4 +66,45 @@ export class RentContractService {
 			httpOptions
 		);
 	}
+
+	adjustContract(guid: string, percentual: number) {
+		return this.http.post<ApiResponse>(
+			`${env.config.apiUrl}ContratoAluguel/${guid}/${percentual}/reajustar-contrato`,
+			'',
+			httpOptions
+		);
+	}
+
+	editContract(guid: string, contractObj: ContratoAluguel) {
+		return this.http.put<ApiResponse>(
+			`${env.config.apiUrl}ContratoAluguel/${guid}/Atualizar`,
+			JSON.stringify(contractObj, null, 2),
+			httpOptions
+		);
+	}
+
+	getActiveOwners() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}ContratoAluguel/lista-proprietarios`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getListaProprietariosNew: ${response.message}`);
+					return response;
+				})
+			);
+	};
+
+
+	getActiveProperties() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}ContratoAluguel/lista-imoveis`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getListaProprietariosNew: ${response.message}`);
+					return response;
+				})
+			);
+	};
 }

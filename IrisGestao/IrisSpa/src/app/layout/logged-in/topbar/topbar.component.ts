@@ -56,11 +56,11 @@ export class TopbarComponent {
 			{
 				label: 'Contratos',
 				items: [
-					// {
-					// 	label: 'Contrato de aluguel',
-					// 	id: route.startsWith('/rent-contract/') ? 'current' : '',
-					// 	command: () => this.navigateTo('rent-contract/listing'),
-					// },
+					{
+						label: 'Contrato de aluguel',
+						id: route.startsWith('/rent-contract/') ? 'current' : '',
+						command: () => this.navigateTo('rent-contract/listing'),
+					},
 					{
 						label: 'Contrato de fornecedor',
 						id: route.startsWith('/supplier-contract/') ? 'current' : '',
@@ -78,21 +78,21 @@ export class TopbarComponent {
 				id: route.startsWith('/supplier/') ? 'current' : '',
 				command: () => this.navigateTo('supplier/listing'),
 			},
-			//{
-			//	label: 'Financeiro',
-			//	items: [
-			//		{
-			//			label: 'Receitas',
-			//			id: route.startsWith('/revenue/') ? 'current' : '',
-			//			command: () => this.navigateTo('revenue/listing'),
-			//		},
-			//		{
-			//			label: 'Despesas',
-			//			id: route.startsWith('/expense/') ? 'current' : '',
-			//			command: () => this.navigateTo('expense/listing'),
-			//		},
-			//	],
-			//},
+			{
+				label: 'Financeiro',
+				items: [
+					{
+						label: 'Receitas',
+						id: route.startsWith('/revenue/') ? 'current' : '',
+						command: () => this.navigateTo('revenue/listing'),
+					},
+					{
+						label: 'Despesas',
+						id: route.startsWith('/expense/') ? 'current' : '',
+						command: () => this.navigateTo('expense/listing'),
+					},
+				],
+			},
 			// {
 			// 	label: 'Prestador de serviços',
 			// },
@@ -124,6 +124,46 @@ export class TopbarComponent {
 			// 		},
 			// 	],
 			// },
+			{
+				label: 'Análises',
+				items: [
+					{
+						label: 'Vacância',
+						id: route.startsWith('/dashboard/') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/financial-vacancy')
+					},
+					{
+						label: 'Recebimento',
+						id: route.startsWith('/dashboard/') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/receiving-performance')
+					},
+					{
+						label: 'Preço M²',
+						id: route.startsWith('/dashboard/') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/area-price')
+					},
+					{
+						label: 'M² Gerenciados',
+						id: route.startsWith('/dashboard/') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/managed-area')
+					}
+				]
+			},
+			{
+				label: 'Relatórios',
+				items: [
+					{
+						label: 'Área locada             ',
+						id: route.startsWith('/report/') ? 'current' : '',
+						command: () => this.navigateTo('report/leased-area')
+					},
+					{
+						label: 'Valor aluguel',
+						id: route.startsWith('/report/') ? 'current' : '',
+						command: () => this.navigateTo('report/rent-amount')
+					}
+				]
+			}
 		];
 	}
 

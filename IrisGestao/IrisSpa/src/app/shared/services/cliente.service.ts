@@ -111,9 +111,9 @@ export class ClienteService {
 			.get<ApiResponse>(`${env.config.apiUrl}Cliente/lista-proprietarios`)
 			.pipe(
 				map((response) => {
-					if (response.success) return response;
-					else
-						return console.error(`getListaProprietarios: ${response.message}`);
+					if (!response.success)
+						console.error(`getListaProprietarios: ${response.message}`);
+					return response;
 				})
 			);
 	}

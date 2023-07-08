@@ -4,16 +4,30 @@ using IrisGestao.Domain.Command.Request;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
 public class EventoService: IEventoService
 {
     private readonly IEventoRepository eventoRepository;
-    
-    public EventoService(IEventoRepository EventoRepository)
+    private readonly IEventoUnidadeRepository eventoUnidadeRepository;
+    private readonly IImovelRepository imovelRepository;
+    private readonly IUnidadeRepository unidadeRepository;
+    private readonly IClienteRepository clienteRepository;
+
+    public EventoService(IEventoRepository EventoRepository,
+        IEventoUnidadeRepository EventoUnidadeRepository,
+        IImovelRepository ImovelRepository,
+        IUnidadeRepository UnidadeRepository,
+        IClienteRepository ClienteRepository)
     {
         this.eventoRepository = EventoRepository;
+        this.eventoUnidadeRepository = EventoUnidadeRepository;
+        this.imovelRepository = ImovelRepository;
+        this.unidadeRepository = UnidadeRepository;
+        this.clienteRepository = ClienteRepository;
     }
 
     public async Task<CommandResult> GetAll()
@@ -23,6 +37,15 @@ public class EventoService: IEventoService
         return !Eventos.Any()
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
             : new CommandResult(true, SuccessResponseEnums.Success_1005, Eventos);
+    }
+
+    public async Task<CommandResult> GetAllPaging(int limit, int page)
+    {
+        var result = await eventoRepository.GetAllPaging(limit, page);
+
+        return result == null
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, result);
     }
 
     public async Task<CommandResult> GetById(int codigo)
@@ -54,21 +77,43 @@ public class EventoService: IEventoService
 
     public async Task<CommandResult> Insert(CriarEventoCommand cmd)
     {
-        var Evento = new Evento
+        Evento Evento = new Evento();
+        List<EventoUnidade> lstEventoUnidade = new List<EventoUnidade>();
+        
+        if (cmd == null)
         {
-            IdImovel                = cmd.IdImovel,
-            IdTipoEvento            = cmd.IdTipoEvento,
-            IdCliente               = cmd.IdCliente,
-            Nome                    = cmd.Nome,
-            DthRealizacao = cmd.DthRealizacao.HasValue ? cmd.DthRealizacao.Value : null,
-            GuidReferencia          = Guid.NewGuid().ToString().ToUpper(),
-            DataCriacao             = DateTime.Now,
-            DataUltimaModificacao   = DateTime.Now
-        };
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var imovel = await imovelRepository.GetByReferenceGuid(cmd.GuidImovel);
+        if (imovel == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+
+        var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidCliente);
+        if (cliente == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
+        }
+
+        Evento.IdImovel  = imovel.Id;
+        Evento.IdCliente = cliente.Id;
+        BindEventoData(cmd, Evento);
 
         try
         {
             eventoRepository.Insert(Evento);
+            foreach (var guidUnidade in cmd.lstUnidades)
+            {
+                EventoUnidade eventoUnidade = new EventoUnidade();
+                var unidade = await unidadeRepository.GetByReferenceGuid(guidUnidade);
+                eventoUnidade.IdEvento = Evento.Id;
+                eventoUnidade.IdUnidade = unidade.Id;
+
+                eventoUnidadeRepository.Insert(eventoUnidade);
+            }           
+            
             return new CommandResult(true, SuccessResponseEnums.Success_1000, Evento);
         }
         catch (Exception)
@@ -78,29 +123,39 @@ public class EventoService: IEventoService
         }
     }
 
-    public async Task<CommandResult> Update(int? codigo, CriarEventoCommand cmd)
+    public async Task<CommandResult> Update(Guid uuid, CriarEventoCommand cmd)
     {
-        if (cmd == null || !codigo.HasValue)
+        Evento evento = new Evento();
+        if (cmd == null || uuid == Guid.Empty)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
-        var Evento = new Evento
+        var imovel = await imovelRepository.GetByReferenceGuid(cmd.GuidImovel);
+        if (imovel == null)
         {
-            Id                      = codigo.Value,
-            IdImovel                = cmd.IdImovel,
-            IdTipoEvento            = cmd.IdTipoEvento,
-            IdCliente               = cmd.IdCliente,
-            Nome                    = cmd.Nome,
-            DthRealizacao           = cmd.DthRealizacao.HasValue ? cmd.DthRealizacao.Value : null,
-            GuidReferencia          = Guid.NewGuid().ToString().ToUpper(),
-            DataUltimaModificacao   = DateTime.Now
-        };
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+
+        var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidCliente);
+        if (cliente == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
+        }
+        evento = await eventoRepository.GetByReferenceGuid(uuid);
+        if (evento == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Evento", null!);
+        }
+
+        evento.IdImovel = imovel.Id;
+        evento.IdCliente = cliente.Id;
+        BindEventoData(cmd, evento);
 
         try
         {
-            eventoRepository.Update(Evento);
-            return new CommandResult(true, SuccessResponseEnums.Success_1001, Evento);
+            eventoRepository.Update(evento);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, evento);
         }
         catch (Exception)
         {
@@ -109,25 +164,24 @@ public class EventoService: IEventoService
         }
     }
 
-    public async Task<CommandResult> Delete(int? codigo)
+    public async Task<CommandResult> Delete(Guid uuid)
     {
         Evento _evento = new Evento();
-        if (!codigo.HasValue)
+        if (uuid == Guid.Empty)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
         else
         {
-            var _Evento = await Task.FromResult(eventoRepository.GetById(codigo.Value));
-
-            if(_evento == null)
+            _evento = await eventoRepository.GetByReferenceGuid(uuid);
+            if (_evento == null)
             {
-                return new CommandResult(false, ErrorResponseEnums.Error_1002, null!);
+                return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Evento", null!);
             }
 
             try
             {
-                eventoRepository.Delete(codigo.Value);
+                eventoRepository.Delete(_evento.Id);
                 return new CommandResult(true, SuccessResponseEnums.Success_1002, null);
             }
             catch (Exception)
@@ -136,5 +190,26 @@ public class EventoService: IEventoService
                 throw;
             }
         }
+    }
+
+    private static void BindEventoData(CriarEventoCommand cmd, Evento Evento)
+    {
+        switch (Evento.GuidReferencia)
+        {
+            case null:
+                Evento.GuidReferencia           = Guid.NewGuid();
+                Evento.DataCriacao              = DateTime.Now;
+                Evento.DataUltimaModificacao    = DateTime.Now;
+                break;
+            default:
+                Evento.GuidReferencia           = Evento.GuidReferencia;
+                Evento.DataUltimaModificacao    = DateTime.Now;
+                break;
+        }
+
+        Evento.Nome                         = cmd.Nome;
+        Evento.IdTipoEvento                 = cmd.IdTipoEvento;
+        Evento.DthRealizacao                = cmd.DthRealizacao;
+        Evento.descricao                    = cmd.Descricao;
     }
 }

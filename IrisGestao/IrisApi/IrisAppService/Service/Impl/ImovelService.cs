@@ -4,7 +4,9 @@ using IrisGestao.Domain.Command.Request;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -12,15 +14,18 @@ public class ImovelService: IImovelService
 {
     private readonly IImovelRepository imovelRepository;
     private readonly IImovelEnderecoRepository imovelEnderecoRepository;
+    private readonly IContratoAluguelRepository ContratoAluguelRepository;
     private readonly ILogger<ImovelService> logger;
     
     public ImovelService(
         IImovelRepository imovelRepository
-        , IImovelEnderecoRepository imovelEnderecoRepository
+        , IImovelEnderecoRepository imovelEnderecoRepositor
+        , IContratoAluguelRepository ContratoAluguelRepository
         , ILogger<ImovelService> logger)
     {
         this.imovelRepository = imovelRepository;
         this.imovelEnderecoRepository = imovelEnderecoRepository;
+        this.ContratoAluguelRepository = ContratoAluguelRepository;
         this.logger = logger;
     }
 
@@ -45,7 +50,7 @@ public class ImovelService: IImovelService
     public async Task<CommandResult> Insert(CriarImovelCommand cmd)
     {
         var imovel = new Imovel();
-        var endereco = new ImovelEndereco();
+        ImovelEndereco endereco = new ImovelEndereco();
         cmd.GuidReferencia = null;
         
         try
@@ -185,6 +190,42 @@ public class ImovelService: IImovelService
             : new CommandResult(true, SuccessResponseEnums.Success_1005, imovel);
     }
 
+    public async Task<CommandResult> GetImoveisParaContrato()
+    {
+        var result = await imovelRepository.GetImoveisParaContrato();
+        string jsonResultImoveis = JsonConvert.SerializeObject(result);
+        List<ImoveisDisponiveisJSON> resultUnidades = JsonConvert.DeserializeObject<List<ImoveisDisponiveisJSON>>(jsonResultImoveis);
+        List<ImoveisDisponiveis> resultado = new List<ImoveisDisponiveis>();
+
+        foreach (var group in resultUnidades)
+        {
+            ImoveisDisponiveis imovel = new ImoveisDisponiveis();
+            ImoveisDisponiveis imovelLocalizado = resultado.FirstOrDefault(x=> x.GuidImovel.ToString().Equals(group.GuidImovel.ToString()));
+            
+            UnidadesDisponiveis unidade = new UnidadesDisponiveis();
+            List<UnidadesDisponiveis> unidadesDisponiveis = new List<UnidadesDisponiveis>();
+
+            if(imovelLocalizado != null)
+            {
+                unidade.GuidUnidade = group.GuidReferenciaUnidade;
+                unidade.NomeUnidade = group.NomeUnidade;
+                imovelLocalizado.lstUnidade.Add(unidade);
+            }
+            else
+            {
+                imovel.NomeImovel = group.NomeImovel;
+                imovel.GuidImovel = group.GuidImovel;
+                unidade.GuidUnidade = group.GuidReferenciaUnidade;
+                unidade.NomeUnidade = group.NomeUnidade;
+                unidadesDisponiveis.Add(unidade);
+                imovel.lstUnidade = unidadesDisponiveis;
+                resultado.Add(imovel);
+            }
+        }
+        
+        return new CommandResult(true, SuccessResponseEnums.Success_1001, resultado);
+    }
+
     private static void BindImoveisData(CriarImovelCommand cmd, ref Imovel imovel)
     {
         switch (imovel.GuidReferencia)
@@ -236,5 +277,27 @@ public class ImovelService: IImovelService
         endereco.Cidade = cmd.Cidade;
         endereco.Bairro = cmd.Bairro;
         endereco.UF = cmd.UF;
+    }
+
+    public class ImoveisDisponiveis
+    {
+        public string NomeImovel { get; set; }
+        public Guid GuidImovel { get; set; }
+        public List<UnidadesDisponiveis> lstUnidade { get; set; }
+    }
+
+    public class UnidadesDisponiveis
+    {
+        public string NomeUnidade { get; set; }
+        public Guid GuidUnidade { get; set; }
+    }
+
+    public class ImoveisDisponiveisJSON
+    {
+        public int IdImovel { get; set; }
+        public string NomeImovel { get; set; }
+        public Guid GuidImovel { get; set; }
+        public string NomeUnidade { get; set; }
+        public Guid GuidReferenciaUnidade { get; set; }
     }
 }

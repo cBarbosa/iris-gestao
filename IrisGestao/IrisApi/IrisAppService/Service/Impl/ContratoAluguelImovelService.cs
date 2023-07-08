@@ -21,4 +21,30 @@ public class ContratoAluguelImovelService: IContratoAluguelImovelService
         this.logger = logger;
     }
 
+    /*public async Task<CommandResult> PutContratoAluguel(ContratoAluguel contratoAluguel)
+    {
+        List<ContratoAluguelImovel> lstContratoAluguelImovel = new List<ContratoAluguelImovel>();
+        if (lstContratoAluguelImovel == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        try
+        {
+            foreach (var fatura in lstFaturasTitulo)
+            {
+                fatura.Status = false;
+                fatura.StatusFatura = FaturaTituloEnum.INATIVO;
+                fatura.DescricaoBaixaFatura = "Fatura cancelada devido cancelamento do contrato de aluguel";
+                faturaTituloRepository.Update(fatura);
+            }
+            tituloReceberRepository.Update(tituloReceber);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, tituloReceber);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+    }*/
 }

@@ -100,7 +100,7 @@
 								</div>
 							</div>
 							<div class="revenue-data">
-								<div class="data-label">Valor total do contrato</div>
+								<div class="data-label">Valor total do título</div>
 								<div class="data-value">
 									{{ revenue?.['valorTotalTitulo'] | currency }}
 								</div>
@@ -123,7 +123,8 @@
 				>
 					<ng-template pTemplate="header">
 						<tr>
-							<th>Valor do aluguel pago</th>
+							<th>Nº Parcela</th>
+							<th>Valor da fatura</th>
 							<th>Data do pagamento</th>
 							<th>Dias de atraso</th>
 							<th>Data de Vencimento</th>
@@ -133,6 +134,7 @@
 					</ng-template>
 					<ng-template pTemplate="body" let-fatura>
 						<tr>
+							<td>{{ fatura.numeroParcela }}</td>
 							<td>{{ fatura.valorFatura | currency }}</td>
 							<td>{{ fatura.dataPagamento | date : "shortDate" }}</td>
 							<td>
@@ -169,20 +171,37 @@
 									></p-tag>
 								</ng-template>
 							</td>
-							<td class="action w-[13rem]">
-								<button
-									pButton
-									type="button"
-									class="p-button-filled h-9 w-full justify-center text-sm"
-									(click)="setCurrentFatura(fatura); showBaixaTitulo()"
+							<td class="action w-[13rem] flex gap-2">
+								<ng-container
 									*ngIf="
 										fatura.statusFatura === 'Vencido' ||
 											fatura.statusFatura === 'A vencer';
 										else detalhesBtn
 									"
 								>
-									Dar baixa na Fatura
-								</button>
+									<button
+										pButton
+										type="button"
+										class="p-button-filled h-9 w-full justify-center text-sm"
+										(click)="setCurrentFatura(fatura); showBaixaTitulo()"
+									>
+										Dar baixa
+									</button>
+
+									<button
+										pButton
+										type="button"
+										class="p-button-outlined h-9 justify-center text-sm"
+										(click)="setCurrentFatura(fatura); showEditarBaixaVisible()"
+										*ngIf="
+											fatura.statusFatura === 'Vencido' ||
+												fatura.statusFatura === 'A vencer';
+											else detalhesBtn
+										"
+									>
+										Editar
+									</button>
+								</ng-container>
 								<ng-template #detalhesBtn>
 									<button
 										pButton
@@ -205,7 +224,7 @@
 								[card]="{
 									infos: [
 										{
-											label: 'Valor do aluguel pago',
+											label: 'Valor pago',
 											data: fatura.valorFatura,
 											pipe: cardPipes['currency']
 										},
@@ -220,7 +239,7 @@
 												? fatura.diasAtraso > 1
 													? fatura.diasAtraso + ' dias'
 													: fatura.diasAtraso + ' dia'
-												: '0 dia'
+												: fatura.diasAtraso
 										},
 										{
 											label: 'Data de Vencimento',
@@ -289,17 +308,17 @@
 					span: true
 				},
 				{
-					label: 'Valor',
+					label: 'Valor Pago',
 					data: faturaSelected?.valorRealPago,
 					pipe: cardPipes['currency']
 				},
 				{
 					label: 'Dias de atraso',
 					data: faturaSelected?.diasAtraso
-						? (faturaSelected?.diasAtraso > 1
-								? faturaSelected?.diasAtraso + ' dias'
-								: faturaSelected?.diasAtraso) + ' dia'
-						: '0 dia',
+						? faturaSelected?.diasAtraso > 1
+							? faturaSelected?.diasAtraso + ' dias'
+							: faturaSelected?.diasAtraso + ' dia'
+						: faturaSelected?.diasAtraso,
 					span: true
 				},
 				{
@@ -321,6 +340,11 @@
 					label: 'Data de pagamento',
 					data: faturaSelected?.dataPagamento,
 					pipe: cardPipes['date']
+				},
+				{
+					label: 'Observação da baixa',
+					data: faturaSelected?.descricaoBaixaFatura,
+					span: true
 				}
 			]"
 		></app-detail-sidebar>
@@ -332,24 +356,6 @@
 				[guid]="faturaSelected?.guidReferencia"
 				[editable]="false"
 			></app-upload-list>
-			<!-- <div class="document file" [class.empty]="!faturaSelected?.nfFile">
-			<span>{{ faturaSelected?.nfFile.name }}</span>
-			<span class="buttons">
-				<button
-					pButton
-					type="button"
-					class="p-button-rounded p-button-text"
-					(click)="
-						downloadFile(
-							faturaSelected?.nfFile.url,
-							faturaSelected?.nfFile.name
-						)
-					"
-				>
-					<i class="ph-download-simple"></i>
-				</button>
-			</span>
-		</div> -->
 		</div>
 
 		<button
@@ -361,6 +367,17 @@
 		</button>
 	</ng-template>
 </p-sidebar>
+
+<!--
+!-->
+<app-edicao-titulo-sidebar
+	[data]="faturaSelected"
+	[cancel]="hideBaixaTitulo"
+	[onSubmitForm]="hideBaixaTitulo"
+	[registerOnSubmit]="!!faturaSelected"
+	[guidExpense]="faturaSelected?.guidReferencia"
+	[(isVisible)]="editarBaixaVisible"
+></app-edicao-titulo-sidebar>
 
 <p-sidebar [(visible)]="baixaTituloVisible" position="right">
 	<ng-template pTemplate="header">

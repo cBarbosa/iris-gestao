@@ -83,5 +83,8 @@ public partial class Unidade: BaseEntity<Unidade>
 
     [InverseProperty("IdUnidadeNavigation")]
     public virtual ICollection<TituloUnidade> TituloUnidade { get; } = new List<TituloUnidade>();
+    
+    [InverseProperty("IdUnidadeNavigation")]
+    public virtual ICollection<EventoUnidade> EventoUnidade { get; } = new List<EventoUnidade>();
 }
 

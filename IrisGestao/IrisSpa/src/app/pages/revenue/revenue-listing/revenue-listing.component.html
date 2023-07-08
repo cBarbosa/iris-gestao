@@ -41,7 +41,6 @@
 				<input
 					pInputText
 					class="w-full md:w-52"
-					[class.white-theme]="!isMobile"
 					[(ngModel)]="filterTitulo"
 					(ngModelChange)="filterRevenuesDebounce($event)"
 					type="text"
@@ -58,9 +57,7 @@
 			></p-dropdown> -->
 
 			<p-dropdown
-				[styleClass]="
-					'w-full md:w-[12.6rem]' + (isMobile ? '' : ' white-theme')
-				"
+				styleClass="w-full md:w-[12.6rem]"
 				placeholder="Tipo de Recebimento"
 				[options]="opcoesTipo"
 				[(ngModel)]="filterTipo"
@@ -96,9 +93,9 @@
 						<th>Tipo de recebimento</th>
 						<th>Imóvel</th>
 						<th>Número do Título</th>
-						<th>Locatário</th>
+						<th>Proprietário</th>
 						<th>Valor</th>
-						<th>Data Pagamento/Vencimento</th>
+						<th>Data Vencimento</th>
 						<th></th>
 					</tr>
 				</ng-template>
@@ -107,12 +104,12 @@
 						<td class="font-bold">{{ revenue.tipoRecebimento }}</td>
 						<td>{{ revenue.imovel }}</td>
 						<td>{{ revenue.numeroTitulo }}</td>
-						<td>{{ revenue.locatario }}</td>
+						<td>{{ revenue.proprietario }}</td>
 						<td>{{ revenue.valor | currency }}</td>
 						<td>
 							{{
-								revenue.dataPagamento
-									? (revenue.dataPagamento | date : "shortDate")
+								revenue.dataUltimaParcela
+									? (revenue.dataUltimaParcela | date : "shortDate")
 									: "-"
 							}}
 						</td>

@@ -33,12 +33,35 @@ public class UnidadeRepository : Repository<Unidade>, IUnidadeRepository
 
         return lstUnidades.AsEnumerable();
     }
-    public IEnumerable<Unidade> BuscarUnidadePorImovel(int codigoImovel)
+    public IEnumerable<object?> BuscarUnidadePorImovel(Guid uuid)
     {
         var lstUnidades = DbSet.Include(x => x.IdImovelNavigation)
                                 .Include(x => x.IdTipoUnidadeNavigation)
-                                .Where(x => x.IdImovel == codigoImovel
-                                       && x.Status).ToList();
+                                .Where(x => x.IdImovelNavigation.GuidReferencia.Equals(uuid)
+                                       && x.Status).Select(y => new
+                                       {
+                                           GuidReferencia = y.GuidReferencia,
+                                           IdImovel = y.IdImovel,
+                                           AreaUtil = y.AreaUtil,
+                                           AreaTotal = y.AreaTotal,
+                                           AreaHabitese = y.AreaHabitese,
+                                           InscricaoIPTU = y.InscricaoIPTU,
+                                           MatriculaEnergia = y.MatriculaEnergia,
+                                           Matricula = y.Matricula,
+                                           MatriculaAgua = y.MatriculaAgua,
+                                           TaxaAdministracao = y.TaxaAdministracao,
+                                           ValorPotencial = y.ValorPotencial,
+                                           Tipo = y.Tipo,
+                                           DataCriacao = y.DataCriacao,
+                                           DataUltimaModificacao = y.DataUltimaModificacao,
+                                           Ativo = y.Status,
+                                           IdTipoUnidadeNavigation = new
+                                           {
+                                               Id = y.IdTipoUnidadeNavigation.Id,
+                                               Nome = y.IdTipoUnidadeNavigation.Nome
+                                           },
+                                       })
+                                .ToList();
 
         return lstUnidades.AsEnumerable();
     }
@@ -83,9 +106,6 @@ public class UnidadeRepository : Repository<Unidade>, IUnidadeRepository
                         AreaUtil = y.IdImovelNavigation.Unidade.Sum(x => x.AreaUtil),
                         AreaHabitese = y.IdImovelNavigation.Unidade.Sum(x => x.AreaHabitese),
                         NroUnidades = y.IdImovelNavigation.Unidade.Count,
-                        ImgCapa = ImovelRepository.ImagemCapaFake,
-                        Imagens = ImovelRepository.ImagemListFake,
-                        Anexos = ImovelRepository.AnexoListFake,
                         IdCategoriaImovelNavigation = new
                         {
                             Id = y.IdImovelNavigation.IdCategoriaImovelNavigation.Id,

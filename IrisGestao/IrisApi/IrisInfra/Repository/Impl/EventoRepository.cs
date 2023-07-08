@@ -26,6 +26,13 @@ public class EventoRepository: Repository<Evento>, IEventoRepository
         return lstImovel.AsEnumerable();
     }
 
+    public async Task<Evento?> GetByReferenceGuid(Guid guid)
+    {
+        return await DbSet
+            .FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
+    }
+
+
     public IEnumerable<Evento> BuscarEventoPorIdImovel(int codigo)
     {
         var lstUnidades = DbSet.Include(x => x.IdImovelNavigation)
@@ -43,4 +50,54 @@ public class EventoRepository: Repository<Evento>, IEventoRepository
 
         return lstUnidades.AsEnumerable();
     }
+
+    public async Task<CommandPagingResult?> GetAllPaging(int limit, int page)
+    {
+        var skip = (page - 1) * limit;
+
+        try
+        {
+            var eventos = await DbSet
+                        .Include(x => x.EventoUnidade)
+                        .Include(x => x.IdTipoEventoNavigation)
+                        .Select(x => new
+                        {
+                            GuidReferencia = x.GuidReferencia,
+                            Nome = x.Nome,
+                            DataRealizacao = x.DthRealizacao,
+                            DataCriacao = x.DataCriacao,
+                            Descricao = x.descricao,
+                            TipoEvento = x.IdTipoEventoNavigation == null ? null : new
+                            {
+                                Id = x.IdTipoEventoNavigation.Id,
+                                Nome = x.IdTipoEventoNavigation.Nome
+                            },
+                            ClienteVisitante = x.IdClienteNavigation == null ? null : new
+                            {
+                                GuidReferenciaVisitante = x.IdClienteNavigation.GuidReferencia,
+                                Nome = x.IdClienteNavigation.Nome
+                            },
+                            UnidadesVisitadas = x.EventoUnidade.Select(y => new
+                            {
+                                GuidReferenciaUnidadeVisitada = y.IdUnidadeNavigation.GuidReferencia,
+                                Tipo = y.IdUnidadeNavigation.Tipo
+                            })
+                        })
+                    .ToListAsync();
+
+            var totalCount = eventos.Count();
+
+            var eventosPaging = eventos.Skip(skip).Take(limit);
+
+            if (eventosPaging.Any())
+                return new CommandPagingResult(eventosPaging, totalCount, page, limit);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex.Message);
+        }
+
+        return null!;
+    }
+
 }

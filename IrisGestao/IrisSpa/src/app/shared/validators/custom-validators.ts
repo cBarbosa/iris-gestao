@@ -16,6 +16,18 @@ export function EmailValidator(control: FormControl) {
 	return null;
 }
 
+export function EmailOrUrlValidator(control: FormControl) {
+	// tslint:disable-next-line:max-line-length
+	const emailRegex =
+		/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	const urlRegex = /^(https?:\/\/)?[^\s\/$.?#].[^\s]*$/;
+	if (!emailRegex.test(control.value) && !urlRegex.test(control.value)) {
+		return { 'E-mail ou URL inválido(a)': true };
+	}
+
+	return null;
+}
+
 export function CpfValidator(
 	control: AbstractControl
 ): ValidationErrors | null {
@@ -160,8 +172,7 @@ export function PastDateValidator(control: AbstractControl) {
 	} else {
 		let msDate = Date.parse(control.value);
 		if (isNaN(msDate)) {
-			if(!control.value)
-				return null;
+			if (!control.value) return null;
 			return { pastDateValidator: true };
 		}
 		checkingDate = new Date(msDate);
