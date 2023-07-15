@@ -1,0 +1,295 @@
+<form
+	[formGroup]="form"
+	class="flex flex-col h-full"
+	(ngSubmit)="onSubmit($event)"
+>
+	<p-sidebar
+		[(visible)]="isVisible"
+		position="right"
+		(onHide)="onSidebarHide()"
+		(onShow)="onSidebarShow()"
+	>
+		<ng-template pTemplate="header">
+			<h2 class="text-xl font-bold">Nova Visita</h2>
+		</ng-template>
+
+		<ng-template pTemplate="content">
+			<!-- <div class="field">
+				<label for="tipoEvento" class="block">Tipo de Visita</label>
+				<input
+					id="tipoEvento"
+					type="text"
+					formControlName="tipoEvento"
+					aria-describedby="tipoEvento-help"
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['tipoEvento'])">
+					<small
+						id="tipoEvento-help"
+						*ngIf="f['tipoEvento'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o número da NF
+					</small>
+					<ng-template #error2>
+						<small id="tipoEvento-help" class="p-error block">
+							Número da NF inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div> -->
+
+			<div class="field">
+				<label for="tipoEvento" class="block">Tipo de Visita</label>
+				<p-dropdown
+					id="tipoEvento"
+					[options]="opcoesTipoEvento"
+					formControlName="tipoEvento"
+					aria-describedby="tipoEvento-help"
+				></p-dropdown>
+				<ng-container *ngIf="checkHasError(f['tipoEvento'])">
+					<small
+						id="tipoEvento-help"
+						*ngIf="f['tipoEvento'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o tipo de visita
+					</small>
+					<ng-template #error2>
+						<small id="tipoEvento-help" class="p-error block">
+							Tipo de Visita inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="nomeEvento" class="block">Nome do Evento</label>
+				<input
+					id="nomeEvento"
+					type="text"
+					formControlName="nomeEvento"
+					aria-describedby="nomeEvento-help"
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['nomeEvento'])">
+					<small
+						id="nomeEvento-help"
+						*ngIf="f['nomeEvento'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o nome do evento
+					</small>
+					<ng-template #error2>
+						<small id="nomeEvento-help" class="p-error block">
+							Nome do evento inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<!-- <div class="field">
+				<label for="cpfCnpj" class="block">CPF/CNPJ</label>
+				<input
+					id="cpfCnpj"
+					type="text"
+					formControlName="cpfCnpj"
+					aria-describedby="cpfCnpj-help"
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['cpfCnpj'])">
+					<small
+						id="cpfCnpj-help"
+						*ngIf="f['cpfCnpj'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o CPF/CNPJ
+					</small>
+					<ng-template #error2>
+						<small id="cpfCnpj-help" class="p-error block">
+							CPF/CNPJ inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div> -->
+
+			<div class="field">
+				<label for="proprietary" class="block">Proprietário</label>
+				<p-dropdown
+					id="proprietary"
+					[options]="proprietaries"
+					[filter]="true"
+					filterBy="cpfCnpj"
+					formControlName="proprietary"
+					aria-describedby="proprietary-help"
+				></p-dropdown>
+				<ng-container *ngIf="checkHasError(f['proprietary'])">
+					<small
+						id="proprietary-help"
+						*ngIf="f['proprietary'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o proprietário
+					</small>
+					<ng-template #error2>
+						<small id="proprietary-help" class="p-error block">
+							Proprietário inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+			<div
+				class="flex flex-col md:flex-row justify-between text-sm font-medium mb-6"
+			>
+				<span>Não encontrou cliente?</span>
+				<p-button
+					icon="pi pi-plus"
+					label="Adicionar novo cliente"
+					styleClass="p-button-text text-sm add-proprietary-button"
+					(click)="openRegisterProprietary()"
+				></p-button>
+			</div>
+
+			<div class="field">
+				<label for="unidade" class="block">Unidade</label>
+				<p-dropdown
+					id="unidade"
+					[options]="opcoesUnidade"
+					formControlName="unidade"
+					aria-describedby="unidade-help"
+				></p-dropdown>
+				<ng-container *ngIf="checkHasError(f['unidade'])">
+					<small
+						id="unidade-help"
+						*ngIf="f['unidade'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a unidade
+					</small>
+					<ng-template #error2>
+						<small id="unidade-help" class="p-error block">
+							Unidade inválida
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="dataEvento" class="block"> Data do Evento </label>
+				<p-calendar
+					id="dataEvento"
+					formControlName="dataEvento"
+					dateFormat="dd/mm/yy"
+					(onInput)="onInputDate($event)"
+					(onBlur)="onBlurDate()"
+					placeholder="dd/mm/aaaa"
+					aria-describedby="dataEvento-help"
+					styleClass="small-picker"
+				></p-calendar>
+				<ng-container *ngIf="checkHasError(f['dataEvento'])">
+					<small
+						id="dataEvento-help"
+						*ngIf="f['dataEvento'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a data do evento
+					</small>
+					<ng-template #error2>
+						<small id="dataEvento-help" class="p-error block">
+							Data do evento inválida
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="descricao" class="block">Observações</label>
+				<input
+					id="descricao"
+					type="text"
+					formControlName="descricao"
+					aria-describedby="descricao-help"
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['descricao'])">
+					<small
+						id="descricao-help"
+						*ngIf="f['descricao'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a observação
+					</small>
+					<ng-template #error2>
+						<small id="descricao-help" class="p-error block">
+							Observação inválida
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<!-- -->
+			<div class="field">
+				<label for="anexoNf" class="block">Anexo</label>
+				<app-file-upload
+					name="uploadDoc"
+					id="anexoNf"
+					[fileLimit]="1"
+					(selectEvent)="onFileSelect($event)"
+					accept=".xls, .doc, .pdf, .xlsx, .docx"
+				></app-file-upload>
+			</div>
+		</ng-template>
+
+		<ng-template pTemplate="footer">
+			<div class="flex justify-between gap-4">
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Cancelar"
+					class="p-button-outlined h-11 w-full"
+					(click)="cancelRegister()"
+				></button>
+
+				<button
+					pButton
+					pRipple
+					type="submit"
+					label="Editar Fatura"
+					class="h-11 w-full"
+				></button>
+			</div>
+		</ng-template>
+	</p-sidebar>
+</form>
+
+<app-responsive-dialog [visible]="displayModal" styleClass="form-modal">
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+
+		<button
+			pButton
+			label="Continuar"
+			(click)="closeModal(onSidebarHide)"
+		></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</app-responsive-dialog>
+
+<app-proprietary-register-sidebar
+	[(isOpen)]="registerProprietaryVisible"
+	[onSubmit]="getListaProprietarios"
+></app-proprietary-register-sidebar>
