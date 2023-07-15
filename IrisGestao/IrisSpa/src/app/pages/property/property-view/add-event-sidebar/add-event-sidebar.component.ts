@@ -31,6 +31,7 @@ import { NgxCurrencyModule } from 'ngx-currency';
 import { DropdownModule } from 'primeng/dropdown';
 import { ProprietaryRegisterSidebarComponent } from 'src/app/shared/components/proprietary-register-sidebar/proprietary-register-sidebar.component';
 import { UnidadeService } from 'src/app/shared/services/unidade.service';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
 	selector: 'app-add-event-sidebar',
@@ -47,6 +48,7 @@ import { UnidadeService } from 'src/app/shared/services/unidade.service';
 		CalendarModule,
 		FileUploadComponent,
 		DropdownModule,
+		MultiSelectModule,
 		NgxCurrencyModule,
 		ProprietaryRegisterSidebarComponent,
 	],
@@ -243,7 +245,7 @@ export class AddEventSidebarComponent {
 			dthRealizacao: editFormData.dataEvento
 				? editFormData.dataEvento.toISOString()
 				: '',
-			lstUnidades: [editFormData.unidade],
+			lstUnidades: editFormData.unidade,
 		};
 
 		console.log('on register', edicaoObj);

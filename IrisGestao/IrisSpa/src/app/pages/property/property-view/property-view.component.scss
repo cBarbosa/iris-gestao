@@ -422,7 +422,8 @@
 		width: 100%;
 
 		.p-component {
-			&.p-dropdown {
+			&.p-dropdown,
+			&.p-multiselect {
 				width: 100%;
 			}
 		}

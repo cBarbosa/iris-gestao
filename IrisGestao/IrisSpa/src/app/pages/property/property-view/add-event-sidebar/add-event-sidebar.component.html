@@ -139,7 +139,7 @@
 				</ng-container>
 			</div>
 			<div
-				class="flex flex-col md:flex-row justify-between text-sm font-medium mb-6"
+				class="flex flex-col md:flex-row justify-between text-sm font-medium mb-2"
 			>
 				<span>Não encontrou cliente?</span>
 				<p-button
@@ -152,12 +152,19 @@
 
 			<div class="field">
 				<label for="unidade" class="block">Unidade</label>
-				<p-dropdown
+				<!-- <p-dropdown
 					id="unidade"
 					[options]="opcoesUnidade"
 					formControlName="unidade"
 					aria-describedby="unidade-help"
-				></p-dropdown>
+				></p-dropdown> -->
+				<p-multiSelect
+					id="unidade"
+					[options]="opcoesUnidade"
+					formControlName="unidade"
+					aria-describedby="unidade-help"
+				>
+				</p-multiSelect>
 				<ng-container *ngIf="checkHasError(f['unidade'])">
 					<small
 						id="unidade-help"
