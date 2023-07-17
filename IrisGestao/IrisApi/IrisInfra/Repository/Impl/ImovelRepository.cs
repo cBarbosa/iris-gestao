@@ -245,7 +245,9 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
         
         var result = Db.Unidade
             .Where(u => Db.ContratoAluguelUnidade
-                .All(c => c.IdUnidade != u.Id) && u.Status)
+                .All(c => c.IdUnidade != u.Id) 
+                && (u.Status)
+                && (u.IdImovelNavigation.Status))
             .Select(u => new
             {
                 IdImovel = u.IdImovelNavigation.Id,
@@ -255,25 +257,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                 GuidReferenciaUnidade = u.GuidReferencia,
             }).OrderBy(x => x.NomeImovel).OrderBy(x=> x.NomeUnidade)
             .ToList();
-/*        
-        var result = Db.Unidade
-                .Join(Db.Imovel,
-                    u => u.IdImovel,
-                    imovel => imovel.Id,
-                    (u, imovel) => new { Unidade = u, Imovel = imovel })
-                .GroupJoin(Db.ContratoAluguelUnidade,
-                    u => u.Unidade.Id,
-                    contrato => contrato.IdUnidade,
-                    (u, contratos) => new { Unidade = u.Unidade, Imovel = u.Imovel, Contratos = contratos })
-                .Where(u => u.Contratos.All(c => c.IdUnidade == null))
-                .Select(u => new { 
-                    u.Imovel.Nome, 
-                    u.Imovel.GuidReferencia,
-                    u.Unidade.Tipo, 
-                    u.Unidade.Id, 
-                    u.Unidade.IdImovel })
-                .ToList();
-*/
+
         return result;
     }
 }
