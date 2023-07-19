@@ -19,7 +19,7 @@ public class ImovelService: IImovelService
     
     public ImovelService(
         IImovelRepository imovelRepository
-        , IImovelEnderecoRepository imovelEnderecoRepositor
+        , IImovelEnderecoRepository imovelEnderecoRepository
         , IContratoAluguelRepository ContratoAluguelRepository
         , ILogger<ImovelService> logger)
     {
@@ -92,7 +92,6 @@ public class ImovelService: IImovelService
         cmd.Status = imovel.Status;
 
         var endereco = await imovelEnderecoRepository.GetByImovelReferenceGuid(uuid);
-
         try
         {
             BindImoveisData(cmd, ref imovel);

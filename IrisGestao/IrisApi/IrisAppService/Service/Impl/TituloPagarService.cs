@@ -305,16 +305,15 @@ public class TituloPagarService: ITituloPagarService
                prazo;
         int prazoDesconto = contratoAluguel.PrazoDesconto.HasValue ? contratoAluguel.PrazoDesconto.Value : 0;
         int prazoImpostos = prazoFaturas - prazoDesconto;
-        ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorAluguel, unidadeTaxaAdministracao) * prazoImpostos;
-        /*
+        //ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorAluguel, unidadeTaxaAdministracao) * prazoImpostos;
+        
         if (contratoAluguel.PrazoDesconto.HasValue)
         {
             ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorComDesconto.Value, unidadeTaxaAdministracao) * prazoDesconto;
         }
 
         ValorAPagar += calcularPorcentagemContratoAluguel(contratoAluguel.ValorComImpostos.Value, unidadeTaxaAdministracao) * prazoImpostos;
-        */
-
+        
         switch (TituloPagar.GuidReferencia)
         {
             case null:
@@ -338,7 +337,7 @@ public class TituloPagarService: ITituloPagarService
         TituloPagar.IdCliente = contratoAluguel?.IdCliente;
         TituloPagar.IdIndiceReajuste = contratoAluguel?.IdIndiceReajuste;
         TituloPagar.IdTipoCreditoAluguel = contratoAluguel?.IdTipoCreditoAluguel;
-        TituloPagar.ValorTitulo = calcularPorcentagemContratoAluguel(contratoAluguel.ValorAluguel, unidadeTaxaAdministracao);
+        TituloPagar.ValorTitulo = calcularPorcentagemContratoAluguel(contratoAluguel.ValorComImpostos.Value, unidadeTaxaAdministracao);
         TituloPagar.ValorTotalTitulo = ValorAPagar;
         TituloPagar.Parcelas = prazo;
         TituloPagar.DataVencimentoPrimeraParcela = contratoAluguel.DataVencimentoPrimeraParcela;
@@ -358,36 +357,19 @@ public class TituloPagarService: ITituloPagarService
             DateTime dataVencimento = TituloPagar.DataVencimentoPrimeraParcela.Value.AddMonths(i);
             int diaVencimento = TituloPagar.DataVencimentoPrimeraParcela.Value.Day > 28 ? 28 : dataVencimento.Day;
             double ValorAPagar = 0;
+            
             if (contratoAluguel.PrazoCarencia.HasValue)
             {
-                if (contratoAluguel.PrazoCarencia > i){
+                if (contratoAluguel.PrazoCarencia > i)
+                {
                     ValorAPagar = 0.00;
                 }
-                else{
-                    ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorAluguel, unidadeTaxaAdministracao);
-                }
-            }
-            else{
-                ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorAluguel, unidadeTaxaAdministracao);
-            }
-                /*
-                if (contratoAluguel.PrazoCarencia.HasValue)
+                else if (contratoAluguel.PrazoDesconto.HasValue)
                 {
-                    if (contratoAluguel.PrazoCarencia > i)
+                    if (contratoAluguel.PrazoDesconto >= contaDesconto)
                     {
-                        ValorAPagar = 0.00;
-                    }
-                    else if (contratoAluguel.PrazoDesconto.HasValue)
-                    {
-                        if (contratoAluguel.PrazoDesconto >= contaDesconto)
-                        {
-                            ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorComDesconto.Value, unidadeTaxaAdministracao);
-                            contaDesconto++;
-                        }
-                        else
-                        {
-                            ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorComImpostos.Value, unidadeTaxaAdministracao);
-                        }
+                        ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorComDesconto.Value, unidadeTaxaAdministracao);
+                        contaDesconto++;
                     }
                     else
                     {
@@ -398,7 +380,11 @@ public class TituloPagarService: ITituloPagarService
                 {
                     ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorComImpostos.Value, unidadeTaxaAdministracao);
                 }
-                */
+            }
+            else
+            {
+                ValorAPagar = calcularPorcentagemContratoAluguel(contratoAluguel.ValorComImpostos.Value, unidadeTaxaAdministracao);
+            }
 
             FaturaTituloPagar faturaTituloPagar      = new FaturaTituloPagar();
             faturaTituloPagar.StatusFatura           = FaturaTituloEnum.A_VENCER;
