@@ -13,6 +13,8 @@ public interface IContratoAluguelService
     Task<CommandResult> GetAllPaging(int? idTipoImovel, int? idBaseReajuste, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? numeroContrato, int limit, int page);
     Task<CommandResult> GetDashbaordFinancialVacancy(DateTime DateRefInit, DateTime DateRefEnd, int? IdLocador, int? IdTipoImovel, int? IdArea);
     Task<CommandResult> GetDashbaordPhysicalVacancy(DateTime DateRefInit, DateTime DateRefEnd, int? IdLocador, int? IdTipoImovel);
+    Task<CommandResult> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel);
+    Task<CommandResult> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel);
     Task<CommandResult> GetDashboardTotalManagedArea(DateTime DateRefInit, DateTime DateRefEnd, int? IdLocador, int? IdTipoImovel);
     Task<CommandResult> GetReportLeasedArea(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
     Task<CommandResult> GetReportRentValue(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario, DateTime? dateRef);

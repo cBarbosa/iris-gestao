@@ -243,6 +243,24 @@ public class ContratoAluguelService: IContratoAluguelService
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
+    public async Task<CommandResult> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    {
+        var retorno = await contratoAluguelRepository.GetDashbaordReceivingPerformance(dateRefInit, dateRefEnd, idLocador, idTipoImovel);
+
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+
+    public async Task<CommandResult> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    {
+        var retorno = await contratoAluguelRepository.GetDashbaordAreaPrice(dateRefInit, dateRefEnd, idLocador, idTipoImovel);
+
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+
     public async Task<CommandResult> GetDashboardTotalManagedArea(
         DateTime DateRefInit,
         DateTime DateRefEnd,

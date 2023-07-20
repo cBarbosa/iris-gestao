@@ -423,7 +423,43 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
             .SqlQueryAsync<SpFinancialVacancyResult>("Exec Sp_FinancialVacancy @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade, @TipoArea",
                 parameters.ToArray());
     }
-    
+
+    public async Task<IEnumerable<SpReceivingPerformanceResult>> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@DataInicioContrato", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimContrato", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@ClienteID", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
+            new ("@TipoUnidade", SqlDbType.Int)
+                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpReceivingPerformanceResult>("Exec Sp_ReceivingPerformance @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade",
+                parameters.ToArray());
+    }
+
+    public async Task<IEnumerable<SpAreaPriceResult>> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@DataInicioContrato", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimContrato", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@ClienteID", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
+            new ("@TipoUnidade", SqlDbType.Int)
+                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpAreaPriceResult>("Exec Sp_AreaPrice @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade",
+                parameters.ToArray());
+    }
+
     public async Task<IEnumerable<SpPhysicalVacancyResult>?> GetDashbaordPhysicalVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
     {
         var parameters = new List<SqlParameter> {
