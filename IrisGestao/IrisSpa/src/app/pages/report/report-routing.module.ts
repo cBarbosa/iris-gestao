@@ -22,6 +22,16 @@ const routes: Routes = [
 			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 		},
 	},
+	{
+		path: 'supply-contracts',
+		loadChildren: () =>
+			import('./report-supply-contracts/report-supply-contracts.module').then(
+				(m) => m.ReportSupplyContractsModule
+			),
+		data: {
+			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+		},
+	},
 	// {
 	// 	path: 'edit/:guid',
 	// 	loadChildren: () =>
