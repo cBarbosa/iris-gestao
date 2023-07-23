@@ -18,7 +18,7 @@
 				></button>
 			</div>
 
-			<!-- <div class="options">
+			<div class="options">
 				<ng-container *ngIf="!isMobile">
 					<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
 				</ng-container>
@@ -39,7 +39,7 @@
 					[popup]="true"
 				>
 				</p-menu>
-			</div> -->
+			</div>
 		</header>
 
 		<ng-template #filtersTemplate>
@@ -54,7 +54,7 @@
 				(ngModelChange)="filterResultDebounce($event)"
 			></p-calendar> -->
 
-			<!-- <p-dropdown
+			<p-dropdown
 				styleClass="w-full md:w-[10rem]"
 				[options]="opcoesImovel"
 				[(ngModel)]="filterImovel"
@@ -81,7 +81,7 @@
 				[(ngModel)]="filterLocatario"
 				(ngModelChange)="filterResultDebounce($event)"
 				[hidden]="true"
-			></p-dropdown> -->
+			></p-dropdown>
 
 		</ng-template>
 
@@ -95,7 +95,7 @@
 				</div>
 			</ng-container>
 
-			<!-- <p-table
+			<p-table
 				*ngIf="!isMobile"
 				[value]="resultEntries"
 				styleClass="p-datatable-striped"
@@ -133,7 +133,7 @@
 					</tr>
 				</ng-template> 
 
-			</p-table> -->
+			</p-table>
 
 			<!-- <ng-container *ngIf="isMobile">
 				<div class="cardList">
