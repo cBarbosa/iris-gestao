@@ -6,7 +6,7 @@ const routes: Routes = [
 		path: '',
 		children: [
 			{
-				path: 'listing/:pageIndex',
+				path: 'carteira/listing/:pageIndex',
 				// component: PropertyListingComponent,
 				loadChildren: () =>
 					import('./property-listing/property-listing.module').then(
@@ -17,7 +17,28 @@ const routes: Routes = [
 				},
 			},
 			{
-				path: 'listing',
+				path: 'mercado/listing/:pageIndex',
+				loadChildren: () =>
+					import('./property-listing/property-listing.module').then(
+						(m) => m.PropertyListingModule
+					),
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
+				path: 'carteira/listing',
+				// component: PropertyListingComponent,
+				loadChildren: () =>
+					import('./property-listing/property-listing.module').then(
+						(m) => m.PropertyListingModule
+					),
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
+				path: 'mercado/listing',
 				loadChildren: () =>
 					import('./property-listing/property-listing.module').then(
 						(m) => m.PropertyListingModule
@@ -55,7 +76,17 @@ const routes: Routes = [
 				},
 			},
 			{
-				path: 'register',
+				path: 'carteira/register',
+				loadChildren: () =>
+					import('./property-register/property-register.module').then(
+						(m) => m.PropertyRegisterModule
+					),
+				data: {
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+				},
+			},
+			{
+				path: 'mercado/register',
 				loadChildren: () =>
 					import('./property-register/property-register.module').then(
 						(m) => m.PropertyRegisterModule
@@ -67,7 +98,9 @@ const routes: Routes = [
 			{
 				path: 'register/unit/:uid',
 				loadChildren: () =>
-					import('./unit-register/unit-register.module').then((m) => m.UnitRegisterModule),
+					import('./unit-register/unit-register.module').then(
+						(m) => m.UnitRegisterModule
+					),
 				data: {
 					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 				},
