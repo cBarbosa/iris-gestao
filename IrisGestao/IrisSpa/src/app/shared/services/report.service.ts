@@ -36,7 +36,7 @@ const httpOptions = {
 	providedIn: 'root',
 })
 export class ReportService {
-	
+
 	constructor(private http: HttpClient) { };
 
 	getLeasedArea(
@@ -103,6 +103,32 @@ export class ReportService {
 		locadorId: number | undefined) {
 			return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Report/supply-contract`, {
+				params: {
+					Status: status ?? '',
+					IdImovel: imovelId ?? '',
+					IdTipoImovel: tipoImovelId ?? '',
+					IdLocatario: locatarioId ?? '',
+					IdLocador: locadorId ?? ''
+				},
+			})
+			.pipe(
+				map((response): RentValue[] | null => {
+					console.debug('response', response);
+					if (!response.success)
+						console.error(`getRentValue: ${response.message}`);
+					return response.data;
+				})
+			);
+	};
+
+	getCosts(
+		imovelId: number | undefined,
+		status: boolean | undefined,
+		tipoImovelId: number | undefined,
+		locatarioId: number | undefined,
+		locadorId: number | undefined) {
+			return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Report/costs`, {
 				params: {
 					Status: status ?? '',
 					IdImovel: imovelId ?? '',

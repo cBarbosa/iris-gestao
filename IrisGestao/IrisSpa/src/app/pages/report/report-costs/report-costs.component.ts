@@ -6,11 +6,11 @@ import { CommonService, RentContractService, ReportService, ResponsiveService } 
 import { Utils } from 'src/app/shared/utils';
 
 @Component({
-  selector: 'app-report-supply-contracts',
-  templateUrl: './report-supply-contracts.component.html',
-  styleUrls: ['./report-supply-contracts.component.scss']
+  selector: 'app-report-costs',
+  templateUrl: './report-costs.component.html',
+  styleUrls: ['./report-costs.component.scss']
 })
-export class ReportSupplyContractsComponent {
+export class ReportCostsComponent {
   	@ViewChild('reportToPdf', {read: ElementRef}) childElement: ElementRef<HTMLElement>;
   
 	isLoading: boolean = true;
@@ -28,7 +28,7 @@ export class ReportSupplyContractsComponent {
 	filterLocatario: number;
 	filterStatus: boolean;
 
-  opcoesImovel = [
+  	opcoesImovel = [
 		{
 			label: 'Todos Imóveis',
 			value: null,
@@ -58,7 +58,7 @@ export class ReportSupplyContractsComponent {
 			value: null,
 		},
 	];
-  items: MenuItem[] = [
+  	items: MenuItem[] = [
 		{
 			label: 'Opções',
 			items: [
@@ -88,7 +88,7 @@ export class ReportSupplyContractsComponent {
 		private commonService: CommonService
 	) { };
 
-	ngOnInit(): void {
+  	ngOnInit(): void {
 
 		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
 			this.isMobile = screenWidth < 768;
@@ -97,14 +97,14 @@ export class ReportSupplyContractsComponent {
 		this.init();
 	};
 
-	init():void {
+  	init():void {
 		this.filterResult();
 		this.getOwnersListData();
 		this.getUnitTypesData();
 		this.getPropertiesListData();
 	};
 
-	openFilters() {
+  	openFilters() {
 		this.displayMobileFilters = true;
 	}
 
@@ -122,12 +122,12 @@ export class ReportSupplyContractsComponent {
 
   	filterResultDebounce: Function = Utils.debounce(this.filterResult, 1000);
 
-  	exportarPdf(): void {
-		Utils.saveReportAsPdf(this.childElement.nativeElement, 'vencimento-reajuste-contrato', 'Relatório Valor de Aluguel');
+	exportarPdf(): void {
+		Utils.saveReportAsPdf(this.childElement.nativeElement, 'costs', 'Financeiro - Despesas');
 	};
 
   	exportarExcell(): void {
-		Utils.saveReportAsExcell(this.childElement.nativeElement, 'vencimento-reajuste-contrato', 'Relatório Valor de Aluguel');
+		Utils.saveReportAsExcell(this.childElement.nativeElement, 'costs', 'Financeiro - Despesas');
 	};
 
   	loadResultPage(event: LazyLoadEvent): void {
@@ -136,16 +136,9 @@ export class ReportSupplyContractsComponent {
 			this.filterResult(undefined, page);
 			this.scrollTop();
 		}
-	}
-
-  	scrollTop() {
-		window.scroll({
-			top: 0,
-			left: 0,
-		});
 	};
 
-	getData(
+  	getData(
 		imovelId?: number,
 		status?: boolean,
 		tipoImovelId?: number,
@@ -155,7 +148,7 @@ export class ReportSupplyContractsComponent {
 		this.isLoading = true;
 
 		this.reportService
-			.getSupplyContract(imovelId, status, tipoImovelId, locatarioId, locadorId)
+			.getCosts(imovelId, status, tipoImovelId, locatarioId, locadorId)
 			.pipe(first())
 			.subscribe({
 				next: (data) => {
@@ -171,7 +164,7 @@ export class ReportSupplyContractsComponent {
 	
 	};
 
-	getOwnersListData() {
+  	getOwnersListData() {
 		this.rentContract
 			.getActiveOwners()
 			.pipe(first())
@@ -250,4 +243,12 @@ export class ReportSupplyContractsComponent {
 		const shortened = without_html.substring(0, charlimit) + '...';
 		return shortened;
 	};
+
+  	scrollTop() {
+		window.scroll({
+			top: 0,
+			left: 0,
+		});
+	};
+
 }
