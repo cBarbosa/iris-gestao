@@ -115,7 +115,7 @@ export class ReportService {
 				map((response): RentValue[] | null => {
 					console.debug('response', response);
 					if (!response.success)
-						console.error(`getRentValue: ${response.message}`);
+						console.error(`getSupplyContract: ${response.message}`);
 					return response.data;
 				})
 			);
@@ -141,7 +141,33 @@ export class ReportService {
 				map((response): RentValue[] | null => {
 					console.debug('response', response);
 					if (!response.success)
-						console.error(`getRentValue: ${response.message}`);
+						console.error(`getCosts: ${response.message}`);
+					return response.data;
+				})
+			);
+	};
+
+	getReceipts(
+		imovelId: number | undefined,
+		status: boolean | undefined,
+		tipoImovelId: number | undefined,
+		locatarioId: number | undefined,
+		locadorId: number | undefined) {
+			return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Report/receipts`, {
+				params: {
+					Status: status ?? '',
+					IdImovel: imovelId ?? '',
+					IdTipoImovel: tipoImovelId ?? '',
+					IdLocatario: locatarioId ?? '',
+					IdLocador: locadorId ?? ''
+				},
+			})
+			.pipe(
+				map((response): RentValue[] | null => {
+					console.debug('response', response);
+					if (!response.success)
+						console.error(`getReceipts: ${response.message}`);
 					return response.data;
 				})
 			);

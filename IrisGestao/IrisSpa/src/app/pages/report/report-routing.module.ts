@@ -42,6 +42,16 @@ const routes: Routes = [
 			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 		},
 	},
+	{
+		path: 'receipts',
+		loadChildren: () =>
+			import('./report-receipts/report-receipts.module').then(
+				(m) => m.ReportReceiptsModule
+			),
+		data: {
+			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+		},
+	},
 	// {
 	// 	path: 'edit/:guid',
 	// 	loadChildren: () =>
