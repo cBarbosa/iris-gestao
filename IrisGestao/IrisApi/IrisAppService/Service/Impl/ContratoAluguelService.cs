@@ -223,7 +223,8 @@ public class ContratoAluguelService: IContratoAluguelService
         int? IdTipoArea)
     {
         
-        var retorno = await contratoAluguelRepository.GetDashbaordFinancialVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel, IdTipoArea);
+        var retorno = await contratoAluguelRepository
+            .GetDashbaordFinancialVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel, IdTipoArea);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -236,7 +237,8 @@ public class ContratoAluguelService: IContratoAluguelService
         int? IdLocador, int? IdTipoImovel)
     {
         
-        var retorno = await contratoAluguelRepository.GetDashbaordPhysicalVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel);
+        var retorno = await contratoAluguelRepository
+            .GetDashbaordPhysicalVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -245,7 +247,8 @@ public class ContratoAluguelService: IContratoAluguelService
 
     public async Task<CommandResult> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
     {
-        var retorno = await contratoAluguelRepository.GetDashbaordReceivingPerformance(dateRefInit, dateRefEnd, idLocador, idTipoImovel);
+        var retorno = await contratoAluguelRepository
+            .GetDashbaordReceivingPerformance(dateRefInit, dateRefEnd, idLocador, idTipoImovel);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -254,7 +257,8 @@ public class ContratoAluguelService: IContratoAluguelService
 
     public async Task<CommandResult> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
     {
-        var retorno = await contratoAluguelRepository.GetDashbaordAreaPrice(dateRefInit, dateRefEnd, idLocador, idTipoImovel);
+        var retorno = await contratoAluguelRepository
+            .GetDashbaordAreaPrice(dateRefInit, dateRefEnd, idLocador, idTipoImovel);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
