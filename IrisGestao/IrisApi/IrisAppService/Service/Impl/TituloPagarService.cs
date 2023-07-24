@@ -243,6 +243,7 @@ public class TituloPagarService: ITituloPagarService
                 faturaTituloPagarRepository.Update(fatura);
             }
             tituloPagarRepository.Update(TituloPagar);
+
             return new CommandResult(true, SuccessResponseEnums.Success_1001, TituloPagar);
         }
         catch (Exception e)

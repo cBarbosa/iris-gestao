@@ -20,4 +20,5 @@ public interface IContratoAluguelService
     Task<CommandResult> GetReportRentValue(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario, DateTime? dateRef);
     Task<CommandResult> GetAllActiveOwners();
     Task<CommandResult> GetAllActiveProperties();
+    Task<CommandResult> GetUnidadesByContrato(Guid guid);
 }

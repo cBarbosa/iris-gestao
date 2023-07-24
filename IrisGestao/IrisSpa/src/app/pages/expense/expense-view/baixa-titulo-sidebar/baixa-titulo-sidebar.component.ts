@@ -221,11 +221,14 @@ export class BaixaTituloSidebarComponent {
 
 							formData.append('files', this.selectedFile);
 
-							this.anexoService.registerFile(
-								response.data.guidReferencia,
-								formData,
-								'outrosdocs'
-							);
+							this.anexoService
+								.registerFile(
+									response.data.guidReferencia,
+									formData,
+									'outrosdocs'
+								)
+								.pipe(first())
+								.subscribe();
 						} else {
 							this.modalContent = {
 								header: 'Cadastro não realizado',
