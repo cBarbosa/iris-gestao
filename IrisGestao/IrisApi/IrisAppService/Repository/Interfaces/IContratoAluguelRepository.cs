@@ -17,4 +17,5 @@ public interface IContratoAluguelRepository : IRepository<ContratoAluguel>, IDis
     Task<IEnumerable<SpRentValueResult>?> GetReportRentValue(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario, DateTime? dateRef);
     Task<IEnumerable<dynamic>> GetAllActiveProperties();
     Task<IEnumerable<dynamic>> GetAllActiveOwners();
+    Task<object?> GetUnidadesByContratoAluguel(Guid guid);
 }

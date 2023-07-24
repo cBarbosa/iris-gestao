@@ -158,6 +158,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                     DataCriacao             = y.IdUnidadeNavigation.DataCriacao,
                                     DataUltimaModificacao   = y.IdUnidadeNavigation.DataUltimaModificacao,
                                     Ativo                   = y.IdUnidadeNavigation.Status,
+                                    UnidadeLocada           = y.IdUnidadeNavigation.UnidadeLocada,
                                     IdTipoUnidadeNavigation = new
                                     {
                                         Id                  = y.IdUnidadeNavigation.IdTipoUnidadeNavigation.Id,
@@ -554,4 +555,28 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
 
         return retorno;
     }
+
+    public async Task<object?> GetUnidadesByContratoAluguel(Guid guid)
+    {
+        return await DbSet
+                        .Include(x => x.ContratoAluguelImovel)
+                            .ThenInclude(x => x.ContratoAluguelUnidade)
+                        .Where(x => x.GuidReferencia.Equals(guid) && x.Status)
+                        .Select(x => new
+                        {                            
+                            ImovelAlugado = x.ContratoAluguelImovel.Select(x => new
+                            {
+                                GuidReferencia = x.IdImovelNavigation.GuidReferencia,
+                                Nome = x.IdImovelNavigation.Nome,
+                                Unidades = x.ContratoAluguelUnidade.Select(y => new
+                                {
+                                    Ativo = y.IdUnidadeNavigation.Status,
+                                    IdUnidade = y.IdUnidadeNavigation.Id,
+                                    GuidReferenciaUnidade = y.IdUnidadeNavigation.GuidReferencia,
+                                    UnidadeLocada = y.IdUnidadeNavigation.UnidadeLocada
+                                }).Where(y => y.Ativo)
+                            }),
+                        }).ToListAsync();
+    }
+
 }

@@ -47,7 +47,7 @@ public partial class Unidade: BaseEntity<Unidade>
     [Column(TypeName = "decimal(18, 0)")]
     public decimal? ValorPotencial { get; set; }
 
-    public bool? UnidadeLocada { get; set; }
+    public bool UnidadeLocada { get; set; }
     public bool Status { get; set; }
 
     // TODO alterar o tipo para GUID

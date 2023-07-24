@@ -6,6 +6,7 @@ using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using Microsoft.Extensions.Logging;
+using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
@@ -280,8 +281,14 @@ public class TituloReceberService: ITituloReceberService
             if (unidade != null)
             {
                 tituloUnidade.IdUnidade = unidade.Id;
+                tituloUnidadeRepository.Insert(tituloUnidade);
+
+                if (!unidade.UnidadeLocada)
+                {
+                    unidade.UnidadeLocada = true;
+                    unidadeRepository.Update(unidade);
+                }
             }
-            tituloUnidadeRepository.Insert(tituloUnidade);
         }
     }
 

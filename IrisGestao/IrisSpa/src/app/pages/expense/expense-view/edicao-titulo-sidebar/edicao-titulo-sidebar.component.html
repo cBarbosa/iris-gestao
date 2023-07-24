@@ -63,7 +63,32 @@
 					</ng-template>
 				</ng-container>
 			</div>
-
+			<div class="field" 
+			*ngIf="">
+				<label for="valorAluguel" class="block">Valor pago</label>
+				<input
+					id="valorAluguel"
+					type="text"
+					formControlName="valorAluguel"
+					aria-describedby="valorAluguel-help"
+					currencyMask
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['valorAluguel'])">
+					<small
+						id="valorAluguel-help"
+						*ngIf="f['valorAluguel'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o Valor pago
+					</small>
+					<ng-template #error2>
+						<small id="valorAluguel-help" class="p-error block">
+							Valor pago inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
 			<div class="field">
 				<label for="dataVencimento" class="block">
 					Data de vencimento da fatura

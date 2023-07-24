@@ -53,6 +53,9 @@ export class EdicaoTituloSidebarComponent {
 	registerOnSubmit: boolean = false;
 
 	@Input()
+	editAllFields: boolean = false;
+
+	@Input()
 	guidExpense: string | null;
 
 	@Input()
@@ -113,6 +116,8 @@ export class EdicaoTituloSidebarComponent {
 	ngOnInit() {
 		console.log('Fatura detalhes: >> ' + JSON.stringify(this.data));
 		console.log('guid: >> ' + this.guidExpense);
+		console.log('Edit all fields: >> ' + this.editAllFields);
+		//console.log('Status fatura >> ' + this.data?.statusFatura );
 
 		if (this.registerOnSubmit && !this.guidExpense)
 			throw new Error(
@@ -128,6 +133,7 @@ export class EdicaoTituloSidebarComponent {
 			],
 			valor: [this.data?.valorFatura ?? null, Validators.required],
 			dataVencimento: [this.data?.dataVencimento ?? null, Validators.required],
+			statusFatura: [this.data?.statusFatura ?? null],
 		});
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
@@ -153,6 +159,7 @@ export class EdicaoTituloSidebarComponent {
 			valor: this.data?.valorFatura,
 			numeroNotaFiscal: this.data?.numeroFatura,
 			numeroParcela: this.data?.numeroParcela,
+			statusFatura: this.data?.statusFatura,
 			dataVencimento: this.data?.dataVencimento
 				? new Date(this.data?.dataVencimento)
 				: '',
