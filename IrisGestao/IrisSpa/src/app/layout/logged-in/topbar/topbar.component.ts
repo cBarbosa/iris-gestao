@@ -45,8 +45,20 @@ export class TopbarComponent {
 			},
 			{
 				label: 'Imóveis',
-				id: route.startsWith('/property/') ? 'current' : '',
-				command: () => this.navigateTo('property/listing'),
+				// id: route.startsWith('/property/') ? 'current' : '',
+				// command: () => this.navigateTo('property/listing'),
+				items: [
+					{
+						label: 'Imóvel de mercado',
+						id: route.startsWith('property/mercado/') ? 'current' : '',
+						command: () => this.navigateTo('property/mercado/listing'),
+					},
+					{
+						label: 'Contrato de carteira',
+						id: route.startsWith('property/carteira/') ? 'current' : '',
+						command: () => this.navigateTo('property/carteira/listing'),
+					},
+				],
 			},
 			{
 				label: 'Clientes',
@@ -130,24 +142,24 @@ export class TopbarComponent {
 					{
 						label: 'Vacância',
 						id: route.startsWith('/dashboard/') ? 'current' : '',
-						command: () => this.navigateTo('dashboard/financial-vacancy')
+						command: () => this.navigateTo('dashboard/financial-vacancy'),
 					},
 					{
 						label: 'Recebimento',
 						id: route.startsWith('/dashboard/') ? 'current' : '',
-						command: () => this.navigateTo('dashboard/receiving-performance')
+						command: () => this.navigateTo('dashboard/receiving-performance'),
 					},
 					{
 						label: 'Preço M²',
 						id: route.startsWith('/dashboard/') ? 'current' : '',
-						command: () => this.navigateTo('dashboard/area-price')
+						command: () => this.navigateTo('dashboard/area-price'),
 					},
 					{
 						label: 'M² Gerenciados',
 						id: route.startsWith('/dashboard/') ? 'current' : '',
-						command: () => this.navigateTo('dashboard/managed-area')
-					}
-				]
+						command: () => this.navigateTo('dashboard/managed-area'),
+					},
+				],
 			},
 			{
 				label: 'Relatórios',
@@ -155,7 +167,7 @@ export class TopbarComponent {
 					{
 						label: 'Área locada             ',
 						id: route.startsWith('/report/') ? 'current' : '',
-						command: () => this.navigateTo('report/leased-area')
+						command: () => this.navigateTo('report/leased-area'),
 					},
 					{
 						label: 'Valor aluguel',
