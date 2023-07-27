@@ -79,6 +79,8 @@ export class EdicaoTituloSidebarComponent {
 		valorRealPago: number;
 	} | null;
 
+	faturaPaga: boolean = false;
+
 	form: FormGroup;
 
 	onInputDate: Function;
@@ -116,14 +118,14 @@ export class EdicaoTituloSidebarComponent {
 		console.log('Fatura detalhes: >> ' + JSON.stringify(this.data));
 		console.log('guid: >> ' + this.guidExpense);
 
-		const faturaPaga: boolean = this.data?.statusFatura
-			? this.data.statusFatura === 'Pago'
-			: false;
-
 		if (this.registerOnSubmit && !this.guidExpense)
 			throw new Error(
 				"edicao-titulo-sidebar: O Guid de receita deve ser informado caso o parâmetro 'registerOnSubmit' seja verdadeiro."
 			);
+
+		this.faturaPaga = this.data?.statusFatura
+			? this.data.statusFatura === 'Pago'
+			: false;
 
 		this.form = this.fb.group({
 			numeroNotaFiscal: [
@@ -133,10 +135,22 @@ export class EdicaoTituloSidebarComponent {
 				{ value: this.data?.numeroParcela ?? null, disabled: true },
 			],
 			valor: [this.data?.valorFatura ?? null, Validators.required],
-			valorPago: ['', Validators.required],
+			valorPago: [
+				{ value: this.data?.valorRealPago ?? '', disabled: !this.faturaPaga },
+				Validators.required,
+			],
 			dataVencimento: [this.data?.dataVencimento ?? null, Validators.required],
-			dataPagamento: [null, Validators.required],
-			observacoes: ['', Validators.required],
+			dataPagamento: [
+				{ value: this.data?.dataPagamento ?? null, disabled: !this.faturaPaga },
+				Validators.required,
+			],
+			observacoes: [
+				{
+					value: this.data?.descricaoBaixaFatura ?? '',
+					disabled: !this.faturaPaga,
+				},
+				Validators.required,
+			],
 		});
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
@@ -158,6 +172,21 @@ export class EdicaoTituloSidebarComponent {
 
 	onSidebarShow() {
 		console.log('patching values', this.data);
+
+		this.faturaPaga = this.data?.statusFatura
+			? this.data.statusFatura === 'Pago'
+			: false;
+
+		if (this.faturaPaga) {
+			this.form.controls['valorPago'].enable();
+			this.form.controls['dataPagamento'].enable();
+			this.form.controls['observacoes'].enable();
+		} else {
+			this.form.controls['valorPago'].disable();
+			this.form.controls['dataPagamento'].disable();
+			this.form.controls['observacoes'].disable();
+		}
+
 		this.form.setValue({
 			valor: this.data?.valorFatura ?? '',
 			valorPago: this.data?.valorRealPago ?? '',
