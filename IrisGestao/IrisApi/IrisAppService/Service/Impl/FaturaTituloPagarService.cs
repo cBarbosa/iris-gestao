@@ -33,8 +33,7 @@ public class FaturaTituloPagarService : IFaturaTituloPagarService
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
-        else if (faturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.INATIVO) ||
-                faturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.PAGO))
+        else if (faturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.INATIVO))
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1009, null!);
         }

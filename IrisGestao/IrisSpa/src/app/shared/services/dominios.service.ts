@@ -134,4 +134,16 @@ export class DominiosService {
 				})
 			);
 	}
+
+	getTiposEvento() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/tipo-evento`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getTiposEvento: ${response.message}`);
+					return response;
+				})
+			);
+	}
 }

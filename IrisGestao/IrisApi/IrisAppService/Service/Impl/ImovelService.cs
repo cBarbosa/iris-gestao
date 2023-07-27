@@ -15,17 +15,20 @@ public class ImovelService: IImovelService
     private readonly IImovelRepository imovelRepository;
     private readonly IImovelEnderecoRepository imovelEnderecoRepository;
     private readonly IContratoAluguelRepository ContratoAluguelRepository;
+    private readonly ITituloUnidadeRepository tituloUnidadeRepository;
     private readonly ILogger<ImovelService> logger;
     
     public ImovelService(
         IImovelRepository imovelRepository
         , IImovelEnderecoRepository imovelEnderecoRepository
         , IContratoAluguelRepository ContratoAluguelRepository
+        , ITituloUnidadeRepository TituloUnidadeRepository
         , ILogger<ImovelService> logger)
     {
         this.imovelRepository = imovelRepository;
         this.imovelEnderecoRepository = imovelEnderecoRepository;
         this.ContratoAluguelRepository = ContratoAluguelRepository;
+        this.tituloUnidadeRepository = TituloUnidadeRepository;
         this.logger = logger;
     }
 

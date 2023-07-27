@@ -172,10 +172,25 @@ export class TopbarComponent {
 					{
 						label: 'Valor aluguel',
 						id: route.startsWith('/report/') ? 'current' : '',
-						command: () => this.navigateTo('report/rent-amount'),
+						command: () => this.navigateTo('report/rent-amount')
 					},
-				],
-			},
+					{
+						label: 'Vencimento/Reajuste de Contratos',
+						id: route.startsWith('/report/') ? 'current' : '',
+						command: () => this.navigateTo('report/supply-contracts')
+					},
+					{
+						label: 'Despesas',
+						id: route.startsWith('/report/') ? 'current' : '',
+						command: () => this.navigateTo('report/costs')
+					},
+					{
+						label: 'Receitas',
+						id: route.startsWith('/report/') ? 'current' : '',
+						command: () => this.navigateTo('report/receipts')
+					}
+				]
+			}
 		];
 	}
 

@@ -16,6 +16,7 @@ import { DialogModule } from 'primeng/dialog';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 import { AttachmentListComponent } from 'src/app/shared/components/attachment-list/attachment-list.component';
 import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
+import { AddEventSidebarComponent } from './add-event-sidebar/add-event-sidebar.component';
 
 @NgModule({
 	declarations: [PropertyViewComponent],
@@ -36,6 +37,7 @@ import { UploadListComponent } from 'src/app/shared/components/upload-list/uploa
 		SpinnerComponent,
 		AttachmentListComponent,
 		UploadListComponent,
+		AddEventSidebarComponent,
 	],
 })
 export class PropertyViewModule {}

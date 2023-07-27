@@ -25,6 +25,7 @@ export class ExpenseViewComponent {
 
 	faturaSelected: any;
 
+	editAllFields = false;
 	detalheBaixaVisible = false;
 	baixaTituloVisible = false;
 	edicaoTituloVisible = false;
@@ -125,12 +126,14 @@ export class ExpenseViewComponent {
 	showEdicaoTitulo = (): void => {
 		this.detalheBaixaVisible = false;
 		this.baixaTituloVisible = false;
-		if (
+		this.edicaoTituloVisible = true;
+		this.editAllFields = true;
+		/*if (
 			this.faturaSelected.statusFatura === 'Vencido' ||
 			this.faturaSelected.statusFatura === 'A vencer'
 		)
 			this.edicaoTituloVisible = true;
-		else this.edicaoTituloVisible = false;
+		else this.edicaoTituloVisible = false;*/
 	};
 
 	hideDetalheBaixa = () => {
