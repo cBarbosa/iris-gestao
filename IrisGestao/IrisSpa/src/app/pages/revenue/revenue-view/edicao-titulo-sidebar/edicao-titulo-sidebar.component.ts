@@ -68,6 +68,7 @@ export class EdicaoTituloSidebarComponent {
 		dataCriacao: string;
 		dataUltimaModificacao: string;
 		dataVencimento: string;
+		dataPagamento: string;
 		descricaoBaixaFatura: string;
 		guidReferencia: string;
 		numeroFatura: string;
@@ -75,6 +76,7 @@ export class EdicaoTituloSidebarComponent {
 		status: boolean;
 		statusFatura: string;
 		valorFatura: number;
+		valorRealPago: number;
 	} | null;
 
 	form: FormGroup;
@@ -124,10 +126,13 @@ export class EdicaoTituloSidebarComponent {
 				{ value: this.data?.numeroFatura ?? null, disabled: true },
 			],
 			numeroParcela: [
-				{ value: this.data?.numeroParcela ?? null, disabled: true},
+				{ value: this.data?.numeroParcela ?? null, disabled: true },
 			],
 			valor: [this.data?.valorFatura ?? null, Validators.required],
+			valorPago: [null, Validators.required],
 			dataVencimento: [this.data?.dataVencimento ?? null, Validators.required],
+			dataPagamento: [null, Validators.required],
+			observacoes: ['', Validators.required],
 		});
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
@@ -151,11 +156,16 @@ export class EdicaoTituloSidebarComponent {
 		console.log('patching values', this.data);
 		this.form.setValue({
 			valor: this.data?.valorFatura,
+			valorPago: this.data?.valorRealPago,
 			numeroNotaFiscal: this.data?.numeroFatura,
 			numeroParcela: this.data?.numeroParcela,
 			dataVencimento: this.data?.dataVencimento
 				? new Date(this.data?.dataVencimento)
 				: '',
+			dataPagamento: this.data?.dataPagamento
+				? new Date(this.data?.dataPagamento)
+				: '',
+			observacoes: this.data?.descricaoBaixaFatura,
 		});
 	}
 
@@ -166,10 +176,14 @@ export class EdicaoTituloSidebarComponent {
 		}
 
 		const editFormData = this.form.getRawValue();
-
 		const edicaoObj = {
-			valor: editFormData.valor,
+			valor: +editFormData.valor,
+			valorRealPago: +editFormData.valorPago,
+			dataPagamento: editFormData.dataPagamento,
 			dataVencimento: editFormData.dataVencimento,
+			DataEmissaoNotaFiscal: editFormData.dataEmissao,
+			numeroNotaFiscal: editFormData.numeroNotaFiscal,
+			observacoes: editFormData.observacoes,
 		};
 
 		console.log('on register', edicaoObj);

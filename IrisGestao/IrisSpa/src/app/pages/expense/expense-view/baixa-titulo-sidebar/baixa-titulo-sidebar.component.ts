@@ -74,6 +74,13 @@ export class BaixaTituloSidebarComponent {
 
 	selectedFile: File;
 
+	requestObj: {
+		dataVencimento: string;
+		dataPagamento: string;
+		valorRealPago: number;
+		DescricaoBaixaFatura: string;
+	} | null = null;
+
 	opcoesDescricao: DropdownItem[] = [
 		{
 			label: 'Selecione',
@@ -165,7 +172,7 @@ export class BaixaTituloSidebarComponent {
 
 		const editFormData = this.registerForm.getRawValue();
 
-		const baixaObj = {
+		this.requestObj = {
 			dataVencimento: editFormData.dataVencimento
 				? editFormData.dataVencimento.toISOString()
 				: '',
@@ -176,24 +183,24 @@ export class BaixaTituloSidebarComponent {
 			DescricaoBaixaFatura: editFormData.observacoes,
 		};
 
-		console.log('on register', baixaObj);
+		console.log('on register', this.requestObj);
 
 		// if (this.onSubmitForm) this.onSubmitForm(contactObj);
 		console.log('chamar função  >> ' + this.guidExpense);
 
 		if (this.registerOnSubmit && this.guidExpense)
-			this.registerInvoice(baixaObj)
+			this.registerInvoice(this.requestObj)
 				.then(() => {
 					this.openModal();
 					//if (this.onSubmitForm) this.onSubmitForm(baixaObj);
-					location.reload();
+					//location.reload();
 				})
 				.catch((err) => {
 					this.openModal();
 					console.error(err);
 				});
 		else {
-			if (this.onSubmitForm) this.onSubmitForm(baixaObj);
+			if (this.onSubmitForm) this.onSubmitForm(this.requestObj);
 		}
 	}
 
@@ -254,8 +261,17 @@ export class BaixaTituloSidebarComponent {
 		this.displayModal = true;
 	}
 
-	closeModal() {
+	closeModal(success = false, reload = false) {
 		this.displayModal = false;
+		if (success) {
+			if (reload) {
+				location.reload();
+			}
+
+			if (this.onSubmitForm) {
+				this.onSubmitForm(this.requestObj);
+			}
+		}
 	}
 
 	onFileSelect(e: any) {

@@ -129,56 +129,60 @@ export class TopbarComponent {
 				items: [
 					{
 						label: 'Vacância',
-						id: route.startsWith('/dashboard/') ? 'current' : '',
-						command: () => this.navigateTo('dashboard/financial-vacancy')
+						id: route.startsWith('/dashboard/financial-vacancy')
+							? 'current'
+							: '',
+						command: () => this.navigateTo('dashboard/financial-vacancy'),
 					},
 					{
 						label: 'Recebimento',
-						id: route.startsWith('/dashboard/') ? 'current' : '',
-						command: () => this.navigateTo('dashboard/receiving-performance')
+						id: route.startsWith('/dashboard/receiving-performance')
+							? 'current'
+							: '',
+						command: () => this.navigateTo('dashboard/receiving-performance'),
 					},
 					{
 						label: 'Preço M²',
-						id: route.startsWith('/dashboard/') ? 'current' : '',
-						command: () => this.navigateTo('dashboard/area-price')
+						id: route.startsWith('/dashboard/area-price') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/area-price'),
 					},
 					{
 						label: 'M² Gerenciados',
-						id: route.startsWith('/dashboard/') ? 'current' : '',
-						command: () => this.navigateTo('dashboard/managed-area')
-					}
-				]
+						id: route.startsWith('/dashboard/managed-area') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/managed-area'),
+					},
+				],
 			},
 			{
 				label: 'Relatórios',
 				items: [
 					{
 						label: 'Área locada             ',
-						id: route.startsWith('/report/') ? 'current' : '',
-						command: () => this.navigateTo('report/leased-area')
+						id: route.startsWith('/report/leased-area') ? 'current' : '',
+						command: () => this.navigateTo('report/leased-area'),
 					},
 					{
 						label: 'Valor aluguel',
-						id: route.startsWith('/report/') ? 'current' : '',
-						command: () => this.navigateTo('report/rent-amount')
+						id: route.startsWith('/report/rent-amount') ? 'current' : '',
+						command: () => this.navigateTo('report/rent-amount'),
 					},
 					{
 						label: 'Vencimento/Reajuste de Contratos',
-						id: route.startsWith('/report/') ? 'current' : '',
-						command: () => this.navigateTo('report/supply-contracts')
+						id: route.startsWith('/report/supply-contracts') ? 'current' : '',
+						command: () => this.navigateTo('report/supply-contracts'),
 					},
 					{
 						label: 'Despesas',
-						id: route.startsWith('/report/') ? 'current' : '',
-						command: () => this.navigateTo('report/costs')
+						id: route.startsWith('/report/costs') ? 'current' : '',
+						command: () => this.navigateTo('report/costs'),
 					},
 					{
 						label: 'Receitas',
-						id: route.startsWith('/report/') ? 'current' : '',
-						command: () => this.navigateTo('report/receipts')
-					}
-				]
-			}
+						id: route.startsWith('/report/receipts') ? 'current' : '',
+						command: () => this.navigateTo('report/receipts'),
+					},
+				],
+			},
 		];
 	}
 
