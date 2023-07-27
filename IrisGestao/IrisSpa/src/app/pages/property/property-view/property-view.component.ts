@@ -53,6 +53,9 @@ export class PropertyViewComponent implements OnInit {
 	displayConfirmationInactiveImovelModal = false;
 	displayConfirmationCloneUnit = false;
 	displayModal = false;
+
+	displayAddEvent = false;
+
 	modalContent: {
 		isError?: boolean;
 		header?: string;

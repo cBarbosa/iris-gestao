@@ -32,13 +32,6 @@
 					<i class="pi pi-download mr-3"></i>
 					Exportar
 				</button>
-
-				<p-menu
-					#menu
-					[model]="items"
-					[popup]="true"
-				>
-				</p-menu>
 			</div>
 		</header>
 
@@ -136,7 +129,7 @@
 						<td class="font-bold">{{ entry.numCentroCusto }}</td>
 						<td class="max-w-[120px]">{{ entry.nomeLocatario ?? "-" }}</td>
 						<td class="max-w-[120px]">{{ entry.nomeImovel }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeLocador ?? '-' }}</td>
+						<td class="max-w-[120px]">{{ entry.nomeLocador ?? "-" }}</td>
 						<td>{{ entry.somaAreaTotal | area }}</td>
 						<td>{{ entry.somaAreaUtil | area }}</td>
 						<td>{{ entry.somaAreaHabitese | area }}</td>
@@ -279,3 +272,5 @@
 		<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
 	</ng-template>
 </p-sidebar>
+
+<p-menu #menu [model]="items" [popup]="true"> </p-menu>
