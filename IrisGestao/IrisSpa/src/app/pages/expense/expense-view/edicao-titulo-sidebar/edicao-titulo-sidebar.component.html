@@ -63,32 +63,63 @@
 					</ng-template>
 				</ng-container>
 			</div>
-			<div class="field" 
-			*ngIf="">
-				<label for="valorAluguel" class="block">Valor pago</label>
+
+			<div class="field">
+				<label for="valorPago" class="block">Valor pago</label>
 				<input
-					id="valorAluguel"
+					id="valorPago"
 					type="text"
-					formControlName="valorAluguel"
-					aria-describedby="valorAluguel-help"
+					formControlName="valorPago"
+					aria-describedby="valorPago-help"
 					currencyMask
 					pInputText
 				/>
-				<ng-container *ngIf="checkHasError(f['valorAluguel'])">
+				<ng-container *ngIf="checkHasError(f['valorPago'])">
 					<small
-						id="valorAluguel-help"
-						*ngIf="f['valorAluguel'].hasError('required'); else error2"
+						id="valorPago-help"
+						*ngIf="f['valorPago'].hasError('required'); else error2"
 						class="p-error block"
 					>
-						Informe o Valor pago
+						Informe o valor pago
 					</small>
 					<ng-template #error2>
-						<small id="valorAluguel-help" class="p-error block">
-							Valor pago inválido
+						<small id="valorPago-help" class="p-error block">
+							Valor pago da fatura inválido
 						</small>
 					</ng-template>
 				</ng-container>
 			</div>
+
+			<div class="field">
+				<label for="dataPagamento" class="block">
+					Data de pagamento da fatura
+				</label>
+				<p-calendar
+					id="dataPagamento"
+					formControlName="dataPagamento"
+					dateFormat="dd/mm/yy"
+					(onInput)="onInputDate($event)"
+					(onBlur)="onBlurDate()"
+					placeholder="dd/mm/aaaa"
+					aria-describedby="dataPagamento-help"
+					styleClass="small-picker"
+				></p-calendar>
+				<ng-container *ngIf="checkHasError(f['dataPagamento'])">
+					<small
+						id="dataPagamento-help"
+						*ngIf="f['dataPagamento'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a data de vencimento
+					</small>
+					<ng-template #error2>
+						<small id="dataPagamento-help" class="p-error block">
+							Data de vencimento inválida
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
 			<div class="field">
 				<label for="dataVencimento" class="block">
 					Data de vencimento da fatura
@@ -114,6 +145,31 @@
 					<ng-template #error2>
 						<small id="dataVencimento-help" class="p-error block">
 							Data de vencimento inválida
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="observacoes" class="block">Observação da baixa</label>
+				<textarea
+					rows="3"
+					id="observacoes"
+					formControlName="observacoes"
+					aria-describedby="observacoes-help"
+					pInputTextarea
+				></textarea>
+				<ng-container *ngIf="checkHasError(f['observacoes'])">
+					<small
+						id="observacoes-help"
+						*ngIf="f['observacoes'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a observação da baixa
+					</small>
+					<ng-template #error2>
+						<small id="observacoes-help" class="p-error block">
+							Observação da baixa inválida
 						</small>
 					</ng-template>
 				</ng-container>

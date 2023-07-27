@@ -186,7 +186,7 @@
 										class="p-button-filled h-9 grow justify-center text-sm"
 										(click)="setCurrentFatura(fatura); showBaixaTitulo()"
 									>
-									Dar baixa                          
+										Dar baixa
 									</button>
 
 									<button
@@ -200,14 +200,11 @@
 											else detalhesBtn
 										"
 									>
-										Editar 
+										Editar
 									</button>
 								</ng-container>
 								<ng-container
-									*ngIf="
-										fatura.statusFatura === 'Pago';
-										else detalhesBtn
-									"
+									*ngIf="fatura.statusFatura === 'Pago'; else detalhesBtn"
 								>
 									<button
 										pButton
@@ -223,17 +220,12 @@
 										type="button"
 										class="p-button-outlined h-9 justify-center text-sm"
 										(click)="setCurrentFatura(fatura); showEdicaoTitulo()"
-										*ngIf="
-											fatura.statusFatura === 'Pago';
-											else detalhesBtn
-										"
+										*ngIf="fatura.statusFatura === 'Pago'; else detalhesBtn"
 									>
-										Editar 
+										Editar
 									</button>
 								</ng-container>
-								<ng-template #detalhesBtn>
-
-								</ng-template>
+								<ng-template #detalhesBtn> </ng-template>
 							</td>
 						</tr>
 					</ng-template>
