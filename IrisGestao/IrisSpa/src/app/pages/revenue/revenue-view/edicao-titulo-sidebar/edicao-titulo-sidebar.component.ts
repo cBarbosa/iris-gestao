@@ -116,6 +116,10 @@ export class EdicaoTituloSidebarComponent {
 		console.log('Fatura detalhes: >> ' + JSON.stringify(this.data));
 		console.log('guid: >> ' + this.guidExpense);
 
+		const faturaPaga: boolean = this.data?.statusFatura
+			? this.data.statusFatura === 'Pago'
+			: false;
+
 		if (this.registerOnSubmit && !this.guidExpense)
 			throw new Error(
 				"edicao-titulo-sidebar: O Guid de receita deve ser informado caso o parâmetro 'registerOnSubmit' seja verdadeiro."
@@ -129,7 +133,7 @@ export class EdicaoTituloSidebarComponent {
 				{ value: this.data?.numeroParcela ?? null, disabled: true },
 			],
 			valor: [this.data?.valorFatura ?? null, Validators.required],
-			valorPago: [null, Validators.required],
+			valorPago: ['', Validators.required],
 			dataVencimento: [this.data?.dataVencimento ?? null, Validators.required],
 			dataPagamento: [null, Validators.required],
 			observacoes: ['', Validators.required],
@@ -155,17 +159,17 @@ export class EdicaoTituloSidebarComponent {
 	onSidebarShow() {
 		console.log('patching values', this.data);
 		this.form.setValue({
-			valor: this.data?.valorFatura,
-			valorPago: this.data?.valorRealPago,
-			numeroNotaFiscal: this.data?.numeroFatura,
-			numeroParcela: this.data?.numeroParcela,
+			valor: this.data?.valorFatura ?? '',
+			valorPago: this.data?.valorRealPago ?? '',
+			numeroNotaFiscal: this.data?.numeroFatura ?? '',
+			numeroParcela: this.data?.numeroParcela ?? '',
 			dataVencimento: this.data?.dataVencimento
 				? new Date(this.data?.dataVencimento)
 				: '',
 			dataPagamento: this.data?.dataPagamento
 				? new Date(this.data?.dataPagamento)
 				: '',
-			observacoes: this.data?.descricaoBaixaFatura,
+			observacoes: this.data?.descricaoBaixaFatura ?? '',
 		});
 	}
 
