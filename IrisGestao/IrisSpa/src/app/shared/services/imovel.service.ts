@@ -47,11 +47,14 @@ export class ImovelService {
 		page: number = 1,
 		filter?: string,
 		categoryId?: number,
-		proprietaryId?: number
+		proprietaryId?: number,
+		propertyTypeId?: number
 	) {
 		const requestPath = `${
 			env.config.apiUrl
-		}Imovel?limit=${limit}&page=${page}${filter ? `&nome=${filter}` : ''}${
+		}Imovel?limit=${limit}&page=${page}${
+			propertyTypeId ? `&idTipoImovel=${propertyTypeId}` : ''
+		}${filter ? `&nome=${filter}` : ''}${
 			categoryId ? `&idCategoria=${categoryId}` : ''
 		}${proprietaryId ? `&idProprietario=${proprietaryId}` : ''}`;
 

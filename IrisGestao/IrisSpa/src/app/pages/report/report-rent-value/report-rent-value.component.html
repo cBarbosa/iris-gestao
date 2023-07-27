@@ -32,13 +32,6 @@
 					<i class="pi pi-download mr-3"></i>
 					Exportar
 				</button>
-
-				<p-menu
-					#menu
-					[model]="items"
-					[popup]="true"
-				>
-				</p-menu>
 			</div>
 		</header>
 
@@ -136,8 +129,8 @@
 						<th>Área Selecionada</th>
 						<th>Aluguel contratado</th>
 						<th>Aluguel Potencial</th>
-                        <th>Preço/m²</th>
-                        <th>Preço mês referência</th>
+						<th>Preço/m²</th>
+						<th>Preço mês referência</th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
@@ -145,7 +138,7 @@
 						<td class="font-bold">{{ entry.numCentroCusto }}</td>
 						<td class="max-w-[120px]">{{ entry.nomeLocatario ?? "-" }}</td>
 						<td class="max-w-[120px]">{{ entry.nomeImovel }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeLocador ?? '-' }}</td>
+						<td class="max-w-[120px]">{{ entry.nomeLocador ?? "-" }}</td>
 
 						<td>{{ entry.somaAreaUtil | area }}</td>
 						<td>{{ entry.somaValorAluguel | currency }}</td>
@@ -171,7 +164,12 @@
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Preço/m²</div>
-							<div>{{ (totalSum?.aluguelContratado ?? 0) / (totalSum?.area ?? 1) | currency }}</div>
+							<div>
+								{{
+									(totalSum?.aluguelContratado ?? 0) / (totalSum?.area ?? 1)
+										| currency
+								}}
+							</div>
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Preço mês referência</div>
@@ -271,7 +269,12 @@
 					</div>
 					<div class="bg-transparent text-white">
 						<div class="mb-1 text-xs font-normal">Preço/m²</div>
-						<div>{{ (totalSum?.aluguelContratado ?? 0) / (totalSum?.area ?? 1) | currency }}</div>
+						<div>
+							{{
+								(totalSum?.aluguelContratado ?? 0) / (totalSum?.area ?? 1)
+									| currency
+							}}
+						</div>
 					</div>
 					<div class="bg-transparent text-white">
 						<div class="mb-1 text-xs font-normal">Preço mês referência</div>
@@ -279,7 +282,6 @@
 					</div>
 				</div>
 			</ng-container>
-
 		</ng-container>
 	</div>
 </div>
@@ -290,3 +292,5 @@
 		<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
 	</ng-template>
 </p-sidebar> -->
+
+<p-menu #menu [model]="items" [popup]="true"> </p-menu>

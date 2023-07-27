@@ -37,6 +37,8 @@ export class PropertyListingComponent implements OnInit {
 	pageCount = 1;
 	pageIndex = 1;
 
+	propertyType: string;
+
 	filterText: string;
 	filterCategory: number;
 	filterProprietary: number;
@@ -74,6 +76,9 @@ export class PropertyListingComponent implements OnInit {
 		const routePageIndex =
 			this.activatedRoute.snapshot.paramMap.get('pageIndex') ?? 1;
 		this.pageIndex = +routePageIndex;
+
+		this.propertyType =
+			this.activatedRoute.snapshot.parent!.routeConfig!.path!.split('/')[0];
 
 		this.getPagingData(this.pageIndex);
 
@@ -163,7 +168,14 @@ export class PropertyListingComponent implements OnInit {
 	): void {
 		this.isLoadingList = true;
 		const list = this.imovelService
-			.getProperties(this.rows, page, filter, categoryId, proprietaryId)
+			.getProperties(
+				this.rows,
+				page,
+				filter,
+				categoryId,
+				proprietaryId,
+				this.propertyType === 'mercado' ? 2 : 1
+			)
 			?.pipe(first())
 			.subscribe((event: any) => {
 				if (event.success) {
@@ -218,7 +230,7 @@ export class PropertyListingComponent implements OnInit {
 		//event.page = Index of the new page
 		//event.pageCount = Total number of pages
 
-		this.router.navigate([`property/listing/${page + 1}`]);
+		this.router.navigate([`property/${this.propertyType}/listing/${page + 1}`]);
 		// this.pageIndex = page;
 		// this.getPagingData(page + 1);
 	};

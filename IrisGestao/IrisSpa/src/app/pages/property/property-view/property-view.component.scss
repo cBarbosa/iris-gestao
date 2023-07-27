@@ -95,9 +95,7 @@
 			}
 
 			.right-side {
-				height: auto;
-				display: flex;
-				align-items: center;
+				@apply h-auto flex grow lg:grow-0 items-center;
 
 				.property-features {
 					@apply text-sm flex;
@@ -113,7 +111,11 @@
 				}
 
 				.property-options {
-					@apply ml-7 mt-2;
+					@apply ml-7 mt-2 grow lg:grow-0 flex lg:flex-col gap-3 flex-wrap;
+
+					button {
+						@apply basis-[9.75rem] lg:basis-9 grow flex justify-center;
+					}
 				}
 			}
 		}
@@ -420,7 +422,8 @@
 		width: 100%;
 
 		.p-component {
-			&.p-dropdown {
+			&.p-dropdown,
+			&.p-multiselect {
 				width: 100%;
 			}
 		}

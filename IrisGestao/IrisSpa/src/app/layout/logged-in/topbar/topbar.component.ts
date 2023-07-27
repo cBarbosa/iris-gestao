@@ -45,8 +45,20 @@ export class TopbarComponent {
 			},
 			{
 				label: 'Imóveis',
-				id: route.startsWith('/property/') ? 'current' : '',
-				command: () => this.navigateTo('property/listing'),
+				// id: route.startsWith('/property/') ? 'current' : '',
+				// command: () => this.navigateTo('property/listing'),
+				items: [
+					{
+						label: 'Imóvel de mercado',
+						id: route.startsWith('property/mercado/') ? 'current' : '',
+						command: () => this.navigateTo('property/mercado/listing'),
+					},
+					{
+						label: 'Contrato de carteira',
+						id: route.startsWith('property/carteira/') ? 'current' : '',
+						command: () => this.navigateTo('property/carteira/listing'),
+					},
+				],
 			},
 			{
 				label: 'Clientes',
@@ -129,26 +141,22 @@ export class TopbarComponent {
 				items: [
 					{
 						label: 'Vacância',
-						id: route.startsWith('/dashboard/financial-vacancy')
-							? 'current'
-							: '',
+						id: route.startsWith('/dashboard/') ? 'current' : '',
 						command: () => this.navigateTo('dashboard/financial-vacancy'),
 					},
 					{
 						label: 'Recebimento',
-						id: route.startsWith('/dashboard/receiving-performance')
-							? 'current'
-							: '',
+						id: route.startsWith('/dashboard/') ? 'current' : '',
 						command: () => this.navigateTo('dashboard/receiving-performance'),
 					},
 					{
 						label: 'Preço M²',
-						id: route.startsWith('/dashboard/area-price') ? 'current' : '',
+						id: route.startsWith('/dashboard/') ? 'current' : '',
 						command: () => this.navigateTo('dashboard/area-price'),
 					},
 					{
 						label: 'M² Gerenciados',
-						id: route.startsWith('/dashboard/managed-area') ? 'current' : '',
+						id: route.startsWith('/dashboard/') ? 'current' : '',
 						command: () => this.navigateTo('dashboard/managed-area'),
 					},
 				],
@@ -158,7 +166,7 @@ export class TopbarComponent {
 				items: [
 					{
 						label: 'Área locada             ',
-						id: route.startsWith('/report/leased-area') ? 'current' : '',
+						id: route.startsWith('/report/') ? 'current' : '',
 						command: () => this.navigateTo('report/leased-area'),
 					},
 					{
