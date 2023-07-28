@@ -10,6 +10,8 @@ public interface IContratoAluguelRepository : IRepository<ContratoAluguel>, IDis
     Task<object?> GetByContratoAluguelGuid(Guid guid);
     Task<CommandPagingResult?> GetAllPaging(int? idTipoImovel, int? idBaseReajuste, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? numeroContrato, int limit, int page);
     Task<IEnumerable<SpFinancialVacancyResult>?> GetDashbaordFinancialVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel, int? idTipoArea);
+    Task<IEnumerable<SpReceivingPerformanceResult>> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel);
+    Task<IEnumerable<SpAreaPriceResult>> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel);
     Task<IEnumerable<SpPhysicalVacancyResult>?> GetDashbaordPhysicalVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel);
     Task<object> GetDashboardTotalManagedArea(int? idLocador, int? idTipoImovel);
     Task<IEnumerable<Object>?> GetImoveisUnidadesContratoAluguelAtivos();
@@ -17,4 +19,5 @@ public interface IContratoAluguelRepository : IRepository<ContratoAluguel>, IDis
     Task<IEnumerable<SpRentValueResult>?> GetReportRentValue(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario, DateTime? dateRef);
     Task<IEnumerable<dynamic>> GetAllActiveProperties();
     Task<IEnumerable<dynamic>> GetAllActiveOwners();
+    Task<object?> GetUnidadesByContratoAluguel(Guid guid);
 }

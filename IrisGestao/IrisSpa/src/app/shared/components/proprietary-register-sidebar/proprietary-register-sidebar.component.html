@@ -1,0 +1,242 @@
+<form [formGroup]="registerProprietaryForm">
+	<p-sidebar [(visible)]="isOpen" position="right" (onHide)="onHide()">
+		<ng-template pTemplate="header">
+			<h4>Adicionar novo proprietário</h4>
+		</ng-template>
+		<ng-template pTemplate="content">
+			<div class="register-proprietary-form">
+				<div class="field">
+					<label for="client-type" class="block">Tipo de cliente</label>
+					<p-dropdown
+						id="client-type"
+						[options]="proprietaryTypes"
+						formControlName="tipoCliente"
+						aria-describedby="client-type-help"
+						(onChange)="proprietaryTypeChange()"
+					></p-dropdown>
+					<ng-container *ngIf="checkHasError(f['tipoCliente'])">
+						<small
+							id="client-type-help"
+							*ngIf="f['tipoCliente'].hasError('required'); else error2"
+							class="p-error block"
+						>
+							Informe o tipo de cliente
+						</small>
+						<ng-template #error2>
+							<small id="client-type-help" class="p-error block">
+								Tipo de cliente inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="name" class="block">Nome</label>
+					<input
+						id="name"
+						type="text"
+						formControlName="name"
+						aria-describedby="name-help"
+						maxlength="100"
+						pInputText
+					/>
+					<ng-container
+						*ngIf="checkHasError(registerProprietaryForm.controls['name'])"
+					>
+						<small
+							id="name-help"
+							*ngIf="
+								registerProprietaryForm.controls['name'].hasError('required');
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe o nome do proprietário
+						</small>
+						<ng-template #error2>
+							<small id="name-help" class="p-error block">
+								Nome inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="cpf-cnpj" class="block">{{ currCpfCnpj }}</label>
+					<input
+						id="cpf-cnpj"
+						type="text"
+						formControlName="cpfCnpj"
+						aria-describedby="cpf-cnpj-help"
+						[mask]="CpfCnpjMask"
+						pInputText
+					/>
+					<ng-container
+						*ngIf="checkHasError(registerProprietaryForm.controls['cpfCnpj'])"
+					>
+						<small
+							id="cpf-cnpj-help"
+							*ngIf="
+								registerProprietaryForm.controls['cpfCnpj'].hasError(
+									'required'
+								);
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe o CPF/CNPJ
+						</small>
+						<ng-template #error2>
+							<small id="cpf-cnpj-help" class="p-error block">
+								CPF/CNPJ inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field" *ngIf="!isCnpj">
+					<label for="birthday" class="block">Nascimento</label>
+					<p-calendar
+						id="birthday"
+						formControlName="birthday"
+						styleClass="no-picker"
+						dateFormat="dd/mm/yy"
+						(onInput)="onInputDate($event)"
+						(onBlur)="onBlurDate()"
+						placeholder="dd/mm/aaaa"
+						aria-describedby="birthday-help"
+					></p-calendar>
+					<ng-container
+						*ngIf="checkHasError(registerProprietaryForm.controls['birthday'])"
+					>
+						<small
+							id="birthday-help"
+							*ngIf="
+								registerProprietaryForm.controls['birthday'].hasError(
+									'required'
+								);
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe a data de nascimento
+						</small>
+						<ng-template #error2>
+							<small id="birthday-help" class="p-error block">
+								Data de nascimento inválida
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="email" class="block">Email</label>
+					<input
+						id="email"
+						type="text"
+						formControlName="email"
+						aria-describedby="email-help"
+						maxlength="150"
+						pInputText
+					/>
+					<ng-container
+						*ngIf="checkHasError(registerProprietaryForm.controls['email'])"
+					>
+						<small
+							id="email-help"
+							*ngIf="
+								registerProprietaryForm.controls['email'].hasError('required');
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe o Email
+						</small>
+						<ng-template #error2>
+							<small id="email-help" class="p-error block">
+								Email inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="telephone" class="block">Telefone</label>
+					<input
+						id="telephone"
+						type="text"
+						formControlName="telephone"
+						aria-describedby="telephone-help"
+						mask="(00) 0000-0000 || (00) 0 0000-0000"
+						pInputText
+					/>
+					<ng-container
+						*ngIf="checkHasError(registerProprietaryForm.controls['telephone'])"
+					>
+						<small
+							id="telephone-help"
+							*ngIf="
+								registerProprietaryForm.controls['telephone'].hasError(
+									'required'
+								);
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe o telefone
+						</small>
+						<ng-template #error2>
+							<small id="telephone-help" class="p-error block">
+								Telefone inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="footer">
+			<div class="flex justify-between gap-4">
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Cancelar"
+					class="p-button-outlined h-9 w-full"
+					(click)="onHide()"
+				></button>
+
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Continuar"
+					class="h-9 w-full"
+					[disabled]="isSubmittingProprietary"
+					(click)="onProprietarySubmit()"
+				></button>
+			</div>
+		</ng-template>
+	</p-sidebar>
+</form>
+
+<app-responsive-dialog [visible]="displayModal" styleClass="form-modal">
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+
+		<button pButton label="Continuar" (click)="closeModal(onHide)"></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</app-responsive-dialog>

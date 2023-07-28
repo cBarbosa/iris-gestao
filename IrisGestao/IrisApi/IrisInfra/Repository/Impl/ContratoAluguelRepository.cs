@@ -444,7 +444,43 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
             .SqlQueryAsync<SpFinancialVacancyResult>("Exec Sp_FinancialVacancy @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade, @TipoArea",
                 parameters.ToArray());
     }
-    
+
+    public async Task<IEnumerable<SpReceivingPerformanceResult>> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@DataInicioContrato", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimContrato", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@ClienteID", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
+            new ("@TipoUnidade", SqlDbType.Int)
+                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpReceivingPerformanceResult>("Exec Sp_ReceivingPerformance @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade",
+                parameters.ToArray());
+    }
+
+    public async Task<IEnumerable<SpAreaPriceResult>> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@DataInicioContrato", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimContrato", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@ClienteID", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
+            new ("@TipoUnidade", SqlDbType.Int)
+                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpAreaPriceResult>("Exec Sp_AreaPrice @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade",
+                parameters.ToArray());
+    }
+
     public async Task<IEnumerable<SpPhysicalVacancyResult>?> GetDashbaordPhysicalVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
     {
         var parameters = new List<SqlParameter> {
@@ -575,4 +611,28 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
 
         return retorno;
     }
+
+    public async Task<object?> GetUnidadesByContratoAluguel(Guid guid)
+    {
+        return await DbSet
+                        .Include(x => x.ContratoAluguelImovel)
+                            .ThenInclude(x => x.ContratoAluguelUnidade)
+                        .Where(x => x.GuidReferencia.Equals(guid) && x.Status)
+                        .Select(x => new
+                        {                            
+                            ImovelAlugado = x.ContratoAluguelImovel.Select(x => new
+                            {
+                                GuidReferencia = x.IdImovelNavigation.GuidReferencia,
+                                Nome = x.IdImovelNavigation.Nome,
+                                Unidades = x.ContratoAluguelUnidade.Select(y => new
+                                {
+                                    Ativo = y.IdUnidadeNavigation.Status,
+                                    IdUnidade = y.IdUnidadeNavigation.Id,
+                                    GuidReferenciaUnidade = y.IdUnidadeNavigation.GuidReferencia,
+                                    UnidadeLocada = y.IdUnidadeNavigation.UnidadeLocada
+                                }).Where(y => y.Ativo)
+                            }),
+                        }).ToListAsync();
+    }
+
 }

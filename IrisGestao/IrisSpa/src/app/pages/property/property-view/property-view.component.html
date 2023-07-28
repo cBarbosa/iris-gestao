@@ -84,7 +84,16 @@
 						<button
 							pButton
 							type="button"
-							class="p-element h-11 p-button p-component"
+							class="p-element h-11 p-button-outlined p-component"
+							(click)="displayAddEvent = true"
+						>
+							Adicionar Evento
+						</button>
+
+						<button
+							pButton
+							type="button"
+							class="p-element h-11 p-button-outlined p-component"
 							(click)="navigateTo('property/edit/' + uid)"
 						>
 							Editar imóvel
@@ -95,7 +104,6 @@
 							type="button"
 							(click)="confirmImovelInativar()"
 							class="p-element p-button-outlined h-11 p-button p-component"
-							style="margin-left: 10px"
 						>
 							Inativar
 						</button>
@@ -255,7 +263,7 @@
 				<app-attachment-list [guid]="uid"></app-attachment-list>
 			</section>
 
-			<ng-container *ngIf="imageList.length > 0">
+			<ng-container *ngIf="imageList && imageList.length > 0">
 				<section class="photos">
 					<h3>Fotos</h3>
 					<app-photo-gallery [imageList]="imageList"></app-photo-gallery>
@@ -271,7 +279,11 @@
 	<ng-template pTemplate="header">
 		<h4>
 			{{ unit.tipo }}
-			<p-tag value="Unidade disponivel" [rounded]="true" severity="success"></p-tag>
+			<p-tag
+				value="Unidade disponivel"
+				[rounded]="true"
+				severity="success"
+			></p-tag>
 		</h4>
 	</ng-template>
 	<ng-template pTemplate="content">
@@ -649,3 +661,8 @@
 		></button>
 	</div>
 </ng-template>
+
+<app-add-event-sidebar
+	[guidProperty]="uid"
+	[(isVisible)]="displayAddEvent"
+></app-add-event-sidebar>

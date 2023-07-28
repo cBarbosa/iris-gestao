@@ -39,7 +39,7 @@ public class DashboardController : ControllerBase
         [FromQuery] DateTime? DateRefEnd,
         [FromQuery] int? IdLocador,
         [FromQuery] int? IdTipoImovel) =>
-        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel, null));
+        Ok(await contratoAluguelService.GetDashbaordReceivingPerformance(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel));
     
     [HttpGet("area-price")]
     public async Task<IActionResult> GetAreaPrice(
@@ -47,7 +47,7 @@ public class DashboardController : ControllerBase
         [FromQuery] DateTime? DateRefEnd,
         [FromQuery] int? IdLocador,
         [FromQuery] int? IdTipoImovel) =>
-        Ok(await contratoAluguelService.GetDashbaordFinancialVacancy(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel, null));
+        Ok(await contratoAluguelService.GetDashbaordAreaPrice(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdTipoImovel));
     
     [HttpGet("total-managed-area")]
     public async Task<IActionResult> GetTotalManagedArea(

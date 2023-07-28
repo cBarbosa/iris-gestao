@@ -5,6 +5,9 @@ using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System;
+using static IrisGestao.ApplicationService.Service.Impl.ImovelService;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -13,6 +16,7 @@ public class ContratoAluguelService: IContratoAluguelService
     private readonly IContratoAluguelRepository contratoAluguelRepository;
     private readonly IImovelRepository imovelRepository;
     private readonly IUnidadeRepository unidadeRepository;
+    private readonly IUnidadeService unidadeService;
     private readonly IClienteRepository clienteRepository;
     private readonly IContratoAluguelImovelRepository contratoAluguelImovelRepository;
     private readonly IContratoAluguelUnidadeRepository contratoAluguelUnidadeRepository;
@@ -24,6 +28,7 @@ public class ContratoAluguelService: IContratoAluguelService
     public ContratoAluguelService(IContratoAluguelRepository ContratoAluguelRepository
                         , IImovelRepository ImovelRepository
                         , IUnidadeRepository UnidadeRepository
+                        , IUnidadeService UnidadeService
                         , IClienteRepository ClienteRepository
                         , IContratoAluguelImovelRepository ContratoAluguelImovelRepository
                         , IContratoAluguelUnidadeRepository ContratoAluguelUnidadeRepository
@@ -35,6 +40,7 @@ public class ContratoAluguelService: IContratoAluguelService
         this.contratoAluguelRepository = ContratoAluguelRepository;
         this.imovelRepository = ImovelRepository;
         this.unidadeRepository = UnidadeRepository;
+        this.unidadeService = UnidadeService;
         this.clienteRepository = ClienteRepository;
         this.contratoAluguelImovelRepository = ContratoAluguelImovelRepository;
         this.contratoAluguelUnidadeRepository = ContratoAluguelUnidadeRepository;
@@ -70,6 +76,20 @@ public class ContratoAluguelService: IContratoAluguelService
         }
 
         var ContratoAluguel = await contratoAluguelRepository.GetByContratoAluguelGuid(guid);
+
+        return ContratoAluguel == null
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, ContratoAluguel);
+    }
+
+    public async Task<CommandResult> GetUnidadesByContrato(Guid guid)
+    {
+        if (guid.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var ContratoAluguel = await contratoAluguelRepository.GetUnidadesByContratoAluguel(guid);
 
         return ContratoAluguel == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
@@ -175,6 +195,7 @@ public class ContratoAluguelService: IContratoAluguelService
             contratoAluguelRepository.Update(ContratoAluguel);
             await tituloReceberService.InativarTitulo(ContratoAluguel);
             await tituloPagarService.InativarTitulo(ContratoAluguel);
+            await unidadeService.LiberarUnidadesLocadas(ContratoAluguel);
             return new CommandResult(true, SuccessResponseEnums.Success_1001, ContratoAluguel);
         }
         catch (Exception e){
@@ -182,6 +203,7 @@ public class ContratoAluguelService: IContratoAluguelService
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
     }
+
 
     public async Task<CommandResult> ReajusteContrato(Guid uuid, double novoPercentualReajuste)
     {
@@ -223,7 +245,8 @@ public class ContratoAluguelService: IContratoAluguelService
         int? IdTipoArea)
     {
         
-        var retorno = await contratoAluguelRepository.GetDashbaordFinancialVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel, IdTipoArea);
+        var retorno = await contratoAluguelRepository
+            .GetDashbaordFinancialVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel, IdTipoArea);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -236,7 +259,28 @@ public class ContratoAluguelService: IContratoAluguelService
         int? IdLocador, int? IdTipoImovel)
     {
         
-        var retorno = await contratoAluguelRepository.GetDashbaordPhysicalVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel);
+        var retorno = await contratoAluguelRepository
+            .GetDashbaordPhysicalVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel);
+
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+
+    public async Task<CommandResult> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    {
+        var retorno = await contratoAluguelRepository
+            .GetDashbaordReceivingPerformance(dateRefInit, dateRefEnd, idLocador, idTipoImovel);
+
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+
+    public async Task<CommandResult> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    {
+        var retorno = await contratoAluguelRepository
+            .GetDashbaordAreaPrice(dateRefInit, dateRefEnd, idLocador, idTipoImovel);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -490,4 +534,5 @@ public class ContratoAluguelService: IContratoAluguelService
     {
         return (percentual / 100.0) * valor;
     }
+
 }

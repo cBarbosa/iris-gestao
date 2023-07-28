@@ -1,0 +1,30 @@
+:host {
+	display: block;
+	position: relative;
+	min-height: 100vh;
+	height: 1px;
+}
+
+.wrapper {
+	position: relative;
+	display: block;
+	background-color: #f8f9fa;
+	min-height: 100%;
+	height: auto;
+
+	.container {
+		//@apply flex justify-center;
+		.card-grid {
+			@apply grid gap-6 justify-start;
+			grid-template-columns: repeat(auto-fit, minmax(348px, 1fr));
+
+			.card {
+				@apply p-10 min-w-[348px] max-h-[256px] bg-white;
+
+				h4 {
+					@apply mb-8 text-2xl font-bold;
+				}
+			}
+		}
+	}
+}
