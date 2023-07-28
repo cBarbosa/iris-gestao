@@ -130,7 +130,7 @@ export class SupplierContractEditComponent {
 			.pipe(first())
 			.subscribe((event) => {
 				if (event) {
-					this.data = event.data;
+					this.data = event.data[0];
 
 					this.editForm.patchValue({
 						contractNumber: this.data.numeroContrato,
