@@ -126,15 +126,6 @@ const routes: Routes = [
 				},
 			},
 			{
-				path: 'report',
-				loadChildren: () =>
-					import('./pages/report/report.module').then((m) => m.ReportModule),
-				canActivate: [AuthGuard],
-				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-				},
-			},
-			{
 				path: '',
 				redirectTo: 'home',
 				pathMatch: 'full',
