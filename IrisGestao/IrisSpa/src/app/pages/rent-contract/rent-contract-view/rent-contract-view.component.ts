@@ -65,7 +65,6 @@ export class RentContractViewComponent {
 	}
 
 	ngOnInit() {
-		console.log(this.guid);
 		this.getData();
 		this.getAtachs();
 	}
@@ -77,7 +76,7 @@ export class RentContractViewComponent {
 			.getContractByGuid(this.guid)
 			?.pipe(first())
 			.subscribe((response: ApiResponse) => {
-				this.contract = response.data[0];
+				this.contract = response.data;
 
 				this.taxRetention = this.contract.percentualRetencaoImpostos;
 
