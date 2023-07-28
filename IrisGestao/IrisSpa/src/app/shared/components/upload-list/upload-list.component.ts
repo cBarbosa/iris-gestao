@@ -16,8 +16,12 @@ export class UploadListComponent {
 	@Input()
 	editable = true;
 
-	@Input()
-	guid: string;
+	private guid: string;
+	@Input('guid')
+	set guidSetter(val: string) {
+		this.guid = val;
+		this.listAttachments();
+	}
 
 	@ViewChild('fileInput') fileInput: ElementRef;
 
@@ -41,7 +45,7 @@ export class UploadListComponent {
 	constructor(private anexoService: AnexoService) {}
 
 	ngOnInit() {
-		this.listAttachments();
+		//this.listAttachments();
 	}
 
 	listAttachments() {

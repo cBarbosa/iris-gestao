@@ -203,16 +203,29 @@
 										Editar
 									</button>
 								</ng-container>
-								<ng-template #detalhesBtn>
+								<ng-container
+									*ngIf="fatura.statusFatura === 'Pago'; else detalhesBtn"
+								>
 									<button
 										pButton
 										type="button"
-										class="p-button-outlined h-9 w-full justify-center text-sm"
+										class="p-button-filled h-9 grow justify-center text-sm"
 										(click)="setCurrentFatura(fatura); showDetalheBaixa()"
 									>
-										Ver detalhes
+										Detalhes
 									</button>
-								</ng-template>
+
+									<button
+										pButton
+										type="button"
+										class="p-button-outlined h-9 justify-center text-sm"
+										(click)="setCurrentFatura(fatura); showEdicaoTitulo()"
+										*ngIf="fatura.statusFatura === 'Pago'; else detalhesBtn"
+									>
+										Editar
+									</button>
+								</ng-container>
+								<ng-template #detalhesBtn> </ng-template>
 							</td>
 						</tr>
 					</ng-template>
@@ -303,7 +316,7 @@
 	<app-detail-sidebar
 		[data]="[
 			{
-				label: 'Número da NF',
+				label: 'Título',
 				data: faturaSelected?.numeroFatura,
 				span: true
 			},
@@ -363,7 +376,14 @@
 			}
 		]"
 	></app-detail-sidebar>
+	<h3 class="mt-3 font-bold">Anexo nota fiscal</h3>
 
+	<div class="document-list">
+		<app-upload-list
+			[guid]="faturaSelected?.guidReferencia"
+			[editable]="false"
+		></app-upload-list>
+	</div>
 	<button
 		pButton
 		class="p-button-outlined w-full h-10 justify-center"
@@ -400,6 +420,7 @@
 	[registerOnSubmit]="!!faturaSelected"
 	[guidExpense]="faturaSelected?.guidReferencia"
 	[(isVisible)]="edicaoTituloVisible"
+	[editAllFields]="editAllFields"
 ></app-edicao-titulo-sidebar>
 
 <!-- <app-edicao-titulo-sidebar

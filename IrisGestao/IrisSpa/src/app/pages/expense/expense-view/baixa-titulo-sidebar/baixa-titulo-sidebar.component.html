@@ -137,7 +137,27 @@
 			</ng-template>
 		</ng-container>
 	</div>
-
+	<div class="field">
+		<label for="anexoNf" class="block">Anexo da NF</label>
+		<app-file-upload
+			name="uploadDoc"
+			[fileLimit]="1"
+			(selectEvent)="onFileSelect($event)"
+			accept=".xls, .doc, .pdf, .xlsx, .docx"
+		></app-file-upload>
+		<ng-container *ngIf="checkHasError(f['anexoNf'])">
+			<small
+				id="anexoNf-help"
+				*ngIf="f['anexoNf'].hasError('required'); else error2"
+				class="p-error block"
+			>
+				Informe o anexo
+			</small>
+			<ng-template #error2>
+				<small id="anexoNf-help" class="p-error block"> Anexo inválido </small>
+			</ng-template>
+		</ng-container>
+	</div>
 	<div class="flex justify-between gap-4 pb-5">
 		<button
 			pButton
@@ -166,7 +186,7 @@
 			{{ modalContent.message }}
 		</p>
 
-		<button pButton label="Continuar" (click)="closeModal()"></button>
+		<button pButton label="Continuar" (click)="closeModal(true, true)"></button>
 	</div>
 	<ng-template #error>
 		<div class="modal-error">

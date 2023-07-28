@@ -53,6 +53,9 @@ export class EdicaoTituloSidebarComponent {
 	registerOnSubmit: boolean = false;
 
 	@Input()
+	editAllFields: boolean = false;
+
+	@Input()
 	guidExpense: string | null;
 
 	@Input()
@@ -68,6 +71,7 @@ export class EdicaoTituloSidebarComponent {
 		dataCriacao: string;
 		dataUltimaModificacao: string;
 		dataVencimento: string;
+		dataPagamento: string;
 		descricaoBaixaFatura: string;
 		guidReferencia: string;
 		numeroFatura: string;
@@ -75,7 +79,10 @@ export class EdicaoTituloSidebarComponent {
 		status: boolean;
 		statusFatura: string;
 		valorFatura: number;
+		valorRealPago: number;
 	} | null;
+
+	faturaPaga: boolean = false;
 
 	form: FormGroup;
 
@@ -113,21 +120,43 @@ export class EdicaoTituloSidebarComponent {
 	ngOnInit() {
 		console.log('Fatura detalhes: >> ' + JSON.stringify(this.data));
 		console.log('guid: >> ' + this.guidExpense);
+		console.log('Edit all fields: >> ' + this.editAllFields);
+		//console.log('Status fatura >> ' + this.data?.statusFatura );
 
 		if (this.registerOnSubmit && !this.guidExpense)
 			throw new Error(
 				"edicao-titulo-sidebar: O Guid de receita deve ser informado caso o parâmetro 'registerOnSubmit' seja verdadeiro."
 			);
 
+		this.faturaPaga = this.data?.statusFatura
+			? this.data.statusFatura === 'Pago'
+			: false;
+
 		this.form = this.fb.group({
 			numeroNotaFiscal: [
 				{ value: this.data?.numeroFatura ?? null, disabled: true },
 			],
 			numeroParcela: [
-				{ value: this.data?.numeroParcela ?? null, disabled: true},
+				{ value: this.data?.numeroParcela ?? null, disabled: true },
 			],
 			valor: [this.data?.valorFatura ?? null, Validators.required],
+			valorPago: [
+				{ value: this.data?.valorRealPago ?? '', disabled: !this.faturaPaga },
+				Validators.required,
+			],
 			dataVencimento: [this.data?.dataVencimento ?? null, Validators.required],
+			dataPagamento: [
+				{ value: this.data?.dataPagamento ?? null, disabled: !this.faturaPaga },
+				Validators.required,
+			],
+			statusFatura: [this.data?.statusFatura ?? null],
+			observacoes: [
+				{
+					value: this.data?.descricaoBaixaFatura ?? '',
+					disabled: !this.faturaPaga,
+				},
+				Validators.required,
+			],
 		});
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
@@ -149,13 +178,34 @@ export class EdicaoTituloSidebarComponent {
 
 	onSidebarShow() {
 		console.log('patching values', this.data);
+
+		this.faturaPaga = this.data?.statusFatura
+			? this.data.statusFatura === 'Pago'
+			: false;
+
+		if (this.faturaPaga) {
+			this.form.controls['valorPago'].enable();
+			this.form.controls['dataPagamento'].enable();
+			this.form.controls['observacoes'].enable();
+		} else {
+			this.form.controls['valorPago'].disable();
+			this.form.controls['dataPagamento'].disable();
+			this.form.controls['observacoes'].disable();
+		}
+
 		this.form.setValue({
-			valor: this.data?.valorFatura,
-			numeroNotaFiscal: this.data?.numeroFatura,
-			numeroParcela: this.data?.numeroParcela,
+			valor: this.data?.valorFatura ?? '',
+			valorPago: this.data?.valorRealPago ?? '',
+			numeroNotaFiscal: this.data?.numeroFatura ?? '',
+			numeroParcela: this.data?.numeroParcela ?? '',
+			statusFatura: this.data?.statusFatura ?? '',
 			dataVencimento: this.data?.dataVencimento
 				? new Date(this.data?.dataVencimento)
 				: '',
+			dataPagamento: this.data?.dataPagamento
+				? new Date(this.data?.dataPagamento)
+				: '',
+			observacoes: this.data?.descricaoBaixaFatura ?? '',
 		});
 	}
 
@@ -168,16 +218,16 @@ export class EdicaoTituloSidebarComponent {
 		const editFormData = this.form.getRawValue();
 
 		const edicaoObj = {
-			valor: editFormData.valor,
-			valorRealPago: null,
-			dataPagamento: null,
+			valor: +editFormData.valor,
+			valorRealPago: +editFormData.valorPago,
+			dataPagamento: editFormData.dataPagamento,
 			dataVencimento: editFormData.dataVencimento,
 			numeroNotaFiscal: editFormData.numeroNotaFiscal,
 			dataEmissaoNotaFiscal: editFormData.dataEmissaoNotaFiscal,
 			dataEnvio: editFormData.dataEnvio,
 			porcentagemImpostoRetido: null,
 			valorLiquidoTaxaAdministracao: null,
-			descricaoBaixaFatura: null,
+			descricaoBaixaFatura: editFormData.observacoes,
 		};
 
 		console.log('on register', edicaoObj);

@@ -1,5 +1,6 @@
 ﻿using IrisGestao.Domain.Command.Request;
 using IrisGestao.Domain.Command.Result;
+using IrisGestao.Domain.Entity;
 
 namespace IrisGestao.ApplicationService.Services.Interface;
 
@@ -14,4 +15,6 @@ public interface IUnidadeService
     Task<CommandResult> GetByUid(Guid guid);
     Task<CommandResult> Clone(Guid guid);
     Task<CommandResult> AlterarStatus(Guid guid, bool status);
+    Task<CommandResult> LiberarUnidade(Guid guid);
+    Task<CommandResult> LiberarUnidadesLocadas(ContratoAluguel contrato);
 }

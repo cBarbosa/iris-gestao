@@ -1,0 +1,183 @@
+<div class="header-background"></div>
+<div class="content-wrapper">
+	<div class="content">
+		<header class="list-header">
+			<div class="flex justify-between items-center" [class.mb-2]="isMobile">
+				<h3 class="text-2xl font-bold">
+					Vencimento/Reajuste de Contratos
+					<span class="ml-2 text-sm">{{ totalRecords }}</span>
+				</h3>
+				<button
+					pButton
+					pRipple
+					type="button"
+					icon="pi pi-sliders-h"
+					class="p-button-rounded p-button-text"
+					*ngIf="isMobile"
+					(click)="openFilters()"
+				></button>
+			</div>
+
+			<div class="options">
+				<ng-container *ngIf="!isMobile">
+					<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+				</ng-container>
+
+				<button
+					pButton
+					type="button"
+					class="p-button-outlined ml-3 h-9 addButton"
+					(click)="menu.toggle($event)"
+				>
+					<i class="pi pi-download mr-3"></i>
+					Exportar
+				</button>
+
+				<p-menu
+					#menu
+					[model]="items"
+					[popup]="true"
+				>
+				</p-menu>
+			</div>
+		</header>
+
+		<ng-template #filtersTemplate>
+
+			<!-- <p-calendar
+				[styleClass]="'mr-2 w-full md:w-44'"
+				placeholder="Referência"
+				aria-describedby="periodo-help"
+				view="month"
+				dateFormat="mm/yy"
+				[(ngModel)]="filterReferencia"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-calendar> -->
+
+			<p-dropdown
+				styleClass="w-full md:w-[10rem]"
+				[options]="opcoesImovel"
+				[(ngModel)]="filterImovel"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown>
+
+			<p-dropdown
+				styleClass="w-full md:w-[9rem]"
+				[options]="opcoesTipoImovel"
+				[(ngModel)]="filterTipoImovel"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown>
+
+			<p-dropdown
+				styleClass="w-full md:w-[8rem]"
+				[options]="opcoesLocador"
+				[(ngModel)]="filterLocador"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown>
+
+			<p-dropdown
+				styleClass="w-full md:w-[8rem]"
+				[options]="opcoesLocatario"
+				[(ngModel)]="filterLocatario"
+				(ngModelChange)="filterResultDebounce($event)"
+				[hidden]="true"
+			></p-dropdown>
+
+		</ng-template>
+
+		<ng-container>
+			<ng-container *ngIf="isLoading">
+				<app-spinner styleClass="mt-11"></app-spinner>
+			</ng-container>
+			<ng-container *ngIf="!isLoading">
+				<div class="no-results-warn">
+					<span>Nenhum resultado</span>
+				</div>
+			</ng-container>
+
+			<p-table
+				*ngIf="!isMobile"
+				[value]="resultEntries"
+				styleClass="p-datatable-striped"
+				[tableStyle]="{ 'min-width': '50rem' }"
+				[paginator]="false"
+				[rows]="rows"
+				[(first)]="first"
+				responsiveLayout="scroll"
+				[totalRecords]="totalRecords"
+				[lazy]="true"
+				(onLazyLoad)="loadResultPage($event)"
+				#reportToPdf
+			>
+				<ng-template pTemplate="header">
+					<tr *ngIf="!isLoading">
+						<th>Imóvel</th>
+						<th>Unidade Locada</th>
+						<th>Início do Contrato</th>
+						<th>Próxima Atualização</th>
+						<th>Vencimento do Contrato</th>
+						<th>Base de Reajuste</th>
+						<th>Obs</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-entry>
+					<tr>
+						<td class="font-bold">{{ entry.numCentroCusto }}</td>
+						<td class="max-w-[120px]">{{ entry.nomeLocatario ?? "-" }}</td>
+						<td class="max-w-[120px]">{{ entry.nomeImovel }}</td>
+						<td class="max-w-[120px]">{{ entry.nomeLocador ?? '-' }}</td>
+
+						<td>{{ entry.somaAreaUtil }}</td>
+						<td>{{ entry.somaValorAluguel  }}</td>
+						<td>{{ entry.somaValorPotencial }}</td>
+					</tr>
+				</ng-template> 
+
+			</p-table>
+
+			<!-- <ng-container *ngIf="isMobile">
+				<div class="cardList">
+					<ng-container *ngFor="let entry of resultEntries">
+						<app-card-item
+							[card]="{
+								infos: [
+									{
+										label: 'Imóvel',
+										data: entry.numCentroCusto
+									},
+									{
+										label: 'Unidade Locada',
+										data: entry.nomeLocador ?? '-'
+									},
+									{
+										label: 'Início do Contrato',
+										data: entry.nomeImovel
+									},
+									{
+										label: 'Próxima Atualização',
+										data: entry.nomeLocatario
+									},
+									{
+										label: 'Vencimento do Contrato',
+										data: entry.somaAreaUtil,
+									},
+									{
+										label: 'Base de Reajuste',
+										data: entry.somaValorAluguel,
+									},
+									{
+										label: 'Obs',
+										data: entry.somaValorPotencial,
+									}
+								]
+							}"
+						>
+						</app-card-item>
+					</ng-container>
+
+				</div>
+			</ng-container> -->
+
+		</ng-container>
+	</div>
+</div>

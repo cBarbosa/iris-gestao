@@ -5,6 +5,9 @@ using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System;
+using static IrisGestao.ApplicationService.Service.Impl.ContratoAluguelService;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -13,14 +16,17 @@ public class UnidadeService: IUnidadeService
     private readonly IUnidadeRepository unidadeRepository;
     private readonly IImovelRepository imovelRepository;
     private readonly ILogger<UnidadeService> logger;
+    private readonly IContratoAluguelRepository contratoAluguelRepository;
     
     public UnidadeService(
         IUnidadeRepository unidadeRepository
         , IImovelRepository imovelRepository
+        , IContratoAluguelRepository ContratoAluguelRepository
         , ILogger<UnidadeService> logger)
     {
         this.unidadeRepository = unidadeRepository;
         this.imovelRepository = imovelRepository;
+        this.contratoAluguelRepository = ContratoAluguelRepository;
         this.logger = logger;
     }
 
@@ -130,6 +136,55 @@ public class UnidadeService: IUnidadeService
         }
     }
 
+    public async Task<CommandResult> LiberarUnidadesLocadas(ContratoAluguel contrato)
+    {
+        var UnidadesContratoAluguel = await contratoAluguelRepository.GetUnidadesByContratoAluguel(contrato.GuidReferencia.Value);
+        string jsonResult = JsonConvert.SerializeObject(UnidadesContratoAluguel);
+        List<ContratoImoveisUnidadesLocada> lstLocadas = new List<ContratoImoveisUnidadesLocada>();
+        lstLocadas = JsonConvert.DeserializeObject<List<ContratoImoveisUnidadesLocada>>(jsonResult);
+
+        foreach (var contratoImoveisUnidadesLocada in lstLocadas)
+        {
+            foreach (var imovelLocado in contratoImoveisUnidadesLocada.ImovelAlugado)
+            {
+                foreach (var uni in imovelLocado.Unidades)
+                {
+                    await LiberarUnidade(new Guid(uni.GuidReferenciaUnidade));
+                }                
+            }
+        }
+        return new CommandResult(false, SuccessResponseEnums.Success_1001, lstLocadas);
+    }
+
+    public async Task<CommandResult> LiberarUnidade(Guid guid)
+    {
+        if (guid.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var unidade = await unidadeRepository.GetByReferenceGuid(guid);
+
+        if (unidade == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+
+        unidade.UnidadeLocada = false;
+
+        try
+        {
+            unidadeRepository.Update(unidade);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, unidade);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+    }
+
+
     public async Task<CommandResult> Delete(int? codigo)
     {
         if (!codigo.HasValue)
@@ -210,7 +265,7 @@ public class UnidadeService: IUnidadeService
                 MatriculaAgua = _unidade.MatriculaAgua,
                 TaxaAdministracao = _unidade.TaxaAdministracao,
                 ValorPotencial = _unidade.ValorPotencial,
-                UnidadeLocada = _unidade.UnidadeLocada,
+                UnidadeLocada = false,
                 Status = true
             };
 
@@ -234,6 +289,7 @@ public class UnidadeService: IUnidadeService
             unidade.DataCriacao = DateTime.Now;
             unidade.DataUltimaModificacao = DateTime.Now;
             unidade.Status = true;
+            unidade.UnidadeLocada = false;
         }
         else
         {
@@ -250,7 +306,6 @@ public class UnidadeService: IUnidadeService
         unidade.MatriculaAgua = cmd.MatriculaAgua;
         unidade.TaxaAdministracao = cmd.TaxaAdministracao;
         unidade.ValorPotencial = cmd.ValorPotencial;
-        unidade.UnidadeLocada = cmd.UnidadeLocada;
         unidade.Tipo = cmd.Tipo ?? string.Empty;
     }
 
@@ -273,5 +328,25 @@ public class UnidadeService: IUnidadeService
         }
 
         return await Task.FromResult(guidReferencia);
+    }
+
+
+    public class ContratoImoveisUnidadesLocada
+    {
+        public List<ImovelAlugado> ImovelAlugado { get; set; }
+    }
+    public class ImovelAlugado
+    {
+        public string GuidReferencia { get; set; }
+        public string Nome { get; set; }
+        public List<Unidades> Unidades { get; set; }
+    }
+
+    public class Unidades
+    {
+        public bool Ativo { get; set; }
+        public int IdUnidade { get; set; }
+        public string GuidReferenciaUnidade { get; set; }
+        public bool UnidadeLocada { get; set; }
     }
 }

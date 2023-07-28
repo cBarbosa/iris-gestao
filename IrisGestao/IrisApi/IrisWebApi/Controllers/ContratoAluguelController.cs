@@ -16,6 +16,11 @@ public class ContratoAluguelController : Controller
         this.contratoAluguelService = contratoAluguelService;
     }
 
+
+    [HttpGet("{guid}/Unidades")]
+    public async Task<IActionResult> GetUnidadesByContrato([FromRoute] Guid guid) =>
+        Ok(await contratoAluguelService.GetUnidadesByContrato(guid));
+
     [HttpGet("{guid}/guid/")]
     public async Task<IActionResult> GetByGuid([FromRoute] Guid guid) =>
         Ok(await contratoAluguelService.GetByGuid(guid));
