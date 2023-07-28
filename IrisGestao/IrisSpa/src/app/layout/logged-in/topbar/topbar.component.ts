@@ -46,7 +46,7 @@ export class TopbarComponent {
 			{
 				label: 'Imóveis',
 				id: route.startsWith('/property/') ? 'current' : '',
-				command: () => this.navigateTo('property/listing'),
+				command: () => this.navigateTo('property/carteira/listing'),
 				// items: [
 				// 	{
 				// 		label: 'Imóvel de mercado',
