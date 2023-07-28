@@ -64,7 +64,7 @@
 				</ng-container>
 			</div>
 
-			<div class="field">
+			<div class="field" *ngIf="faturaPaga">
 				<label for="valorPago" class="block">Valor pago</label>
 				<input
 					id="valorPago"
@@ -90,7 +90,7 @@
 				</ng-container>
 			</div>
 
-			<div class="field">
+			<div class="field" *ngIf="faturaPaga">
 				<label for="dataPagamento" class="block">
 					Data de pagamento da fatura
 				</label>
@@ -150,7 +150,7 @@
 				</ng-container>
 			</div>
 
-			<div class="field">
+			<div class="field" *ngIf="faturaPaga">
 				<label for="observacoes" class="block">Observação da baixa</label>
 				<textarea
 					rows="3"
