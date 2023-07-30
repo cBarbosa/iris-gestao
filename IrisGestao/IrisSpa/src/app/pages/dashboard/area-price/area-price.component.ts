@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
+import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
 import { DropdownItem } from 'src/app/shared/models/types';
 import { ClienteService, CommonService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
@@ -13,6 +14,8 @@ import { Utils } from 'src/app/shared/utils';
 	styleUrls: ['./area-price.component.scss'],
 })
 export class AreaPriceComponent {
+	@ViewChild('chart') chartComponent: ChartComponent;
+	
 	data: any;
 	options: any;
 
@@ -234,5 +237,10 @@ export class AreaPriceComponent {
 		const without_html = text.replace(/<(?:.|\n)*?>/gm, '');
 		const shortened = without_html.substring(0, charlimit) + '...';
 		return shortened;
+	};
+
+	savePDF():void {
+
+		Utils.saveChartAsPdf(this.chartComponent.chart, 'preco-m2', 'Preço m²');
 	};
 }
