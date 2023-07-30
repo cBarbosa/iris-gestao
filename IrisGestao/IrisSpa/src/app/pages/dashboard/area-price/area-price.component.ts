@@ -123,6 +123,7 @@ export class AreaPriceComponent {
 					backgroundColor: 'white',
 					borderColor: '#480D1A',
 					data: [],
+					opt: 2
 				},
 				{
 					type: 'line',
@@ -130,6 +131,7 @@ export class AreaPriceComponent {
 					backgroundColor: 'white',
 					borderColor: '#6B7C36',
 					data: [],
+					opt: 2
 				},
 				{
 					type: 'line',
@@ -137,6 +139,7 @@ export class AreaPriceComponent {
 					backgroundColor: 'white',
 					borderColor: `#D08175`,
 					data: [],
+					opt: 2
 				},
 			],
 		};
@@ -156,15 +159,15 @@ export class AreaPriceComponent {
 				next: (event) => {
 
 					this.data.labels = [];
-					this.data.datasets[1].data = []; // contratada
-					this.data.datasets[2].data = []; // potencial
-					this.data.datasets[0].data = []; // financeira
+					this.data.datasets[0].data = []; // media ponderada
+					this.data.datasets[1].data = []; // media simples
+					this.data.datasets[2].data = []; // media
 
 					event.data.forEach((item: any) => {
+						this.data.datasets[0].data.push(item.mediaPonderada); // media ponderada
 						this.data.labels.push(item.referencia);
-						this.data.datasets[1].data.push(item.contratada); // contratada
-						this.data.datasets[2].data.push(item.potencial); // potencial
-						this.data.datasets[0].data.push(item.financeira); // financeira
+						this.data.datasets[1].data.push(item.mediaSimples); // media simples
+						this.data.datasets[2].data.push(item.media); // media
 					});
 				},
 				error: () => {
