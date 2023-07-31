@@ -161,8 +161,7 @@ export class ReportCostsComponent {
 				next: (data) => {
 					if (data) {
 						this.resultEntries = data;
-
-						this.totalRecords = data.length;
+						this.totalRecords = this.resultEntries.length;
 
 						this.totalSum = data.reduce(
 							(acc, entry) => {

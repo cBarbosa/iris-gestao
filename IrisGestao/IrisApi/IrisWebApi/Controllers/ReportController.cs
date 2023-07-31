@@ -45,4 +45,14 @@ public class ReportController : ControllerBase
         [FromQuery] bool? Status
     ) =>
         Ok(await contratoAluguelService.GetReportExpenses(Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario));
+    
+    [HttpGet("revenues")]
+    public async Task<IActionResult> GetRevenues(
+        [FromQuery] int? IdImovel,
+        [FromQuery] int? IdLocador,
+        [FromQuery] int? IdTipoImovel,
+        [FromQuery] int? IdLocatario,
+        [FromQuery] bool? Status
+    ) =>
+        Ok(await contratoAluguelService.GetReportRevenues(Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario));
 }

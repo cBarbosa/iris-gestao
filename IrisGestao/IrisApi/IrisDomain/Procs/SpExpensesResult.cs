@@ -1,6 +1,6 @@
 ﻿namespace IrisGestao.Domain.Procs;
 
-public class SpExpensesResult
+public partial class SpExpensesResult
 {
     public DateTime? DataVencimento { get; set; }
     public decimal? Valor { get; set; }

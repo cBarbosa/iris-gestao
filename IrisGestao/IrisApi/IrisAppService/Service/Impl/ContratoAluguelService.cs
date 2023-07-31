@@ -358,7 +358,12 @@ public class ContratoAluguelService: IContratoAluguelService
 
     public async Task<CommandResult> GetReportRevenues(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario)
     {
-        throw new NotImplementedException();
+        var retorno = await contratoAluguelRepository
+            .GetReportRevenues(status, idImovel, idTipoImovel, idLocador, idLocatario);
+        
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
     private async Task CriaContratoAluguelImovel(int idContratoAluguel, List<ContratoAluguelImovelCommand> lstContratoImovel)
