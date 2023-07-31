@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
+import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
 import { DropdownItem } from 'src/app/shared/models/types';
 import { ClienteService, CommonService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
@@ -13,6 +14,8 @@ import { Utils } from 'src/app/shared/utils';
 	styleUrls: ['./area-price.component.scss'],
 })
 export class AreaPriceComponent {
+	@ViewChild('chart') chartComponent: ChartComponent;
+	
 	data: any;
 	options: any;
 
@@ -123,6 +126,7 @@ export class AreaPriceComponent {
 					backgroundColor: 'white',
 					borderColor: '#480D1A',
 					data: [],
+					opt: 2
 				},
 				{
 					type: 'line',
@@ -130,6 +134,7 @@ export class AreaPriceComponent {
 					backgroundColor: 'white',
 					borderColor: '#6B7C36',
 					data: [],
+					opt: 2
 				},
 				{
 					type: 'line',
@@ -137,6 +142,7 @@ export class AreaPriceComponent {
 					backgroundColor: 'white',
 					borderColor: `#D08175`,
 					data: [],
+					opt: 2
 				},
 			],
 		};
@@ -156,15 +162,15 @@ export class AreaPriceComponent {
 				next: (event) => {
 
 					this.data.labels = [];
-					this.data.datasets[1].data = []; // contratada
-					this.data.datasets[2].data = []; // potencial
-					this.data.datasets[0].data = []; // financeira
+					this.data.datasets[0].data = []; // media ponderada
+					this.data.datasets[1].data = []; // media simples
+					this.data.datasets[2].data = []; // media
 
 					event.data.forEach((item: any) => {
+						this.data.datasets[0].data.push(item.mediaPonderada); // media ponderada
 						this.data.labels.push(item.referencia);
-						this.data.datasets[1].data.push(item.contratada); // contratada
-						this.data.datasets[2].data.push(item.potencial); // potencial
-						this.data.datasets[0].data.push(item.financeira); // financeira
+						this.data.datasets[1].data.push(item.mediaSimples); // media simples
+						this.data.datasets[2].data.push(item.media); // media
 					});
 				},
 				error: () => {
@@ -231,5 +237,10 @@ export class AreaPriceComponent {
 		const without_html = text.replace(/<(?:.|\n)*?>/gm, '');
 		const shortened = without_html.substring(0, charlimit) + '...';
 		return shortened;
+	};
+
+	savePDF():void {
+
+		Utils.saveChartAsPdf(this.chartComponent.chart, 'preco-m2', 'Preço m²');
 	};
 }

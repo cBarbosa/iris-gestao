@@ -553,6 +553,52 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                 parameters.ToArray());
     }
 
+    public async Task<IEnumerable<SpExpensesResult>?> GetReportExpenses(
+        bool? status,
+        int? idImovel,
+        int? idTipoImovel,
+        int? idLocador,
+        int? idLocatario)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@Status", SqlDbType.Bit)
+                {Value = status.HasValue ? status : DBNull.Value, IsNullable = true},
+            new ("@IdImovel", SqlDbType.Int)
+                {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true},
+            new ("@IdTipoImovel", SqlDbType.Int)
+                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true},
+            new ("@IdLocatario", SqlDbType.Int)
+                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpExpensesResult>("Exec Sp_Expenses @Status, @IdImovel, @IdTipoImovel",
+                parameters.ToArray());
+    }
+
+    public async Task<IEnumerable<SpRevenuesResult>?> GetReportRevenues(
+        bool? status,
+        int? idImovel,
+        int? idTipoImovel,
+        int? idLocador,
+        int? idLocatario)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@Status", SqlDbType.Bit)
+                {Value = status.HasValue ? status : DBNull.Value, IsNullable = true},
+            new ("@IdImovel", SqlDbType.Int)
+                {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true},
+            new ("@IdTipoImovel", SqlDbType.Int)
+                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true},
+            new ("@IdLocatario", SqlDbType.Int)
+                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpRevenuesResult>("Exec Sp_Revenues @Status, @IdImovel, @IdTipoImovel",
+                parameters.ToArray());
+    }
+
     public async Task<IEnumerable<dynamic>> GetAllActiveProperties()
     {
         var retorno = await DbSet

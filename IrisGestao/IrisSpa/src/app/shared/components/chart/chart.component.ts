@@ -16,6 +16,7 @@ export class ChartComponent {
 		data: number[];
 		type: 'doughnut' | 'line' | 'bar' | 'percent';
 		[index: string]: any;
+		opt?: number;
 	}[];
 
 	@Input()
@@ -28,7 +29,7 @@ export class ChartComponent {
 	tension: number = 0;
 
 	type: string;
-
+	opt?: number;
 	data: any;
 	options: any;
 
@@ -40,6 +41,7 @@ export class ChartComponent {
 
 	ngOnInit() {
 		this.type = this.dataInput[0]['type'];
+		this.opt = this.dataInput[0]['opt'];
 
 		const plugin = {
 			id: 'canvasBackgroundColor',
@@ -149,9 +151,27 @@ export class ChartComponent {
 			}
 		};
 
+		const line2Ops = {
+			scales: {
+				y: {
+                    display: true,
+                    position: 'right',
+					// suggestedMin: 0.0,
+                	// suggestedMax: 100.0,
+					ticks: {
+						color: '#646464',
+						// callback: (val: any, index: any) => {
+						// 	// Hide every 2nd tick label
+						// 	return `${val} %`;
+						// },
+					},
+				}
+			}
+		};
+
 		this.options = {
 			bar: lineBar,
-			line: lineOps,
+			line: this.type === 'line' && this.opt ? line2Ops : lineOps,
 			doughnut: {
 				maintainAspectRatio: true,
 				aspectRatio: 1,

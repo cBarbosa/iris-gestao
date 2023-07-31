@@ -1,6 +1,6 @@
 ﻿namespace IrisGestao.Domain.Procs;
 
-public class SpReceivingPerformanceResult
+public partial class SpReceivingPerformanceResult
 {
     public string Referencia { get; set; }
     public decimal? PerformanceRecebimento { get; set; }

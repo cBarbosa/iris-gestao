@@ -26,6 +26,28 @@ type RentValue = {
 	precoMesReferencia: number;
 };
 
+type Expenses = {
+	dataVencimento: Date;
+	valor: number;
+	valorRealPago: number;
+	valorTitulo: number;
+	valorTotalTitulo: number;
+	nomeTitulo: string;
+	nomeDocumento: string;
+	nomeImovel: string;
+};
+
+type Revenues = {
+	dataVencimento: Date;
+	dataBaixa: Date;
+	valorBaixa: number;
+	valorDesconto: number;
+	valorLiquido: number;
+	nomeCliente: string;
+	nomeTitulo: string;
+	nomeDocumento: string;
+};
+
 const httpOptions = {
 	headers: new HttpHeaders({
 		'Content-Type': 'multipart/form-data',
@@ -128,7 +150,7 @@ export class ReportService {
 		locatarioId: number | undefined,
 		locadorId: number | undefined) {
 			return this.http
-			.get<ApiResponse>(`${env.config.apiUrl}Report/costs`, {
+			.get<ApiResponse>(`${env.config.apiUrl}Report/expenses`, {
 				params: {
 					Status: status ?? '',
 					IdImovel: imovelId ?? '',
@@ -138,7 +160,7 @@ export class ReportService {
 				},
 			})
 			.pipe(
-				map((response): RentValue[] | null => {
+				map((response): Expenses[] | null => {
 					console.debug('response', response);
 					if (!response.success)
 						console.error(`getCosts: ${response.message}`);
@@ -154,7 +176,7 @@ export class ReportService {
 		locatarioId: number | undefined,
 		locadorId: number | undefined) {
 			return this.http
-			.get<ApiResponse>(`${env.config.apiUrl}Report/receipts`, {
+			.get<ApiResponse>(`${env.config.apiUrl}Report/Revenues`, {
 				params: {
 					Status: status ?? '',
 					IdImovel: imovelId ?? '',
@@ -164,7 +186,7 @@ export class ReportService {
 				},
 			})
 			.pipe(
-				map((response): RentValue[] | null => {
+				map((response): Revenues[] | null => {
 					console.debug('response', response);
 					if (!response.success)
 						console.error(`getReceipts: ${response.message}`);

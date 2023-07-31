@@ -89,7 +89,7 @@
 			<ng-container *ngIf="isLoading">
 				<app-spinner styleClass="mt-11"></app-spinner>
 			</ng-container>
-			<ng-container *ngIf="!isLoading">
+			<ng-container *ngIf="!isLoading && totalRecords == 0">
 				<div class="no-results-warn">
 					<span>Nenhum resultado</span>
 				</div>
@@ -122,16 +122,29 @@
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="font-bold">{{ entry.numCentroCusto }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeLocatario ?? "-" }}</td>
+						<td class="font-bold">{{ entry.dataVencimento | date:'shortDate' }}</td>
+						<td class="max-w-[120px]">{{ entry.nomeDocumento ?? "-" }}</td>
 						<td class="max-w-[120px]">{{ entry.nomeImovel }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeLocador ?? '-' }}</td>
+						<td class="max-w-[120px]">{{ entry.nomeTitulo ?? '-' }}</td>
 
-						<td>{{ entry.somaAreaUtil }}</td>
-						<td>{{ entry.somaValorAluguel  }}</td>
-						<td>{{ entry.somaValorPotencial }}</td>
+						<td>{{ entry.valor | currency }}</td>
+						<td>{{ entry.valorRealPago ?? entry.valor | currency  }}</td>
+						<td>{{ entry.valorTotalTitulo | currency }}</td>
 					</tr>
-				</ng-template> 
+				</ng-template>
+				<ng-template pTemplate="footer">
+					<tr class="bg-[#262626]">
+						<td colspan="5" class="bg-transparent text-white">Total de saídas / Total de saídas previstas</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Valor total do título</div>
+							<div>{{ totalSum?.totalTitulo | currency }}</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Valor pago / a pagar</div>
+							<div>{{ totalSum?.totalValorPagoPagar | currency }}</div>
+						</td>
+					</tr>
+				</ng-template>
 
 			</p-table>
 

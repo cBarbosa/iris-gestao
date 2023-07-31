@@ -26,7 +26,7 @@
 					pButton
 					type="button"
 					class="p-button-outlined h-9 addButton"
-					(click)="navigateTo('dashboard/receiving-performance')"
+					(click)="savePDF()"
 				>
 					Salvar como PDF
 				</button>
@@ -71,7 +71,7 @@
 		<div class="p-12 bg-white" *ngIf="!isLoading">
 			
             <h2 class="pb-4 text-lg font-bold">Performance de Recebimento</h2>
-            <app-chart [data]="data.datasets" [labels]="data.labels"></app-chart>
+            <app-chart [data]="data.datasets" [labels]="data.labels" #chart></app-chart>
 			
 		</div>
 	</div>

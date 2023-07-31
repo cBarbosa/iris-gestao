@@ -136,9 +136,9 @@ export class ReportRentValueComponent {
 
 	init():void {
 		const currYear = new Date().getFullYear();
-		const currMonth = new Date().getMonth();
+		//const currMonth = new Date().getMonth();
 		
-		this.filterReferencia = new Date(currYear, currMonth, 1);
+		this.filterReferencia = new Date(currYear, 0, 1);
 
 		this.filterResult();
 		this.getOwnersListData();
