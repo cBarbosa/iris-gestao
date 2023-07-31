@@ -5,9 +5,6 @@ using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
-using static IrisGestao.ApplicationService.Service.Impl.ImovelService;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -360,6 +357,16 @@ public class ContratoAluguelService: IContratoAluguelService
     {
         var retorno = await contratoAluguelRepository
             .GetReportRevenues(status, idImovel, idTipoImovel, idLocador, idLocatario);
+        
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+
+    public async Task<CommandResult> GetReportSupplyContract(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario)
+    {
+        var retorno = await contratoAluguelRepository
+            .GetReportSupplyContract(status, idImovel, idTipoImovel, idLocador, idLocatario);
         
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)

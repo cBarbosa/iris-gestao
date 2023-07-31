@@ -26,6 +26,15 @@ type RentValue = {
 	precoMesReferencia: number;
 };
 
+type SupplyContract = {
+	nomeImovel: string;
+	nomeLocador: string;
+	baseReajuste: string
+	inicioContrato: Date;
+	fimContrato: Date;
+	proximaAtualizacao: Date;
+};
+
 type Expenses = {
 	dataVencimento: Date;
 	valor: number;
@@ -134,7 +143,7 @@ export class ReportService {
 				},
 			})
 			.pipe(
-				map((response): RentValue[] | null => {
+				map((response): SupplyContract[] | null => {
 					console.debug('response', response);
 					if (!response.success)
 						console.error(`getSupplyContract: ${response.message}`);

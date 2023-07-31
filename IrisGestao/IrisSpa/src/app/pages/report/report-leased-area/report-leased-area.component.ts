@@ -185,6 +185,7 @@ export class ReportLeasedAreaComponent {
 				next: (data) => {
 					if (data) {
 						this.resultEntries = data;
+						this.noRestults = this.resultEntries.length == 0;
 
 						this.totalSum = data.reduce(
 							(acc, entry) => {

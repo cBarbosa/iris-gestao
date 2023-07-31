@@ -98,7 +98,7 @@
 			</ng-container>
 
 			<p-table
-				*ngIf="!isMobile"
+				*ngIf="!isMobile && !noRestults"
 				[value]="resultEntries"
 				styleClass="p-datatable-striped"
 				[tableStyle]="{ 'min-width': '50rem' }"
