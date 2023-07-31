@@ -80,6 +80,13 @@ export class ReportCostsComponent {
 		}
 	];
 
+	totalSum:
+		| {
+				totalTitulo: number;
+				totalValorPagoPagar: number;
+		  }
+		| undefined;
+
 	constructor(
 		private router: Router,
 		private responsiveService: ResponsiveService,
@@ -154,6 +161,21 @@ export class ReportCostsComponent {
 				next: (data) => {
 					if (data) {
 						this.resultEntries = data;
+
+						this.totalRecords = data.length;
+
+						this.totalSum = data.reduce(
+							(acc, entry) => {
+								acc.totalTitulo += entry.valorTotalTitulo;
+								acc.totalValorPagoPagar += entry.valorRealPago ?? entry.valor;
+
+								return acc;
+							},
+							{
+								totalTitulo: 0,
+								totalValorPagoPagar: 0
+							}
+						);
 					}
 				},
 				error: () => {
