@@ -105,13 +105,7 @@ export class FinancialVacancyComponent implements OnInit {
 			// 	Utils.getDaysInMonth(
 			// 		this.filterPeriodo[1].getMonth() + 1,
 			// 		this.filterPeriodo[1].getFullYear()
-			// 	)
-			// );
-			// endDate.setDate(
-			// 	new Date(this.filterPeriodo[1].getFullYear(),
-			// 	this.filterPeriodo[1].getMonth() + 1,
-			// 1)
-			// .getMilliseconds());
+			// 	));
 
 			const startDateString = startDate.toISOString().split('T')[0];
 			const endDateString = endDate.toISOString().split('T')[0];
