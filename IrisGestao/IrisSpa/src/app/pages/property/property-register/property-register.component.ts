@@ -352,6 +352,8 @@ export class PropertyRegisterComponent {
 	}
 
 	onAreaChange = () => {
+		if (this.propertyType !== 'mercado') return;
+
 		const areaTotalField = this.registerForm
 			.get('edCorpSalaPavInfo')
 			?.get('areaTotal');
@@ -484,7 +486,6 @@ export class PropertyRegisterComponent {
 	updateStepValidity(unitType?: number) {
 		unitType ??= this.legalInfoForm.controls['unitType'].value;
 
-		console.log('aquiiiiiiiiiii', unitType);
 		if (unitType === 1) {
 			this.propertyTypeEdCorpSalaPavForm.controls['areaTotal'].addValidators([
 				Validators.required,
@@ -493,8 +494,6 @@ export class PropertyRegisterComponent {
 			this.propertyTypeEdCorpSalaPavForm.controls[
 				'areaTotal'
 			].updateValueAndValidity();
-
-			console.log('SALAAAAAAAAAAAAAA');
 		} else if (unitType === 2 || unitType === 3) {
 			this.onAreaChange();
 			// this.propertyTypeEdCorpSalaPavForm.controls['areaTotal'].addValidators([
