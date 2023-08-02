@@ -194,7 +194,7 @@ export class ReceivingPerformanceComponent {
 						this.data.labels.push(item.referencia);
 						this.data.datasets[1].data.push(item.contratada); // contratada
 						this.data.datasets[2].data.push(item.potencial); // potencial
-						this.data.datasets[0].data.push(item.financeira); // financeira
+						this.data.datasets[0].data.push(item.financeira * 100.0); // financeira
 					});
 				},
 				error: () => {
