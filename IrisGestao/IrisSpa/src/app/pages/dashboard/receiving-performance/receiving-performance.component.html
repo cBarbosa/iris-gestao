@@ -70,8 +70,11 @@
 
 		<div class="p-12 bg-white" *ngIf="!isLoading">
 			
-            <h2 class="pb-4 text-lg font-bold">Performance de Recebimento</h2>
+            <h2 class="pb-4 text-lg font-bold">Valores recebidos</h2>
             <app-chart [data]="data.datasets" [labels]="data.labels" #chart></app-chart>
+
+			<h2 class="py-8 text-lg font-bold">Performance de Recebimento</h2>
+            <app-chart [data]="data2.datasets" [labels]="data2.labels" #lineChart></app-chart>
 			
 		</div>
 	</div>
