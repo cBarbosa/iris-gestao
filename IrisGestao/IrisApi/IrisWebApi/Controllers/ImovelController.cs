@@ -1,6 +1,7 @@
 using IrisGestao.ApplicationService.Services.Interface;
 using IrisGestao.Domain.Command.Request;
 using Microsoft.AspNetCore.Mvc;
+using IrisGestao.Domain.Emuns;
 
 namespace IrisWebApi.Controllers;
 
@@ -20,10 +21,19 @@ public class ImovelController : ControllerBase
    public async Task<IActionResult> GetAll(
        [FromQuery] int? idCategoria
        , [FromQuery] int? idProprietario
+       , [FromQuery] int? idTipoImovel
        , [FromQuery] string? nome
        , [FromQuery] int? limit = 10
        , [FromQuery] int? page = 1)
-       => Ok(await imovelService.GetAllPaging(idCategoria, idProprietario, nome, limit ?? 10, page ?? 1));
+    {
+        if (!idTipoImovel.HasValue)
+        {
+            idTipoImovel = TipoImovelEnum.IMOVEL_CARTEIRA;
+        }
+        var result = await imovelService.GetAllPaging(idCategoria, idTipoImovel, idProprietario, nome, limit ?? 10, page ?? 1);
+
+        return Ok(result);
+    }
 
     [HttpGet("{guid}/guid/")]
     public async Task<IActionResult> GetByGuid([FromRoute] Guid guid) =>
