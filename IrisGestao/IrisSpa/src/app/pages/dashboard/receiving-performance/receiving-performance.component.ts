@@ -209,7 +209,7 @@ export class ReceivingPerformanceComponent {
 
 						this.data.datasets[1].data.push(item.valorRecebido); // valor recebido
 						this.data.datasets[0].data.push(item.valorReceber); // a receber
-						this.data2.datasets[0].data.push(item.performanceRecebimento); // performance
+						this.data2.datasets[0].data.push(item.performanceRecebimento * 100.0); // performance
 					});
 				},
 				error: () => {
