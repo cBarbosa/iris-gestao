@@ -14,7 +14,7 @@ import {
 	ImovelService,
 } from 'src/app/shared/services';
 import { first } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
 	EmailValidator,
 	CpfCnpjValidator,
@@ -56,6 +56,8 @@ export class PropertyRegisterComponent {
 		matricula?: File;
 		outrosdocs?: File[];
 	} = {};
+
+	propertyType: string;
 
 	unitTypes: DropdownItem[] = [
 		{
@@ -151,37 +153,48 @@ export class PropertyRegisterComponent {
 		private commonService: CommonService,
 		private router: Router,
 		private anexoService: AnexoService,
+		private activatedRoute: ActivatedRoute,
 		private responsiveService: ResponsiveService
 	) {}
 
 	ngOnInit() {
+		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
+			this.isMobile = screenWidth < 768;
+		});
+
+		this.propertyType =
+			this.activatedRoute.snapshot.parent!.routeConfig!.path!.split('/')[0];
+
+		const validation =
+			this.propertyType === 'mercado' ? null : Validators.required;
+
 		this.registerForm = this.fb.group({
 			propertyType: this.fb.group({
 				name: ['', Validators.required],
-				proprietary: [null, [Validators.required]],
-				costCentre: [null, [Validators.required]],
-				zipcode: [null, [Validators.required]],
-				street: [null, [Validators.required]],
-				neighborhood: [null, [Validators.required]],
-				city: [null, [Validators.required]],
-				state: [null, [Validators.required]],
+				proprietary: [null, validation],
+				costCentre: [null, validation],
+				zipcode: [null, validation],
+				street: [null, validation],
+				neighborhood: [null, validation],
+				city: [null, validation],
+				state: [null, validation],
 			}),
 			edCorpSalaPavInfo: this.fb.group({
-				areaTotal: ['', [Validators.required]],
+				areaTotal: ['', Validators.required],
 			}),
 			salaPavInfo: this.fb.group({
-				areaUsable: ['', [Validators.required]],
-				areaOccupancy: ['', [Validators.required]],
+				areaUsable: ['', Validators.required],
+				areaOccupancy: ['', Validators.required],
 			}),
 			legalInfo: this.fb.group({
-				unitType: [null, [Validators.required]],
-				description: ['', [Validators.required]],
-				registration: ['', [Validators.required]],
-				iptu: ['', [Validators.required]],
-				neoenergia: ['', [Validators.required]],
-				caesb: ['', [Validators.required]],
-				administration: [null, [Validators.required]],
-				potential: [null, [Validators.required]],
+				unitType: [null, Validators.required],
+				description: ['', validation],
+				registration: ['', validation],
+				iptu: ['', validation],
+				neoenergia: ['', validation],
+				caesb: ['', validation],
+				administration: [null, validation],
+				potential: [null, validation],
 			}),
 			legalInfoSalaPav: this.fb.group({
 				hasCopies: [false],
@@ -198,10 +211,6 @@ export class PropertyRegisterComponent {
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
-
-		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
-			this.isMobile = screenWidth < 768;
-		});
 
 		this.registerProprietaryForm = this.fb.group({
 			name: ['', [Validators.required]],
@@ -342,6 +351,48 @@ export class PropertyRegisterComponent {
 		this.registerProprietaryForm.controls['birthday'].updateValueAndValidity();
 	}
 
+	onAreaChange = () => {
+		if (this.propertyType !== 'mercado') return;
+
+		const areaTotalField = this.registerForm
+			.get('edCorpSalaPavInfo')
+			?.get('areaTotal');
+		const areaUsableField = this.registerForm
+			.get('salaPavInfo')
+			?.get('areaUsable');
+		const areaOccupancyField = this.registerForm
+			.get('salaPavInfo')
+			?.get('areaOccupancy');
+
+		const areaTotal = areaTotalField?.value;
+		const areaUsable = areaUsableField?.value;
+		const areaOccupancy = areaOccupancyField?.value;
+
+		console.log('++++++++>>>>> ', areaTotal, areaUsable, areaOccupancy);
+
+		if (!areaTotal && !areaUsable && !areaOccupancy) {
+			// this.legalInfoForm.markAllAsTouched();
+			// this.legalInfoSalaPavForm.markAllAsTouched();
+			// this.propertyTypeEdCorpSalaPavForm.markAllAsTouched();
+			// this.propertyTypeSalaPavForm.markAllAsTouched();
+
+			areaOccupancyField?.markAsTouched();
+			areaTotalField?.markAsTouched();
+			areaUsableField?.markAsTouched();
+			areaOccupancyField?.addValidators([Validators.required]);
+			areaUsableField?.addValidators([Validators.required]);
+			areaTotalField?.addValidators([Validators.required]);
+		} else {
+			areaOccupancyField?.removeValidators([Validators.required]);
+			areaUsableField?.removeValidators([Validators.required]);
+			areaTotalField?.removeValidators([Validators.required]);
+		}
+
+		areaTotalField?.updateValueAndValidity();
+		areaOccupancyField?.updateValueAndValidity();
+		areaUsableField?.updateValueAndValidity();
+	};
+
 	changeStep(step: number) {
 		// if (step === 2) this.propertyTypeForm.markAllAsTouched();
 		// if (step === 3) this.legalInfoForm.markAllAsTouched();
@@ -432,7 +483,29 @@ export class PropertyRegisterComponent {
 		this.currentStep = step;
 	}
 
-	updateStepValidity() {
+	updateStepValidity(unitType?: number) {
+		unitType ??= this.legalInfoForm.controls['unitType'].value;
+
+		if (unitType === 1) {
+			this.propertyTypeEdCorpSalaPavForm.controls['areaTotal'].addValidators([
+				Validators.required,
+			]);
+			this.propertyTypeEdCorpSalaPavForm.markAllAsTouched();
+			this.propertyTypeEdCorpSalaPavForm.controls[
+				'areaTotal'
+			].updateValueAndValidity();
+		} else if (unitType === 2 || unitType === 3) {
+			this.onAreaChange();
+			// this.propertyTypeEdCorpSalaPavForm.controls['areaTotal'].addValidators([
+			// 	Validators.required,
+			// ]);
+			// this.propertyTypeSalaPavForm.controls['areaUsable'].addValidators([
+			// 	Validators.required,
+			// ]);
+			// this.propertyTypeSalaPavForm.controls['areaOccupancy'].addValidators([
+			// 	Validators.required,
+			// ]);
+		}
 		this.changeStep(this.currentStep);
 	}
 
@@ -475,6 +548,9 @@ export class PropertyRegisterComponent {
 
 	nextStep() {
 		const currStep = this.currentStep;
+
+		console.log('IHULLLLLLLLL', this.propertyTypeEdCorpSalaPavForm.invalid);
+
 		if (currStep === 1) {
 			if (this.propertyTypeForm.invalid) {
 				this.propertyTypeForm.markAllAsTouched();
@@ -491,7 +567,12 @@ export class PropertyRegisterComponent {
 				this.legalInfoForm.controls['unitType'].value === 2 ||
 				this.legalInfoForm.controls['unitType'].value === 3
 			) {
-				if (this.legalInfoForm.invalid || this.legalInfoSalaPavForm.invalid) {
+				if (
+					this.legalInfoForm.invalid ||
+					this.legalInfoSalaPavForm.invalid ||
+					this.propertyTypeEdCorpSalaPavForm.invalid ||
+					this.propertyTypeSalaPavForm.invalid
+				) {
 					this.legalInfoForm.markAllAsTouched();
 					this.legalInfoSalaPavForm.markAllAsTouched();
 
@@ -507,6 +588,12 @@ export class PropertyRegisterComponent {
 				}
 			}
 		}
+
+		console.log(
+			'---------------->>>>>>',
+			this.legalInfoForm.invalid,
+			this.legalInfoSalaPavForm.invalid
+		);
 		if (currStep === 3) {
 			this.onSubmit();
 		}
