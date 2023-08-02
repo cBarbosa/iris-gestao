@@ -10,9 +10,9 @@ namespace IrisGestao.Domain.Command.Request
     {
         public string Nome { get; set; }
         public int IdCategoriaImovel { get; set; }
-        public int IdClienteProprietario { get; set; }
-        public long NumCentroCusto { get; set; }
-        public bool MonoUsuario { get; set; }
+        public int? IdClienteProprietario { get; set; }
+        public long? NumCentroCusto { get; set; }
+        public bool? MonoUsuario { get; set; }
         public string? Classificacao { get; set; }
         public Guid? GuidReferencia { get; set; }
         public int? CEP { get; set; }

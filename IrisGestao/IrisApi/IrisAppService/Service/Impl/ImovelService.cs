@@ -32,9 +32,9 @@ public class ImovelService: IImovelService
         this.logger = logger;
     }
 
-    public async Task<CommandResult> GetAllPaging(int? idCategoria, int? idProprietario, string? nome, int limit, int page)
+    public async Task<CommandResult> GetAllPaging(int? idCategoria, int? idTipoImovel, int? idProprietario, string? nome, int limit, int page)
     {
-        var result = await imovelRepository.GetAllPaging(idCategoria, idProprietario, nome, limit, page);
+        var result = await imovelRepository.GetAllPaging(idCategoria, idTipoImovel, idProprietario, nome, limit, page);
 
         return result == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
@@ -245,8 +245,8 @@ public class ImovelService: IImovelService
 
         imovel.Nome = cmd.Nome;
         imovel.IdCategoriaImovel = cmd.IdCategoriaImovel;
-        imovel.IdClienteProprietario = cmd.IdClienteProprietario;
-        imovel.NumCentroCusto = cmd.NumCentroCusto;
+        imovel.IdClienteProprietario = cmd.IdClienteProprietario.HasValue ? cmd.IdClienteProprietario.Value : null;
+        imovel.NumCentroCusto = cmd.NumCentroCusto.HasValue ? cmd.NumCentroCusto.Value : null;
         imovel.MonoUsuario = cmd.MonoUsuario;
         imovel.Classificacao = cmd.Classificacao;
     }
