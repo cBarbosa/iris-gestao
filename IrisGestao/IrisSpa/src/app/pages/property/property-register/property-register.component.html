@@ -267,7 +267,7 @@
 						[options]="unitTypes"
 						formControlName="unitType"
 						aria-describedby="unit-type-help"
-						(ngModelChange)="updateStepValidity()"
+						(ngModelChange)="updateStepValidity($event)"
 					></p-dropdown>
 					<ng-container *ngIf="checkHasError(f['unitType'])">
 						<small
@@ -493,6 +493,7 @@
 							suffix=" m²"
 							mask="separator.2"
 							maxlength="14"
+							(change)="onAreaChange()"
 							pInputText
 						/>
 						<ng-container
@@ -541,6 +542,7 @@
 							suffix=" m²"
 							mask="separator.2"
 							maxlength="14"
+							(change)="onAreaChange()"
 							pInputText
 						/>
 						<ng-container
@@ -580,6 +582,7 @@
 							suffix=" m²"
 							mask="separator.2"
 							maxlength="14"
+							(change)="onAreaChange()"
 							pInputText
 						/>
 						<ng-container
