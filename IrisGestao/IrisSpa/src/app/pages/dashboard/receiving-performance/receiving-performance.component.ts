@@ -14,8 +14,10 @@ import { ChartComponent } from 'src/app/shared/components/chart/chart.component'
 })
 export class ReceivingPerformanceComponent {
 	@ViewChild('chart') chartComponent: ChartComponent;
+	@ViewChild('lineChart') lineChartComponent: ChartComponent;
 	
 	data: any;
+	data2: any;
 	filterLocador: number;
 	filterTipo: number;
 	filterPeriodo: Date[];
@@ -58,9 +60,9 @@ export class ReceivingPerformanceComponent {
 			labels: [],
 			datasets: [
 				{
-					type: 'line',
-					label: 'Performance de recebimento',
-					borderColor: '#D08175',
+					type: 'bar',
+					label: 'Valor a receber',
+					backgroundColor: `#641B1E`,
 					data: [],
 				},
 				{
@@ -68,18 +70,24 @@ export class ReceivingPerformanceComponent {
 					label: 'Valor recebido',
 					backgroundColor: `#C9D78E`,
 					data: [],
-				},
+				}
+			]
+		};
+
+		this.data2 = {
+			labels: [],
+			datasets: [
 				{
-					type: 'bar',
-					label: 'Valor a receber',
-					backgroundColor: `#641B1E`,
+					type: 'line',
+					label: 'Performance de recebimento',
+					borderColor: '#D08175',
 					data: [],
-				},
-			],
+				}
+			]
 		};
 
 		const currYear = new Date().getFullYear();
-		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 31)];
+		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 1)];
 
 		this.getOwnersListData();
 		this.getUnitTypesData();
@@ -189,15 +197,19 @@ export class ReceivingPerformanceComponent {
 				next: (event) => {
 
 					this.data.labels = [];
-					this.data.datasets[0].data = []; // performance
-					this.data.datasets[1].data = []; // valor recebido
-					this.data.datasets[2].data = []; // valor a receber
+					this.data2.labels = [];
+
+					this.data.datasets[0].data = []; // valor recebido
+					this.data.datasets[1].data = []; // valor a receber
+					this.data2.datasets[0].data = []; // performance
 
 					event.data.forEach((item: any) => {
 						this.data.labels.push(item.referencia);
-						this.data.datasets[0].data.push(item.performanceRecebimento); // performance
+						this.data2.labels.push(item.referencia);
+
 						this.data.datasets[1].data.push(item.valorRecebido); // valor recebido
-						this.data.datasets[2].data.push(item.valorReceber); // a receber
+						this.data.datasets[0].data.push(item.valorReceber); // a receber
+						this.data2.datasets[0].data.push(item.performanceRecebimento); // performance
 					});
 				},
 				error: () => {
@@ -211,7 +223,12 @@ export class ReceivingPerformanceComponent {
 
 	savePDF():void {
 
-		Utils.saveChartAsPdf(this.chartComponent.chart, 'performance-recebimento', 'Performance de recebimento');
+		Utils
+		.saveChartsAsPdf(
+			this.chartComponent.chart,
+			this.lineChartComponent.chart,
+			'performance-recebimento',
+			'Performance de recebimento');
 	};
 
 };
