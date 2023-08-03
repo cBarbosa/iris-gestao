@@ -206,6 +206,22 @@
 			}
 		}
 	}
+	.p-dialog {
+		.p-dialog-content {
+			text-align: center;
+		}
+	}
+	.confirmation-modal {
+		@apply w-[25rem];
+
+		h2 {
+			@apply text-3xl font-bold mb-4;
+		}
+
+		p {
+			@apply text-lg mb-10;
+		}
+	}
 
 	.form-modal {
 		text-align: center;

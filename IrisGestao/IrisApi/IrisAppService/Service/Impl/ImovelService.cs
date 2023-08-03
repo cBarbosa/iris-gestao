@@ -245,7 +245,7 @@ public class ImovelService: IImovelService
 
         imovel.Nome = cmd.Nome;
         imovel.IdCategoriaImovel = cmd.IdCategoriaImovel;
-        imovel.IdClienteProprietario = cmd.IdClienteProprietario.HasValue ? cmd.IdClienteProprietario.Value : null;
+        imovel.IdClienteProprietario = cmd.IdClienteProprietario.HasValue ? (cmd.IdClienteProprietario.Value != 0 ? cmd.IdClienteProprietario.Value : null) : null;
         imovel.NumCentroCusto = cmd.NumCentroCusto.HasValue ? cmd.NumCentroCusto.Value : null;
         imovel.MonoUsuario = cmd.MonoUsuario;
         imovel.Classificacao = cmd.Classificacao;
