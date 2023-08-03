@@ -46,6 +46,7 @@ type Base64Metadata = {
 export class PropertyEditComponent {
 	editForm: FormGroup;
 
+	propertyType: string;
 	propertyGuid: string;
 	isLoading = true;
 	invalidGuid = false;
@@ -219,6 +220,11 @@ export class PropertyEditComponent {
 		}
 
 		this.propertyGuid = propertyGuid;
+		this.propertyType =
+			this.activatedRoute.snapshot.parent!.routeConfig!.path!.split('/')[0];
+
+		const validation =
+		this.propertyType === 'mercado' ? null : Validators.required;
 
 		this.editForm = this.fb.group({
 			proprietary: [null, Validators.required],

@@ -20,6 +20,7 @@ export class RentContractViewComponent {
 	isLoadingView = false;
 	guid: string;
 
+	displayConfirmationInactiveModal = false;
 	taxRetention: string;
 
 	displayModal: boolean = false;
@@ -144,6 +145,53 @@ export class RentContractViewComponent {
 					this.modalContent = {
 						isError: true,
 						header: 'Cadastro não ajustado',
+						message: 'Erro no envio de dados.',
+					};
+
+					this.openModal();
+				},
+			});
+	}
+
+	confirmInativar() {
+		this.displayConfirmationInactiveModal = true;
+	}
+
+	closeConfirmationInativarModal() {
+		this.displayConfirmationInactiveModal = false;
+	}
+
+	
+	inactiveContract() {
+		this.rentContractService
+			.inactiveContract(this.guid, false)
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					console.log('event:', event);
+					if (event.success) {
+						this.closeConfirmationInativarModal();
+						this.modalContent = {
+							isError: false,
+							header: 'Contrato Inativado',
+							message: event.message ?? 'Contrato inativado com sucesso.',
+						};
+
+						this.contract.percentualRetencaoImpostos = +this.taxRetention;
+					} else {
+						this.modalContent = {
+							isError: true,
+							header: 'Contrato não inativado',
+							message: event.message ?? 'Ajuste não realizado.',
+						};
+					}
+
+					this.openModal();
+				},
+				error: (err) => {
+					this.modalContent = {
+						isError: true,
+						header: 'Contrato não inativado',
 						message: 'Erro no envio de dados.',
 					};
 

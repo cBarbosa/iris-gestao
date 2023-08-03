@@ -171,7 +171,7 @@ export class PropertyRegisterComponent {
 		this.registerForm = this.fb.group({
 			propertyType: this.fb.group({
 				name: ['', Validators.required],
-				proprietary: [null, validation],
+				proprietary: [null, Validators.required],
 				costCentre: [null, validation],
 				zipcode: [null, validation],
 				street: [null, validation],
@@ -685,10 +685,11 @@ export class PropertyRegisterComponent {
 				...this.legalInfoSalaPavForm.getRawValue(),
 			};
 		}
+		let idCategoria = this.propertyType === 'mercado' ? 2 : 1;
 
 		const propertyObj = {
 			Nome: propertyTypeFormData.name,
-			IdCategoriaImovel: 1, // TODO indicar a categoria do imóvel
+			IdCategoriaImovel: idCategoria,
 			IdClienteProprietario: +propertyTypeFormData.proprietary,
 			NumCentroCusto: +propertyTypeFormData.costCentre,
 			CEP: +propertyTypeFormData.zipcode,

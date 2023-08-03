@@ -72,7 +72,7 @@ public class FaturaTituloPagarService : IFaturaTituloPagarService
             return new CommandResult(false, ErrorResponseEnums.Error_1009, null!);
         }
 
-        int diasAtraso = calculaDiasAtraso(faturaTituloPagar.DataVencimento.Value, cmd.DataPagamento);
+        int diasAtraso = calculaDiasAtraso(faturaTituloPagar.DataVencimento.Value, cmd.DataPagamento.Value);
 
         faturaTituloPagar.StatusFatura = FaturaTituloEnum.PAGO;
         faturaTituloPagar.DescricaoBaixaFatura = cmd.DescricaoBaixaFatura;
@@ -110,6 +110,9 @@ public class FaturaTituloPagarService : IFaturaTituloPagarService
 
         FaturaTituloPagar.DataVencimento = cmd.DataVencimento;
         FaturaTituloPagar.Valor          = cmd.Valor;
+        FaturaTituloPagar.DataPagamento = cmd.DataPagamento;
+        FaturaTituloPagar.ValorRealPago = cmd.ValorRealPago;
+        FaturaTituloPagar.DescricaoBaixaFatura = cmd.DescricaoBaixaFatura; 
         /*
         FaturaTituloPagar.NumeroNotaFiscal           = cmd.NumeroNotaFiscal;
         FaturaTituloPagar.DataEmissaoNotaFiscal      = cmd.DataEmissaoNotaFiscal;
