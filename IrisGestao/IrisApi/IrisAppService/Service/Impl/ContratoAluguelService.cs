@@ -5,9 +5,6 @@ using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
-using static IrisGestao.ApplicationService.Service.Impl.ImovelService;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -299,6 +296,24 @@ public class ContratoAluguelService: IContratoAluguelService
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
+    public async Task<CommandResult> GetAllActiveProperties()
+    {
+        var retorno = await contratoAluguelRepository.GetAllActiveProperties();
+     
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+    
+    public async Task<CommandResult> GetAllActiveOwners()
+    {
+        var retorno = await contratoAluguelRepository.GetAllActiveOwners();
+     
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+    
     public async Task<CommandResult> GetReportLeasedArea(
         bool? status,
         int? idImovel,
@@ -327,20 +342,32 @@ public class ContratoAluguelService: IContratoAluguelService
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
-
-    public async Task<CommandResult> GetAllActiveProperties()
+    
+    public async Task<CommandResult> GetReportExpenses(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario)
     {
-        var retorno = await contratoAluguelRepository.GetAllActiveProperties();
-     
+        var retorno = await contratoAluguelRepository
+            .GetReportExpenses(status, idImovel, idTipoImovel, idLocador, idLocatario);
+        
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
-    
-    public async Task<CommandResult> GetAllActiveOwners()
+
+    public async Task<CommandResult> GetReportRevenues(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario)
     {
-        var retorno = await contratoAluguelRepository.GetAllActiveOwners();
-     
+        var retorno = await contratoAluguelRepository
+            .GetReportRevenues(status, idImovel, idTipoImovel, idLocador, idLocatario);
+        
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+
+    public async Task<CommandResult> GetReportSupplyContract(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario)
+    {
+        var retorno = await contratoAluguelRepository
+            .GetReportSupplyContract(status, idImovel, idTipoImovel, idLocador, idLocatario);
+        
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);

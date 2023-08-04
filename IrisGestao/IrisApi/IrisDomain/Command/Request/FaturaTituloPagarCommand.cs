@@ -24,7 +24,7 @@ namespace IrisGestao.Domain.Command.Request
 
     public class BaixarFaturaTituloPagarCommand
     {
-        public DateTime DataPagamento { get; set; }
+        public DateTime? DataPagamento { get; set; }
         public double ValorRealPago { get; set; }
         public string DescricaoBaixaFatura { get; set; }
     }

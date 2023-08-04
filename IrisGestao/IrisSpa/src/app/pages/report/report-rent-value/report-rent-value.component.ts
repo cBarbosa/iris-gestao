@@ -136,9 +136,9 @@ export class ReportRentValueComponent {
 
 	init():void {
 		const currYear = new Date().getFullYear();
-		const currMonth = new Date().getMonth();
+		//const currMonth = new Date().getMonth();
 		
-		this.filterReferencia = new Date(currYear, currMonth, 1);
+		this.filterReferencia = new Date(currYear, 0, 1);
 
 		this.filterResult();
 		this.getOwnersListData();
@@ -201,7 +201,7 @@ export class ReportRentValueComponent {
 				next: (data) => {
 					if (data) {
 						this.resultEntries = data;
-
+						this.noRestults = this.resultEntries.length == 0;
 						this.totalSum = data.reduce(
 							(acc, entry) => {
 								acc.area += entry.somaAreaUtil;

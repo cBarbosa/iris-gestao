@@ -10,26 +10,24 @@ public partial class Imovel: BaseEntity<Imovel>
 {
     public int IdCategoriaImovel { get; set; }
 
-    public int IdClienteProprietario { get; set; }
+    public int? IdClienteProprietario { get; set; } = null!;
 
     public Guid? GuidReferencia { get; set; }
 
     [StringLength(100)]
     [Unicode(false)]
     public string Nome { get; set; } = null!;
-
-    public long NumCentroCusto { get; set; }
-
-    public bool? MonoUsuario { get; set; }
+    public long? NumCentroCusto { get; set; } = null!;
+    public bool? MonoUsuario { get; set; } = null!;
 
     public bool Status { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]
-    public string? Classificacao { get; set; }
+    public string? Classificacao { get; set; } = null!;
 
     [Column(TypeName = "datetime")]
-    public DateTime? DataCriacao { get; set; }
+    public DateTime? DataCriacao { get; set; } = null!;
 
     [Column(TypeName = "datetime")]
     public DateTime? DataUltimaModificacao { get; set; }
@@ -49,7 +47,7 @@ public partial class Imovel: BaseEntity<Imovel>
 
     [ForeignKey("IdClienteProprietario")]
     [InverseProperty("Imovel")]
-    public virtual Cliente IdClienteProprietarioNavigation { get; set; } = null!;
+    public virtual Cliente? IdClienteProprietarioNavigation { get; set; } = null!;
 
     [InverseProperty("IdImovelNavigation")]
     public virtual ICollection<ImovelEndereco> ImovelEndereco { get; } = new List<ImovelEndereco>();

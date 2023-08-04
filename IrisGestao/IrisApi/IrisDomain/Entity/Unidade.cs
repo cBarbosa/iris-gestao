@@ -17,35 +17,35 @@ public partial class Unidade: BaseEntity<Unidade>
     public string Tipo { get; set; } = null!;
 
     [Column(TypeName = "decimal(18, 0)")]
-    public decimal AreaUtil { get; set; }
+    public decimal? AreaUtil { get; set; } = null!;
 
     [Column(TypeName = "decimal(18, 0)")]
-    public decimal AreaTotal { get; set; }
+    public decimal? AreaTotal { get; set; } = null!;
 
     [Column(TypeName = "decimal(18, 0)")]
-    public decimal? AreaHabitese { get; set; }
+    public decimal? AreaHabitese { get; set; } = null!;
 
     [StringLength(50)]
     [Unicode(false)]
-    public string? Matricula { get; set; }
+    public string? Matricula { get; set; } = null!;
 
     [StringLength(60)]
     [Unicode(false)]
-    public string? InscricaoIPTU { get; set; }
+    public string? InscricaoIPTU { get; set; } = null!;
 
     [StringLength(50)]
     [Unicode(false)]
-    public string? MatriculaEnergia { get; set; }
+    public string? MatriculaEnergia { get; set; } = null!;
 
     [StringLength(50)]
     [Unicode(false)]
-    public string? MatriculaAgua { get; set; }
+    public string? MatriculaAgua { get; set; } = null!;
 
     [Column(TypeName = "decimal(18, 0)")]
-    public decimal? TaxaAdministracao { get; set; }
+    public decimal? TaxaAdministracao { get; set; } = null!;
 
     [Column(TypeName = "decimal(18, 0)")]
-    public decimal? ValorPotencial { get; set; }
+    public decimal? ValorPotencial { get; set; } = null!;
 
     public bool UnidadeLocada { get; set; }
     public bool Status { get; set; }

@@ -86,6 +86,14 @@ export class ReportReceiptsComponent {
 		},
 	];
 
+	totalSum:
+		| {
+				totalBaixa: number;
+				totalDesconto: number;
+				totalLiquido: number;
+		  }
+		| undefined;
+
 	constructor(
 		private router: Router,
 		private responsiveService: ResponsiveService,
@@ -166,6 +174,21 @@ export class ReportReceiptsComponent {
 				next: (data) => {
 					if (data) {
 						this.resultEntries = data;
+						this.totalRecords = this.resultEntries.length;
+
+						this.totalSum = data.reduce(
+							(acc, entry) => {
+								acc.totalBaixa += entry.valorBaixa ?? 0.0;
+								acc.totalLiquido += entry.valorLiquido ?? 0.0;
+								acc.totalDesconto += entry.valorDesconto ?? 0.0;
+								return acc;
+							},
+							{
+								totalBaixa: 0,
+								totalLiquido: 0,
+								totalDesconto: 0
+							}
+						);
 					}
 				},
 				error: () => {

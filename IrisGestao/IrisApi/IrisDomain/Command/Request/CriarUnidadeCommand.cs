@@ -11,8 +11,8 @@ namespace IrisGestao.Domain.Command.Request
         public Guid GuidReferencia { get; set; }
         public int IdTipoUnidade { get; set; }
         public string? Tipo { get; set; }
-        public decimal AreaUtil { get; set; }
-        public decimal AreaTotal { get; set; }
+        public decimal? AreaUtil { get; set; }
+        public decimal? AreaTotal { get; set; }
         public decimal? AreaHabitese { get; set; }
         public string? Matricula { get; set; }
         public string? InscricaoIptu { get; set; }

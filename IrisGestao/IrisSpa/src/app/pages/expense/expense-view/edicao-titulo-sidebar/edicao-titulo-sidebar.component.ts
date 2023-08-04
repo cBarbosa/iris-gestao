@@ -220,7 +220,7 @@ export class EdicaoTituloSidebarComponent {
 		const edicaoObj = {
 			valor: +editFormData.valor,
 			valorRealPago: +editFormData.valorPago,
-			dataPagamento: editFormData.dataPagamento,
+			dataPagamento: editFormData.dataPagamento === "" ? null : editFormData.dataPagamento,
 			dataVencimento: editFormData.dataVencimento,
 			numeroNotaFiscal: editFormData.numeroNotaFiscal,
 			dataEmissaoNotaFiscal: editFormData.dataEmissaoNotaFiscal,

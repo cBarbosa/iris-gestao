@@ -75,6 +75,15 @@ export class RentContractService {
 		);
 	}
 
+	inactiveContract(guid: string, status: boolean) {
+		return this.http.put<ApiResponse>(
+			`${env.config.apiUrl}ContratoAluguel/${guid}/${status}/alterar-status`,
+			'',
+			httpOptions
+		);
+	}
+
+
 	editContract(guid: string, contractObj: ContratoAluguel) {
 		return this.http.put<ApiResponse>(
 			`${env.config.apiUrl}ContratoAluguel/${guid}/Atualizar`,
