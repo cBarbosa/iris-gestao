@@ -89,14 +89,14 @@
 			<ng-container *ngIf="isLoading">
 				<app-spinner styleClass="mt-11"></app-spinner>
 			</ng-container>
-			<ng-container *ngIf="!isLoading">
+			<ng-container *ngIf="!isLoading && totalRecords == 0">
 				<div class="no-results-warn">
 					<span>Nenhum resultado</span>
 				</div>
 			</ng-container>
 
 			<p-table
-				*ngIf="!isMobile"
+				*ngIf="!isMobile && totalRecords > 0"
 				[value]="resultEntries"
 				styleClass="p-datatable-striped"
 				[tableStyle]="{ 'min-width': '50rem' }"
@@ -114,22 +114,21 @@
 						<th>Imóvel</th>
 						<th>Unidade Locada</th>
 						<th>Início do Contrato</th>
-						<th>Próxima Atualização</th>
 						<th>Vencimento do Contrato</th>
+						<th>Próxima Atualização</th>
 						<th>Base de Reajuste</th>
-						<th>Obs</th>
+						<!-- <th>Obs</th> -->
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="font-bold">{{ entry.numCentroCusto }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeLocatario ?? "-" }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeImovel }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeLocador ?? '-' }}</td>
-
-						<td>{{ entry.somaAreaUtil }}</td>
-						<td>{{ entry.somaValorAluguel  }}</td>
-						<td>{{ entry.somaValorPotencial }}</td>
+						<td class="font-bold max-w-[160px]">{{ entry.nomeImovel }}</td>
+						<td class="max-w-[160px]">{{ entry.nomeLocador }}</td>
+						<td >{{ entry.inicioContrato | date:'shortDate' }}</td>
+						<td >{{ entry.fimContrato | date:'shortDate' }}</td>
+						<td >{{ entry.proximaAtualizacao | date:'shortDate' }}</td>
+						<td>{{ entry.baseReajuste }}</td>
+						<!-- <td>{{ entry.somaValorPotencial }}</td> -->
 					</tr>
 				</ng-template> 
 

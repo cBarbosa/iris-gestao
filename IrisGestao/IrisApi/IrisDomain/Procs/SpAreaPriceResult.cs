@@ -1,6 +1,6 @@
 ﻿namespace IrisGestao.Domain.Procs;
 
-public class SpAreaPriceResult
+public partial class SpAreaPriceResult
 {
     public string Referencia { get; set; }
     public decimal? MediaPonderada { get; set; }

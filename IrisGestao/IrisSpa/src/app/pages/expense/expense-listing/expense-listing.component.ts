@@ -182,7 +182,6 @@ export class ExpenseListingComponent {
 				.subscribe({
 					next: (event: any) => {
 						if (event.success === true) {
-							console.log(event.data);
 
 							res({
 								totalCount: event.data.totalCount,

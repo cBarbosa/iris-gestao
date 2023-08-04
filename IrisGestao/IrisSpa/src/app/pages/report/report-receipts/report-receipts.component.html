@@ -89,14 +89,14 @@
 			<ng-container *ngIf="isLoading">
 				<app-spinner styleClass="mt-11"></app-spinner>
 			</ng-container>
-			<ng-container *ngIf="!isLoading">
+			<ng-container *ngIf="!isLoading && totalRecords == 0">
 				<div class="no-results-warn">
 					<span>Nenhum resultado</span>
 				</div>
 			</ng-container>
 
 			<p-table
-				*ngIf="!isMobile"
+				*ngIf="!isMobile && totalRecords > 0"
 				[value]="resultEntries"
 				styleClass="p-datatable-striped"
 				[tableStyle]="{ 'min-width': '50rem' }"
@@ -111,27 +111,46 @@
 			>
 				<ng-template pTemplate="header">
 					<tr *ngIf="!isLoading">
-						<th>Data Pagamento/Vencimento</th>
+						<th>Data Baixa</th>
+						<th>Vecimento</th>
+						<th>Cliente</th>
 						<th>Documento</th>
-						<th>Complemento</th>
-						<th>Título</th>
-						<th>Valor total do título</th>
-						<th>Valor pago / a pagar</th>
-						<th>Total da conta</th>
+						<th>Titulo</th>
+						<th>Valor Baixa</th>
+						<th>Desconto</th>
+						<th>Liquido</th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="font-bold">{{ entry.numCentroCusto }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeLocatario ?? "-" }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeImovel }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeLocador ?? '-' }}</td>
-
-						<td>{{ entry.somaAreaUtil }}</td>
-						<td>{{ entry.somaValorAluguel  }}</td>
-						<td>{{ entry.somaValorPotencial }}</td>
+						<td class="font-bold">{{ entry.dataBaixa | date:'shortDate' }}</td>
+						<td class="max-w-[120px]">{{ entry.dataVencimento | date:'shortDate' }}</td>
+						<td class="max-w-[120px]">{{ entry.nomeCliente }}</td>
+						<td class="max-w-[120px]">{{ entry.nomeDocumento }}</td>
+						<td class="max-w-[120px]">{{ entry.nomeTitulo }}</td>
+						<td>{{ entry.valorBaixa | currency }}</td>
+						<td>{{ entry.valorDesconto | currency }}</td>
+						<td>{{ entry.valorLiquido | currency }}</td>
 					</tr>
 				</ng-template> 
+
+				<ng-template pTemplate="footer">
+					<tr class="bg-[#262626]">
+						<td colspan="5" class="bg-transparent text-white">Total</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Valor da Baixa</div>
+							<div>{{ totalSum?.totalBaixa | currency }}</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Valor Desconto</div>
+							<div>{{ totalSum?.totalDesconto | currency }}</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Liquido</div>
+							<div>{{ totalSum?.totalLiquido | currency }}</div>
+						</td>
+					</tr>
+				</ng-template>
 
 			</p-table>
 

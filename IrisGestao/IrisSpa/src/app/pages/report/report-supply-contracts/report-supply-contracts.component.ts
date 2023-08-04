@@ -161,6 +161,7 @@ export class ReportSupplyContractsComponent {
 				next: (data) => {
 					if (data) {
 						this.resultEntries = data;
+						this.totalRecords = this.resultEntries.length;
 					}
 				},
 				error: () => {

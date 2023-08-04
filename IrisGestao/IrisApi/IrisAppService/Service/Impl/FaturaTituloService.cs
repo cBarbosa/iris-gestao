@@ -33,8 +33,7 @@ public class FaturaTituloService : IFaturaTituloService
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
-        else if (faturaTitulo.StatusFatura.Equals(FaturaTituloEnum.INATIVO) ||
-                faturaTitulo.StatusFatura.Equals(FaturaTituloEnum.PAGO))
+        else if (faturaTitulo.StatusFatura.Equals(FaturaTituloEnum.INATIVO))
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1009, null!);
         }
@@ -122,6 +121,9 @@ public class FaturaTituloService : IFaturaTituloService
         
         faturaTitulo.DataVencimento = cmd.DataVencimento;
         faturaTitulo.Valor = cmd.Valor;
+
+        faturaTitulo.DataPagamento = cmd.DataPagamento;
+        faturaTitulo.ValorRealPago = cmd.ValorRealPago;
     }
     private static int calculaDiasAtraso(DateTime dataVencimento, DateTime DataPagamento)
     {

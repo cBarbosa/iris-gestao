@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
 import { ClienteService, CommonService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
+import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
 
 @Component({
 	selector: 'app-receiving-performance',
@@ -12,7 +13,11 @@ import { Utils } from 'src/app/shared/utils';
 	styleUrls: ['./receiving-performance.component.scss'],
 })
 export class ReceivingPerformanceComponent {
+	@ViewChild('chart') chartComponent: ChartComponent;
+	@ViewChild('lineChart') lineChartComponent: ChartComponent;
+	
 	data: any;
+	data2: any;
 	filterLocador: number;
 	filterTipo: number;
 	filterPeriodo: Date[];
@@ -55,9 +60,9 @@ export class ReceivingPerformanceComponent {
 			labels: [],
 			datasets: [
 				{
-					type: 'line',
-					label: 'Performance de recebimento',
-					borderColor: '#D08175',
+					type: 'bar',
+					label: 'Valor a receber',
+					backgroundColor: `#641B1E`,
 					data: [],
 				},
 				{
@@ -65,18 +70,24 @@ export class ReceivingPerformanceComponent {
 					label: 'Valor recebido',
 					backgroundColor: `#C9D78E`,
 					data: [],
-				},
+				}
+			]
+		};
+
+		this.data2 = {
+			labels: [],
+			datasets: [
 				{
-					type: 'bar',
-					label: 'Valor a receber',
-					backgroundColor: `#641B1E`,
+					type: 'line',
+					label: 'Performance de recebimento',
+					borderColor: '#D08175',
 					data: [],
-				},
-			],
+				}
+			]
 		};
 
 		const currYear = new Date().getFullYear();
-		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 31)];
+		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 1)];
 
 		this.getOwnersListData();
 		this.getUnitTypesData();
@@ -186,15 +197,19 @@ export class ReceivingPerformanceComponent {
 				next: (event) => {
 
 					this.data.labels = [];
-					this.data.datasets[1].data = []; // contratada
-					this.data.datasets[2].data = []; // potencial
-					this.data.datasets[0].data = []; // financeira
+					this.data2.labels = [];
+
+					this.data.datasets[0].data = []; // valor recebido
+					this.data.datasets[1].data = []; // valor a receber
+					this.data2.datasets[0].data = []; // performance
 
 					event.data.forEach((item: any) => {
 						this.data.labels.push(item.referencia);
-						this.data.datasets[1].data.push(item.contratada); // contratada
-						this.data.datasets[2].data.push(item.potencial); // potencial
-						this.data.datasets[0].data.push(item.financeira); // financeira
+						this.data2.labels.push(item.referencia);
+
+						this.data.datasets[1].data.push(item.valorRecebido); // valor recebido
+						this.data.datasets[0].data.push(item.valorReceber); // a receber
+						this.data2.datasets[0].data.push(item.performanceRecebimento * 100.0); // performance
 					});
 				},
 				error: () => {
@@ -204,6 +219,16 @@ export class ReceivingPerformanceComponent {
 					this.isLoading = false;
 				}
 			});
+	};
+
+	savePDF():void {
+
+		Utils
+		.saveChartsAsPdf(
+			this.chartComponent.chart,
+			this.lineChartComponent.chart,
+			'performance-recebimento',
+			'Performance de recebimento');
 	};
 
 };

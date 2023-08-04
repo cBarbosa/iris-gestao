@@ -25,7 +25,7 @@
 					pButton
 					type="button"
 					class="p-button-outlined h-9 addButton"
-					(click)="navigateTo('dashboard/area-price')"
+					(click)="savePDF()"
 				>
 					Salvar como PDF
 				</button>
@@ -70,7 +70,7 @@
 		</ng-container>
 
 		<div class="p-12 bg-white" *ngIf="!isLoading">
-			<app-chart [data]="data.datasets" [labels]="data.labels"></app-chart>
+			<app-chart [data]="data.datasets" [labels]="data.labels" #chart></app-chart>
 		</div>
 	</div>
 </div>
