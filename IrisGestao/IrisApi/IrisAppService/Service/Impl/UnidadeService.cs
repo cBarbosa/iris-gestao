@@ -171,6 +171,7 @@ public class UnidadeService: IUnidadeService
         }
 
         unidade.UnidadeLocada = false;
+        unidade.DataUltimaModificacao = DateTime.Now;
 
         try
         {
@@ -287,15 +288,11 @@ public class UnidadeService: IUnidadeService
             // TODO [Renato] alterar o tipo GuidReferencia para GUID
             unidade.GuidReferencia = $"{Guid.NewGuid()}";
             unidade.DataCriacao = DateTime.Now;
-            unidade.DataUltimaModificacao = DateTime.Now;
             unidade.Status = true;
             unidade.UnidadeLocada = false;
         }
-        else
-        {
-            unidade.DataUltimaModificacao = DateTime.Now;
-        }
-
+        
+        unidade.DataUltimaModificacao = DateTime.Now;
         unidade.IdTipoUnidade = cmd.IdTipoUnidade;
         unidade.AreaUtil = cmd.AreaUtil;
         unidade.AreaTotal = cmd.AreaTotal;

@@ -186,7 +186,7 @@ public class ContratoAluguelService: IContratoAluguelService
             ContratoAluguel.DataFimContrato = DateTime.Now; 
         }
         ContratoAluguel.Status = status;
-
+        ContratoAluguel.DataUltimaModificacao = DateTime.Now;
         try
         {
             contratoAluguelRepository.Update(ContratoAluguel);

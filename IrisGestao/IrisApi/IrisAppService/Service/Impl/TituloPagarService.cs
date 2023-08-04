@@ -237,6 +237,7 @@ public class TituloPagarService: ITituloPagarService
             TituloPagar.Status = false;
             foreach (var fatura in lstFaturasTitulo)
             {
+                fatura.DataUltimaModificacao = DateTime.Now;
                 fatura.Status = false;
                 fatura.StatusFatura = FaturaTituloEnum.INATIVO;
                 fatura.DescricaoBaixaFatura = "Fatura cancelada devido cancelamento do contrato de aluguel";
@@ -320,14 +321,13 @@ public class TituloPagarService: ITituloPagarService
             case null:
                 TituloPagar.GuidReferencia = Guid.NewGuid();
                 TituloPagar.DataCriacao = DateTime.Now;
-                TituloPagar.DataUltimaModificacao = DateTime.Now;
                 break;
             default:
                 TituloPagar.GuidReferencia = TituloPagar.GuidReferencia;
-                TituloPagar.DataUltimaModificacao = DateTime.Now;
                 break;
         }
 
+        TituloPagar.DataUltimaModificacao = DateTime.Now;
         TituloPagar.NumeroTitulo = TituloPagar.Sequencial + "/" + DateTime.Now.Year;
         TituloPagar.NomeTitulo = "Taxa de administração";
         TituloPagar.IdTipoTitulo = TipoTituloReceberEnum.TAXA_ADMINISTRACAO;
