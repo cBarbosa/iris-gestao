@@ -227,6 +227,7 @@ public class TituloReceberService: ITituloReceberService
             tituloReceber.Status = false;
             foreach (var fatura in lstFaturasTitulo)
             {
+                fatura.DataUltimaModificacao = DateTime.Now;
                 fatura.Status = false;
                 fatura.StatusFatura = FaturaTituloEnum.INATIVO;
                 fatura.DescricaoBaixaFatura = "Fatura cancelada devido cancelamento do contrato de aluguel";
@@ -286,6 +287,7 @@ public class TituloReceberService: ITituloReceberService
                 if (!unidade.UnidadeLocada)
                 {
                     unidade.UnidadeLocada = true;
+                    unidade.DataUltimaModificacao = DateTime.Now;
                     unidadeRepository.Update(unidade);
                 }
             }

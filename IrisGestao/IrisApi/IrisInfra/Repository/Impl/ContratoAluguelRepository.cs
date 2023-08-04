@@ -687,7 +687,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         return await DbSet
                         .Include(x => x.ContratoAluguelImovel)
                             .ThenInclude(x => x.ContratoAluguelUnidade)
-                        .Where(x => x.GuidReferencia.Equals(guid) && x.Status)
+                        .Where(x => x.GuidReferencia.Equals(guid))
                         .Select(x => new
                         {                            
                             ImovelAlugado = x.ContratoAluguelImovel.Select(x => new

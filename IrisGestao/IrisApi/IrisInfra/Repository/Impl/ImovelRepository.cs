@@ -244,10 +244,8 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
     
     public async Task<object> GetImoveisParaContrato()
     {
-        
         var result = Db.Unidade
-            .Where(u => Db.ContratoAluguelUnidade
-                .All(c => c.IdUnidade != u.Id) 
+            .Where(u => !u.UnidadeLocada
                 && (u.Status)
                 && (u.IdImovelNavigation.Status)
                 && (u.IdImovelNavigation.IdCategoriaImovel.Equals(TipoImovelEnum.IMOVEL_CARTEIRA)))

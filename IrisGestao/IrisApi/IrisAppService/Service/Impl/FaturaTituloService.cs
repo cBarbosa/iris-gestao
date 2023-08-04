@@ -102,12 +102,12 @@ public class FaturaTituloService : IFaturaTituloService
                 faturaTitulo.DataUltimaModificacao = DateTime.Now;
                 break;
         }
+        if (cmd.ValorRealPago < faturaTitulo.Valor)
+            faturaTitulo.StatusFatura = FaturaTituloEnum.PARCIAL;
+        else
+            faturaTitulo.StatusFatura = FaturaTituloEnum.PAGO;
 
-        //faturaTitulo.NumeroNotaFiscal           = cmd.NumeroNotaFiscal;
-        //faturaTitulo.DataEmissaoNotaFiscal      = cmd.DataEmissaoNotaFiscal;
         faturaTitulo.Status                     = true;
-        faturaTitulo.StatusFatura               = FaturaTituloEnum.PAGO;
-        //faturaTitulo.DataVencimento             = cmd.DataVencimento;
         faturaTitulo.DataPagamento              = cmd.DataPagamento;
         faturaTitulo.ValorRealPago              = cmd.ValorRealPago;
         faturaTitulo.DiasAtraso                 = diasAtraso > 0 ? diasAtraso : 0;
@@ -116,17 +116,22 @@ public class FaturaTituloService : IFaturaTituloService
 
     private static void BindEditarFaturaData(BaixaDeFaturaCommand cmd, FaturaTitulo faturaTitulo)
     {
+        if(cmd.DataPagamento.HasValue)
+        {
+            faturaTitulo.DiasAtraso = calculaDiasAtraso(cmd.DataVencimento.Value, cmd.DataPagamento.Value);
+        }
+        
         faturaTitulo.GuidReferencia = faturaTitulo.GuidReferencia;
         faturaTitulo.DataUltimaModificacao = DateTime.Now;
-        
         faturaTitulo.DataVencimento = cmd.DataVencimento;
         faturaTitulo.Valor = cmd.Valor;
-
         faturaTitulo.DataPagamento = cmd.DataPagamento;
         faturaTitulo.ValorRealPago = cmd.ValorRealPago;
+        faturaTitulo.DescricaoBaixaFatura = cmd.DescricaoBaixaFatura;
     }
     private static int calculaDiasAtraso(DateTime dataVencimento, DateTime DataPagamento)
     {
-        return (DataPagamento - dataVencimento).Days;
+        int diasAtraso = (DataPagamento - dataVencimento).Days;
+        return diasAtraso > 0 ? diasAtraso : 0;
     }
 }

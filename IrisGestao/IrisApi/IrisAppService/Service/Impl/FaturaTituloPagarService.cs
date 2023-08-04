@@ -67,14 +67,18 @@ public class FaturaTituloPagarService : IFaturaTituloPagarService
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
         else if (faturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.INATIVO) ||
-                faturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.PAGO))
+                faturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.PAGO) ||
+                faturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.PARCIAL))
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1009, null!);
         }
 
         int diasAtraso = calculaDiasAtraso(faturaTituloPagar.DataVencimento.Value, cmd.DataPagamento.Value);
 
-        faturaTituloPagar.StatusFatura = FaturaTituloEnum.PAGO;
+        if(cmd.ValorRealPago < faturaTituloPagar.Valor)
+            faturaTituloPagar.StatusFatura = FaturaTituloEnum.PARCIAL;
+        else
+            faturaTituloPagar.StatusFatura = FaturaTituloEnum.PAGO;
         faturaTituloPagar.DescricaoBaixaFatura = cmd.DescricaoBaixaFatura;
         faturaTituloPagar.DataPagamento = cmd.DataPagamento;
         faturaTituloPagar.ValorRealPago = cmd.ValorRealPago;
@@ -107,6 +111,10 @@ public class FaturaTituloPagarService : IFaturaTituloPagarService
                 FaturaTituloPagar.DataUltimaModificacao = DateTime.Now;
                 break;
         }
+        if (cmd.DataPagamento.HasValue)
+        {
+            FaturaTituloPagar.DiasAtraso = calculaDiasAtraso(cmd.DataVencimento.Value, cmd.DataPagamento.Value);
+        }
 
         FaturaTituloPagar.DataVencimento = cmd.DataVencimento;
         FaturaTituloPagar.Valor          = cmd.Valor;
@@ -126,6 +134,7 @@ public class FaturaTituloPagarService : IFaturaTituloPagarService
 
     private static int calculaDiasAtraso(DateTime dataVencimento, DateTime DataPagamento)
     {
-        return (DataPagamento - dataVencimento).Days;
+        int diasAtraso = (DataPagamento - dataVencimento).Days;
+        return diasAtraso > 0 ? diasAtraso : 0; ;
     }
 }
