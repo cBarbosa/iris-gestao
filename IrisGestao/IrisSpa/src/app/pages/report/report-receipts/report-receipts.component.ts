@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { first } from 'rxjs';
 import {
-	CommonService,
 	RentContractService,
 	ReportService,
 	ResponsiveService,
@@ -98,8 +97,7 @@ export class ReportReceiptsComponent {
 		private router: Router,
 		private responsiveService: ResponsiveService,
 		private reportService: ReportService,
-		private rentContract: RentContractService,
-		private commonService: CommonService
+		private rentContract: RentContractService
 	) {}
 
 	ngOnInit(): void {
@@ -245,8 +243,8 @@ export class ReportReceiptsComponent {
 	}
 
 	getUnitTypesData() {
-		this.commonService
-			.getUnitType()
+		this.rentContract
+			.getActiveUnitType()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {
