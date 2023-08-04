@@ -169,11 +169,11 @@ export class TopbarComponent {
 						id: route.startsWith('/report/') ? 'current' : '',
 						command: () => this.navigateTo('report/leased-area'),
 					},
-					{
-						label: 'Valor aluguel',
-						id: route.startsWith('/report/rent-amount') ? 'current' : '',
-						command: () => this.navigateTo('report/rent-amount'),
-					},
+					//{
+					//	label: 'Valor aluguel',
+					//	id: route.startsWith('/report/rent-amount') ? 'current' : '',
+					//	command: () => this.navigateTo('report/rent-amount'),
+					//},
 					//{
 					//	label: 'Vencimento/Reajuste de Contratos',
 					//	id: route.startsWith('/report/supply-contracts') ? 'current' : '',
