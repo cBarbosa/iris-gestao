@@ -623,6 +623,25 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                 parameters.ToArray());
     }
 
+    public async Task<IEnumerable<dynamic>> GetAllActivePropertTypes()
+    {
+        var retorno = await DbSet
+            .Include(x => x.ContratoAluguelImovel)
+                .ThenInclude(x => x.ContratoAluguelUnidade).ThenInclude(x => x.IdUnidadeNavigation)
+            .Where(x => x.Status
+                        && DateTime.Now > x.DataInicioContrato && DateTime.Now < x.DataFimContrato)
+            .Select(x => new
+            {
+                x.ContratoAluguelImovel.First().ContratoAluguelUnidade.First().IdUnidadeNavigation.IdTipoUnidadeNavigation.Id,
+                x.ContratoAluguelImovel.First().ContratoAluguelUnidade.First().IdUnidadeNavigation.IdTipoUnidadeNavigation.Nome,
+            })
+            .Distinct()
+            .OrderBy(x => x.Nome)
+            .ToListAsync();
+
+        return retorno;
+    }
+
     public async Task<IEnumerable<dynamic>> GetAllActiveProperties()
     {
         var retorno = await DbSet
@@ -652,8 +671,9 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                         && DateTime.Now > x.DataInicioContrato && DateTime.Now < x.DataFimContrato)
             .Select(x => new
             {
-                x.ContratoAluguelImovel.First().IdImovelNavigation.IdClienteProprietarioNavigation.Id,
-                x.ContratoAluguelImovel.First().IdImovelNavigation.IdClienteProprietarioNavigation.Nome
+                x.IdClienteNavigation.GuidReferencia,
+                x.IdClienteNavigation.Id,
+                x.IdClienteNavigation.Nome
             })
             .Distinct()
             .OrderBy(x => x.Nome)

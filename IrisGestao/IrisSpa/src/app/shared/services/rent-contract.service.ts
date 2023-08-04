@@ -116,4 +116,16 @@ export class RentContractService {
 				})
 			);
 	};
+
+	getActiveUnitType() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}ContratoAluguel/lista-tipo-imoveis`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getListaProprietariosNew: ${response.message}`);
+					return response;
+				})
+			);
+	};
 }

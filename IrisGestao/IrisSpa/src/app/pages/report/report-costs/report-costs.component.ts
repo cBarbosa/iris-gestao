@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { first } from 'rxjs';
-import { CommonService, RentContractService, ReportService, ResponsiveService } from 'src/app/shared/services';
+import { RentContractService, ReportService, ResponsiveService } from 'src/app/shared/services';
 import { Utils } from 'src/app/shared/utils';
 
 @Component({
@@ -91,8 +91,7 @@ export class ReportCostsComponent {
 		private router: Router,
 		private responsiveService: ResponsiveService,
 		private reportService: ReportService,
-		private rentContract: RentContractService,
-		private commonService: CommonService
+		private rentContract: RentContractService
 	) { };
 
   	ngOnInit(): void {
@@ -232,8 +231,8 @@ export class ReportCostsComponent {
 	};
 
 	getUnitTypesData() {
-		this.commonService
-			.getUnitType()
+		this.rentContract
+			.getActiveUnitType()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {
