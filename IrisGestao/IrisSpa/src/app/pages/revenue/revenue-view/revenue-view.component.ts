@@ -122,7 +122,8 @@ export class RevenueViewComponent {
 		if (
 			this.faturaSelected.statusFatura === 'Vencido' ||
 			this.faturaSelected.statusFatura === 'A vencer' ||
-			this.faturaSelected.statusFatura === 'Pago'
+			this.faturaSelected.statusFatura === 'Pago'||
+			this.faturaSelected.statusFatura === 'Parcial'
 		)
 			this.editarBaixaVisible = true;
 		else this.editarBaixaVisible = false;
