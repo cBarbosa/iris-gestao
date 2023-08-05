@@ -20,6 +20,6 @@ public class TipoTituloService: ITipoTituloService
 
         return !TipoTitulos.Any()
             ? new CommandResult(false, ErrorResponseEnums.Error_1000, null!)
-            : new CommandResult(true, SuccessResponseEnums.Success_1000, TipoTitulos);
+            : new CommandResult(true, SuccessResponseEnums.Success_1000, TipoTitulos.OrderBy(x=> x.Nome));
     }
 }
