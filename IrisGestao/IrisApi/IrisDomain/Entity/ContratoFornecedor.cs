@@ -25,13 +25,13 @@ public partial class ContratoFornecedor: BaseEntity<ContratoFornecedor>
     public string DescricaoServico { get; set; } = null!;
 
     [Column(TypeName = "decimal(8, 6)")]
-    public decimal? Percentual { get; set; }
+    public double? Percentual { get; set; }
 
     [Column(TypeName = "date")]
     public DateTime DataAtualizacao { get; set; }
 
     [Column(TypeName = "decimal(18, 2)")]
-    public decimal ValorServicoContratado { get; set; }
+    public double ValorServicoContratado { get; set; }
 
     [Column(TypeName = "date")]
     public DateTime DataInicioContrato { get; set; }
@@ -42,6 +42,9 @@ public partial class ContratoFornecedor: BaseEntity<ContratoFornecedor>
     public DateTime DataFimContrato { get; set; }
 
     public int DiaPagamento { get; set; }
+
+    [Column(TypeName = "date")]
+    public DateTime? DataVencimentoPrimeraParcela { get; set; }
 
     public int PeriodicidadeReajuste { get; set; }
 
