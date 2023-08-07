@@ -458,6 +458,7 @@ export class SupplierContractRegisterComponent {
 				pagamento: number; //x
 				reajuste: number; //x
 				periodicidade: number; //x
+				dataVencimentoPrimeraParcela: string;
 				// percentual: number;
 			};
 		} = this.registerForm.getRawValue();
@@ -475,6 +476,7 @@ export class SupplierContractRegisterComponent {
 			dataInicioContrato: string;
 			dataFimContrato: string;
 			diaPagamento: number;
+			dataVencimentoPrimeraParcela: string;
 			periodicidadeReajuste: number;
 		} = {
 			guidImovel: formData.contractInfo.imovel,
@@ -490,6 +492,7 @@ export class SupplierContractRegisterComponent {
 			dataInicioContrato: formData.valuesInfo.dataInicio,
 			dataFimContrato: formData.valuesInfo.dataFim,
 			diaPagamento: formData.valuesInfo.dataVencimento,
+			dataVencimentoPrimeraParcela: formData.valuesInfo.dataVencimentoPrimeraParcela,
 			periodicidadeReajuste: formData.valuesInfo.periodicidade,
 		};
 
