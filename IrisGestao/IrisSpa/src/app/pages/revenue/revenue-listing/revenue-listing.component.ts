@@ -189,6 +189,7 @@ export class RevenueListingComponent {
 								data: event.data.items.map((receita: any) => {
 									return {
 										tipoRecebimento: receita.nomeTitulo,
+										nome: receita.nomeTitulo,
 										numeroTitulo: receita.numeroTitulo,
 										imovel: receita.imoveil?.[0].nome,
 										locatario: receita.cliente?.nome,
