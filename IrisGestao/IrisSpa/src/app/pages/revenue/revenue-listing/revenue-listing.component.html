@@ -90,9 +90,8 @@
 			>
 				<ng-template pTemplate="header">
 					<tr *ngIf="!isLoadingRevenues && !noRestults">
-						<th>Tipo de recebimento</th>
+						<th>Nome</th>
 						<th>Imóvel</th>
-						<th>Número do Título</th>
 						<th>Proprietário</th>
 						<th>Locatário</th>
 						<th>Valor</th>
@@ -102,9 +101,8 @@
 				</ng-template>
 				<ng-template pTemplate="body" let-revenue>
 					<tr>
-						<td class="font-bold">{{ revenue.tipoRecebimento }}</td>
+						<td class="font-bold">{{ revenue.nome }}</td>
 						<td>{{ revenue.imovel }}</td>
-						<td>{{ revenue.numeroTitulo }}</td>
 						<td>{{ revenue.proprietario }}</td>
 						<td>{{ revenue.locatario }}</td>
 						<td>{{ revenue.valor | currency }}</td>
