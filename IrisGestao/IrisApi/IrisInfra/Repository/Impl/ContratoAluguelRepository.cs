@@ -625,14 +625,14 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
 
     public async Task<IEnumerable<dynamic>> GetAllActivePropertTypes()
     {
-        var retorno = await Db.Cliente
-            .Include(x => x.Imovel)
-            .ThenInclude(x => x.Unidade)
+        var retorno = await Db.Imovel
+            .Include(x => x.IdClienteProprietarioNavigation)
+            .Include(x => x.Unidade)
             .ThenInclude(x => x.IdTipoUnidadeNavigation)
             .Select(x => new
             {
-                x.Imovel.First().Unidade.First().IdTipoUnidadeNavigation.Id,
-                x.Imovel.First().Unidade.First().IdTipoUnidadeNavigation.Nome
+                x.Unidade.First().IdTipoUnidadeNavigation.Id,
+                x.Unidade.First().IdTipoUnidadeNavigation.Nome
             })
             .Distinct()
             .OrderBy(x => x.Nome)
@@ -666,9 +666,9 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
             .Include(x => x.IdClienteProprietarioNavigation)
             .Select(x => new
             {
-                x.GuidReferencia,
-                x.Id,
-                x.Nome
+                x.IdClienteProprietarioNavigation.GuidReferencia,
+                x.IdClienteProprietarioNavigation.Id,
+                x.IdClienteProprietarioNavigation.Nome
             })
             .Distinct()
             .OrderBy(x => x.Nome)
