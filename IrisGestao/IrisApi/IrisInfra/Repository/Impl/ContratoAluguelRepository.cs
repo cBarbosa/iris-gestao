@@ -625,15 +625,14 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
 
     public async Task<IEnumerable<dynamic>> GetAllActivePropertTypes()
     {
-        var retorno = await DbSet
-            .Include(x => x.ContratoAluguelImovel)
-                .ThenInclude(x => x.ContratoAluguelUnidade).ThenInclude(x => x.IdUnidadeNavigation)
-            .Where(x => x.Status
-                        && DateTime.Now > x.DataInicioContrato && DateTime.Now < x.DataFimContrato)
+        var retorno = await Db.Cliente
+            .Include(x => x.Imovel)
+            .ThenInclude(x => x.Unidade)
+            .ThenInclude(x => x.IdTipoUnidadeNavigation)
             .Select(x => new
             {
-                x.ContratoAluguelImovel.First().ContratoAluguelUnidade.First().IdUnidadeNavigation.IdTipoUnidadeNavigation.Id,
-                x.ContratoAluguelImovel.First().ContratoAluguelUnidade.First().IdUnidadeNavigation.IdTipoUnidadeNavigation.Nome,
+                x.Imovel.First().Unidade.First().IdTipoUnidadeNavigation.Id,
+                x.Imovel.First().Unidade.First().IdTipoUnidadeNavigation.Nome
             })
             .Distinct()
             .OrderBy(x => x.Nome)
@@ -663,17 +662,13 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
 
     public async Task<IEnumerable<dynamic>> GetAllActiveOwners()
     {
-        var retorno = await DbSet
-            .Include(x => x.ContratoAluguelImovel)
-            .ThenInclude(y => y.IdImovelNavigation)
-            .ThenInclude(z => z.IdClienteProprietarioNavigation)
-            .Where(x => x.Status
-                        && DateTime.Now > x.DataInicioContrato && DateTime.Now < x.DataFimContrato)
+        var retorno = await Db.Imovel
+            .Include(x => x.IdClienteProprietarioNavigation)
             .Select(x => new
             {
-                x.IdClienteNavigation.GuidReferencia,
-                x.IdClienteNavigation.Id,
-                x.IdClienteNavigation.Nome
+                x.GuidReferencia,
+                x.Id,
+                x.Nome
             })
             .Distinct()
             .OrderBy(x => x.Nome)
