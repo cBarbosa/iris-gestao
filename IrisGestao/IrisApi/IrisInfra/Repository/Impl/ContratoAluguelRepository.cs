@@ -554,6 +554,8 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
     }
 
     public async Task<IEnumerable<SpExpensesResult>?> GetReportExpenses(
+        DateTime dateRefInit,
+        DateTime dateRefEnd,
         bool? status,
         int? idImovel,
         int? idTipoImovel,
@@ -561,6 +563,10 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         int? idLocatario)
     {
         var parameters = new List<SqlParameter> {
+            new ("@DataInicioReferencia", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimReferencia", SqlDbType.Date)
+                {Value = dateRefEnd},
             new ("@Status", SqlDbType.Bit)
                 {Value = status.HasValue ? status : DBNull.Value, IsNullable = true},
             new ("@IdImovel", SqlDbType.Int)
@@ -572,11 +578,13 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         };
 
         return await Db
-            .SqlQueryAsync<SpExpensesResult>("Exec Sp_Expenses @Status, @IdImovel, @IdTipoImovel",
+            .SqlQueryAsync<SpExpensesResult>("Exec Sp_Expenses @DataInicioReferencia, @DataFimReferencia, @Status, @IdImovel, @IdTipoImovel",
                 parameters.ToArray());
     }
 
     public async Task<IEnumerable<SpRevenuesResult>?> GetReportRevenues(
+        DateTime dateRefInit,
+        DateTime dateRefEnd,
         bool? status,
         int? idImovel,
         int? idTipoImovel,
@@ -584,6 +592,10 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         int? idLocatario)
     {
         var parameters = new List<SqlParameter> {
+            new ("@DataInicioReferencia", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimReferencia", SqlDbType.Date)
+                {Value = dateRefEnd},
             new ("@Status", SqlDbType.Bit)
                 {Value = status.HasValue ? status : DBNull.Value, IsNullable = true},
             new ("@IdImovel", SqlDbType.Int)
@@ -595,7 +607,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         };
 
         return await Db
-            .SqlQueryAsync<SpRevenuesResult>("Exec Sp_Revenues @Status, @IdImovel, @IdTipoImovel",
+            .SqlQueryAsync<SpRevenuesResult>("Exec Sp_Revenues @DataInicioReferencia, @DataFimReferencia, @Status, @IdImovel, @IdTipoImovel",
                 parameters.ToArray());
     }
 

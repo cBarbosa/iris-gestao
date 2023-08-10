@@ -26,7 +26,8 @@ import { MenuModule } from 'primeng/menu';
     TableModule,
 		SpinnerComponent,
     DropdownModule,
-    MenuModule
+    MenuModule,
+    CalendarModule
   ]
 })
 export class ReportCostsModule { }

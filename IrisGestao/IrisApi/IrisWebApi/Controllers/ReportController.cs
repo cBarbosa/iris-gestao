@@ -38,23 +38,27 @@ public class ReportController : ControllerBase
     
     [HttpGet("expenses")]
     public async Task<IActionResult> GetExpenses(
+        [FromQuery] DateTime? DateRefInit,
+        [FromQuery] DateTime? DateRefEnd,
         [FromQuery] int? IdImovel,
         [FromQuery] int? IdLocador,
         [FromQuery] int? IdTipoImovel,
         [FromQuery] int? IdLocatario,
         [FromQuery] bool? Status
     ) =>
-        Ok(await contratoAluguelService.GetReportExpenses(Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario));
+        Ok(await contratoAluguelService.GetReportExpenses(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario));
     
     [HttpGet("revenues")]
     public async Task<IActionResult> GetRevenues(
+        [FromQuery] DateTime? DateRefInit,
+        [FromQuery] DateTime? DateRefEnd,
         [FromQuery] int? IdImovel,
         [FromQuery] int? IdLocador,
         [FromQuery] int? IdTipoImovel,
         [FromQuery] int? IdLocatario,
         [FromQuery] bool? Status
-    ) =>
-        Ok(await contratoAluguelService.GetReportRevenues(Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario));
+        ) =>
+        Ok(await contratoAluguelService.GetReportRevenues(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario));
     
     [HttpGet("supply-contract")]
     public async Task<IActionResult> GetSupplyContract(
