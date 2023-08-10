@@ -701,8 +701,9 @@
 		<button
 			pButton
 			type="button"
-			label="Continuar"
+			[label]="currentStep === 3 ? 'Finalizar' : 'Continuar'"
 			class="h-11"
+			[disabled]="isRegistering"
 			(click)="nextStep()"
 		></button>
 	</div>
