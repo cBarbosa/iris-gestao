@@ -113,6 +113,16 @@
 			<section class="fatura" *ngIf="revenue?.faturas?.length > 0">
 				<header class="flex justify-between flex-wrap items-start mb-5">
 					<h2 class="mb-2">Faturas</h2>
+					<button
+						pButton
+						type="button"
+						icon="pi pi-plus"
+						iconPos="left"
+						class="p-button-outlined icon-left h-9"
+						(click)="showAddFatura()"
+					>
+						Nova fatura
+					</button>
 				</header>
 
 				<p-table
@@ -202,12 +212,9 @@
 										Editar
 									</button>
 								</ng-container>
-								
+
 								<ng-container
-									*ngIf="
-										fatura.statusFatura === 'Pago';
-										else detalhesBtn
-									"
+									*ngIf="fatura.statusFatura === 'Pago'; else detalhesBtn"
 								>
 									<button
 										pButton
@@ -222,17 +229,12 @@
 										type="button"
 										class="p-button-outlined h-9 justify-center text-sm"
 										(click)="setCurrentFatura(fatura); showEditarBaixaVisible()"
-										*ngIf="
-											fatura.statusFatura === 'Pago';
-											else detalhesBtn
-										"
+										*ngIf="fatura.statusFatura === 'Pago'; else detalhesBtn"
 									>
 										Editar
 									</button>
 								</ng-container>
-								<ng-template #detalhesBtn>
-
-								</ng-template>
+								<ng-template #detalhesBtn> </ng-template>
 							</td>
 						</tr>
 					</ng-template>
@@ -399,6 +401,12 @@
 	[guidExpense]="faturaSelected?.guidReferencia"
 	[(isVisible)]="editarBaixaVisible"
 ></app-edicao-titulo-sidebar>
+
+<app-sidebar-add-fatura
+	[cancel]="hideBaixaTitulo"
+	[guid]="guid"
+	[(isVisible)]="addFaturaVisible"
+></app-sidebar-add-fatura>
 
 <p-sidebar [(visible)]="baixaTituloVisible" position="right">
 	<ng-template pTemplate="header">

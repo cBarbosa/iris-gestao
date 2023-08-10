@@ -4,44 +4,32 @@ import {
 	AbstractControl,
 	FormBuilder,
 	FormGroup,
-	FormsModule,
 	ReactiveFormsModule,
 	Validators,
 } from '@angular/forms';
-import { DropdownItem } from 'src/app/shared/models/types';
-import { AnexoService } from 'src/app/shared/services/anexo.service';
-import { Utils } from 'src/app/shared/utils';
-import { first } from 'rxjs';
-import { CalendarModule } from 'primeng/calendar';
-import { NgxMaskModule } from 'ngx-mask';
-import { InputTextModule } from 'primeng/inputtext';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
-import { NgxCurrencyModule } from 'ngx-currency';
-import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
 import { SidebarModule } from 'primeng/sidebar';
-import { InputTextarea, InputTextareaModule } from 'primeng/inputtextarea';
-import { RevenueService } from 'src/app/shared/services/revenue.service';
+import { CalendarModule } from 'primeng/calendar';
+import { InputTextModule } from 'primeng/inputtext';
+import { RevenueService } from '../../services/revenue.service';
+import { Utils } from '../../utils';
+import { first } from 'rxjs';
+import { ResponsiveDialogComponent } from '../responsive-dialog/responsive-dialog.component';
 
 @Component({
-	selector: 'app-edicao-titulo-sidebar',
+	selector: 'app-sidebar-add-fatura',
 	standalone: true,
 	imports: [
 		CommonModule,
-		FormsModule,
 		ReactiveFormsModule,
-		NgxMaskModule,
-		InputTextModule,
-		InputTextareaModule,
-		CalendarModule,
-		FileUploadComponent,
-		NgxCurrencyModule,
-		ResponsiveDialogComponent,
 		SidebarModule,
+		CalendarModule,
+		InputTextModule,
+		ResponsiveDialogComponent,
 	],
-	templateUrl: './edicao-titulo-sidebar.component.html',
-	styleUrls: ['./edicao-titulo-sidebar.component.scss'],
+	templateUrl: './sidebar-add-fatura.component.html',
+	styleUrls: ['./sidebar-add-fatura.component.scss'],
 })
-export class EdicaoTituloSidebarComponent {
+export class SidebarAddFaturaComponent {
 	@Input()
 	onRegister: Function;
 
@@ -53,7 +41,7 @@ export class EdicaoTituloSidebarComponent {
 	registerOnSubmit: boolean = false;
 
 	@Input()
-	guidExpense: string | null;
+	guid: string | null;
 
 	@Input()
 	cancel: Function;
@@ -63,26 +51,10 @@ export class EdicaoTituloSidebarComponent {
 
 	@Output() isVisibleChange = new EventEmitter<boolean>();
 
-	@Input()
-	data: {
-		dataCriacao: string;
-		dataUltimaModificacao: string;
-		dataVencimento: string;
-		descricaoBaixaFatura: string;
-		guidReferencia: string;
-		numeroFatura: string;
-		numeroParcela: number;
-		status: boolean;
-		statusFatura: string;
-		valorFatura: number;
-	} | null;
-
 	form: FormGroup;
 
 	onInputDate: Function;
 	onBlurDate: Function;
-
-	selectedFile: File;
 
 	displayModal: boolean = false;
 
@@ -96,38 +68,20 @@ export class EdicaoTituloSidebarComponent {
 		message: '',
 	};
 
-	opcoesPorcentagemAdm: DropdownItem[] = [
-		{
-			label: 'Selecione',
-			value: null,
-			disabled: true,
-		},
-	];
-
 	constructor(
 		private fb: FormBuilder,
-		private revenueService: RevenueService,
-		private anexoService: AnexoService
+		private revenueService: RevenueService
 	) {}
 
 	ngOnInit() {
-		// console.debug('Fatura detalhes: >> ' + JSON.stringify(this.data));
-		// console.debug('guid: >> ' + this.guidExpense);
-
-		if (this.registerOnSubmit && !this.guidExpense)
+		if (this.registerOnSubmit && !this.guid)
 			throw new Error(
 				"edicao-titulo-sidebar: O Guid de receita deve ser informado caso o parâmetro 'registerOnSubmit' seja verdadeiro."
 			);
 
 		this.form = this.fb.group({
-			numeroNotaFiscal: [
-				{ value: this.data?.numeroFatura ?? null, disabled: true },
-			],
-			numeroParcela: [
-				{ value: this.data?.numeroParcela ?? null, disabled: true },
-			],
-			valor: [this.data?.valorFatura ?? null, Validators.required],
-			dataVencimento: [this.data?.dataVencimento ?? null, Validators.required],
+			valor: [null, Validators.required],
+			dataVencimento: [null, Validators.required],
 		});
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
@@ -147,18 +101,6 @@ export class EdicaoTituloSidebarComponent {
 		this.isVisibleChange.emit(false);
 	}
 
-	onSidebarShow() {
-		console.log('patching values', this.data);
-		this.form.setValue({
-			valor: this.data?.valorFatura,
-			numeroNotaFiscal: this.data?.numeroFatura,
-			numeroParcela: this.data?.numeroParcela,
-			dataVencimento: this.data?.dataVencimento
-				? new Date(this.data?.dataVencimento)
-				: '',
-		});
-	}
-
 	onSubmit(e: any) {
 		if (this.form.invalid) {
 			this.form.markAllAsTouched();
@@ -176,8 +118,9 @@ export class EdicaoTituloSidebarComponent {
 
 		// if (this.onSubmitForm) this.onSubmitForm(contactObj);
 
-		if (this.registerOnSubmit && this.guidExpense)
-			this.editInvoice(edicaoObj)
+		if (this.registerOnSubmit && this.guid) {
+			// this.editInvoice(edicaoObj)
+			Promise.resolve()
 				.then(() => {
 					this.openModal();
 					if (this.onSubmitForm) this.onSubmitForm(edicaoObj);
@@ -186,7 +129,7 @@ export class EdicaoTituloSidebarComponent {
 					this.openModal();
 					console.error(err);
 				});
-		else {
+		} else {
 			if (this.onSubmitForm) this.onSubmitForm(edicaoObj);
 		}
 	}
@@ -197,7 +140,7 @@ export class EdicaoTituloSidebarComponent {
 	}): Promise<unknown> {
 		return new Promise((res, rej) => {
 			this.revenueService
-				.editarFatura(this.guidExpense!, edicaoObj)
+				.editarFatura(this.guid!, edicaoObj)
 				.pipe(first())
 				.subscribe({
 					next: (response) => {
@@ -211,16 +154,6 @@ export class EdicaoTituloSidebarComponent {
 							this.editSuccess = true;
 
 							res(response);
-
-							const formData = new FormData();
-
-							formData.append('files', this.selectedFile);
-
-							this.anexoService.registerFile(
-								response.data.guidReferencia,
-								formData,
-								'outrosdocs'
-							);
 						} else {
 							this.modalContent = {
 								header: 'Edição não realizado',
@@ -254,11 +187,6 @@ export class EdicaoTituloSidebarComponent {
 			location.reload();
 		}
 	}
-
-	onFileSelect(e: any) {
-		this.selectedFile = e[0];
-	}
-
 	cancelEdit() {
 		this.isVisible = false;
 		this.cancel();
