@@ -153,6 +153,8 @@ export class ReportService {
 	};
 
 	getCosts(
+		DateRefInit: string,
+		DateRefEnd: string,
 		imovelId: number | undefined,
 		status: boolean | undefined,
 		tipoImovelId: number | undefined,
@@ -161,6 +163,8 @@ export class ReportService {
 			return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Report/expenses`, {
 				params: {
+					DateRefInit,
+					DateRefEnd,
 					Status: status ?? '',
 					IdImovel: imovelId ?? '',
 					IdTipoImovel: tipoImovelId ?? '',
@@ -179,6 +183,8 @@ export class ReportService {
 	};
 
 	getReceipts(
+		DateRefInit: string,
+		DateRefEnd: string,
 		imovelId: number | undefined,
 		status: boolean | undefined,
 		tipoImovelId: number | undefined,
@@ -187,6 +193,8 @@ export class ReportService {
 			return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Report/Revenues`, {
 				params: {
+					DateRefInit,
+					DateRefEnd,
 					Status: status ?? '',
 					IdImovel: imovelId ?? '',
 					IdTipoImovel: tipoImovelId ?? '',

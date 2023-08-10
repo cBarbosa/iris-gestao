@@ -20,8 +20,8 @@ public interface IContratoAluguelRepository : IRepository<ContratoAluguel>, IDis
     Task<object?> GetUnidadesByContratoAluguel(Guid guid);
     Task<IEnumerable<SpLeasedAreaResult>?> GetReportLeasedArea(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
     Task<IEnumerable<SpRentValueResult>?> GetReportRentValue(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario, DateTime? dateRef);
-    Task<IEnumerable<SpExpensesResult>?> GetReportExpenses(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
-    Task<IEnumerable<SpRevenuesResult>?> GetReportRevenues(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
+    Task<IEnumerable<SpExpensesResult>?> GetReportExpenses(DateTime dateInit, DateTime dateEnd, bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
+    Task<IEnumerable<SpRevenuesResult>?> GetReportRevenues(DateTime dateInit, DateTime dateEnd, bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
     Task<IEnumerable<SpSupplyContractsResult>?> GetReportSupplyContract(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
     Task<IEnumerable<dynamic>> GetAllActivePropertTypes();
 }

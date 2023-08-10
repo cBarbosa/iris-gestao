@@ -253,7 +253,7 @@ export class FinancialVacancyComponent implements OnInit {
 		};
 
 		const currYear = new Date().getFullYear();
-		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 31)];
+		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 1)];
 
 		this.getOwnersListData();
 		this.getUnitTypesData();
