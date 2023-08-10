@@ -88,13 +88,6 @@ export class SupplierRegisterComponent implements OnInit {
 		message: '',
 	};
 
-	dropDownBankList: DropdownItem[] = [
-		{
-			label: 'Escolha o banco',
-			value: null,
-		},
-	];
-
 	constructor(
 		private fb: FormBuilder,
 		private route: ActivatedRoute,
@@ -175,7 +168,6 @@ export class SupplierRegisterComponent implements OnInit {
 		this.onBlurDate = onBlurDate;
 
 		this.getData();
-		this.getBanks();
 	}
 
 	initForm = (): void => {
@@ -197,7 +189,7 @@ export class SupplierRegisterComponent implements OnInit {
 				Cep: ['', Validators.required],
 			}),
 			bankInfo: this.fb.group({
-				IdBanco: [''],
+				Banco: ['', Validators.maxLength(100)],
 				Agencia: ['', Validators.maxLength(5)],
 				Conta: ['', Validators.maxLength(9)],
 				Operacao: ['', Validators.maxLength(4)],
@@ -246,7 +238,7 @@ export class SupplierRegisterComponent implements OnInit {
 						Estado: supplier?.estado,
 					},
 					bankInfo: {
-						IdBanco: supplier?.dadoBancario?.idBanco,
+						Banco: supplier?.dadoBancario?.banco,
 						Agencia: supplier?.dadoBancario?.agencia,
 						Conta: supplier?.dadoBancario?.conta,
 						Operacao: supplier?.dadoBancario?.operacao,
@@ -275,24 +267,6 @@ export class SupplierRegisterComponent implements OnInit {
 
 				this.isLoadingData = false;
 			});
-	};
-
-	getBanks = (): void => {
-		this.dominiosService.getBanks().subscribe({
-			next: (response: any) => {
-				if (response.success) {
-					response?.data.forEach((bank: any) => {
-						this.dropDownBankList.push({
-							label: bank.descricao,
-							value: bank.id,
-						});
-					});
-				}
-			},
-			error: (error: any) => {
-				console.error(error);
-			},
-		});
 	};
 
 	onSubmit = (e: any = null): void => {
@@ -341,7 +315,7 @@ export class SupplierRegisterComponent implements OnInit {
 			nps: 0,
 			DadosBancarios: {
 				GuidReferencia: this.uid != 'new' ? this.uid : null,
-				IdBanco: this.bankInfoForm.value.IdBanco,
+				Banco: this.bankInfoForm.value.Banco,
 				Agencia: this.bankInfoForm.value.Agencia,
 				Conta: this.bankInfoForm.value.Conta,
 				Operacao: this.bankInfoForm.value.Operacao,

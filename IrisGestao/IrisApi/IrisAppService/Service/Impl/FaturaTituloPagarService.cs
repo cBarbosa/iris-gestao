@@ -116,20 +116,19 @@ public class FaturaTituloPagarService : IFaturaTituloPagarService
             FaturaTituloPagar.DiasAtraso = calculaDiasAtraso(cmd.DataVencimento.Value, cmd.DataPagamento.Value);
         }
 
-        FaturaTituloPagar.DataVencimento = cmd.DataVencimento;
-        FaturaTituloPagar.Valor          = cmd.Valor;
-        FaturaTituloPagar.DataPagamento = cmd.DataPagamento;
-        FaturaTituloPagar.ValorRealPago = cmd.ValorRealPago;
-        FaturaTituloPagar.DescricaoBaixaFatura = cmd.DescricaoBaixaFatura; 
-        /*
-        FaturaTituloPagar.NumeroNotaFiscal           = cmd.NumeroNotaFiscal;
-        FaturaTituloPagar.DataEmissaoNotaFiscal      = cmd.DataEmissaoNotaFiscal;
-        FaturaTituloPagar.DataEnvio                  = cmd.DataEnvio;
-        FaturaTituloPagar.Status                     = true;
-        //FaturaTituloPagar.StatusFatura               = FaturaTituloEnum.PAGO;
-        FaturaTituloPagar.DataPagamento              = cmd.DataPagamento;
-        FaturaTituloPagar.ValorRealPago              = cmd.ValorRealPago;
-        FaturaTituloPagar.DescricaoBaixaFatura       = cmd.DescricaoBaixaFatura;*/
+        FaturaTituloPagar.DataVencimento        = cmd.DataVencimento;
+        FaturaTituloPagar.Valor                 = cmd.Valor;
+        FaturaTituloPagar.DataPagamento         = cmd.DataPagamento;
+        FaturaTituloPagar.ValorRealPago         = cmd.ValorRealPago;
+        FaturaTituloPagar.DescricaoBaixaFatura  = cmd.DescricaoBaixaFatura;
+
+        if (FaturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.PAGO) || FaturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.PARCIAL))
+        {
+            if (cmd.ValorRealPago < cmd.Valor)
+                FaturaTituloPagar.StatusFatura = FaturaTituloEnum.PARCIAL;
+            else
+                FaturaTituloPagar.StatusFatura = FaturaTituloEnum.PAGO;
+        }
     }
 
     private static int calculaDiasAtraso(DateTime dataVencimento, DateTime DataPagamento)
