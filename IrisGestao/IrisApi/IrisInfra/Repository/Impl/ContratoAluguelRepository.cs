@@ -567,8 +567,8 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                 {Value = dateRefInit},
             new ("@DataFimReferencia", SqlDbType.Date)
                 {Value = dateRefEnd},
-            new ("@Status", SqlDbType.Bit)
-                {Value = status.HasValue ? status : DBNull.Value, IsNullable = true},
+            new ("@IdLocador", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
             new ("@IdImovel", SqlDbType.Int)
                 {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true},
             new ("@IdTipoImovel", SqlDbType.Int)
@@ -578,7 +578,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         };
 
         return await Db
-            .SqlQueryAsync<SpExpensesResult>("Exec Sp_Expenses @DataInicioReferencia, @DataFimReferencia, @Status, @IdImovel, @IdTipoImovel",
+            .SqlQueryAsync<SpExpensesResult>("Exec Sp_Expenses @DataInicioReferencia, @DataFimReferencia, @IdLocador, @IdLocatario, @IdImovel, @IdTipoImovel",
                 parameters.ToArray());
     }
 
@@ -596,8 +596,8 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                 {Value = dateRefInit},
             new ("@DataFimReferencia", SqlDbType.Date)
                 {Value = dateRefEnd},
-            new ("@Status", SqlDbType.Bit)
-                {Value = status.HasValue ? status : DBNull.Value, IsNullable = true},
+            new ("@IdLocador", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
             new ("@IdImovel", SqlDbType.Int)
                 {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true},
             new ("@IdTipoImovel", SqlDbType.Int)
@@ -607,7 +607,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         };
 
         return await Db
-            .SqlQueryAsync<SpRevenuesResult>("Exec Sp_Revenues @DataInicioReferencia, @DataFimReferencia, @Status, @IdImovel, @IdTipoImovel",
+            .SqlQueryAsync<SpRevenuesResult>("Exec Sp_Revenues @DataInicioReferencia, @DataFimReferencia, @IdLocador, @IdLocatario, @IdImovel, @IdTipoImovel",
                 parameters.ToArray());
     }
 
@@ -676,11 +676,30 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
     {
         var retorno = await Db.Imovel
             .Include(x => x.IdClienteProprietarioNavigation)
+            .Where(x => x.Status && x.IdClienteProprietarioNavigation.Status)
             .Select(x => new
             {
                 x.IdClienteProprietarioNavigation.GuidReferencia,
                 x.IdClienteProprietarioNavigation.Id,
                 x.IdClienteProprietarioNavigation.Nome
+            })
+            .Distinct()
+            .OrderBy(x => x.Nome)
+            .ToListAsync();
+
+        return retorno;
+    }
+    
+    public async Task<IEnumerable<dynamic>> GetActiveRenters()
+    {
+        var retorno = await DbSet
+            .Include(x => x.IdClienteNavigation)
+            .Where(x => x.Status && x.IdClienteNavigation.Status)
+            .Select(x => new
+            {
+                x.IdClienteNavigation.GuidReferencia,
+                x.IdClienteNavigation.Id,
+                x.IdClienteNavigation.Nome
             })
             .Distinct()
             .OrderBy(x => x.Nome)

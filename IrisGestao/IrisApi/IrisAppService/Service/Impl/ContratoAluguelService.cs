@@ -396,6 +396,15 @@ public class ContratoAluguelService: IContratoAluguelService
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
+    public async Task<CommandResult> GetActiveRenters()
+    {
+        var retorno = await contratoAluguelRepository.GetActiveRenters();
+     
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+
     private async Task CriaContratoAluguelImovel(int idContratoAluguel, List<ContratoAluguelImovelCommand> lstContratoImovel)
     {
         foreach (ContratoAluguelImovelCommand contratoImovel in lstContratoImovel)

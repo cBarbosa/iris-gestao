@@ -112,6 +112,7 @@ export class ReportCostsComponent {
 		this.getOwnersListData();
 		this.getUnitTypesData();
 		this.getPropertiesListData();
+		this.getRentersListData();
 	};
 
   	openFilters() {
@@ -132,11 +133,12 @@ export class ReportCostsComponent {
 			const endDateString = endDate.toISOString().split('T')[0];
 
 			const idLocador = this.filterLocador ?? null;
+			const idLocatario = this.filterLocatario ?? null;
 			const idTipo = this.filterTipoImovel ?? null;
 			const idImovel = this.filterImovel ?? null;
 			const status = this.filterStatus ?? null;
 
-			this.getData(startDateString, endDateString, idImovel, status, idTipo, undefined, idLocador);
+			this.getData(startDateString, endDateString, idImovel, status, idTipo, idLocatario, idLocador);
 		}
 	};
 
@@ -254,6 +256,29 @@ export class ReportCostsComponent {
 				next: (e: any) => {
 					if (e.success) {
 						this.opcoesTipoImovel.push(
+							...e.data.map((item: any) => {
+								return {
+									label: this.truncateChar(item.nome),
+									value: item.id,
+								};
+							})
+						);
+					} else console.error(e.message);
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+	};
+
+	getRentersListData() {
+		this.rentContract
+			.getActiveRenters()
+			.pipe(first())
+			.subscribe({
+				next: (e: any) => {
+					if (e.success) {
+						this.opcoesLocatario.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),

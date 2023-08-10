@@ -118,6 +118,7 @@ export class ReportReceiptsComponent {
 		this.getOwnersListData();
 		this.getUnitTypesData();
 		this.getPropertiesListData();
+		this.getRentersListData();
 	}
 
 	openFilters() {
@@ -140,8 +141,9 @@ export class ReportReceiptsComponent {
 			const idTipo = this.filterTipoImovel ?? null;
 			const idImovel = this.filterImovel ?? null;
 			const status = this.filterStatus ?? null;
+			const idLocatario = this.filterLocatario ?? null;
 	
-			this.getData(startDateString, endDateString, idImovel, status, idTipo, undefined, idLocador);
+			this.getData(startDateString, endDateString, idImovel, status, idTipo, idLocatario, idLocador);
 		}
 
 		
@@ -283,6 +285,29 @@ export class ReportReceiptsComponent {
 				},
 			});
 	}
+
+	getRentersListData() {
+		this.rentContract
+			.getActiveRenters()
+			.pipe(first())
+			.subscribe({
+				next: (e: any) => {
+					if (e.success) {
+						this.opcoesLocatario.push(
+							...e.data.map((item: any) => {
+								return {
+									label: this.truncateChar(item.nome),
+									value: item.id,
+								};
+							})
+						);
+					} else console.error(e.message);
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+	};
 
 	truncateChar(text: string): string {
 		const charlimit = 48;

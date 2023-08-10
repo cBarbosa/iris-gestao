@@ -91,4 +91,8 @@ public class ContratoAluguelController : Controller
     [HttpGet("lista-tipo-imoveis")]
     public async Task<IActionResult> GetTipoImoveis() =>
         Ok(await contratoAluguelService.GetAllActivePropertTypes());
+    
+    [HttpGet("lista-locadores")]
+    public async Task<IActionResult> GetActiveRenters() =>
+        Ok(await contratoAluguelService.GetActiveRenters());
 }
