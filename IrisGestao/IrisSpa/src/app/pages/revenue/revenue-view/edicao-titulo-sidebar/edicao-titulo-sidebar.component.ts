@@ -115,8 +115,8 @@ export class EdicaoTituloSidebarComponent {
 	) {}
 
 	ngOnInit() {
-		console.log('Fatura detalhes: >> ' + JSON.stringify(this.data));
-		console.log('guid: >> ' + this.guidExpense);
+		// console.debug('Fatura detalhes: >> ' + JSON.stringify(this.data));
+		// console.debug('guid: >> ' + this.guidExpense);
 
 		if (this.registerOnSubmit && !this.guidExpense)
 			throw new Error(

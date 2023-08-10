@@ -1,0 +1,166 @@
+<form
+	[formGroup]="form"
+	class="flex flex-col h-full"
+	(ngSubmit)="onSubmit($event)"
+>
+	<p-sidebar
+		[(visible)]="isVisible"
+		position="right"
+		(onHide)="onSidebarHide()"
+	>
+		<ng-template pTemplate="header">
+			<h2 class="text-xl font-bold">Adicionar Fatura</h2>
+		</ng-template>
+		<ng-template pTemplate="content">
+			<!-- <div class="field">
+				<label for="numeroParcela" class="block">Número da Fatura</label>
+				<input
+					id="numeroParcela"
+					type="text"
+					formControlName="numeroParcela"
+					aria-describedby="numeroParcela-help"
+					pInputText
+					readonly
+				/>
+				<ng-container *ngIf="checkHasError(f['numeroParcela'])">
+					<small
+						id="numeroParcela-help"
+						*ngIf="f['numeroParcela'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o número da Fatura
+					</small>
+					<ng-template #error2>
+						<small id="numeroParcela-help" class="p-error block">
+							Número da Fatura inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div> -->
+
+			<div class="field">
+				<label for="valor" class="block">Valor da fatura</label>
+				<input
+					id="valor"
+					type="text"
+					formControlName="valor"
+					aria-describedby="valor-help"
+					currencyMask
+					pInputText
+				/>
+				<ng-container *ngIf="checkHasError(f['valor'])">
+					<small
+						id="valor-help"
+						*ngIf="f['valor'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o valor da Fatura
+					</small>
+					<ng-template #error2>
+						<small id="valor-help" class="p-error block">
+							Valor da Fatura inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="field">
+				<label for="dataVencimento" class="block">
+					Data de vencimento da fatura
+				</label>
+				<p-calendar
+					id="dataVencimento"
+					formControlName="dataVencimento"
+					dateFormat="dd/mm/yy"
+					(onInput)="onInputDate($event)"
+					(onBlur)="onBlurDate()"
+					placeholder="dd/mm/aaaa"
+					aria-describedby="dataVencimento-help"
+					styleClass="small-picker"
+				></p-calendar>
+				<ng-container *ngIf="checkHasError(f['dataVencimento'])">
+					<small
+						id="dataVencimento-help"
+						*ngIf="f['dataVencimento'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe a data de vencimento
+					</small>
+					<ng-template #error2>
+						<small id="dataVencimento-help" class="p-error block">
+							Data de vencimento inválida
+						</small>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<!-- 
+			<div class="field">
+				<label for="anexoNf" class="block">Anexo da NF</label>
+				<app-file-upload
+					name="uploadDoc"
+					[fileLimit]="1"
+					(selectEvent)="onFileSelect($event)"
+					accept=".xls, .doc, .pdf, .xlsx, .docx"
+				></app-file-upload>
+				<ng-container *ngIf="checkHasError(f['anexoNf'])">
+					<small
+						id="anexoNf-help"
+						*ngIf="f['anexoNf'].hasError('required'); else error2"
+						class="p-error block"
+					>
+						Informe o anexo
+					</small>
+					<ng-template #error2>
+						<small id="anexoNf-help" class="p-error block">
+							Anexo inválido
+						</small>
+					</ng-template>
+				</ng-container>
+			</div> -->
+		</ng-template>
+
+		<ng-template pTemplate="footer">
+			<div class="flex justify-between gap-4">
+				<button
+					pButton
+					pRipple
+					type="button"
+					label="Cancelar"
+					class="p-button-outlined h-11 w-full"
+					(click)="cancelEdit()"
+				></button>
+
+				<button
+					pButton
+					pRipple
+					type="submit"
+					label="Editar Fatura"
+					class="h-11 w-full"
+				></button>
+			</div>
+		</ng-template>
+	</p-sidebar>
+</form>
+
+<app-responsive-dialog [visible]="displayModal" styleClass="form-modal">
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+
+		<button pButton label="Continuar" (click)="closeModal()"></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</app-responsive-dialog>
