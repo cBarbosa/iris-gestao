@@ -66,7 +66,7 @@ export class SupplierContractService {
 		valorServicoContratado: number;
 		dataInicioContrato: string;
 		dataFimContrato: string;
-		diaPagamento: number;
+		//diaPagamento: number;
 		dataVencimentoPrimeraParcela: string;
 		periodicidadeReajuste: number;
 	}) {
@@ -91,7 +91,7 @@ export class SupplierContractService {
 			valorServicoContratado: number;
 			dataInicioContrato: string;
 			dataFimContrato: string;
-			diaPagamento: number;
+			//diaPagamento: number;
 			periodicidadeReajuste: number;
 		}
 	) {

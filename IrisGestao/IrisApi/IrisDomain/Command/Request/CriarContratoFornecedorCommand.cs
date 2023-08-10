@@ -17,7 +17,7 @@ namespace IrisGestao.Domain.Command.Request
         public int IdIndiceReajuste { get; set; }
         public int? IdTipoServico { get; set; }
         public string NumeroContrato { get; set; } = null!;
-        public string DescricaoDoServico { get; set; } = null!;
+        public string? DescricaoDoServico { get; set; } = null!;
         public double? Percentual { get; set; }
         public DateTime DataAtualizacao { get; set; }
         public double ValorServicoContratado { get; set; }

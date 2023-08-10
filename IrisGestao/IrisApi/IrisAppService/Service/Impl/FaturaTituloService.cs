@@ -129,6 +129,14 @@ public class FaturaTituloService : IFaturaTituloService
         faturaTitulo.DataPagamento = cmd.DataPagamento;
         faturaTitulo.ValorRealPago = cmd.ValorRealPago;
         faturaTitulo.DescricaoBaixaFatura = cmd.DescricaoBaixaFatura;
+
+        if (faturaTitulo.StatusFatura.Equals(FaturaTituloEnum.PAGO) || faturaTitulo.StatusFatura.Equals(FaturaTituloEnum.PARCIAL))
+        {
+            if (cmd.ValorRealPago < cmd.Valor)
+                faturaTitulo.StatusFatura = FaturaTituloEnum.PARCIAL;
+            else
+                faturaTitulo.StatusFatura = FaturaTituloEnum.PAGO;
+        }
     }
     private static int calculaDiasAtraso(DateTime dataVencimento, DateTime DataPagamento)
     {

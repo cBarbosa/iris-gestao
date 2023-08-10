@@ -155,6 +155,38 @@
 				<section class="aditional-data">
 					<h4 class="mb-5">Informações do contrato</h4>
 					<div class="field">
+						<label for="descricaoServico" class="block"
+							>Nome do contrato</label
+						>
+
+						<input
+							id="descricaoServico"
+							type="text"
+							formControlName="descricaoServico"
+							aria-describedby="descricaoServico-help"
+							maxlength="80"
+							pInputText
+						/>
+						<ng-container *ngIf="checkHasError(contractInfo['descricaoServico'])">
+							<small
+								id="descricaoServico-help"
+								*ngIf="
+									contractInfo['descricaoServico'].hasError('required');
+									else error2
+								"
+								class="p-error block"
+							>
+								Informe o Nome do Serviço
+							</small>
+							<ng-template #error2>
+								<small id="descricaoServico-help" class="p-error block">
+									Periodicidade o Nome do Serviço
+								</small>
+							</ng-template>
+						</ng-container>
+					</div>
+
+					<div class="field">
 						<label for="name" class="block"> Valor do serviço </label>
 						<input
 							id="name"

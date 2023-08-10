@@ -104,6 +104,7 @@ export class SupplierContractEditComponent {
 
 		this.editForm = this.fb.group({
 			contractNumber: [null, Validators.required],
+			descricaoServico: [null, Validators.required],
 			supplierName: [null, Validators.required],
 			cnpj: [{ value: null, disabled: true }, Validators.required],
 			serviceValue: ['', Validators.required],
@@ -142,6 +143,7 @@ export class SupplierContractEditComponent {
 
 					this.editForm.patchValue({
 						contractNumber: this.data.numeroContrato,
+						descricaoServico: this.data.descricaoServico,
 						supplierName: this.data.fornecedor.guidReferencia,
 						cnpj: this.data.fornecedor.cpfCnpj, //??
 						serviceValue: this.data.valorServicoContratado,
@@ -272,6 +274,7 @@ export class SupplierContractEditComponent {
 
 		const formData: {
 			contractNumber: string;
+			descricaoServico: string;
 			supplierName: string;
 			cnpj: string;
 			serviceValue: string;
@@ -287,10 +290,11 @@ export class SupplierContractEditComponent {
 		const contractObj = {
 			guidImovel: this.propertyGuid,
 			guidFornecedor: formData.supplierName,
+			descricaoDoServico: formData.descricaoServico,
 			idFormaPagamento: this.data.formaPagamento.id,
 			idIndiceReajuste: formData.contractIndex,
 			numeroContrato: formData.contractNumber,
-			descricaoDoServico: this.data.descricaoServico,
+			descricaoServico: formData.descricaoServico,
 			percentual: this.data.percentual,
 			dataAtualizacao: this.data.dataAtualizacao,
 			valorServicoContratado: +formData.serviceValue,
