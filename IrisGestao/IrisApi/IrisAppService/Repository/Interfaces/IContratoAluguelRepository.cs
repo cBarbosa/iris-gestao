@@ -24,4 +24,5 @@ public interface IContratoAluguelRepository : IRepository<ContratoAluguel>, IDis
     Task<IEnumerable<SpRevenuesResult>?> GetReportRevenues(DateTime dateInit, DateTime dateEnd, bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
     Task<IEnumerable<SpSupplyContractsResult>?> GetReportSupplyContract(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
     Task<IEnumerable<dynamic>> GetAllActivePropertTypes();
+    Task<IEnumerable<dynamic>> GetActiveRenters();
 }
