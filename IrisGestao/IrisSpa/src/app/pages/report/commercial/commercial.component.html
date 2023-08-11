@@ -1,0 +1,186 @@
+<div class="header-background"></div>
+<div class="content-wrapper">
+	<div class="content">
+		<header class="list-header">
+			<div class="flex justify-between items-center" [class.mb-2]="isMobile">
+				<h3 class="text-2xl font-bold">
+					Comercial imóveis
+					<span class="ml-2 text-sm">{{ totalRecords }}</span>
+				</h3>
+				<button
+					pButton
+					pRipple
+					type="button"
+					icon="pi pi-sliders-h"
+					class="p-button-rounded p-button-text"
+					*ngIf="isMobile"
+					(click)="openFilters()"
+				></button>
+			</div>
+
+			<div class="options">
+				<ng-container *ngIf="!isMobile">
+					<ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+				</ng-container>
+
+				<button
+					pButton
+					type="button"
+					class="p-button-outlined ml-3 h-9 addButton"
+					(click)="menu.toggle($event)"
+				>
+					<i class="pi pi-download mr-3"></i>
+					Exportar
+				</button>
+
+				<p-menu
+					#menu
+					[model]="items"
+					[popup]="true"
+				>
+				</p-menu>
+			</div>
+		</header>
+
+		<ng-template #filtersTemplate>
+
+			<p-dropdown
+				styleClass="w-full md:w-[8rem]"
+				[options]="opcoesLocador"
+				[(ngModel)]="filterLocador"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown>
+
+			<p-dropdown
+				styleClass="w-full md:w-[8rem]"
+				[options]="opcoesLocatario"
+				[(ngModel)]="filterLocatario"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown>
+
+			<p-calendar
+				[styleClass]="'mr-2 w-full md:w-44'"
+				placeholder="Período"
+				aria-describedby="periodo-help"
+				[(ngModel)]="filterPeriodo"
+				view="month"
+				selectionMode="range"
+				dateFormat="mm/yy"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-calendar>
+
+		</ng-template>
+
+		<ng-container>
+			<ng-container *ngIf="isLoading">
+				<app-spinner styleClass="mt-11"></app-spinner>
+			</ng-container>
+			<ng-container *ngIf="!isLoading && totalRecords == 0">
+				<div class="no-results-warn">
+					<span>Nenhum resultado</span>
+				</div>
+			</ng-container>
+
+			<p-table
+				*ngIf="!isMobile && totalRecords > 0"
+				[value]="resultEntries"
+				styleClass="p-datatable-striped"
+				[tableStyle]="{ 'min-width': '50rem' }"
+				[paginator]="false"
+				[rows]="rows"
+				[(first)]="first"
+				responsiveLayout="scroll"
+				[totalRecords]="totalRecords"
+				[lazy]="true"
+				(onLazyLoad)="loadResultPage($event)"
+				#reportToPdf
+			>
+			<ng-template pTemplate="header">
+				<tr *ngIf="!isLoading">
+					<th>Cliente</th>
+					<th>CPF / CNPJ</th>
+					<th>Contato</th>
+					<th>Telefone Contato</th>
+					<th>Imóvel</th>
+					<th>Tipo de visita</th>
+					<th>Data</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-entry>
+				<tr>
+					<td class="font-bold">{{ entry.Locador }}</td>
+					<td>{{ entry.cpfCnpj }}</td>
+					<td>{{ entry.contato | currency }}</td>
+					<td>{{ entry.telefoneContato | date:'shortDate' }}</td>
+					<td>{{ entry.imovel }}</td>
+					<td>{{ entry.tipoVisita }}</td>
+					<td>{{ entry.data | date:'shortDate' }}</td>
+				</tr>
+			</ng-template>
+
+				<!-- <ng-template pTemplate="footer">
+					<tr class="bg-[#262626]">
+						<td colspan="5" class="bg-transparent text-white">Total</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Valor da Baixa</div>
+							<div>{{ totalSum?.totalBaixa | currency }}</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Valor Desconto</div>
+							<div>{{ totalSum?.totalDesconto | currency }}</div>
+						</td>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Liquido</div>
+							<div>{{ totalSum?.totalLiquido | currency }}</div>
+						</td>
+					</tr>
+				</ng-template> -->
+
+			</p-table>
+
+			<!-- <ng-container *ngIf="isMobile">
+				<div class="cardList">
+					<ng-container *ngFor="let entry of resultEntries">
+						<app-card-item
+							[card]="{
+								infos: [
+									{
+										label: 'Data Pagamento/Vencimento',
+										data: entry.numCentroCusto
+									},
+									{
+										label: 'Documento',
+										data: entry.nomeLocador ?? '-'
+									},
+									{
+										label: 'Complemento',
+										data: entry.nomeImovel
+									},
+									{
+										label: 'Título',
+										data: entry.nomeLocatario
+									},
+									{
+										label: 'Valor total do título',
+										data: entry.somaAreaUtil,
+									},
+									{
+										label: 'Valor pago / a pagar',
+										data: entry.somaValorAluguel,
+									},
+									{
+										label: 'Obs',
+										data: entry.somaValorPotencial,
+									}
+								]
+							}"
+						>
+						</app-card-item>
+					</ng-container>
+
+				</div>
+			</ng-container> -->
+
+		</ng-container>
+	</div>
+</div>

@@ -69,4 +69,22 @@ public class ReportController : ControllerBase
         [FromQuery] bool? Status
     ) =>
         Ok(await contratoAluguelService.GetReportSupplyContract(Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario));
+    
+    [HttpGet("dimob")]
+    public async Task<IActionResult> GetDimob(
+        [FromQuery] DateTime? DateRefInit,
+        [FromQuery] DateTime? DateRefEnd,
+        [FromQuery] int? IdLocador,
+        [FromQuery] int? IdLocatario
+    ) =>
+        Ok(await contratoAluguelService.GetReportDimob(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdLocatario));
+    
+    [HttpGet("commercial")]
+    public async Task<IActionResult> GetCommercial(
+        [FromQuery] DateTime? DateRefInit,
+        [FromQuery] DateTime? DateRefEnd,
+        [FromQuery] int? IdLocador,
+        [FromQuery] int? IdLocatario
+    ) =>
+        Ok(await contratoAluguelService.GetReportCommercial(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdLocatario));
 }
