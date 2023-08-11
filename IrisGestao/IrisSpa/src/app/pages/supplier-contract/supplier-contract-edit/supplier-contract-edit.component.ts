@@ -110,7 +110,7 @@ export class SupplierContractEditComponent {
 			serviceValue: ['', Validators.required],
 			startDate: [null, [Validators.required]],
 			endDate: [null, [Validators.required]],
-			dueDate: [null, [Validators.required]],
+			dataVencimentoPrimeraParcela: [null, [Validators.required]],
 			contractIndex: [null, Validators.required],
 			periodicidade: ['', [Validators.required]],
 		});
@@ -149,7 +149,7 @@ export class SupplierContractEditComponent {
 						serviceValue: this.data.valorServicoContratado,
 						startDate: new Date(this.data.dataInicioContrato),
 						endDate: new Date(this.data.dataFimContrato),
-						dueDate: this.data.diaPagamento,
+						dataVencimentoPrimeraParcela: new Date(this.data.dataVencimentoPrimeraParcela),
 						contractIndex: this.data.indiceReajuste.id,
 						periodicidade: this.data.periodicidadeReajuste, //??
 					});
@@ -280,7 +280,7 @@ export class SupplierContractEditComponent {
 			serviceValue: string;
 			startDate: string;
 			endDate: string;
-			dueDate: number;
+			dataVencimentoPrimeraParcela: string;
 			contractIndex: number;
 			periodicidade: string;
 		} = this.editForm.getRawValue();
@@ -300,7 +300,7 @@ export class SupplierContractEditComponent {
 			valorServicoContratado: +formData.serviceValue,
 			dataInicioContrato: formData.startDate,
 			dataFimContrato: formData.endDate,
-			diaPagamento: formData.dueDate,
+			dataVencimentoPrimeraParcela: formData.dataVencimentoPrimeraParcela,
 			periodicidadeReajuste: +formData.periodicidade,
 		};
 
