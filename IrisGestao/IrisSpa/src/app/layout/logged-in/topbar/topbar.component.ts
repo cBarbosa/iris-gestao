@@ -179,16 +179,16 @@ export class TopbarComponent {
 					//	id: route.startsWith('/report/supply-contracts') ? 'current' : '',
 					//	command: () => this.navigateTo('report/supply-contracts'),
 					//},
-					//{
-					//	label: 'Despesas',
-					//	id: route.startsWith('/report/costs') ? 'current' : '',
-					//	command: () => this.navigateTo('report/costs'),
-					//},
-					//{
-					//	label: 'Receitas',
-					//	id: route.startsWith('/report/receipts') ? 'current' : '',
-					//	command: () => this.navigateTo('report/receipts'),
-					//},
+					{
+						label: 'Despesas',
+						id: route.startsWith('/report/costs') ? 'current' : '',
+						command: () => this.navigateTo('report/costs'),
+					},
+					{
+						label: 'Receitas',
+						id: route.startsWith('/report/receipts') ? 'current' : '',
+						command: () => this.navigateTo('report/receipts'),
+					},
 				],
 			},
 		];
