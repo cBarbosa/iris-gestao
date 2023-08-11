@@ -58,10 +58,15 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                             ExibirAlertaVencimento          = (x.DataFimContrato - DateTime.Now).Days <= 90 ? true : false,
                             IndiceReajuste = x.IdIndiceReajusteNavigation == null ? null : new
                             {
-                                Id                          = x.IdIndiceReajusteNavigation.Id,
-                                Nome                        = x.IdIndiceReajusteNavigation.Nome,
-                                Percentual                  = x.IdIndiceReajusteNavigation.Percentual,
-                                DataAtualizacao             = x.IdIndiceReajusteNavigation.DataAtualizacao
+                                Id = x.IdIndiceReajusteNavigation.Id,
+                                Nome = x.IdIndiceReajusteNavigation.Nome,
+                                Percentual = x.IdIndiceReajusteNavigation.Percentual,
+                                DataAtualizacao = x.IdIndiceReajusteNavigation.DataAtualizacao
+                            },
+                            TipoContrato = x.IdTipoContratoNavigation == null ? null : new
+                            {
+                                Id = x.IdTipoContratoNavigation.Id,
+                                Nome = x.IdTipoContratoNavigation.Nome
                             },
                             CreditoAluguel = x.IdTipoCreditoAluguelNavigation == null ? null : new
                             {

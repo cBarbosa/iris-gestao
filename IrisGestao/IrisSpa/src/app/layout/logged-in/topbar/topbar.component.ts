@@ -54,7 +54,7 @@ export class TopbarComponent {
 						command: () => this.navigateTo('property/mercado/listing'),
 					},
 					{
-						label: 'Contrato de carteira',
+						label: 'Imóvel de carteira',
 						id: route.startsWith('property/carteira/') ? 'current' : '',
 						command: () => this.navigateTo('property/carteira/listing'),
 					},

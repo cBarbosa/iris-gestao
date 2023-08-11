@@ -282,29 +282,32 @@
 					</div>
 
 					<div class="field">
-						<label for="due-date" class="block">
-							Data do vencimento da parcela
+						<label for="dataVencimentoPrimeraParcela" class="block">
+							Vencimento da primeira parcela
 						</label>
-						<p-dropdown
-							id="due-date"
-							[options]="dueDates"
-							formControlName="dueDate"
-							aria-describedby="due-date-help"
-						></p-dropdown>
-						<ng-container *ngIf="checkHasError(contractInfo['dueDate'])">
+						<p-calendar
+							id="dataVencimentoPrimeraParcela"
+							formControlName="dataVencimentoPrimeraParcela"
+							dateFormat="dd/mm/yy"
+							(onInput)="onInputDate($event)"
+							(onBlur)="onBlurDate()"
+							placeholder="dd/mm/aaaa"
+							aria-describedby="dataVencimentoPrimeraParcela-help"
+						></p-calendar>
+						<ng-container *ngIf="checkHasError(contractInfo['dataVencimentoPrimeraParcela'])">
 							<small
-								id="due-date-help"
+								id="start-date-help"
 								*ngIf="
-									contractInfo['dueDate'].hasError('required');
+									contractInfo['dataVencimentoPrimeraParcela'].hasError('required');
 									else error2
 								"
 								class="p-error block"
 							>
-								Informe a data do vencimento
+							Informe a data de vencimento
 							</small>
 							<ng-template #error2>
-								<small id="due-date-help" class="p-error block">
-									Data do vencimento inválida
+								<small id="start-date-help" class="p-error block">
+									data de vencimento inválida
 								</small>
 							</ng-template>
 						</ng-container>

@@ -181,13 +181,13 @@ export class RentContractEditComponent {
 */
 					this.data = event.data[0];
 
-					console.log('>>>', this.data);
+					console.log('Contrato Aluguel >>>', this.data);
 
 					this.imovel = this.data.imovelAlugado[0];
 
 					this.editForm.controls['contractInfo'].patchValue({
 						name: this.data.numeroContrato,
-						contractType: null,
+						contractType: this.data.tipoContrato.id,
 						startDate: new Date(this.data.dataInicioContrato),
 						endDate: new Date(this.data.dataFimContrato),
 						dueDate: this.data.diaVencimentoAluguel,
@@ -214,6 +214,7 @@ export class RentContractEditComponent {
 						rentGrace: this.data.carenciaAluguel,
 						gracePeriod: this.data.prazoCarencia,
 						creditTo: this.data.creditoAluguel.id,
+						prazoDesconto: this.data.prazoDesconto,
 					});
 
 					this.propertyGuid = this.data.imovelAlugado[0].guidReferencia;
