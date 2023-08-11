@@ -11,13 +11,49 @@ namespace IrisGestao.ApplicationService.Service.Impl;
 public class FaturaTituloService : IFaturaTituloService
 {
     private readonly IFaturaTituloRepository faturaTituloRepository;
+    private readonly ITituloReceberRepository tituloReceberRepository;
     private readonly ILogger<IFaturaTituloService> logger;
 
     public FaturaTituloService(IFaturaTituloRepository FaturaTituloRepository
+                        , ITituloReceberRepository TituloReceberRepository
                         , ILogger<IFaturaTituloService> logger)
     {
         this.faturaTituloRepository = FaturaTituloRepository;
+        this.tituloReceberRepository = TituloReceberRepository;
         this.logger = logger;
+    }
+
+    public async Task<CommandResult> Insert(Guid uuid, BaixaDeFaturaCommand cmd)
+    {
+        var faturaTitulo = new FaturaTitulo();
+        if (cmd == null || uuid.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var tituloPagar = await tituloReceberRepository.GetByReferenceGuid(uuid);
+
+        if (tituloPagar == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+
+        faturaTitulo.IdTitulo  = tituloPagar.Id;
+        faturaTitulo.NumeroParcela = DateTime.Now.Year + DateTime.Now.Month + DateTime.Now.Day + DateTime.Now.Second;
+        faturaTitulo.NumeroFatura = tituloPagar.NumeroTitulo + "/" + faturaTitulo.NumeroParcela;
+
+        BindEditarFaturaData(cmd, faturaTitulo);
+
+        try
+        {
+            faturaTituloRepository.Insert(faturaTitulo);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, faturaTitulo);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
     }
 
     public async Task<CommandResult> Update(Guid uuid, BaixaDeFaturaCommand cmd)
@@ -121,8 +157,19 @@ public class FaturaTituloService : IFaturaTituloService
         {
             faturaTitulo.DiasAtraso = calculaDiasAtraso(cmd.DataVencimento.Value, cmd.DataPagamento.Value);
         }
+        switch (faturaTitulo.GuidReferencia)
+        {
+            case null:
+                faturaTitulo.GuidReferencia = Guid.NewGuid();
+                faturaTitulo.DataCriacao = DateTime.Now;
+                faturaTitulo.StatusFatura = FaturaTituloEnum.A_VENCER;
+                faturaTitulo.Status = true;
+                break;
+            default:
+                faturaTitulo.GuidReferencia = faturaTitulo.GuidReferencia;
+                break;
+        }
         
-        faturaTitulo.GuidReferencia = faturaTitulo.GuidReferencia;
         faturaTitulo.DataUltimaModificacao = DateTime.Now;
         faturaTitulo.DataVencimento = cmd.DataVencimento;
         faturaTitulo.Valor = cmd.Valor;
@@ -130,7 +177,9 @@ public class FaturaTituloService : IFaturaTituloService
         faturaTitulo.ValorRealPago = cmd.ValorRealPago;
         faturaTitulo.DescricaoBaixaFatura = cmd.DescricaoBaixaFatura;
 
-        if (faturaTitulo.StatusFatura.Equals(FaturaTituloEnum.PAGO) || faturaTitulo.StatusFatura.Equals(FaturaTituloEnum.PARCIAL))
+        if (faturaTitulo.StatusFatura !=null  &&
+            (faturaTitulo.StatusFatura.Equals(FaturaTituloEnum.PAGO) 
+            || faturaTitulo.StatusFatura.Equals(FaturaTituloEnum.PARCIAL)))
         {
             if (cmd.ValorRealPago < cmd.Valor)
                 faturaTitulo.StatusFatura = FaturaTituloEnum.PARCIAL;
