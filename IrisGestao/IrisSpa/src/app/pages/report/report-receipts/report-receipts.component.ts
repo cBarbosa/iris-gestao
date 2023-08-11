@@ -224,7 +224,7 @@ export class ReportReceiptsComponent {
 			.subscribe({
 				next: (e: any) => {
 					if (e.success) {
-						this.opcoesLocador.push(
+						this.opcoesLocatario.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),
@@ -293,7 +293,7 @@ export class ReportReceiptsComponent {
 			.subscribe({
 				next: (e: any) => {
 					if (e.success) {
-						this.opcoesLocatario.push(
+						this.opcoesLocador.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),
