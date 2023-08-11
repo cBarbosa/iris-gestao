@@ -57,6 +57,28 @@ type Revenues = {
 	nomeDocumento: string;
 };
 
+type Dimob = {
+	Locador: string;
+	mesReferencia: string;
+	valorAluguel: number;
+	vencimentoAluguel: Date;
+	dataRecebimento: Date;
+	valorBruto: number;
+	valorLiquido: number;
+	vencimentoPagamento: Date;
+	dataPagamento: Date;
+};
+
+type Commercials = {
+	Locador: string;
+	cpfCnpj: string;
+	contato: string;
+	telefoneContato: string;
+	imovel: string;
+	tipoVisita: string;
+	data: Date;
+};
+
 const httpOptions = {
 	headers: new HttpHeaders({
 		'Content-Type': 'multipart/form-data',
@@ -207,6 +229,54 @@ export class ReportService {
 					console.debug('response', response);
 					if (!response.success)
 						console.error(`getReceipts: ${response.message}`);
+					return response.data;
+				})
+			);
+	};
+
+	getDimob(
+		DateRefInit: string,
+		DateRefEnd: string,
+		locatarioId: number | undefined,
+		locadorId: number | undefined) {
+			return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Report/Dimob`, {
+				params: {
+					DateRefInit,
+					DateRefEnd,
+					IdLocatario: locatarioId ?? '',
+					IdLocador: locadorId ?? ''
+				},
+			})
+			.pipe(
+				map((response): Dimob[] | null => {
+					console.debug('response', response);
+					if (!response.success)
+						console.error(`getDimob: ${response.message}`);
+					return response.data;
+				})
+			);
+	};
+
+	getCommercial(
+		DateRefInit: string,
+		DateRefEnd: string,
+		locatarioId: number | undefined,
+		locadorId: number | undefined) {
+			return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Report/Commercial`, {
+				params: {
+					DateRefInit,
+					DateRefEnd,
+					IdLocatario: locatarioId ?? '',
+					IdLocador: locadorId ?? ''
+				},
+			})
+			.pipe(
+				map((response): Commercials[] | null => {
+					console.debug('response', response);
+					if (!response.success)
+						console.error(`getCommercial: ${response.message}`);
 					return response.data;
 				})
 			);

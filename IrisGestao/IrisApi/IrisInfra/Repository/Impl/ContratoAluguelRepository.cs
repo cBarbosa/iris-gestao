@@ -735,5 +735,41 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                             }),
                         }).ToListAsync();
     }
+    
+    public async Task<IEnumerable<dynamic>> GetReportDimob(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idLocatario)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@DataInicioReferencia", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimReferencia", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@IdLocador", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
+            new ("@IdLocatario", SqlDbType.Int)
+                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpDimobResult>("Exec Sp_Dimob @DataInicioReferencia, @DataFimReferencia, @IdLocador, @IdLocatario",
+                parameters.ToArray());
+    }
+
+    public async Task<IEnumerable<dynamic>> GetReportCommercial(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idLocatario)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@DataInicioReferencia", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimReferencia", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@IdLocador", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
+            new ("@IdLocatario", SqlDbType.Int)
+                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpCommercialResult>("Exec Sp_Commercial @DataInicioReferencia, @DataFimReferencia, @IdLocador, @IdLocatario",
+                parameters.ToArray());
+    }
 
 }
