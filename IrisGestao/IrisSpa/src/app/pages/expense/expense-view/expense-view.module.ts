@@ -16,6 +16,7 @@ import { BaixaTituloSidebarComponent } from './baixa-titulo-sidebar/baixa-titulo
 import { ButtonModule } from 'primeng/button';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { EdicaoTituloSidebarComponent } from './edicao-titulo-sidebar/edicao-titulo-sidebar.component';
+import { AdicionarTituloSidebarComponent } from './add-titulo-sidebar/add-titulo-sidebar.component';
 import { SidebarAddFaturaComponent } from 'src/app/shared/components/sidebar-add-fatura/sidebar-add-fatura.component';
 
 @NgModule({
@@ -35,6 +36,7 @@ import { SidebarAddFaturaComponent } from 'src/app/shared/components/sidebar-add
 		UploadListComponent,
 		BaixaTituloSidebarComponent,
 		EdicaoTituloSidebarComponent,
+		AdicionarTituloSidebarComponent,
 		SidebarAddFaturaComponent,
 	],
 })

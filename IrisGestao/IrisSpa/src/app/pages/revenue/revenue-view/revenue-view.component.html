@@ -395,11 +395,14 @@
 	[(isVisible)]="editarBaixaVisible"
 ></app-edicao-titulo-sidebar>
 
-<app-sidebar-add-fatura
-	[cancel]="hideBaixaTitulo"
-	[guid]="guid"
+<app-add-titulo-sidebar
+	[data]="faturaSelected"
+	[cancel]="hideAddFatura"
+	[onSubmitForm]="hideAddFatura"
+	[registerOnSubmit]="!!faturaSelected"
+	[guidExpense]="guid"
 	[(isVisible)]="addFaturaVisible"
-></app-sidebar-add-fatura>
+></app-add-titulo-sidebar>
 
 <p-sidebar [(visible)]="baixaTituloVisible" position="right">
 	<ng-template pTemplate="header">
