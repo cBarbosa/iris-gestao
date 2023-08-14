@@ -83,8 +83,9 @@ public class ReportController : ControllerBase
     public async Task<IActionResult> GetCommercial(
         [FromQuery] DateTime? DateRefInit,
         [FromQuery] DateTime? DateRefEnd,
+        [FromQuery] int? IdImovel,
         [FromQuery] int? IdLocador,
         [FromQuery] int? IdLocatario
     ) =>
-        Ok(await contratoAluguelService.GetReportCommercial(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdLocatario));
+        Ok(await contratoAluguelService.GetReportCommercial(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdImovel, IdLocador, IdLocatario));
 }

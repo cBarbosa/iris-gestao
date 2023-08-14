@@ -22,10 +22,17 @@ export class CommercialComponent {
 	first = 0;
 	rows = 10;
 
+	filterImovel: number;
 	filterLocador: number;
 	filterLocatario: number;
 	filterPeriodo: Date[];
 
+	opcoesImovel = [
+		{
+			label: 'Todos Imóveis',
+			value: null,
+		},
+	];
 	opcoesLocador = [
 		{
 			label: 'Locador',
@@ -101,10 +108,11 @@ export class CommercialComponent {
 			const startDateString = startDate.toISOString().split('T')[0];
 			const endDateString = endDate.toISOString().split('T')[0];
 
+			const idImovel = this.filterImovel ?? null;
 			const idLocador = this.filterLocador ?? null;
 			const idLocatario = this.filterLocatario ?? null;
 	
-			this.getData(startDateString, endDateString, idLocador, idLocatario);
+			this.getData(startDateString, endDateString, idImovel, idLocador, idLocatario);
 		}
 
 	};
@@ -184,13 +192,14 @@ export class CommercialComponent {
 	getData(
 		startDateString: string,
 		endDateString: string,
+		imovelId?: number,
 		locatarioId?: number,
 		locadorId?: number) : void {
 
 		this.isLoading = true;
 
 		this.reportService
-			.getCommercial(startDateString, endDateString, locatarioId, locadorId)
+			.getCommercial(startDateString, endDateString, imovelId, locatarioId, locadorId)
 			.pipe(first())
 			.subscribe({
 				next: (data) => {
