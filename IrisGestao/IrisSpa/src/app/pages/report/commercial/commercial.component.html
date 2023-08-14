@@ -107,21 +107,25 @@
 					<th>Cliente</th>
 					<th>CPF / CNPJ</th>
 					<th>Contato</th>
-					<th>Telefone Contato</th>
+					<th>Email</th>
+					<th>Telefone</th>
 					<th>Imóvel</th>
 					<th>Tipo de visita</th>
+					<th>Descrição</th>
 					<th>Data</th>
 				</tr>
 			</ng-template>
 			<ng-template pTemplate="body" let-entry>
 				<tr>
-					<td class="font-bold">{{ entry.Locador }}</td>
-					<td>{{ entry.cpfCnpj }}</td>
-					<td>{{ entry.contato | currency }}</td>
-					<td>{{ entry.telefoneContato | date:'shortDate' }}</td>
+					<td class="font-bold">{{ entry.locador }}</td>
+					<td>{{ entry.cpfCnpj | cpfcnpj }}</td>
+					<td>{{ entry.contato }}</td>
+					<td>{{ entry.email }}</td>
+					<td>{{ entry.telefone }}</td>
 					<td>{{ entry.imovel }}</td>
-					<td>{{ entry.tipoVisita }}</td>
-					<td>{{ entry.data | date:'shortDate' }}</td>
+					<td>{{ entry.nomeEvento }}</td>
+					<td>{{ entry.descricao }}</td>
+					<td>{{ entry.dthRealizacao | date:'shortDate' }}</td>
 				</tr>
 			</ng-template>
 

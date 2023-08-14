@@ -70,13 +70,15 @@ type Dimob = {
 };
 
 type Commercials = {
-	Locador: string;
+	locador: string;
 	cpfCnpj: string;
 	contato: string;
-	telefoneContato: string;
+	email: string;
+	telefone: string;
 	imovel: string;
-	tipoVisita: string;
-	data: Date;
+	nomeEvento: string;
+	descricao: string;
+	dthRealizacao: Date;
 };
 
 const httpOptions = {
