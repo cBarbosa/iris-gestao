@@ -1,8 +1,20 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {
+	Component,
+	ElementRef,
+	ViewChild
+} from '@angular/core';
 import { Router } from '@angular/router';
-import { LazyLoadEvent, MenuItem } from 'primeng/api';
+import {
+	LazyLoadEvent,
+	MenuItem
+} from 'primeng/api';
 import { first } from 'rxjs';
-import { RentContractService, ReportService, ResponsiveService } from 'src/app/shared/services';
+import {
+	EventoService,
+	RentContractService,
+	ReportService,
+	ResponsiveService
+} from 'src/app/shared/services';
 import { Utils } from 'src/app/shared/utils';
 
 @Component({
@@ -71,7 +83,8 @@ export class CommercialComponent {
 		private router: Router,
 		private responsiveService: ResponsiveService,
 		private reportService: ReportService,
-		private rentContract: RentContractService
+		private rentContract: RentContractService,
+		private eventService: EventoService
 	) { };
 
   ngOnInit(): void {
@@ -168,7 +181,7 @@ export class CommercialComponent {
 	};
 
 	getRentersListData() {
-		this.rentContract
+		this.eventService
 			.getActiveRenters()
 			.pipe(first())
 			.subscribe({
@@ -191,7 +204,7 @@ export class CommercialComponent {
 	};
 
 	getPropertiesListData() {
-		this.rentContract
+		this.eventService
 			.getActiveProperties()
 			.pipe(first())
 			.subscribe({
