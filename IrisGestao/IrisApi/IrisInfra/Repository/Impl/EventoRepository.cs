@@ -1,11 +1,9 @@
 ﻿using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Command.Result;
-using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace IrisGestao.Infraestructure.Repository.Impl;
 
@@ -100,4 +98,38 @@ public class EventoRepository: Repository<Evento>, IEventoRepository
         return null!;
     }
 
+    public async Task<IEnumerable<dynamic>?> GetAllProperties()
+    {
+        var retorno = await DbSet
+            .Include(x => x.IdImovelNavigation)
+            .Where(x => x.IdImovelNavigation.Status)
+            .Select(x => new
+            {
+                x.IdImovelNavigation.Id,
+                x.IdImovelNavigation.Nome
+            })
+            .Distinct()
+            .OrderBy(x => x.Nome)
+            .ToListAsync();
+
+        return retorno;
+    }
+
+    public async Task<IEnumerable<dynamic>?> GetAllRenters()
+    {
+        var retorno = await DbSet
+            .Include(x => x.IdClienteNavigation)
+            .Where(x => x.IdClienteNavigation.Status)
+            .Select(x => new
+            {
+                x.IdClienteNavigation.GuidReferencia,
+                x.IdClienteNavigation.Id,
+                x.IdClienteNavigation.Nome
+            })
+            .Distinct()
+            .OrderBy(x => x.Nome)
+            .ToListAsync();
+
+        return retorno;
+    }
 }

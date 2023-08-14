@@ -11,4 +11,6 @@ public interface IEventoRepository : IRepository<Evento>, IDisposable
     IEnumerable<Evento> BuscarEventoPorIdImovel(int codigo);
     IEnumerable<Evento> BuscarEventoPorIdCliente(int codigo);
     Task<CommandPagingResult?> GetAllPaging(int limit, int page);
+    Task<IEnumerable<dynamic>?> GetAllProperties();
+    Task<IEnumerable<dynamic>?> GetAllRenters();
 }
