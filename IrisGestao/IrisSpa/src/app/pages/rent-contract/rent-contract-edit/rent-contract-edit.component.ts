@@ -44,14 +44,6 @@ export class RentContractEditComponent {
 	units: string[] = [];
 	propertyGuid: string = '';
 
-	dueDates: DropdownItem[] = [
-		{
-			label: 'Selecione',
-			value: null,
-			disabled: true,
-		},
-	];
-
 	contractTypes: DropdownItem[] = [
 		{
 			label: 'Selecione',
@@ -134,6 +126,7 @@ export class RentContractEditComponent {
 				startDate: [null, [Validators.required]],
 				endDate: [null, [Validators.required]],
 				dueDate: [null, [Validators.required]],
+				dataOcupacao: [null, [Validators.required]],
 				rentValue: ['', [Validators.required]],
 			}),
 			renterInfo: this.fb.group({
@@ -161,13 +154,6 @@ export class RentContractEditComponent {
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
 
-		this.dueDates = Array(31)
-			.fill(null)
-			.map((v, i) => ({
-				label: i.toString(),
-				value: i,
-			}));
-
 		this.rentContractService
 			.getContractByGuid(this.contractGuid)
 			.pipe(first())
@@ -190,7 +176,8 @@ export class RentContractEditComponent {
 						contractType: this.data.tipoContrato.id,
 						startDate: new Date(this.data.dataInicioContrato),
 						endDate: new Date(this.data.dataFimContrato),
-						dueDate: this.data.diaVencimentoAluguel,
+						dueDate: new Date(this.data.dataVencimentoPrimeraParcela),
+						dataOcupacao: new Date(this.data.dataOcupacao),
 						rentValue: this.data.valorAluguel,
 					});
 
@@ -328,6 +315,8 @@ export class RentContractEditComponent {
 	}
 
 	onSubmit(e: Event) {
+		
+		/*
 		if (this.editForm.invalid || this.selectedUnits?.length === 0) {
 			this.editForm.markAllAsTouched();
 			if (this.selectedUnits?.length === 0) {
@@ -335,7 +324,8 @@ export class RentContractEditComponent {
 			}
 			return;
 		}
-
+		*/
+		
 		const formData: {
 			contractInfo: {
 				name: string;
@@ -343,6 +333,7 @@ export class RentContractEditComponent {
 				startDate: string;
 				endDate: string;
 				dueDate: string;
+				dataOcupacao: string;
 				rentValue: number;
 			};
 			renterInfo: {
@@ -381,8 +372,8 @@ export class RentContractEditComponent {
 			dataInicioContrato: formData.contractInfo.startDate,
 			prazoTotalContrato: this.data.prazoTotalContrato,
 			dataOcupacao: this.data.dataOcupacao,
-			diaVencimentoAluguel: +formData.contractInfo.dueDate,
-			dataVencimentoPrimeraParcela: this.data.dataVencimentoPrimeraParcela,
+			//diaVencimentoAluguel: null,//+formData.contractInfo.dueDate,
+			dataVencimentoPrimeraParcela: formData.contractInfo.dueDate,
 			periodicidadeReajuste: this.data.periodicidadeReajuste,
 			lstImoveis: [
 				{

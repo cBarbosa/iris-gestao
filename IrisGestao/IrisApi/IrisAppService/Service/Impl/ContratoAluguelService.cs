@@ -48,16 +48,7 @@ public class ContratoAluguelService: IContratoAluguelService
     }
 
     public async Task<CommandResult> GetAllPaging(int? idTipoImovel, int? idBaseReajuste, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? numeroContrato, int limit, int page)
-    {
-        /*if(dthInicioVigencia.HasValue && dthFimVigencia.HasValue)
-        {
-            var diffDatas = dthFimVigencia.Value - dthInicioVigencia.Value;
-            if(diffDatas.Days < 1 || diffDatas.Days > 30)
-            {
-                return new CommandResult(false, String.Format(ErrorResponseEnums.Error_1008,30), null!);
-            }
-        }*/
-        
+    {        
         var result = await contratoAluguelRepository.GetAllPaging(idTipoImovel, idBaseReajuste, dthInicioVigencia, dthFimVigencia, numeroContrato, limit, page);
 
         return result == null
@@ -562,7 +553,7 @@ public class ContratoAluguelService: IContratoAluguelService
         if (cmd?.DataOcupacao.Value > cmd?.DataInicioContrato.AddMonths(cmd.PrazoTotalContrato))
             msgRetorno += "A data de ocupação do imóvel não pode ser maior que a data fim do contrato";
 
-        if (cmd?.DataOcupacao.Value < cmd?.DataInicioContrato)
+        if (cmd?.DataOcupacao.Value.Date < cmd?.DataInicioContrato.Date)
             msgRetorno += "A data de ocupação do imóvel não pode ser menor que a data de início do contrato";
 
         if (cmd?.PeriodicidadeReajuste > cmd?.PrazoTotalContrato)
