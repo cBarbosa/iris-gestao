@@ -32,7 +32,7 @@ export class FileUploadComponent {
 	disabled: boolean;
 
 	@Input()
-	maxFileSize: number = 1000000;
+	maxFileSize: number = 6000000;
 
 	@Input()
 	fileLimit: number = 10;
