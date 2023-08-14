@@ -45,6 +45,13 @@
 		<ng-template #filtersTemplate>
 
 			<p-dropdown
+				styleClass="w-full md:w-[10rem]"
+				[options]="opcoesImovel"
+				[(ngModel)]="filterImovel"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-dropdown>
+
+			<p-dropdown
 				styleClass="w-full md:w-[8rem]"
 				[options]="opcoesLocador"
 				[(ngModel)]="filterLocador"

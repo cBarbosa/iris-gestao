@@ -27,5 +27,5 @@ public interface IContratoAluguelService
     Task<CommandResult> GetAllActivePropertTypes();
     Task<CommandResult> GetActiveRenters();
     Task<CommandResult> GetReportDimob(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idLocatario);
-    Task<CommandResult> GetReportCommercial(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idLocatario);
+    Task<CommandResult> GetReportCommercial(DateTime dateRefInit, DateTime dateRefEnd, int? idImovel, int? idLocador, int? idLocatario);
 }

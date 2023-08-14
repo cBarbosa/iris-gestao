@@ -261,6 +261,7 @@ export class ReportService {
 	getCommercial(
 		DateRefInit: string,
 		DateRefEnd: string,
+		ImovelId: number | undefined,
 		locatarioId: number | undefined,
 		locadorId: number | undefined) {
 			return this.http
@@ -268,6 +269,7 @@ export class ReportService {
 				params: {
 					DateRefInit,
 					DateRefEnd,
+					IdImovel: ImovelId ?? '',
 					IdLocatario: locatarioId ?? '',
 					IdLocador: locadorId ?? ''
 				},

@@ -753,13 +753,15 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                 parameters.ToArray());
     }
 
-    public async Task<IEnumerable<dynamic>> GetReportCommercial(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idLocatario)
+    public async Task<IEnumerable<dynamic>> GetReportCommercial(DateTime dateRefInit, DateTime dateRefEnd, int? idImovel, int? idLocador, int? idLocatario)
     {
         var parameters = new List<SqlParameter> {
             new ("@DataInicioReferencia", SqlDbType.Date)
                 {Value = dateRefInit},
             new ("@DataFimReferencia", SqlDbType.Date)
                 {Value = dateRefEnd},
+            new ("@IdImovel", SqlDbType.Int)
+                {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true},
             new ("@IdLocador", SqlDbType.Int)
                 {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
             new ("@IdLocatario", SqlDbType.Int)
@@ -767,7 +769,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         };
 
         return await Db
-            .SqlQueryAsync<SpCommercialResult>("Exec Sp_Commercial @DataInicioReferencia, @DataFimReferencia, @IdLocador, @IdLocatario",
+            .SqlQueryAsync<SpCommercialResult>("Exec Sp_Commercial @DataInicioReferencia, @DataFimReferencia, @IdLocador, @IdLocatario, @IdImovel",
                 parameters.ToArray());
     }
 
