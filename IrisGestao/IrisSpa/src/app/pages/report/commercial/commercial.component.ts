@@ -90,6 +90,7 @@ export class CommercialComponent {
 		this.filterResult();
 		this.getOwnersListData();
 		this.getRentersListData();
+		this.getPropertiesListData();
 	};
 
   openFilters() {
@@ -112,7 +113,7 @@ export class CommercialComponent {
 			const idLocador = this.filterLocador ?? null;
 			const idLocatario = this.filterLocatario ?? null;
 	
-			this.getData(startDateString, endDateString, idImovel, idLocador, idLocatario);
+			this.getData(startDateString, endDateString, idImovel, idLocatario, idLocador);
 		}
 
 	};
@@ -174,6 +175,29 @@ export class CommercialComponent {
 				next: (e: any) => {
 					if (e.success) {
 						this.opcoesLocador.push(
+							...e.data.map((item: any) => {
+								return {
+									label: this.truncateChar(item.nome),
+									value: item.id,
+								};
+							})
+						);
+					} else console.error(e.message);
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+	};
+
+	getPropertiesListData() {
+		this.rentContract
+			.getActiveProperties()
+			.pipe(first())
+			.subscribe({
+				next: (e: any) => {
+					if (e.success) {
+						this.opcoesImovel.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),
