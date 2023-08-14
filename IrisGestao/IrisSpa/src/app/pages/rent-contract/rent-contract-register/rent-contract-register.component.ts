@@ -534,7 +534,7 @@ export class RentContractRegisterComponent {
 			dataInicioContrato: formData.contractInfo.dataInicio,
 			prazoTotalContrato: +formData.contractInfo.prazoTotalContrato, //???
 			dataOcupacao: formData.contractInfo.dataOcupacao,
-			diaVencimentoAluguel: formData.contractInfo.dataVencimento,
+			//diaVencimentoAluguel: formData.contractInfo.dataVencimento,
 			dataVencimentoPrimeraParcela:
 				formData.contractInfo.dataVencimentoPrimeraParcela,
 			periodicidadeReajuste: +formData.valuesInfo.periodicidade,
