@@ -11,7 +11,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { MenuModule } from 'primeng/menu';
 import { CalendarModule } from 'primeng/calendar';
 import { CommercialComponent } from './commercial.component';
-import { CpfCnpjPipeModule } from 'src/app/shared/pipes';
+import { CpfCnpjPipeModule, TelefonePipeModule } from 'src/app/shared/pipes';
 
 
 @NgModule({
@@ -30,7 +30,8 @@ import { CpfCnpjPipeModule } from 'src/app/shared/pipes';
     DropdownModule,
     MenuModule,
     CalendarModule,
-    CpfCnpjPipeModule
+    CpfCnpjPipeModule,
+    TelefonePipeModule
   ]
 })
 export class CommercialModule { }

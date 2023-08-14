@@ -29,7 +29,7 @@ export class TelefonePipe implements PipeTransform {
       } else {
         if (telefone !== '') { foneFormatado = value.replace(/^(\d*)/, '($1'); }
       }
-	  return foneFormatado.toString();
+	  return foneFormatado ==='(' ? '' : foneFormatado.toString();
     }
   }
 }
