@@ -95,13 +95,12 @@ export class SupplierContractViewComponent {
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
-					console.log('event', event);
 					if (event.success) {
 						this.contract = event.data[0];
-						this.isCnpj = event.data[0].fornecedor.cpfCnpj.length > 11;
+						this.isCnpj = this.contract.fornecedor.cpfCnpj.length > 11;
 						//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
 						// this.properties = [...event.data.imovel];
-						this.property = event.data[0].imovel as unknown as Imovel;
+						this.property = event.data.imovel as unknown as Imovel;
 					} else {
 						this.contract = null;
 					}

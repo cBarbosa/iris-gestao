@@ -131,15 +131,7 @@ export class SupplierContractEditComponent {
 			.pipe(first())
 			.subscribe((event) => {
 				if (event) {
-					/*					const cep = event?.imovelEndereco[0]?.cep.toString() ?? '';
-							const formatedCep = `${cep.slice(0, 2)}.${cep.slice(
-								2,
-								5
-							)}-${cep.slice(5)}`;
-		*/
 					this.data = event.data[0];
-
-					console.log('>>>', this.data);
 
 					this.editForm.patchValue({
 						contractNumber: this.data.numeroContrato,
