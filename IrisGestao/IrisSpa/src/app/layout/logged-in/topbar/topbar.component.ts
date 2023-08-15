@@ -45,20 +45,20 @@ export class TopbarComponent {
 			},
 			{
 				label: 'Imóveis',
-				id: route.startsWith('/property/') ? 'current' : '',
-				command: () => this.navigateTo('property/carteira/listing'),
-				// items: [
-				// 	{
-				// 		label: 'Imóvel de mercado',
-				// 		id: route.startsWith('property/mercado/') ? 'current' : '',
-				// 		command: () => this.navigateTo('property/mercado/listing'),
-				// 	},
-				// 	{
-				// 		label: 'Contrato de carteira',
-				// 		id: route.startsWith('property/carteira/') ? 'current' : '',
-				// 		command: () => this.navigateTo('property/carteira/listing'),
-				// 	},
-				// ],
+				// id: route.startsWith('/property/') ? 'current' : '',
+				// command: () => this.navigateTo('property/listing'),
+				items: [
+					{
+						label: 'Imóvel de mercado',
+						id: route.startsWith('property/mercado/') ? 'current' : '',
+						command: () => this.navigateTo('property/mercado/listing'),
+					},
+					{
+						label: 'Imóvel de carteira',
+						id: route.startsWith('property/carteira/') ? 'current' : '',
+						command: () => this.navigateTo('property/carteira/listing'),
+					},
+				],
 			},
 			{
 				label: 'Clientes',
@@ -188,7 +188,7 @@ export class TopbarComponent {
 						label: 'Receitas',
 						id: route.startsWith('/report/receipts') ? 'current' : '',
 						command: () => this.navigateTo('report/receipts'),
-					},
+					}
 				],
 			},
 		];

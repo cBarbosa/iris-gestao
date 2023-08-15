@@ -95,4 +95,18 @@ export class RevenueService {
 			httpOptions
 		);
 	}
+
+	adicionarFatura(
+		guid: string,
+		faturaObj: {
+			valor: number;
+			dataVencimento: string;
+		}
+	) {
+		return this.http.post<ApiResponse>(
+			`${env.config.apiUrl}FaturaTitulo/${guid}/criar`,
+			JSON.stringify(faturaObj, null, 2),
+			httpOptions
+		);
+	}
 }

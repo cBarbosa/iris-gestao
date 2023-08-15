@@ -28,6 +28,7 @@ export class RevenueViewComponent {
 	detalheBaixaVisible = false;
 	editarBaixaVisible = false;
 	baixaTituloVisible = false;
+	addFaturaVisible = false;
 
 	constructor(
 		private router: Router,
@@ -114,15 +115,18 @@ export class RevenueViewComponent {
 		this.detalheBaixaVisible = true;
 		this.baixaTituloVisible = false;
 		this.editarBaixaVisible = false;
+		this.addFaturaVisible = false;
 	};
 
 	showEditarBaixaVisible = (): void => {
 		this.detalheBaixaVisible = false;
 		this.baixaTituloVisible = false;
+		this.addFaturaVisible = false;
 		if (
 			this.faturaSelected.statusFatura === 'Vencido' ||
 			this.faturaSelected.statusFatura === 'A vencer' ||
-			this.faturaSelected.statusFatura === 'Pago'
+			this.faturaSelected.statusFatura === 'Pago'||
+			this.faturaSelected.statusFatura === 'Parcial'
 		)
 			this.editarBaixaVisible = true;
 		else this.editarBaixaVisible = false;
@@ -132,6 +136,14 @@ export class RevenueViewComponent {
 		this.detalheBaixaVisible = false;
 		this.baixaTituloVisible = true;
 		this.editarBaixaVisible = false;
+		this.addFaturaVisible = false;
+	};
+
+	showAddFatura = (): void => {
+		this.detalheBaixaVisible = false;
+		this.baixaTituloVisible = false;
+		this.editarBaixaVisible = false;
+		this.addFaturaVisible = true;
 	};
 
 	hideDetalheBaixa = () => {
@@ -150,6 +162,10 @@ export class RevenueViewComponent {
 			updated.valorRealPago = updated.valorFatura;
 			updated.statusFatura = 'Pago';
 		}
+	};
+
+	hideAddFatura = () => {
+		this.addFaturaVisible = false;
 	};
 
 	toggleDetalheBaixa() {

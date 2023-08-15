@@ -104,12 +104,13 @@ export class SupplierContractEditComponent {
 
 		this.editForm = this.fb.group({
 			contractNumber: [null, Validators.required],
+			descricaoServico: [null, Validators.required],
 			supplierName: [null, Validators.required],
 			cnpj: [{ value: null, disabled: true }, Validators.required],
 			serviceValue: ['', Validators.required],
 			startDate: [null, [Validators.required]],
 			endDate: [null, [Validators.required]],
-			dueDate: [null, [Validators.required]],
+			dataVencimentoPrimeraParcela: [null, [Validators.required]],
 			contractIndex: [null, Validators.required],
 			periodicidade: ['', [Validators.required]],
 		});
@@ -134,12 +135,13 @@ export class SupplierContractEditComponent {
 
 					this.editForm.patchValue({
 						contractNumber: this.data.numeroContrato,
+						descricaoServico: this.data.descricaoServico,
 						supplierName: this.data.fornecedor.guidReferencia,
 						cnpj: this.data.fornecedor.cpfCnpj, //??
 						serviceValue: this.data.valorServicoContratado,
 						startDate: new Date(this.data.dataInicioContrato),
 						endDate: new Date(this.data.dataFimContrato),
-						dueDate: this.data.diaPagamento,
+						dataVencimentoPrimeraParcela: new Date(this.data.dataVencimentoPrimeraParcela),
 						contractIndex: this.data.indiceReajuste.id,
 						periodicidade: this.data.periodicidadeReajuste, //??
 					});
@@ -264,12 +266,13 @@ export class SupplierContractEditComponent {
 
 		const formData: {
 			contractNumber: string;
+			descricaoServico: string;
 			supplierName: string;
 			cnpj: string;
 			serviceValue: string;
 			startDate: string;
 			endDate: string;
-			dueDate: number;
+			dataVencimentoPrimeraParcela: string;
 			contractIndex: number;
 			periodicidade: string;
 		} = this.editForm.getRawValue();
@@ -279,16 +282,17 @@ export class SupplierContractEditComponent {
 		const contractObj = {
 			guidImovel: this.propertyGuid,
 			guidFornecedor: formData.supplierName,
+			descricaoDoServico: formData.descricaoServico,
 			idFormaPagamento: this.data.formaPagamento.id,
 			idIndiceReajuste: formData.contractIndex,
 			numeroContrato: formData.contractNumber,
-			descricaoDoServico: this.data.descricaoServico,
+			descricaoServico: formData.descricaoServico,
 			percentual: this.data.percentual,
 			dataAtualizacao: this.data.dataAtualizacao,
 			valorServicoContratado: +formData.serviceValue,
 			dataInicioContrato: formData.startDate,
 			dataFimContrato: formData.endDate,
-			diaPagamento: formData.dueDate,
+			dataVencimentoPrimeraParcela: formData.dataVencimentoPrimeraParcela,
 			periodicidadeReajuste: +formData.periodicidade,
 		};
 

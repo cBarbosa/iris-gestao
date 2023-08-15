@@ -16,6 +16,7 @@ public class ContratoFornecedorService: IContratoFornecedorService
     private readonly IClienteRepository clienteRepository;
     private readonly IContratoAluguelImovelRepository contratoAluguelImovelRepository;
     private readonly IContratoAluguelUnidadeRepository contratoAluguelUnidadeRepository;
+    private readonly ITituloPagarService tituloPagarService;
     private readonly ILogger<IContratoFornecedorService> logger;
 
     public ContratoFornecedorService(IContratoFornecedorRepository contratoFornecedorRepository
@@ -24,6 +25,7 @@ public class ContratoFornecedorService: IContratoFornecedorService
                         , IClienteRepository ClienteRepository
                         , IContratoAluguelImovelRepository ContratoAluguelImovelRepository
                         , IContratoAluguelUnidadeRepository ContratoAluguelUnidadeRepository
+                        , ITituloPagarService TituloPagarService
                         , ILogger<IContratoFornecedorService> logger)
     {
         this.contratoFornecedorRepository = contratoFornecedorRepository;
@@ -32,6 +34,7 @@ public class ContratoFornecedorService: IContratoFornecedorService
         this.clienteRepository = ClienteRepository;
         this.contratoAluguelImovelRepository = ContratoAluguelImovelRepository;
         this.contratoAluguelUnidadeRepository = ContratoAluguelUnidadeRepository;
+        this.tituloPagarService = TituloPagarService;
         this.logger = logger;
     }
 
@@ -86,7 +89,7 @@ public class ContratoFornecedorService: IContratoFornecedorService
         try
         {
             contratoFornecedorRepository.Insert(contratoFornecedor);
-
+            //await tituloPagarService.InsertByContratoFornecedor(contratoFornecedor);
             return new CommandResult(true, SuccessResponseEnums.Success_1000, contratoFornecedor);
         }
         catch (Exception e)
@@ -190,7 +193,7 @@ public class ContratoFornecedorService: IContratoFornecedorService
         contratoFornecedor.DataInicioContrato          = cmd.DataInicioContrato;
         contratoFornecedor.DataFimContrato             = cmd.DataFimContrato;
         contratoFornecedor.ValorServicoContratado      = cmd.ValorServicoContratado;
-        contratoFornecedor.DiaPagamento                = cmd.DiaPagamento;
+        contratoFornecedor.DataVencimentoPrimeraParcela= cmd.DataVencimentoPrimeraParcela.HasValue ? cmd.DataVencimentoPrimeraParcela.Value : null;
         contratoFornecedor.PeriodicidadeReajuste       = cmd.PeriodicidadeReajuste;
         contratoFornecedor.Status                      = true;
         contratoFornecedor.PrazoTotalMeses             = calculaMes(cmd.DataInicioContrato, cmd.DataFimContrato);

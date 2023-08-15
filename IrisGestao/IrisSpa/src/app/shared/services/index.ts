@@ -29,3 +29,5 @@ export * from './responsive-service.service';
 export * from './supplier.service';
 
 export * from './supplier-contract.service';
+
+export * from './evento.service';

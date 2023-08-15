@@ -48,16 +48,7 @@ public class ContratoAluguelService: IContratoAluguelService
     }
 
     public async Task<CommandResult> GetAllPaging(int? idTipoImovel, int? idBaseReajuste, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? numeroContrato, int limit, int page)
-    {
-        /*if(dthInicioVigencia.HasValue && dthFimVigencia.HasValue)
-        {
-            var diffDatas = dthFimVigencia.Value - dthInicioVigencia.Value;
-            if(diffDatas.Days < 1 || diffDatas.Days > 30)
-            {
-                return new CommandResult(false, String.Format(ErrorResponseEnums.Error_1008,30), null!);
-            }
-        }*/
-        
+    {        
         var result = await contratoAluguelRepository.GetAllPaging(idTipoImovel, idBaseReajuste, dthInicioVigencia, dthFimVigencia, numeroContrato, limit, page);
 
         return result == null
@@ -186,7 +177,7 @@ public class ContratoAluguelService: IContratoAluguelService
             ContratoAluguel.DataFimContrato = DateTime.Now; 
         }
         ContratoAluguel.Status = status;
-
+        ContratoAluguel.DataUltimaModificacao = DateTime.Now;
         try
         {
             contratoAluguelRepository.Update(ContratoAluguel);
@@ -343,20 +334,34 @@ public class ContratoAluguelService: IContratoAluguelService
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
     
-    public async Task<CommandResult> GetReportExpenses(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario)
+    public async Task<CommandResult> GetReportExpenses(
+        DateTime DateRefInit,
+        DateTime DateRefEnd,
+        bool? status,
+        int? idImovel,
+        int? idTipoImovel,
+        int? idLocador,
+        int? idLocatario)
     {
         var retorno = await contratoAluguelRepository
-            .GetReportExpenses(status, idImovel, idTipoImovel, idLocador, idLocatario);
+            .GetReportExpenses(DateRefInit, DateRefEnd, status, idImovel, idTipoImovel, idLocador, idLocatario);
         
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
-    public async Task<CommandResult> GetReportRevenues(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario)
+    public async Task<CommandResult> GetReportRevenues(
+        DateTime DateRefInit,
+        DateTime DateRefEnd,
+        bool? status,
+        int? idImovel,
+        int? idTipoImovel,
+        int? idLocador,
+        int? idLocatario)
     {
         var retorno = await contratoAluguelRepository
-            .GetReportRevenues(status, idImovel, idTipoImovel, idLocador, idLocatario);
+            .GetReportRevenues(DateRefInit,DateRefEnd,status, idImovel, idTipoImovel, idLocador, idLocatario);
         
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -367,6 +372,44 @@ public class ContratoAluguelService: IContratoAluguelService
     {
         var retorno = await contratoAluguelRepository
             .GetReportSupplyContract(status, idImovel, idTipoImovel, idLocador, idLocatario);
+        
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+
+    public async Task<CommandResult> GetAllActivePropertTypes()
+    {
+        var retorno = await contratoAluguelRepository.GetAllActivePropertTypes();
+     
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+
+    public async Task<CommandResult> GetActiveRenters()
+    {
+        var retorno = await contratoAluguelRepository.GetActiveRenters();
+     
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+
+    public async Task<CommandResult> GetReportDimob(DateTime DateRefInit, DateTime DateRefEnd, int? idLocador, int? idLocatario)
+    {
+        var retorno = await contratoAluguelRepository
+            .GetReportDimob(DateRefInit, DateRefEnd, idLocador, idLocatario);
+        
+        return retorno != null
+            ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
+            : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
+    }
+
+    public async Task<CommandResult> GetReportCommercial(DateTime DateRefInit, DateTime DateRefEnd, int? idImovel, int? idLocador, int? idLocatario)
+    {
+        var retorno = await contratoAluguelRepository
+            .GetReportCommercial(DateRefInit, DateRefEnd, idImovel, idLocador, idLocatario);
         
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -510,7 +553,7 @@ public class ContratoAluguelService: IContratoAluguelService
         if (cmd?.DataOcupacao.Value > cmd?.DataInicioContrato.AddMonths(cmd.PrazoTotalContrato))
             msgRetorno += "A data de ocupação do imóvel não pode ser maior que a data fim do contrato";
 
-        if (cmd?.DataOcupacao.Value < cmd?.DataInicioContrato)
+        if (cmd?.DataOcupacao.Value.Date < cmd?.DataInicioContrato.Date)
             msgRetorno += "A data de ocupação do imóvel não pode ser menor que a data de início do contrato";
 
         if (cmd?.PeriodicidadeReajuste > cmd?.PrazoTotalContrato)

@@ -1,0 +1,10 @@
+:host ::ng-deep {
+	.p-sidebar-footer {
+		display: block;
+	}
+
+	.p-calendar,
+	.p-inputtextarea {
+		width: 100%;
+	}
+}

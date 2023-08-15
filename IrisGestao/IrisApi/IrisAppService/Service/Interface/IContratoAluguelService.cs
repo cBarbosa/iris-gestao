@@ -21,7 +21,11 @@ public interface IContratoAluguelService
     Task<CommandResult> GetUnidadesByContrato(Guid guid);
     Task<CommandResult> GetReportLeasedArea(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
     Task<CommandResult> GetReportRentValue(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario, DateTime? dateRef);
-    Task<CommandResult> GetReportExpenses(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
-    Task<CommandResult> GetReportRevenues(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
+    Task<CommandResult> GetReportExpenses(DateTime dateInit, DateTime dateEnd, bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
+    Task<CommandResult> GetReportRevenues(DateTime dateInit, DateTime dateEnd, bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
     Task<CommandResult> GetReportSupplyContract(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
+    Task<CommandResult> GetAllActivePropertTypes();
+    Task<CommandResult> GetActiveRenters();
+    Task<CommandResult> GetReportDimob(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idLocatario);
+    Task<CommandResult> GetReportCommercial(DateTime dateRefInit, DateTime dateRefEnd, int? idImovel, int? idLocador, int? idLocatario);
 }
