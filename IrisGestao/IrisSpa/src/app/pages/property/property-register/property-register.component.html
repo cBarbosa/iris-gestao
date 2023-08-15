@@ -1107,8 +1107,14 @@
 		<button
 			pButton
 			label="Continuar"
-			(click)="closeModal(navigateTo, 'property/listing')"
-			*ngIf="!registerProprietaryVisible"
+			(click)="closeModal(navigateTo, 'property/carteira/listing')"
+			*ngIf="!registerProprietaryVisible && propertyType === 'carteira'"
+		></button>
+		<button
+			pButton
+			label="Continuar"
+			(click)="closeModal(navigateTo, 'property/mercado/listing')"
+			*ngIf="!registerProprietaryVisible && propertyType === 'mercado'"
 		></button>
 	</div>
 	<ng-template #error>

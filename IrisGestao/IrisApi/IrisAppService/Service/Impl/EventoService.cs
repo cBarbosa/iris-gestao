@@ -226,7 +226,8 @@ public class EventoService: IEventoService
         }
 
         Evento.Nome                         = cmd.Nome;
-        Evento.IdTipoEvento                 = cmd.IdTipoEvento;
+        Evento.IdTipoEvento                 = cmd.IdTipoEvento.HasValue ? cmd.IdTipoEvento.Value : null;
+        Evento.TipoEvento                   = cmd.TipoEvento;
         Evento.DthRealizacao                = cmd.DthRealizacao;
         Evento.descricao                    = cmd.Descricao;
     }

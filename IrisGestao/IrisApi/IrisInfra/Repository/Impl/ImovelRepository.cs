@@ -144,7 +144,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                         .Include(x => x.ImovelEndereco)
                         .Include(x => x.Unidade)
                             .ThenInclude(y => y.IdTipoUnidadeNavigation)
-                        .Include(x=> x.Evento)
+                        .Include(x => x.Evento)
                         .Where(x => x.GuidReferencia.Equals(guid))
                         .Select(x => new
                         {
@@ -153,28 +153,28 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                             NumCentroCusto = x.NumCentroCusto,
                             ImovelEndereco = x.ImovelEndereco,
                             Unidade = x.Unidade.Select(y => new
+                            {
+                                GuidReferencia = y.GuidReferencia,
+                                IdImovel = y.IdImovel,
+                                AreaUtil = y.AreaUtil,
+                                AreaTotal = y.AreaTotal,
+                                AreaHabitese = y.AreaHabitese,
+                                InscricaoIPTU = y.InscricaoIPTU,
+                                Matricula = y.Matricula,
+                                MatriculaEnergia = y.MatriculaEnergia,
+                                MatriculaAgua = y.MatriculaAgua,
+                                TaxaAdministracao = y.TaxaAdministracao,
+                                ValorPotencial = y.ValorPotencial,
+                                Tipo = y.Tipo,
+                                DataCriacao = y.DataCriacao,
+                                DataUltimaModificacao = y.DataUltimaModificacao,
+                                UnidadeLocada = y.UnidadeLocada,
+                                Ativo = y.Status,
+                                IdTipoUnidadeNavigation = new
                                 {
-                                    GuidReferencia = y.GuidReferencia,
-                                    IdImovel = y.IdImovel,
-                                    AreaUtil = y.AreaUtil,
-                                    AreaTotal = y.AreaTotal,
-                                    AreaHabitese = y.AreaHabitese,
-                                    InscricaoIPTU = y.InscricaoIPTU,
-                                    Matricula = y.Matricula,
-                                    MatriculaEnergia = y.MatriculaEnergia,
-                                    MatriculaAgua = y.MatriculaAgua,
-                                    TaxaAdministracao = y.TaxaAdministracao,
-                                    ValorPotencial = y.ValorPotencial,
-                                    Tipo = y.Tipo,
-                                    DataCriacao = y.DataCriacao,
-                                    DataUltimaModificacao = y.DataUltimaModificacao,
-                                    UnidadeLocada = y.UnidadeLocada,
-                                    Ativo = y.Status,
-                                    IdTipoUnidadeNavigation = new
-                                    {
-                                        Id = y.IdTipoUnidadeNavigation.Id,
-                                        Nome = y.IdTipoUnidadeNavigation.Nome
-                                    }
+                                    Id = y.IdTipoUnidadeNavigation.Id,
+                                    Nome = y.IdTipoUnidadeNavigation.Nome
+                                }
                             }).Where(y => y.Ativo).OrderBy(x=> x.Tipo).ToList(),
                             AreaTotal = x.Unidade.Where(x => x.Status).Sum(x => x.AreaTotal),
                             AreaUtil = x.Unidade.Where(x => x.Status).Sum(x => x.AreaUtil),
@@ -211,8 +211,9 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                                 GuidReferenciaEvento = y.GuidReferencia,
                                 DataRealizacao = y.DthRealizacao,
                                 Nome           = y.Nome,
-                                Descricao      = y.descricao,
-                                TipoEvento = y.IdTipoEventoNavigation == null
+                                Descricao = y.descricao,
+                                TipoEvento = y.TipoEvento,
+                                TipoEventoNavigation = y.IdTipoEventoNavigation == null
                                     ? null
                                     : new
                                     {
