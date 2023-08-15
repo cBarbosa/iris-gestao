@@ -17,6 +17,8 @@ import { DetailSidebarComponent } from 'src/app/shared/components/detail-sidebar
 import { BaixaTituloSidebarComponent } from './baixa-titulo-sidebar/baixa-titulo-sidebar.component';
 import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
 import { EdicaoTituloSidebarComponent } from '../../revenue/revenue-view/edicao-titulo-sidebar/edicao-titulo-sidebar.component';
+import { AdicionarTituloSidebarComponent } from '../../revenue/revenue-view/add-titulo-sidebar/add-titulo-sidebar.component';
+import { SidebarAddFaturaComponent } from 'src/app/shared/components/sidebar-add-fatura/sidebar-add-fatura.component';
 
 @NgModule({
 	declarations: [RevenueViewComponent],
@@ -36,7 +38,9 @@ import { EdicaoTituloSidebarComponent } from '../../revenue/revenue-view/edicao-
 		DetailSidebarComponent,
 		BaixaTituloSidebarComponent,
 		EdicaoTituloSidebarComponent,
+		AdicionarTituloSidebarComponent,
 		UploadListComponent,
+		SidebarAddFaturaComponent,
 	],
 })
 export class RevenueViewModule {}

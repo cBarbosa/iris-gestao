@@ -113,6 +113,16 @@
 			<section class="fatura" *ngIf="revenue?.faturas?.length > 0">
 				<header class="flex justify-between flex-wrap items-start mb-5">
 					<h2 class="mb-2">Faturas</h2>
+					<button
+						pButton
+						type="button"
+						icon="pi pi-plus"
+						iconPos="left"
+						class="p-button-outlined icon-left h-9"
+						(click)="showAddFatura()"
+					>
+						Nova fatura
+					</button>
 				</header>
 
 				<p-table
@@ -148,35 +158,41 @@
 							</td>
 							<td>{{ fatura.dataVencimento | date : "shortDate" }}</td>
 							<td>
-								<!-- A vencer, Vencido-, Pago -->
 								<ng-container
 									*ngIf="
 										fatura.statusFatura === 'Vencido' ||
-											fatura.statusFatura === 'A vencer';
-										else tagSuccess
+										fatura.statusFatura === 'A vencer'
 									"
 								>
 									<p-tag
 										[value]="fatura.statusFatura"
 										[rounded]="true"
 										severity="danger"
+										styleClass="w-20"
 									></p-tag>
 								</ng-container>
-
-								<ng-template #tagSuccess>
+								<ng-container *ngIf="fatura.statusFatura === 'Pago'">
 									<p-tag
 										[value]="fatura.statusFatura"
 										[rounded]="true"
 										severity="success"
+										styleClass="w-20"
 									></p-tag>
-								</ng-template>
+								</ng-container>
+								<ng-container *ngIf="fatura.statusFatura === 'Parcial'">
+									<p-tag
+										[value]="fatura.statusFatura"
+										[rounded]="true"
+										severity="warning"
+										styleClass="w-20"
+									></p-tag>
+								</ng-container>
 							</td>
 							<td class="action w-[13rem] flex gap-2">
 								<ng-container
 									*ngIf="
 										fatura.statusFatura === 'Vencido' ||
-											fatura.statusFatura === 'A vencer';
-										else detalhesBtn
+										fatura.statusFatura === 'A vencer'
 									"
 								>
 									<button
@@ -187,26 +203,12 @@
 									>
 										Dar baixa
 									</button>
-
-									<button
-										pButton
-										type="button"
-										class="p-button-outlined h-9 justify-center text-sm"
-										(click)="setCurrentFatura(fatura); showEditarBaixaVisible()"
-										*ngIf="
-											fatura.statusFatura === 'Vencido' ||
-												fatura.statusFatura === 'A vencer';
-											else detalhesBtn
-										"
-									>
-										Editar
-									</button>
 								</ng-container>
-								
+
 								<ng-container
 									*ngIf="
-										fatura.statusFatura === 'Pago';
-										else detalhesBtn
+										fatura.statusFatura === 'Pago' ||
+										fatura.statusFatura === 'Parcial'
 									"
 								>
 									<button
@@ -217,22 +219,15 @@
 									>
 										Detalhes
 									</button>
-									<button
-										pButton
-										type="button"
-										class="p-button-outlined h-9 justify-center text-sm"
-										(click)="setCurrentFatura(fatura); showEditarBaixaVisible()"
-										*ngIf="
-											fatura.statusFatura === 'Pago';
-											else detalhesBtn
-										"
-									>
-										Editar
-									</button>
 								</ng-container>
-								<ng-template #detalhesBtn>
-
-								</ng-template>
+								<button
+									pButton
+									type="button"
+									class="p-button-outlined h-9 justify-center text-sm"
+									(click)="setCurrentFatura(fatura); showEditarBaixaVisible()"
+								>
+									Editar
+								</button>
 							</td>
 						</tr>
 					</ng-template>
@@ -399,6 +394,15 @@
 	[guidExpense]="faturaSelected?.guidReferencia"
 	[(isVisible)]="editarBaixaVisible"
 ></app-edicao-titulo-sidebar>
+
+<app-add-titulo-sidebar
+	[data]="faturaSelected"
+	[cancel]="hideAddFatura"
+	[onSubmitForm]="hideAddFatura"
+	[registerOnSubmit]="!!faturaSelected"
+	[guidExpense]="guid"
+	[(isVisible)]="addFaturaVisible"
+></app-add-titulo-sidebar>
 
 <p-sidebar [(visible)]="baixaTituloVisible" position="right">
 	<ng-template pTemplate="header">

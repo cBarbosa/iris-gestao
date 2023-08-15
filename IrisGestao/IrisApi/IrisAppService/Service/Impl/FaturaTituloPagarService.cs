@@ -11,13 +11,49 @@ namespace IrisGestao.ApplicationService.Service.Impl;
 public class FaturaTituloPagarService : IFaturaTituloPagarService
 {
     private readonly IFaturaTituloPagarRepository faturaTituloPagarRepository;
+    private readonly ITituloPagarRepository tituloPagarRepository;
     private readonly ILogger<IFaturaTituloPagarService> logger;
 
     public FaturaTituloPagarService(IFaturaTituloPagarRepository FaturaTituloPagarRepository
+                        , ITituloPagarRepository TituloPagarRepository
                         , ILogger<IFaturaTituloPagarService> logger)
     {
         this.faturaTituloPagarRepository = FaturaTituloPagarRepository;
+        this.tituloPagarRepository= TituloPagarRepository;
         this.logger = logger;
+    }
+
+    public async Task<CommandResult> Insert(Guid uuid, FaturaTituloPagarCommand cmd)
+    {
+        var faturaTituloPagar = new FaturaTituloPagar();
+        if (cmd == null || uuid.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var tituloPagar = await tituloPagarRepository.GetByReferenceGuid(uuid);
+
+        if (tituloPagar == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+
+        faturaTituloPagar.IdTituloPagar = tituloPagar.Id;
+        faturaTituloPagar.NumeroParcela = DateTime.Now.Year + DateTime.Now.Month + DateTime.Now.Day + DateTime.Now.Second;
+        faturaTituloPagar.NumeroFatura = tituloPagar.NumeroTitulo + "/" + faturaTituloPagar.NumeroParcela;
+
+        BindBaixaDeFaturaData(cmd, faturaTituloPagar);
+
+        try
+        {
+            faturaTituloPagarRepository.Insert(faturaTituloPagar);
+            return new CommandResult(true, SuccessResponseEnums.Success_1000, faturaTituloPagar);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
+        }
     }
 
     public async Task<CommandResult> Update(Guid uuid, FaturaTituloPagarCommand cmd)
@@ -67,14 +103,18 @@ public class FaturaTituloPagarService : IFaturaTituloPagarService
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
         else if (faturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.INATIVO) ||
-                faturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.PAGO))
+                faturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.PAGO) ||
+                faturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.PARCIAL))
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1009, null!);
         }
 
         int diasAtraso = calculaDiasAtraso(faturaTituloPagar.DataVencimento.Value, cmd.DataPagamento.Value);
 
-        faturaTituloPagar.StatusFatura = FaturaTituloEnum.PAGO;
+        if(cmd.ValorRealPago < faturaTituloPagar.Valor)
+            faturaTituloPagar.StatusFatura = FaturaTituloEnum.PARCIAL;
+        else
+            faturaTituloPagar.StatusFatura = FaturaTituloEnum.PAGO;
         faturaTituloPagar.DescricaoBaixaFatura = cmd.DescricaoBaixaFatura;
         faturaTituloPagar.DataPagamento = cmd.DataPagamento;
         faturaTituloPagar.ValorRealPago = cmd.ValorRealPago;
@@ -101,31 +141,39 @@ public class FaturaTituloPagarService : IFaturaTituloPagarService
                 FaturaTituloPagar.GuidReferencia = Guid.NewGuid();
                 FaturaTituloPagar.DataCriacao = DateTime.Now;
                 FaturaTituloPagar.DataUltimaModificacao = DateTime.Now;
+                FaturaTituloPagar.StatusFatura = FaturaTituloEnum.A_VENCER;
+                FaturaTituloPagar.Status = true;
                 break;
             default:
                 FaturaTituloPagar.GuidReferencia = FaturaTituloPagar.GuidReferencia;
                 FaturaTituloPagar.DataUltimaModificacao = DateTime.Now;
                 break;
         }
+        if (cmd.DataPagamento.HasValue)
+        {
+            FaturaTituloPagar.DiasAtraso = calculaDiasAtraso(cmd.DataVencimento.Value, cmd.DataPagamento.Value);
+        }
 
-        FaturaTituloPagar.DataVencimento = cmd.DataVencimento;
-        FaturaTituloPagar.Valor          = cmd.Valor;
-        FaturaTituloPagar.DataPagamento = cmd.DataPagamento;
-        FaturaTituloPagar.ValorRealPago = cmd.ValorRealPago;
-        FaturaTituloPagar.DescricaoBaixaFatura = cmd.DescricaoBaixaFatura; 
-        /*
-        FaturaTituloPagar.NumeroNotaFiscal           = cmd.NumeroNotaFiscal;
-        FaturaTituloPagar.DataEmissaoNotaFiscal      = cmd.DataEmissaoNotaFiscal;
-        FaturaTituloPagar.DataEnvio                  = cmd.DataEnvio;
-        FaturaTituloPagar.Status                     = true;
-        //FaturaTituloPagar.StatusFatura               = FaturaTituloEnum.PAGO;
-        FaturaTituloPagar.DataPagamento              = cmd.DataPagamento;
-        FaturaTituloPagar.ValorRealPago              = cmd.ValorRealPago;
-        FaturaTituloPagar.DescricaoBaixaFatura       = cmd.DescricaoBaixaFatura;*/
+        FaturaTituloPagar.DataVencimento        = cmd.DataVencimento;
+        FaturaTituloPagar.Valor                 = cmd.Valor;
+        FaturaTituloPagar.DataPagamento         = cmd.DataPagamento;
+        FaturaTituloPagar.ValorRealPago         = cmd.ValorRealPago;
+        FaturaTituloPagar.DescricaoBaixaFatura  = cmd.DescricaoBaixaFatura;
+
+        if (FaturaTituloPagar.StatusFatura != null &&
+            (FaturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.PAGO) 
+            || FaturaTituloPagar.StatusFatura.Equals(FaturaTituloEnum.PARCIAL)))
+        {
+            if (cmd.ValorRealPago < cmd.Valor)
+                FaturaTituloPagar.StatusFatura = FaturaTituloEnum.PARCIAL;
+            else
+                FaturaTituloPagar.StatusFatura = FaturaTituloEnum.PAGO;
+        }
     }
 
     private static int calculaDiasAtraso(DateTime dataVencimento, DateTime DataPagamento)
     {
-        return (DataPagamento - dataVencimento).Days;
+        int diasAtraso = (DataPagamento - dataVencimento).Days;
+        return diasAtraso > 0 ? diasAtraso : 0; ;
     }
 }

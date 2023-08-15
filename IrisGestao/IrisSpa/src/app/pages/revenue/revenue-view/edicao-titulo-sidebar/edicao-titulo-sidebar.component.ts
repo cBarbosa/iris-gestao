@@ -115,8 +115,8 @@ export class EdicaoTituloSidebarComponent {
 	) {}
 
 	ngOnInit() {
-		console.log('Fatura detalhes: >> ' + JSON.stringify(this.data));
-		console.log('guid: >> ' + this.guidExpense);
+		// console.debug('Fatura detalhes: >> ' + JSON.stringify(this.data));
+		// console.debug('guid: >> ' + this.guidExpense);
 
 		if (this.registerOnSubmit && !this.guidExpense)
 			throw new Error(
@@ -124,7 +124,7 @@ export class EdicaoTituloSidebarComponent {
 			);
 
 		this.faturaPaga = this.data?.statusFatura
-			? this.data.statusFatura === 'Pago'
+			? this.data.statusFatura === 'Pago' || this.data.statusFatura === 'Parcial'
 			: false;
 
 		this.form = this.fb.group({
@@ -174,7 +174,7 @@ export class EdicaoTituloSidebarComponent {
 		console.log('patching values', this.data);
 
 		this.faturaPaga = this.data?.statusFatura
-			? this.data.statusFatura === 'Pago'
+			? this.data.statusFatura === 'Pago' || this.data.statusFatura === 'Parcial'
 			: false;
 
 		if (this.faturaPaga) {

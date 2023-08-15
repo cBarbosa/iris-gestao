@@ -168,14 +168,12 @@
 								</div>
 
 								<div class="field">
-									<label for="contract-types" class="block"
+									<label for="contractType" class="block"
 										>Tipo de contrato</label
 									>
 									<p-dropdown
 										id="contract-types"
 										[options]="contractTypes"
-										[filter]="true"
-										filterBy="label"
 										formControlName="contractType"
 										aria-describedby="contract-types-help"
 									></p-dropdown>
@@ -271,35 +269,72 @@
 										</ng-container>
 									</div>
 								</div>
-
-								<div class="field">
-									<label for="due-date" class="block">
-										Data do vencimento da parcela
-									</label>
-									<p-dropdown
-										id="due-date"
-										[options]="dueDates"
-										formControlName="dueDate"
-										aria-describedby="due-date-help"
-									></p-dropdown>
-									<ng-container *ngIf="checkHasError(contractInfo['dueDate'])">
-										<small
-											id="due-date-help"
-											*ngIf="
-												contractInfo['dueDate'].hasError('required');
-												else error2
-											"
-											class="p-error block"
-										>
-											Informe a data do vencimento
-										</small>
-										<ng-template #error2>
-											<small id="due-date-help" class="p-error block">
-												Data do vencimento inválida
+								<div class="share-line">
+									<div class="field">
+										<label for="due-date" class="block">
+											Data de vencimento da primeira parcela
+										</label>
+										<p-calendar
+											id="due-date"
+											formControlName="dueDate"
+											dateFormat="dd/mm/yy"
+											(onInput)="onInputDate($event)"
+											(onBlur)="onBlurDate()"
+											placeholder="dd/mm/aaaa"
+											aria-describedby="due-date-help"
+											panelStyleClass="hidden"
+										></p-calendar>
+										<ng-container *ngIf="checkHasError(contractInfo['dueDate'])">
+											<small
+												id="due-date-help"
+												*ngIf="
+													contractInfo['dueDate'].hasError('required');
+													else error2
+												"
+												class="p-error block"
+											>
+												Informe a data do vencimento
 											</small>
-										</ng-template>
-									</ng-container>
-								</div>
+											<ng-template #error2>
+												<small id="due-date-help" class="p-error block">
+													Data do vencimento inválida
+												</small>
+											</ng-template>
+										</ng-container>
+									</div>
+
+									<div class="field">
+										<label for="dataOcupacao" class="block">
+											Data de entrega do imóvel
+										</label>
+										<p-calendar
+											id="dataOcupacao"
+											formControlName="dataOcupacao"
+											dateFormat="dd/mm/yy"
+											(onInput)="onInputDate($event)"
+											(onBlur)="onBlurDate()"
+											placeholder="dd/mm/aaaa"
+											aria-describedby="dataOcupacao-help"
+										></p-calendar>
+										<ng-container *ngIf="checkHasError(contractInfo['dataOcupacao'])">
+											<small
+												id="dataOcupacao-help"
+												*ngIf="
+													contractInfo['dataOcupacao'].hasError('required');
+													else error2
+												"
+												class="p-error block"
+											>
+												Informe a data da Ocupação
+											</small>
+											<ng-template #error2>
+												<small id="dataOcupacao-help" class="p-error block">
+													Data da ocupação inválida
+												</small>
+											</ng-template>
+										</ng-container>
+									</div>
+								</div>								
 
 								<div class="field">
 									<label for="rent-value" class="block">Valor do aluguel</label>

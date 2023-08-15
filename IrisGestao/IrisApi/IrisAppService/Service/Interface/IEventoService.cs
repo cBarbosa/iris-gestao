@@ -13,5 +13,6 @@ public interface IEventoService
     Task<CommandResult> Delete(Guid uuid);
     Task<CommandResult> BuscarEventoPorIdImovel(int codigo);
     Task<CommandResult> BuscarEventoPorIdCliente(int codigo);
-
+    Task<CommandResult> GetAllProperties();
+    Task<CommandResult> GetAllRenters();
 }

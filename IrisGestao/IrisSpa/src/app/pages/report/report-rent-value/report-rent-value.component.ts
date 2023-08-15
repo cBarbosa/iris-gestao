@@ -13,7 +13,6 @@ import {
 import { first } from 'rxjs';
 import { AreaPipe } from 'src/app/shared/pipes/area.pipe';
 import {
-	CommonService,
 	RentContractService,
 	ReportService
 } from 'src/app/shared/services';
@@ -115,8 +114,7 @@ export class ReportRentValueComponent {
 		private router: Router,
 		private responsiveService: ResponsiveService,
 		private reportService: ReportService,
-		private rentContract: RentContractService,
-		private commonService: CommonService
+		private rentContract: RentContractService
 	) {}
 
 	ngOnInit(): void {
@@ -280,8 +278,8 @@ export class ReportRentValueComponent {
 	};
 
 	getUnitTypesData() {
-		this.commonService
-			.getUnitType()
+		this.rentContract
+			.getActiveUnitType()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {

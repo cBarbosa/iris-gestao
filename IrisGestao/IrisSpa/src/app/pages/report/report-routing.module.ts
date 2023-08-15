@@ -52,26 +52,26 @@ const routes: Routes = [
 			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
 		},
 	},
-	// {
-	// 	path: 'edit/:guid',
-	// 	loadChildren: () =>
-	// 		import('./revenue-edit/revenue-edit.module').then(
-	// 			(m) => m.RevenueEditModule
-	// 		),
-	// 	data: {
-	// 		role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-	// 	},
-	// },
-	// {
-	// 	path: 'register',
-	// 	loadChildren: () =>
-	// 		import('./revenue-register/revenue-register.module').then(
-	// 			(m) => m.RevenueRegisterModule
-	// 		),
-	// 	data: {
-	// 		role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
-	// 	},
-	// },
+	{
+		path: 'dimob',
+		loadChildren: () =>
+			import('./report-dimob/report-dimob.module').then(
+				(m) => m.ReportDimobModule
+			),
+		data: {
+			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+		},
+	},
+	{
+		path: 'commercial',
+		loadChildren: () =>
+			import('./commercial/commercial.module').then(
+				(m) => m.CommercialModule
+			),
+		data: {
+			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+		},
+	},
 ];
 
 @NgModule({

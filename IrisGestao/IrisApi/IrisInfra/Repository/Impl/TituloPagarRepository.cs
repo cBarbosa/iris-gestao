@@ -110,7 +110,8 @@ public class TituloPagarRepository : Repository<TituloPagar>, ITituloPagarReposi
                             NumeroParcela = x.NumeroParcela,
                             StatusFatura = ((x.Status && x.DataPagamento == null && x.DataVencimento > DateTime.Now) ? FaturaTituloEnum.A_VENCER :
                             (x.Status && x.DataPagamento == null && x.DataVencimento < DateTime.Now) ? FaturaTituloEnum.VENCIDO :
-                            (x.Status && x.DataPagamento != null) ? FaturaTituloEnum.PAGO : FaturaTituloEnum.INATIVO),
+                            (x.Status && x.DataPagamento != null && x.StatusFatura == "Pago") ? FaturaTituloEnum.PAGO :
+                            (x.Status && x.DataPagamento != null && x.StatusFatura == "Parcial") ? FaturaTituloEnum.PARCIAL : FaturaTituloEnum.INATIVO),
                             NumeroNotaFiscal = x.NumeroNotaFiscal,
                             PorcentagemImpostoRetido = x.PorcentagemImpostoRetido,
                             ValorLiquidoTaxaAdministracao = x.ValorLiquidoTaxaAdministracao,

@@ -17,14 +17,15 @@ namespace IrisGestao.Domain.Command.Request
         public int IdIndiceReajuste { get; set; }
         public int? IdTipoServico { get; set; }
         public string NumeroContrato { get; set; } = null!;
-        public string DescricaoDoServico { get; set; } = null!;
-        public decimal? Percentual { get; set; }
+        public string? DescricaoDoServico { get; set; } = null!;
+        public double? Percentual { get; set; }
         public DateTime DataAtualizacao { get; set; }
-        public decimal ValorServicoContratado { get; set; }
+        public double ValorServicoContratado { get; set; }
         public DateTime DataInicioContrato { get; set; }
         //public int PrazoTotalMeses { get; set; }
         public DateTime DataFimContrato { get; set; }
-        public int DiaPagamento { get; set; }
+        public int? DiaPagamento { get; set; }
+        public DateTime? DataVencimentoPrimeraParcela { get; set; }
         public int PeriodicidadeReajuste { get; set; }
         public bool Status { get; set; }
     }

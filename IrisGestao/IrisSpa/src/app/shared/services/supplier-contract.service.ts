@@ -66,7 +66,8 @@ export class SupplierContractService {
 		valorServicoContratado: number;
 		dataInicioContrato: string;
 		dataFimContrato: string;
-		diaPagamento: number;
+		//diaPagamento: number;
+		dataVencimentoPrimeraParcela: string;
 		periodicidadeReajuste: number;
 	}) {
 		return this.http.post<ApiResponse>(
@@ -90,7 +91,7 @@ export class SupplierContractService {
 			valorServicoContratado: number;
 			dataInicioContrato: string;
 			dataFimContrato: string;
-			diaPagamento: number;
+			//diaPagamento: number;
 			periodicidadeReajuste: number;
 		}
 	) {
