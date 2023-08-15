@@ -119,7 +119,6 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 AreaHabitese                = x.IdImovelNavigation.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
                                 NroUnidadesTotal            = x.IdImovelNavigation.Unidade.Where(x => x.Status).Count(),
                                 NroUnidadesContrato         = x.ContratoAluguelUnidade.Where(y => y.IdUnidadeNavigation.Status).Count(),
-                                ImgCapa                     = "../../../../assets/images/imovel.png",
                                 IdCategoriaImovelNavigation = x.IdImovelNavigation.IdCategoriaImovelNavigation == null ? null : new
                                 {
                                     Id                      = x.IdImovelNavigation.IdCategoriaImovelNavigation.Id,

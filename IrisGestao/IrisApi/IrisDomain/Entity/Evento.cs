@@ -10,11 +10,16 @@ public partial class Evento: BaseEntity<Evento>
 {
     public int IdImovel { get; set; }
 
-    public int IdTipoEvento { get; set; }
+    public int? IdTipoEvento { get; set; }
+
 
     [StringLength(200)]
     [Unicode(false)]
     public string Nome { get; set; } = null!;
+
+    [StringLength(200)]
+    [Unicode(false)]
+    public string TipoEvento { get; set; } = null!;
 
     [Column(TypeName = "datetime")]
     public DateTime? DthRealizacao { get; set; }

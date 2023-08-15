@@ -6,7 +6,7 @@ import { environment as env } from '../../../environments/environment';
 
 export type CreateEventObj = {
 	guidImovel: string;
-	idTipoEvento: number;
+	tipoEvento: string;
 	guidCliente: string;
 	nome: string;
 	descricao: string;
