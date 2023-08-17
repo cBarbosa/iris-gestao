@@ -190,26 +190,26 @@
 									<!-- \/ ?? X -->
 									<div class="data-label">Locatário</div>
 									<div class="data-value">
-										{{ contract.cliente.nome }}
+										{{ contract?.cliente?.nome }}
 									</div>
 								</div>
 								<div class="data">
 									<div class="data-label">
-										{{ contract.cliente.cpfCnpj.length > 11 ? "CNPJ" : "CPF" }}
+										{{ contract?.cliente?.cpfCnpj.length > 11 ? "CNPJ" : "CPF" }}
 									</div>
 									<div class="data-value">
-										{{ contract.cliente.cpfCnpj | cpfcnpj }}
+										{{ contract?.cliente?.cpfCnpj | cpfcnpj }}
 									</div>
 								</div>
 								<div class="data">
 									<div class="data-label">Telefone</div>
 									<div class="data-value">
-										{{ contract.cliente.telefone | telefone }}
+										{{ contract?.cliente?.telefone | telefone }}
 									</div>
 								</div>
 								<div class="data">
 									<div class="data-label">Email</div>
-									<div class="data-value">{{ contract.cliente.email }}</div>
+									<div class="data-value">{{ contract?.cliente?.email }}</div>
 								</div>
 								<div class="data text-right">
 									<button
