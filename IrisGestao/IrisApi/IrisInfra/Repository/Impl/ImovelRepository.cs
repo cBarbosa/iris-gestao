@@ -170,6 +170,10 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                                 DataUltimaModificacao = y.DataUltimaModificacao,
                                 UnidadeLocada = y.UnidadeLocada,
                                 Ativo = y.Status,
+                                Locatario = y.ContratoAluguelUnidade.Where(alU => alU.IdUnidade == y.Id && y.UnidadeLocada).FirstOrDefault()
+                                .IdContratoAluguelImovelNavigation.IdContratoAluguelNavigation.IdClienteNavigation.Nome,
+                                DataVencimentoContrato = y.ContratoAluguelUnidade.Where(alU => alU.IdUnidade == y.Id && y.UnidadeLocada).FirstOrDefault()
+                                .IdContratoAluguelImovelNavigation.IdContratoAluguelNavigation.DataFimContrato.ToString("dd/MM/yyyy"),
                                 IdTipoUnidadeNavigation = new
                                 {
                                     Id = y.IdTipoUnidadeNavigation.Id,

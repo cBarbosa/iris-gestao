@@ -77,18 +77,18 @@ export class RentContractViewComponent {
 			.getContractByGuid(this.guid)
 			?.pipe(first())
 			.subscribe((response: ApiResponse) => {
-				this.contract = response.data;
+				this.contract = response.data[0];
 
 				this.taxRetention = this.contract.percentualRetencaoImpostos;
 
 				this.contactList = this.contract.cliente?.contato?.map(
 					(contato: any) => {
 						return {
-							nome: contato.nome,
-							cargo: contato.cargo,
-							email: contato.email,
-							telefone: contato.telefone,
-							nascimento: contato.dataNascimento,
+							nome: contato?.nome,
+							cargo: contato?.cargo,
+							email: contato?.email,
+							telefone: contato?.telefone,
+							nascimento: contato?.dataNascimento,
 						};
 					}
 				);
