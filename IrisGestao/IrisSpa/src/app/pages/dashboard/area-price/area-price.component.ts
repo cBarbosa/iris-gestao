@@ -135,14 +135,14 @@ export class AreaPriceComponent {
 					data: [],
 					opt: 2
 				},
-				{
-					type: 'line',
-					label: 'Média',
-					backgroundColor: 'white',
-					borderColor: `#D08175`,
-					data: [],
-					opt: 2
-				},
+				// {
+				// 	type: 'line',
+				// 	label: 'Média',
+				// 	backgroundColor: 'white',
+				// 	borderColor: `#D08175`,
+				// 	data: [],
+				// 	opt: 2
+				// },
 			],
 		};
 
@@ -163,13 +163,13 @@ export class AreaPriceComponent {
 					this.data.labels = [];
 					this.data.datasets[0].data = []; // media ponderada
 					this.data.datasets[1].data = []; // media simples
-					this.data.datasets[2].data = []; // media
+					// this.data.datasets[2].data = []; // media
 
 					event.data.forEach((item: any) => {
 						this.data.datasets[0].data.push(item.mediaPonderada); // media ponderada
 						this.data.labels.push(item.referencia);
 						this.data.datasets[1].data.push(item.mediaSimples); // media simples
-						this.data.datasets[2].data.push(item.media); // media
+						// this.data.datasets[2].data.push(item.media); // media
 					});
 				},
 				error: () => {
