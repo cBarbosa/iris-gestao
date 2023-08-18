@@ -189,6 +189,16 @@ export class TopbarComponent {
 						id: route.startsWith('/report/receipts') ? 'current' : '',
 						command: () => this.navigateTo('report/receipts'),
 					},
+					// {
+					// 	label: 'DIMOB',
+					// 	id: route.startsWith('/report/dimob') ? 'current' : '',
+					// 	command: () => this.navigateTo('report/dimob'),
+					// },
+					{
+						label: 'Comercial de Imóveis',
+						id: route.startsWith('/report/commercial') ? 'current' : '',
+						command: () => this.navigateTo('report/commercial'),
+					},
 				],
 			},
 		];
