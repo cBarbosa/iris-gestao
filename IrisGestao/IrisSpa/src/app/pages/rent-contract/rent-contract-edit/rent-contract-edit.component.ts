@@ -165,7 +165,7 @@ export class RentContractEditComponent {
 						5
 					)}-${cep.slice(5)}`;
 */
-					this.data = event.data[0];
+					this.data = event.data;
 
 					console.log('Contrato Aluguel >>>', this.data);
 
