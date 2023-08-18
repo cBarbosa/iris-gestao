@@ -57,6 +57,30 @@ type Revenues = {
 	nomeDocumento: string;
 };
 
+type Dimob = {
+	Locador: string;
+	mesReferencia: string;
+	valorAluguel: number;
+	vencimentoAluguel: Date;
+	dataRecebimento: Date;
+	valorBruto: number;
+	valorLiquido: number;
+	vencimentoPagamento: Date;
+	dataPagamento: Date;
+};
+
+type Commercials = {
+	locador: string;
+	cpfCnpj: string;
+	// contato: string;
+	email: string;
+	telefone: string;
+	imovel: string;
+	nomeEvento: string;
+	descricao: string;
+	dthRealizacao: Date;
+};
+
 const httpOptions = {
 	headers: new HttpHeaders({
 		'Content-Type': 'multipart/form-data',
@@ -153,6 +177,8 @@ export class ReportService {
 	};
 
 	getCosts(
+		DateRefInit: string,
+		DateRefEnd: string,
 		imovelId: number | undefined,
 		status: boolean | undefined,
 		tipoImovelId: number | undefined,
@@ -161,6 +187,8 @@ export class ReportService {
 			return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Report/expenses`, {
 				params: {
+					DateRefInit,
+					DateRefEnd,
 					Status: status ?? '',
 					IdImovel: imovelId ?? '',
 					IdTipoImovel: tipoImovelId ?? '',
@@ -179,6 +207,8 @@ export class ReportService {
 	};
 
 	getReceipts(
+		DateRefInit: string,
+		DateRefEnd: string,
 		imovelId: number | undefined,
 		status: boolean | undefined,
 		tipoImovelId: number | undefined,
@@ -187,6 +217,8 @@ export class ReportService {
 			return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Report/Revenues`, {
 				params: {
+					DateRefInit,
+					DateRefEnd,
 					Status: status ?? '',
 					IdImovel: imovelId ?? '',
 					IdTipoImovel: tipoImovelId ?? '',
@@ -199,6 +231,56 @@ export class ReportService {
 					console.debug('response', response);
 					if (!response.success)
 						console.error(`getReceipts: ${response.message}`);
+					return response.data;
+				})
+			);
+	};
+
+	getDimob(
+		DateRefInit: string,
+		DateRefEnd: string,
+		locatarioId: number | undefined,
+		locadorId: number | undefined) {
+			return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Report/Dimob`, {
+				params: {
+					DateRefInit,
+					DateRefEnd,
+					IdLocatario: locatarioId ?? '',
+					IdLocador: locadorId ?? ''
+				},
+			})
+			.pipe(
+				map((response): Dimob[] | null => {
+					console.debug('response', response);
+					if (!response.success)
+						console.error(`getDimob: ${response.message}`);
+					return response.data;
+				})
+			);
+	};
+
+	getCommercial(
+		DateRefInit: string,
+		DateRefEnd: string,
+		ImovelId: number | undefined,
+		locatarioId: number | undefined,
+		locadorId: number | undefined) {
+			return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Report/Commercial`, {
+				params: {
+					DateRefInit,
+					DateRefEnd,
+					IdImovel: ImovelId ?? '',
+					IdLocatario: locatarioId ?? '',
+					IdLocador: locadorId ?? ''
+				},
+			})
+			.pipe(
+				map((response): Commercials[] | null => {
+					console.debug('response', response);
+					if (!response.success)
+						console.error(`getCommercial: ${response.message}`);
 					return response.data;
 				})
 			);

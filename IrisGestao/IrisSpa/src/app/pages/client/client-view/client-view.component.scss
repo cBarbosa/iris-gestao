@@ -71,6 +71,7 @@
 						}
 						.data-value {
 							@apply text-base;
+							line-break: anywhere;
 						}
 					}
 				}

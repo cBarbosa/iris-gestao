@@ -6,7 +6,7 @@ import { environment as env } from '../../../environments/environment';
 
 export type CreateEventObj = {
 	guidImovel: string;
-	idTipoEvento: number;
+	tipoEvento: string;
 	guidCliente: string;
 	nome: string;
 	descricao: string;
@@ -24,6 +24,7 @@ const httpOptions = {
 	providedIn: 'root',
 })
 export class EventoService {
+
 	constructor(private http: HttpClient) {}
 
 	getEvents(limit: number = 50, page: number = 1) {
@@ -96,4 +97,29 @@ export class EventoService {
 				})
 			);
 	}
+
+	getActiveRenters() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Evento/lista-locadores`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getActiveRenters: ${response.message}`);
+					return response;
+				})
+			);
+	};
+
+	getActiveProperties() {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Evento/lista-imoveis`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getActiveProperties: ${response.message}`);
+					return response;
+				})
+			);
+	};
+
 }

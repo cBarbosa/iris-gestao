@@ -51,7 +51,10 @@ public class FornecedorRepository : Repository<Fornecedor>, IFornecedorRepositor
                                 Conta                 = x.IdDadoBancarioNavigation.Conta,
                                 ChavePix              = x.IdDadoBancarioNavigation.ChavePix,
                                 DataCriacao           = x.IdDadoBancarioNavigation.DataCriacao,
-                                Banco = x.IdDadoBancarioNavigation.IdBancoNavigation == null ? null : new
+                                Banco                 = x.IdDadoBancarioNavigation.Banco.Equals("Transit") ?
+                                    x.IdDadoBancarioNavigation.IdBancoNavigation.Descricao :
+                                    x.IdDadoBancarioNavigation.Banco,
+                                BancoNavigation = x.IdDadoBancarioNavigation.IdBancoNavigation == null ? null : new
                                 {
                                     Codigo = x.IdDadoBancarioNavigation.IdBancoNavigation.Codigo,
                                     Descricao = x.IdDadoBancarioNavigation.IdBancoNavigation.Descricao,

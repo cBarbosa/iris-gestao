@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { first } from 'rxjs';
 import { AreaPipe } from 'src/app/shared/pipes/area.pipe';
-import { CommonService, RentContractService, ReportService } from 'src/app/shared/services';
+import { RentContractService, ReportService } from 'src/app/shared/services';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -101,8 +101,7 @@ export class ReportLeasedAreaComponent {
 		private router: Router,
 		private responsiveService: ResponsiveService,
 		private reportLeasedAreaService: ReportService,
-		private rentContract: RentContractService,
-		private commonService: CommonService
+		private rentContract: RentContractService
 	) { };
 
 	ngOnInit(): void {
@@ -261,8 +260,8 @@ export class ReportLeasedAreaComponent {
 	};
 
 	getUnitTypesData() {
-		this.commonService
-			.getUnitType()
+		this.rentContract
+			.getActiveUnitType()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {

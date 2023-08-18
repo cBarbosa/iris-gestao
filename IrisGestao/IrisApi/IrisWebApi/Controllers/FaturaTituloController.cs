@@ -15,6 +15,17 @@ public class FaturaTituloController : Controller
         this.faturaTituloService = FaturaTituloService;
     }
 
+    [HttpPost("{guid}/criar")]
+    [Produces("application/json")]
+    public async Task<IActionResult> Cadastrar(
+    Guid guid,
+    [FromBody] BaixaDeFaturaCommand cmd)
+    {
+        var result = await faturaTituloService.Insert(guid, cmd);
+
+        return Ok(result);
+    }
+
     [HttpPut("{guid}/atualizar")]
     [Produces("application/json")]
     public async Task<IActionResult> Atualizar(

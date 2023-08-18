@@ -115,5 +115,6 @@ public class DadoBancarioService : IDadoBancarioService
         dadoBancario.Conta = cmd.Conta;
         dadoBancario.IdBanco = cmd.IdBanco;
         dadoBancario.ChavePix = cmd.ChavePix;
+        dadoBancario.Banco = cmd.Banco;
     }
 }

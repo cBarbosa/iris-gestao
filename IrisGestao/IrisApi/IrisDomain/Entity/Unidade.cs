@@ -16,13 +16,13 @@ public partial class Unidade: BaseEntity<Unidade>
     [Unicode(false)]
     public string Tipo { get; set; } = null!;
 
-    [Column(TypeName = "decimal(18, 0)")]
+    [Column(TypeName = "decimal(18, 2)")]
     public decimal? AreaUtil { get; set; } = null!;
 
-    [Column(TypeName = "decimal(18, 0)")]
+    [Column(TypeName = "decimal(18, 2)")]
     public decimal? AreaTotal { get; set; } = null!;
 
-    [Column(TypeName = "decimal(18, 0)")]
+    [Column(TypeName = "decimal(18, 2)")]
     public decimal? AreaHabitese { get; set; } = null!;
 
     [StringLength(50)]

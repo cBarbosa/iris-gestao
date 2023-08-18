@@ -111,6 +111,29 @@ public class TituloPagarService: ITituloPagarService
         }
     }
 
+    public async Task<CommandResult> InsertByContratoFornecedor(ContratoFornecedor contratoFornecedor)
+    {
+        var TituloPagar = new TituloPagar();
+        List<FaturaTituloPagar> lstFaturaTituloPagar = new List<FaturaTituloPagar>();
+
+        int sequencial = await tituloPagarRepository.GetNumeroTitulo();
+        TituloPagar.Sequencial = sequencial + 1;
+        BindTituloPagarByContratoFornecedorData(contratoFornecedor, TituloPagar, lstFaturaTituloPagar);
+
+        try
+        {
+            tituloPagarRepository.Insert(TituloPagar);
+            await CriarFaturaTituloPagar(TituloPagar.Id, lstFaturaTituloPagar);
+
+            return new CommandResult(true, SuccessResponseEnums.Success_1000, TituloPagar);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
+        }
+    }
+
     public async Task<CommandResult> Insert(CriarTituloPagarCommand cmd)
     {
         var TituloPagar = new TituloPagar();
@@ -237,6 +260,7 @@ public class TituloPagarService: ITituloPagarService
             TituloPagar.Status = false;
             foreach (var fatura in lstFaturasTitulo)
             {
+                fatura.DataUltimaModificacao = DateTime.Now;
                 fatura.Status = false;
                 fatura.StatusFatura = FaturaTituloEnum.INATIVO;
                 fatura.DescricaoBaixaFatura = "Fatura cancelada devido cancelamento do contrato de aluguel";
@@ -320,14 +344,13 @@ public class TituloPagarService: ITituloPagarService
             case null:
                 TituloPagar.GuidReferencia = Guid.NewGuid();
                 TituloPagar.DataCriacao = DateTime.Now;
-                TituloPagar.DataUltimaModificacao = DateTime.Now;
                 break;
             default:
                 TituloPagar.GuidReferencia = TituloPagar.GuidReferencia;
-                TituloPagar.DataUltimaModificacao = DateTime.Now;
                 break;
         }
 
+        TituloPagar.DataUltimaModificacao = DateTime.Now;
         TituloPagar.NumeroTitulo = TituloPagar.Sequencial + "/" + DateTime.Now.Year;
         TituloPagar.NomeTitulo = "Taxa de administração";
         TituloPagar.IdTipoTitulo = TipoTituloReceberEnum.TAXA_ADMINISTRACAO;
@@ -401,6 +424,43 @@ public class TituloPagarService: ITituloPagarService
             lstFaturaTituloPagar.Add(faturaTituloPagar);
         }
         return lstFaturaTituloPagar;
+    }
+
+    private static void BindTituloPagarByContratoFornecedorData(ContratoFornecedor contratoFornecedor, TituloPagar TituloPagar, List<FaturaTituloPagar> lstFaturaTituloPagar)
+    {
+        double ValorAPagarTotal = 0;
+        ValorAPagarTotal = calcularPorcentagemContratoAluguel(contratoFornecedor.ValorServicoContratado, 
+            contratoFornecedor.Percentual.HasValue ? contratoFornecedor.Percentual.Value : 0) * contratoFornecedor.PrazoTotalMeses;
+
+        switch (TituloPagar.GuidReferencia)
+        {
+            case null:
+                TituloPagar.GuidReferencia = Guid.NewGuid();
+                TituloPagar.DataCriacao = DateTime.Now;
+                break;
+            default:
+                TituloPagar.GuidReferencia = TituloPagar.GuidReferencia;
+                break;
+        }
+
+        TituloPagar.DataUltimaModificacao = DateTime.Now;
+        TituloPagar.NumeroTitulo = TituloPagar.Sequencial + "/" + DateTime.Now.Year;
+        TituloPagar.NomeTitulo = "Reembolso Contrato Fornecedor";
+        TituloPagar.IdTipoTitulo = TipoTituloReceberEnum.REEMBOLSO;
+        TituloPagar.IdFormaPagamento = FormaPagamentoEnum.BOLETO;
+        TituloPagar.Status = true;
+        TituloPagar.DataFimTitulo = contratoFornecedor.DataFimContrato;
+        //TituloPagar.IdContratoAluguel = contratoFornecedor.Id;
+        TituloPagar.IdCliente = contratoFornecedor?.IdImovelNavigation?.IdClienteProprietario;
+        TituloPagar.IdIndiceReajuste = contratoFornecedor?.IdIndiceReajuste;
+        TituloPagar.IdTipoCreditoAluguel = TipoCreditoAluguelEnum.LOCADOR;
+        TituloPagar.ValorTitulo = calcularPorcentagemContratoAluguel(contratoFornecedor.ValorServicoContratado, contratoFornecedor.Percentual.HasValue? contratoFornecedor.Percentual.Value : 0);
+        TituloPagar.ValorTotalTitulo = ValorAPagarTotal;
+        TituloPagar.Parcelas = contratoFornecedor.PrazoTotalMeses;
+        TituloPagar.DataVencimentoPrimeraParcela = contratoFornecedor.DataVencimentoPrimeraParcela;
+        TituloPagar.PorcentagemTaxaAdministracao = contratoFornecedor.Percentual;
+
+        //BindFaturaTituloByContratoAluguelData(contratoFornecedor, TituloPagar, lstFaturaTituloPagar, unidadeTaxaAdministracao);
     }
 
     private static void BindTituloPagarData(CriarTituloPagarCommand cmd, TituloPagar TituloPagar,  List<FaturaTituloPagar> lstFaturaTituloPagar)

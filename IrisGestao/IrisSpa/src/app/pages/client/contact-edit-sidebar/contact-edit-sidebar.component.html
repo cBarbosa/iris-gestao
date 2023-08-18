@@ -28,14 +28,14 @@
 			</ng-container>
 		</div>
 		<div class="field">
-			<label for="role" class="block">Cargo</label>
+			<label for="role" class="block">Cargo/Setor</label>
 			<input
 				id="role"
 				type="text"
 				formControlName="role"
 				aria-describedby="role-help"
 				pInputText
-				maxlength="50"
+				maxlength="80"
 			/>
 			<ng-container *ngIf="checkHasError(f['role'])">
 				<small

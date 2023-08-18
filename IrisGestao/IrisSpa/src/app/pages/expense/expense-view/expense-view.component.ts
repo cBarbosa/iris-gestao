@@ -29,6 +29,7 @@ export class ExpenseViewComponent {
 	detalheBaixaVisible = false;
 	baixaTituloVisible = false;
 	edicaoTituloVisible = false;
+	addFaturaVisible = false;
 
 	constructor(
 		private router: Router,
@@ -115,12 +116,21 @@ export class ExpenseViewComponent {
 		this.detalheBaixaVisible = true;
 		this.baixaTituloVisible = false;
 		this.edicaoTituloVisible = false;
+		this.addFaturaVisible = false;
 	};
 
 	showBaixaTitulo = (): void => {
 		this.detalheBaixaVisible = false;
 		this.baixaTituloVisible = true;
 		this.edicaoTituloVisible = false;
+		this.addFaturaVisible = false;
+	};
+
+	showAddFatura = (): void => {
+		this.detalheBaixaVisible = false;
+		this.baixaTituloVisible = false;
+		this.edicaoTituloVisible = false;
+		this.addFaturaVisible = true;
 	};
 
 	showEdicaoTitulo = (): void => {
@@ -128,6 +138,7 @@ export class ExpenseViewComponent {
 		this.baixaTituloVisible = false;
 		this.edicaoTituloVisible = true;
 		this.editAllFields = true;
+		this.addFaturaVisible = false;
 		/*if (
 			this.faturaSelected.statusFatura === 'Vencido' ||
 			this.faturaSelected.statusFatura === 'A vencer'
@@ -146,6 +157,10 @@ export class ExpenseViewComponent {
 
 	hideEdicaoTitulo = () => {
 		this.edicaoTituloVisible = false;
+	};
+
+	hideAddFatura = () => {
+		this.addFaturaVisible = false;
 	};
 
 	toggleDetalheBaixa() {

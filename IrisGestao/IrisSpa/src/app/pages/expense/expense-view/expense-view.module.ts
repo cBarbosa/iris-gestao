@@ -16,6 +16,8 @@ import { BaixaTituloSidebarComponent } from './baixa-titulo-sidebar/baixa-titulo
 import { ButtonModule } from 'primeng/button';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { EdicaoTituloSidebarComponent } from './edicao-titulo-sidebar/edicao-titulo-sidebar.component';
+import { AdicionarTituloSidebarComponent } from './add-titulo-sidebar/add-titulo-sidebar.component';
+import { SidebarAddFaturaComponent } from 'src/app/shared/components/sidebar-add-fatura/sidebar-add-fatura.component';
 
 @NgModule({
 	declarations: [ExpenseViewComponent],
@@ -34,6 +36,8 @@ import { EdicaoTituloSidebarComponent } from './edicao-titulo-sidebar/edicao-tit
 		UploadListComponent,
 		BaixaTituloSidebarComponent,
 		EdicaoTituloSidebarComponent,
+		AdicionarTituloSidebarComponent,
+		SidebarAddFaturaComponent,
 	],
 })
 export class ExpenseViewModule {}

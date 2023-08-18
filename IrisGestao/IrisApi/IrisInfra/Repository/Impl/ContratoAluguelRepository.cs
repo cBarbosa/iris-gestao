@@ -304,6 +304,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                             DataFimContrato = x.DataFimContrato,
                             DataOcupacao = x.DataOcupacao,
                             DiaVencimentoAluguel = x.DiaVencimentoAluguel,
+                            DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,
                             PeriodicidadeReajuste = x.PeriodicidadeReajuste,
                             DataCriacao = x.DataCriacao,
                             DataAtualização = x.DataUltimaModificacao,
@@ -574,6 +575,8 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
     }
 
     public async Task<IEnumerable<SpExpensesResult>?> GetReportExpenses(
+        DateTime dateRefInit,
+        DateTime dateRefEnd,
         bool? status,
         int? idImovel,
         int? idTipoImovel,
@@ -581,8 +584,12 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         int? idLocatario)
     {
         var parameters = new List<SqlParameter> {
-            new ("@Status", SqlDbType.Bit)
-                {Value = status.HasValue ? status : DBNull.Value, IsNullable = true},
+            new ("@DataInicioReferencia", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimReferencia", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@IdLocador", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
             new ("@IdImovel", SqlDbType.Int)
                 {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true},
             new ("@IdTipoImovel", SqlDbType.Int)
@@ -592,11 +599,13 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         };
 
         return await Db
-            .SqlQueryAsync<SpExpensesResult>("Exec Sp_Expenses @Status, @IdImovel, @IdTipoImovel",
+            .SqlQueryAsync<SpExpensesResult>("Exec Sp_Expenses @DataInicioReferencia, @DataFimReferencia, @IdLocador, @IdLocatario, @IdImovel, @IdTipoImovel",
                 parameters.ToArray());
     }
 
     public async Task<IEnumerable<SpRevenuesResult>?> GetReportRevenues(
+        DateTime dateRefInit,
+        DateTime dateRefEnd,
         bool? status,
         int? idImovel,
         int? idTipoImovel,
@@ -604,8 +613,12 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         int? idLocatario)
     {
         var parameters = new List<SqlParameter> {
-            new ("@Status", SqlDbType.Bit)
-                {Value = status.HasValue ? status : DBNull.Value, IsNullable = true},
+            new ("@DataInicioReferencia", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimReferencia", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@IdLocador", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
             new ("@IdImovel", SqlDbType.Int)
                 {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true},
             new ("@IdTipoImovel", SqlDbType.Int)
@@ -615,7 +628,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         };
 
         return await Db
-            .SqlQueryAsync<SpRevenuesResult>("Exec Sp_Revenues @Status, @IdImovel, @IdTipoImovel",
+            .SqlQueryAsync<SpRevenuesResult>("Exec Sp_Revenues @DataInicioReferencia, @DataFimReferencia, @IdLocador, @IdLocatario, @IdImovel, @IdTipoImovel",
                 parameters.ToArray());
     }
 
@@ -643,6 +656,21 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                 parameters.ToArray());
     }
 
+    public async Task<IEnumerable<dynamic>> GetAllActivePropertTypes()
+    {
+        var retorno = await Db.Unidade
+            .Include(x => x.IdTipoUnidadeNavigation)
+            .Select( x=> new
+            {
+                x.IdTipoUnidadeNavigation.Id,
+                x.IdTipoUnidadeNavigation.Nome,
+            })
+            .Distinct()
+            .ToListAsync();
+
+        return retorno;
+    }
+
     public async Task<IEnumerable<dynamic>> GetAllActiveProperties()
     {
         var retorno = await DbSet
@@ -664,16 +692,32 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
 
     public async Task<IEnumerable<dynamic>> GetAllActiveOwners()
     {
-        var retorno = await DbSet
-            .Include(x => x.ContratoAluguelImovel)
-            .ThenInclude(y => y.IdImovelNavigation)
-            .ThenInclude(z => z.IdClienteProprietarioNavigation)
-            .Where(x => x.Status
-                        && DateTime.Now > x.DataInicioContrato && DateTime.Now < x.DataFimContrato)
+        var retorno = await Db.Imovel
+            .Include(x => x.IdClienteProprietarioNavigation)
+            .Where(x => x.Status && x.IdClienteProprietarioNavigation.Status)
             .Select(x => new
             {
-                x.ContratoAluguelImovel.First().IdImovelNavigation.IdClienteProprietarioNavigation.Id,
-                x.ContratoAluguelImovel.First().IdImovelNavigation.IdClienteProprietarioNavigation.Nome
+                x.IdClienteProprietarioNavigation.GuidReferencia,
+                x.IdClienteProprietarioNavigation.Id,
+                x.IdClienteProprietarioNavigation.Nome
+            })
+            .Distinct()
+            .OrderBy(x => x.Nome)
+            .ToListAsync();
+
+        return retorno;
+    }
+    
+    public async Task<IEnumerable<dynamic>> GetActiveRenters()
+    {
+        var retorno = await DbSet
+            .Include(x => x.IdClienteNavigation)
+            .Where(x => x.Status && x.IdClienteNavigation.Status)
+            .Select(x => new
+            {
+                x.IdClienteNavigation.GuidReferencia,
+                x.IdClienteNavigation.Id,
+                x.IdClienteNavigation.Nome
             })
             .Distinct()
             .OrderBy(x => x.Nome)
@@ -687,7 +731,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         return await DbSet
                         .Include(x => x.ContratoAluguelImovel)
                             .ThenInclude(x => x.ContratoAluguelUnidade)
-                        .Where(x => x.GuidReferencia.Equals(guid) && x.Status)
+                        .Where(x => x.GuidReferencia.Equals(guid))
                         .Select(x => new
                         {                            
                             ImovelAlugado = x.ContratoAluguelImovel.Select(x => new
@@ -703,6 +747,44 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 }).Where(y => y.Ativo)
                             }),
                         }).ToListAsync();
+    }
+    
+    public async Task<IEnumerable<dynamic>> GetReportDimob(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idLocatario)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@DataInicioReferencia", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimReferencia", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@IdLocador", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
+            new ("@IdLocatario", SqlDbType.Int)
+                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpDimobResult>("Exec Sp_Dimob @DataInicioReferencia, @DataFimReferencia, @IdLocador, @IdLocatario",
+                parameters.ToArray());
+    }
+
+    public async Task<IEnumerable<dynamic>> GetReportCommercial(DateTime dateRefInit, DateTime dateRefEnd, int? idImovel, int? idLocador, int? idLocatario)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@DataInicioReferencia", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimReferencia", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@IdImovel", SqlDbType.Int)
+                {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true},
+            new ("@IdLocador", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
+            new ("@IdLocatario", SqlDbType.Int)
+                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpCommercialResult>("Exec Sp_Commercial @DataInicioReferencia, @DataFimReferencia, @IdLocador, @IdLocatario, @IdImovel",
+                parameters.ToArray());
     }
 
 }

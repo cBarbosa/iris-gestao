@@ -9,6 +9,7 @@ import { TableModule } from 'primeng/table';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { MenuModule } from 'primeng/menu';
+import { CalendarModule } from 'primeng/calendar';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { MenuModule } from 'primeng/menu';
     TableModule,
 		SpinnerComponent,
     DropdownModule,
-    MenuModule
+    MenuModule,
+    CalendarModule
   ]
 })
 export class ReportReceiptsModule { }

@@ -55,9 +55,6 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                                 AreaUtil            = y.Unidade.Where(x => x.Status).Sum(x => x.AreaUtil),
                                 AreaHabitese        = y.Unidade.Where(x => x.Status).Sum(x => x.AreaHabitese),
                                 NumCentroCusto      = y.NumCentroCusto,
-                                ImgCapa             = "../../../../assets/images/imovel.png",
-                                Imagens             = ImagemListFake,
-                                Anexos              = AnexoListFake,
                                 ImovelEndereco      = y.ImovelEndereco,
                                 Ativo               = y.Status,
                                 IdCategoriaImovelNavigation = y.IdCategoriaImovelNavigation == null ? null : new
@@ -82,7 +79,7 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                                 DataCriacao = z.DataCriacao,
                                 DataAtualização = z.DataUltimaModificacao,
                                 guidReferenciaContato  = z.GuidReferencia,
-                            }),
+                            }).OrderBy(z=> z.Nome).ToList(),
                             ContratoAluguel = x.ContratoAluguel.Select(x => new
                             {
                                 NumeroContrato = x.NumeroContrato,

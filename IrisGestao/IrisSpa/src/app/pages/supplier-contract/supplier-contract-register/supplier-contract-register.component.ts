@@ -181,11 +181,12 @@ export class SupplierContractRegisterComponent {
 				valor: ['', Validators.required],
 				dataInicio: [null, Validators.required],
 				dataFim: [null, Validators.required],
-				dataVencimento: [1, Validators.required],
+				//dataVencimento: [null, Validators.required],
 				pagamento: [null, Validators.required],
 				reajuste: [null, Validators.required],
 				periodicidade: [null, Validators.required],
 				// percentual: [null, Validators.required],
+				dataVencimentoPrimeraParcela: [null, Validators.required],
 			}),
 		});
 
@@ -454,10 +455,11 @@ export class SupplierContractRegisterComponent {
 				valor: number; //x
 				dataInicio: string; //x
 				dataFim: string; //x
-				dataVencimento: number; //x
+				//dataVencimento: number; //x
 				pagamento: number; //x
 				reajuste: number; //x
 				periodicidade: number; //x
+				dataVencimentoPrimeraParcela: string;
 				// percentual: number;
 			};
 		} = this.registerForm.getRawValue();
@@ -474,7 +476,8 @@ export class SupplierContractRegisterComponent {
 			valorServicoContratado: number;
 			dataInicioContrato: string;
 			dataFimContrato: string;
-			diaPagamento: number;
+			//diaPagamento: number;
+			dataVencimentoPrimeraParcela: string;
 			periodicidadeReajuste: number;
 		} = {
 			guidImovel: formData.contractInfo.imovel,
@@ -489,7 +492,8 @@ export class SupplierContractRegisterComponent {
 			valorServicoContratado: formData.valuesInfo.valor,
 			dataInicioContrato: formData.valuesInfo.dataInicio,
 			dataFimContrato: formData.valuesInfo.dataFim,
-			diaPagamento: formData.valuesInfo.dataVencimento,
+			//diaPagamento: formData.valuesInfo.dataVencimento,
+			dataVencimentoPrimeraParcela: formData.valuesInfo.dataVencimentoPrimeraParcela,
 			periodicidadeReajuste: formData.valuesInfo.periodicidade,
 		};
 

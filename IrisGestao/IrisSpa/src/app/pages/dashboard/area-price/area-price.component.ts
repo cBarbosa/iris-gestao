@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { first } from 'rxjs';
 import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
 import { DropdownItem } from 'src/app/shared/models/types';
-import { ClienteService, CommonService } from 'src/app/shared/services';
+import { RentContractService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
@@ -58,8 +58,7 @@ export class AreaPriceComponent {
 		private router: Router,
 		private responsiveService: ResponsiveService,
 		private dashboardService: DashboardService,
-		private clienteService: ClienteService,
-		private commonService: CommonService
+		private rentContract: RentContractService
 	) { };
 
 	ngOnInit():void {
@@ -136,14 +135,14 @@ export class AreaPriceComponent {
 					data: [],
 					opt: 2
 				},
-				{
-					type: 'line',
-					label: 'Média',
-					backgroundColor: 'white',
-					borderColor: `#D08175`,
-					data: [],
-					opt: 2
-				},
+				// {
+				// 	type: 'line',
+				// 	label: 'Média',
+				// 	backgroundColor: 'white',
+				// 	borderColor: `#D08175`,
+				// 	data: [],
+				// 	opt: 2
+				// },
 			],
 		};
 
@@ -164,13 +163,13 @@ export class AreaPriceComponent {
 					this.data.labels = [];
 					this.data.datasets[0].data = []; // media ponderada
 					this.data.datasets[1].data = []; // media simples
-					this.data.datasets[2].data = []; // media
+					// this.data.datasets[2].data = []; // media
 
 					event.data.forEach((item: any) => {
 						this.data.datasets[0].data.push(item.mediaPonderada); // media ponderada
 						this.data.labels.push(item.referencia);
 						this.data.datasets[1].data.push(item.mediaSimples); // media simples
-						this.data.datasets[2].data.push(item.media); // media
+						// this.data.datasets[2].data.push(item.media); // media
 					});
 				},
 				error: () => {
@@ -183,8 +182,8 @@ export class AreaPriceComponent {
 	};
 
 	getOwnersListData() {
-		this.clienteService
-			.getListaProprietarios()
+		this.rentContract
+			.getActiveOwners()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {
@@ -206,8 +205,8 @@ export class AreaPriceComponent {
 	};
 
 	getUnitTypesData() {
-		this.commonService
-			.getUnitType()
+		this.rentContract
+			.getActiveUnitType()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {

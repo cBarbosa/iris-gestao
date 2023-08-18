@@ -13,7 +13,7 @@ export type ContratoAluguel = {
 	dataInicioContrato: string;
 	prazoTotalContrato: number;
 	dataOcupacao: string;
-	diaVencimentoAluguel: number;
+	//diaVencimentoAluguel: number;
 	dataVencimentoPrimeraParcela: string;
 	periodicidadeReajuste: number;
 	lstImoveis: {

@@ -165,8 +165,8 @@
 								<td>{{ unit.tipo }}</td>
 								<td>{{ unit.areaHabitese ?? 0 | area }}</td>
 								<td>{{ unit.areaUtil | area }}</td>
-								<td>-</td>
-								<td>-</td>
+								<td>{{ unit.locatario }}</td>
+								<td>{{ unit.dataVencimentoContrato }}</td>
 								<td class="w-52">
 									<ng-container *ngIf="unit.unidadeLocada; else disponivel">
 										<p-tag

@@ -191,6 +191,24 @@ public class EventoService: IEventoService
             }
         }
     }
+    
+    public async Task<CommandResult> GetAllProperties()
+    {
+        var result = await eventoRepository.GetAllProperties();
+
+        return !result.Any()
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, result);
+    }
+
+    public async Task<CommandResult> GetAllRenters()
+    {
+        var result = await eventoRepository.GetAllRenters();
+
+        return !result.Any()
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, result);
+    }
 
     private static void BindEventoData(CriarEventoCommand cmd, Evento Evento)
     {
@@ -208,7 +226,8 @@ public class EventoService: IEventoService
         }
 
         Evento.Nome                         = cmd.Nome;
-        Evento.IdTipoEvento                 = cmd.IdTipoEvento;
+        Evento.IdTipoEvento                 = cmd.IdTipoEvento.HasValue ? cmd.IdTipoEvento.Value : null;
+        Evento.TipoEvento                   = cmd.TipoEvento;
         Evento.DthRealizacao                = cmd.DthRealizacao;
         Evento.descricao                    = cmd.Descricao;
     }

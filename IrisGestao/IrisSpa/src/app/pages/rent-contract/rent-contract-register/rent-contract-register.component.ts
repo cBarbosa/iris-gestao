@@ -52,6 +52,8 @@ export class RentContractRegisterComponent {
 	propertyAddForm: FormGroup;
 	registerRenterForm: FormGroup;
 
+	isRegistering = false;
+
 	registerRenterVisible = false;
 
 	stepList: Step[];
@@ -204,7 +206,7 @@ export class RentContractRegisterComponent {
 				locatario: [null, Validators.required],
 				dataInicio: [null, Validators.required],
 				// dataFim: [null, Validators.required],
-				prazoTotalContrato:  [null, Validators.required],
+				prazoTotalContrato: [null, Validators.required],
 				dataOcupacao: [null, Validators.required],
 				//dataVencimento: [1, Validators.required],
 				dataVencimentoPrimeraParcela: [null, Validators.required],
@@ -486,6 +488,8 @@ export class RentContractRegisterComponent {
 			return;
 		}
 
+		this.isRegistering = true;
+
 		const formData: {
 			contractInfo: {
 				numero: string; // x
@@ -530,7 +534,7 @@ export class RentContractRegisterComponent {
 			dataInicioContrato: formData.contractInfo.dataInicio,
 			prazoTotalContrato: +formData.contractInfo.prazoTotalContrato, //???
 			dataOcupacao: formData.contractInfo.dataOcupacao,
-			diaVencimentoAluguel: formData.contractInfo.dataVencimento,
+			//diaVencimentoAluguel: formData.contractInfo.dataVencimento,
 			dataVencimentoPrimeraParcela:
 				formData.contractInfo.dataVencimentoPrimeraParcela,
 			periodicidadeReajuste: +formData.valuesInfo.periodicidade,
@@ -564,6 +568,8 @@ export class RentContractRegisterComponent {
 						};
 					}
 
+					this.isRegistering = false;
+
 					this.openModal();
 				},
 				error: (error: any) => {
@@ -574,6 +580,7 @@ export class RentContractRegisterComponent {
 						isError: true,
 					};
 
+					this.isRegistering = false;
 					this.openModal();
 				},
 			});

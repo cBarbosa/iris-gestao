@@ -133,7 +133,7 @@ export class AddEventSidebarComponent {
 			);
 
 		this.form = this.fb.group({
-			tipoEvento: [null, Validators.required],
+			tipoEvento: ['', Validators.required],
 			proprietary: [null, Validators.required],
 			unidade: [null, Validators.required],
 			nomeEvento: ['', Validators.required],
@@ -146,26 +146,6 @@ export class AddEventSidebarComponent {
 		this.onBlurDate = onBlurDate;
 
 		this.getListaProprietarios();
-
-		this.dominiosService
-			.getTiposEvento()
-			.pipe(first())
-			.subscribe({
-				next: (response) => {
-					if (response.success) {
-						const data = response.data;
-						this.opcoesTipoEvento = this.opcoesTipoEvento.concat(
-							data.map((item: any) => {
-								return {
-									label: item.nome,
-									value: item.id,
-								};
-							})
-						);
-					}
-				},
-				error: (err) => {},
-			});
 
 		this.unidadeService
 			.getUnitByPropertyId(this.guidProperty)
@@ -238,7 +218,7 @@ export class AddEventSidebarComponent {
 
 		const edicaoObj: CreateEventObj = {
 			guidImovel: this.guidProperty,
-			idTipoEvento: editFormData.tipoEvento,
+			tipoEvento: editFormData.tipoEvento,
 			guidCliente: editFormData.proprietary,
 			nome: editFormData.nomeEvento,
 			descricao: editFormData.descricao,

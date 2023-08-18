@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
 import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
-import { CommonService, RentContractService } from 'src/app/shared/services';
+import { RentContractService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
@@ -58,8 +58,7 @@ export class FinancialVacancyComponent implements OnInit {
 		private router: Router,
 		private responsiveService: ResponsiveService,
 		private dashboardService: DashboardService,
-		private rentContract: RentContractService,
-		private commonService: CommonService
+		private rentContract: RentContractService
 	) { };
 
 	ngOnInit():void {
@@ -254,7 +253,7 @@ export class FinancialVacancyComponent implements OnInit {
 		};
 
 		const currYear = new Date().getFullYear();
-		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 31)];
+		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 1)];
 
 		this.getOwnersListData();
 		this.getUnitTypesData();
@@ -295,8 +294,8 @@ export class FinancialVacancyComponent implements OnInit {
 	};
 
 	getUnitTypesData() {
-		this.commonService
-			.getUnitType()
+		this.rentContract
+			.getActiveUnitType()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {
