@@ -149,11 +149,11 @@ export class TopbarComponent {
 						id: route.startsWith('/dashboard/') ? 'current' : '',
 						command: () => this.navigateTo('dashboard/receiving-performance'),
 					},
-					//{
-					//	label: 'Preço M²',
-					//	id: route.startsWith('/dashboard/') ? 'current' : '',
-					//	command: () => this.navigateTo('dashboard/area-price'),
-					//},
+					{
+						label: 'Preço M²',
+						id: route.startsWith('/dashboard/') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/area-price'),
+					},
 					//{
 					//	label: 'M² Gerenciados',
 					//	id: route.startsWith('/dashboard/') ? 'current' : '',
@@ -174,11 +174,11 @@ export class TopbarComponent {
 					//	id: route.startsWith('/report/rent-amount') ? 'current' : '',
 					//	command: () => this.navigateTo('report/rent-amount'),
 					//},
-					//{
-					//	label: 'Vencimento/Reajuste de Contratos',
-					//	id: route.startsWith('/report/supply-contracts') ? 'current' : '',
-					//	command: () => this.navigateTo('report/supply-contracts'),
-					//},
+					{
+						label: 'Vencimento/Reajuste de Contratos',
+						id: route.startsWith('/report/supply-contracts') ? 'current' : '',
+						command: () => this.navigateTo('report/supply-contracts'),
+					},
 					{
 						label: 'Despesas',
 						id: route.startsWith('/report/costs') ? 'current' : '',
