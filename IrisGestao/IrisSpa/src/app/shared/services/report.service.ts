@@ -72,7 +72,7 @@ type Dimob = {
 type Commercials = {
 	locador: string;
 	cpfCnpj: string;
-	contato: string;
+	// contato: string;
 	email: string;
 	telefone: string;
 	imovel: string;
