@@ -37,7 +37,6 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
             .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.ContratoAluguelUnidade).ThenInclude(x => x.IdUnidadeNavigation).ThenInclude(x => x.IdTipoUnidadeNavigation)
 
             .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.IdImovelNavigation).ThenInclude(x => x.Unidade)
-            .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.IdImovelNavigation).ThenInclude(x => x.ImovelEndereco)
             .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.IdImovelNavigation).ThenInclude(x => x.IdCategoriaImovelNavigation)
             .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.IdImovelNavigation).ThenInclude(x => x.IdClienteProprietarioNavigation)
             .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.IdImovelNavigation).ThenInclude(x => x.IdClienteProprietarioNavigation).ThenInclude(x => x.IdTipoClienteNavigation)
