@@ -27,6 +27,7 @@ export class PropertyViewComponent implements OnInit {
 	unit: ImovelUnidade | undefined;
 	units: ImovelUnidade[] = [];
 	imageList: ImagemData[] = [];
+	eventos: any[] = [];
 
 	hasAttachmentDocs: boolean = false;
 
@@ -191,10 +192,11 @@ export class PropertyViewComponent implements OnInit {
 				this.property = imovel;
 				this.units = imovel.unidade!;
 				this.imageList = imovel.imagens!;
+				this.eventos = imovel.eventos!;
 				this.isLoadingView = false;
 				this.isCorporativeBuilding =
 					this.units[0]?.idTipoUnidadeNavigation?.id == 1;
-
+				//console.log('Eventos >> ' + JSON.stringify(this.eventos)); 
 				this.anexoService
 					.getFiles(imovel.guidReferencia)
 					.pipe(first())
