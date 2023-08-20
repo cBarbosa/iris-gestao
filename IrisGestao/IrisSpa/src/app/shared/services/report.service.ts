@@ -16,14 +16,15 @@ type LeasedArea = {
 };
 
 type RentValue = {
-	nomeImovel: string;
-	numCentroCusto: number;
-	nomeLocatario: string;
-	somaAreaUtil: number;
-	somaValorAluguel: number;
-	somaPrecoM2: number;
-	somaValorPotencial: number;
-	precoMesReferencia: number;
+	imovel: string;
+	centroDeCusto: number;
+	locador: string;
+	locatario: string;
+	areaTotalSelecionada: number;
+	valorPotencial: number;
+	precoM2: number;
+	precoM2Referencia: number;
+	precoM2ReferenciaJan: number;
 };
 
 type SupplyContract = {

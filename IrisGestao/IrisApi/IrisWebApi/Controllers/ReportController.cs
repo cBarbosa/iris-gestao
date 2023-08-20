@@ -34,7 +34,7 @@ public class ReportController : ControllerBase
         [FromQuery] bool? Status,
         [FromQuery] DateTime? DateRef
     ) =>
-        Ok(await contratoAluguelService.GetReportRentValue(Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario, DateRef));
+        Ok(await contratoAluguelService.GetReportRentValue(IdImovel, IdTipoImovel, IdLocador, IdLocatario, DateRef));
     
     [HttpGet("expenses")]
     public async Task<IActionResult> GetExpenses(

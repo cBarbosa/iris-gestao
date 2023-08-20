@@ -4,7 +4,7 @@
 		<header class="list-header">
 			<div class="flex justify-between items-center" [class.mb-2]="isMobile">
 				<h3 class="text-2xl font-bold">
-					Relatório de Valor de Aluguel
+					Valor de Aluguel
 					<span class="ml-2 text-sm">{{ totalAreaCount }}</span>
 				</h3>
 				<button
@@ -49,16 +49,6 @@
 				/>
 			</span> -->
 
-			<p-calendar
-				[styleClass]="'mr-2 w-full md:w-44'"
-				placeholder="Referência"
-				aria-describedby="periodo-help"
-				view="month"
-				dateFormat="mm/yy"
-				[(ngModel)]="filterReferencia"
-				(ngModelChange)="filterResultDebounce($event)"
-			></p-calendar>
-
 			<p-dropdown
 				styleClass="w-full md:w-[10rem]"
 				[options]="opcoesImovel"
@@ -85,8 +75,17 @@
 				[options]="opcoesLocatario"
 				[(ngModel)]="filterLocatario"
 				(ngModelChange)="filterResultDebounce($event)"
-				[hidden]="true"
 			></p-dropdown>
+
+			<p-calendar
+				[styleClass]="'mr-2 w-full md:w-44'"
+				placeholder="Referência"
+				aria-describedby="periodo-help"
+				view="month"
+				dateFormat="mm/yy"
+				[(ngModel)]="filterReferencia"
+				(ngModelChange)="filterResultDebounce($event)"
+			></p-calendar>
 
 			<!-- <p-dropdown
 				styleClass="w-full md:w-[7rem]"
@@ -127,7 +126,7 @@
 						<th>Imóvel</th>
 						<th>Locatário</th>
 						<th>Área Selecionada</th>
-						<th>Aluguel contratado</th>
+						<!-- <th>Aluguel contratado</th> -->
 						<th>Aluguel Potencial</th>
 						<th>Preço/m²</th>
 						<th>Preço mês referência</th>
@@ -135,16 +134,16 @@
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="font-bold">{{ entry.numCentroCusto }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeLocatario ?? "-" }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeImovel }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeLocador ?? "-" }}</td>
+						<td class="font-bold">{{ entry.centroDeCusto }}</td>
+						<td class="max-w-[120px]">{{ entry.locatario ?? "-" }}</td>
+						<td class="max-w-[120px]">{{ entry.imovel }}</td>
+						<td class="max-w-[120px]">{{ entry.locador ?? "-" }}</td>
 
-						<td>{{ entry.somaAreaUtil | area }}</td>
-						<td>{{ entry.somaValorAluguel | currency }}</td>
-						<td>{{ entry.somaValorPotencial | currency }}</td>
-						<td>{{ entry.somaPrecoM2 | currency }}</td>
-						<td>{{ entry.precoMesReferencia | percent : "2.2-2" }}</td>
+						<td>{{ entry.areaTotalSelecionada | area }}</td>
+						<!-- <td>{{ entry.somaValorAluguel | currency }}</td> -->
+						<td>{{ entry.valorPotencial | currency }}</td>
+						<td>{{ entry.precoM2 | currency }}</td>
+						<td>{{ entry.precoM2Referencia | percent : "2.2-2" }}</td>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="footer">
@@ -154,10 +153,10 @@
 							<div class="mb-1 text-xs font-normal">Área selecionada</div>
 							<div>{{ totalSum?.area | area }}</div>
 						</td>
-						<td class="bg-transparent text-white">
+						<!-- <td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Aluguel contratado</div>
 							<div>{{ totalSum?.aluguelContratado | currency }}</div>
-						</td>
+						</td> -->
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Aluguel potencial</div>
 							<div>{{ totalSum?.aluguelPotencial | currency }}</div>
@@ -165,10 +164,11 @@
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Preço/m²</div>
 							<div>
-								{{
+								<!-- {{
 									(totalSum?.aluguelContratado ?? 0) / (totalSum?.area ?? 1)
 										| currency
-								}}
+								}} -->
+								{{ totalSum?.precoM2 | currency }}
 							</div>
 						</td>
 						<td class="bg-transparent text-white">

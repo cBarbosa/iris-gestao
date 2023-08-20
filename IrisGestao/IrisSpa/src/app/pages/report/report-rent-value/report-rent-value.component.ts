@@ -142,6 +142,7 @@ export class ReportRentValueComponent {
 		this.getOwnersListData();
 		this.getUnitTypesData();
 		this.getPropertiesListData();
+		this.getRentersListData();
 	};
 
 	filterResult = (e?: Event, page: number = 1, stack: boolean = false) => {
@@ -149,11 +150,12 @@ export class ReportRentValueComponent {
 
 		const dateString = this.filterReferencia.toISOString().split('T')[0];
 		const idLocador = this.filterLocador ?? null;
+		const idLocatario = this.filterLocatario ?? null;
 		const idTipo = this.filterTipoImovel ?? null;
 		const idImovel = this.filterImovel ?? null;
 		const status = this.filterStatus ?? null;
 
-		this.getData(idImovel, status, idTipo, undefined, idLocador, dateString);
+		this.getData(idImovel, status, idTipo, idLocatario, idLocador, dateString);
 
 	};
 
@@ -202,11 +204,11 @@ export class ReportRentValueComponent {
 						this.noRestults = this.resultEntries.length == 0;
 						this.totalSum = data.reduce(
 							(acc, entry) => {
-								acc.area += entry.somaAreaUtil;
-								acc.aluguelContratado += entry.somaValorAluguel;
-								acc.aluguelPotencial += entry.somaValorPotencial;
-								acc.precoM2 += entry.somaPrecoM2;
-								acc.precoMesReferencia += entry.precoMesReferencia;
+								acc.area += entry.areaTotalSelecionada;
+								//acc.aluguelContratado += entry.areacontratada;
+								acc.aluguelPotencial += entry.valorPotencial;
+								acc.precoM2 += entry.precoM2;
+								acc.precoMesReferencia += entry.precoM2Referencia;
 								return acc;
 							},
 							{
@@ -285,6 +287,29 @@ export class ReportRentValueComponent {
 				next: (e: any) => {
 					if (e.success) {
 						this.opcoesTipoImovel.push(
+							...e.data.map((item: any) => {
+								return {
+									label: this.truncateChar(item.nome),
+									value: item.id,
+								};
+							})
+						);
+					} else console.error(e.message);
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+	};
+
+	getRentersListData() {
+		this.rentContract
+			.getActiveRenters()
+			.pipe(first())
+			.subscribe({
+				next: (e: any) => {
+					if (e.success) {
+						this.opcoesLocador.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),
