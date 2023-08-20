@@ -80,7 +80,6 @@
 				[options]="opcoesLocatario"
 				[(ngModel)]="filterLocatario"
 				(ngModelChange)="filterResultDebounce($event)"
-				[hidden]="true"
 			></p-dropdown>
 
 		</ng-template>
@@ -112,23 +111,23 @@
 				<ng-template pTemplate="header">
 					<tr *ngIf="!isLoading">
 						<th>Imóvel</th>
-						<th>Unidade Locada</th>
+						<th>Locatário</th>
+						<th>Locador</th>
 						<th>Início do Contrato</th>
 						<th>Vencimento do Contrato</th>
 						<th>Próxima Atualização</th>
-						<th>Base de Reajuste</th>
-						<!-- <th>Obs</th> -->
+						<th>Perc. de Reajuste</th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="font-bold max-w-[160px]">{{ entry.nomeImovel }}</td>
-						<td class="max-w-[160px]">{{ entry.nomeLocador }}</td>
+						<td class="font-bold max-w-[160px]">{{ entry.imovel }}</td>
+						<td class="max-w-[160px]">{{ entry.locatario }}</td>
+						<td>{{ entry.locador }}</td>
 						<td >{{ entry.inicioContrato | date:'shortDate' }}</td>
 						<td >{{ entry.fimContrato | date:'shortDate' }}</td>
-						<td >{{ entry.proximaAtualizacao | date:'shortDate' }}</td>
-						<td>{{ entry.baseReajuste }}</td>
-						<!-- <td>{{ entry.somaValorPotencial }}</td> -->
+						<td >{{ entry.proxReajuste | date:'shortDate' }}</td>
+						<td>{{ entry.percUltimoReajuste }}</td>
 					</tr>
 				</ng-template> 
 

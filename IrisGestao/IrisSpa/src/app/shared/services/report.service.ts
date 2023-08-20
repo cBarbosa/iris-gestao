@@ -16,23 +16,29 @@ type LeasedArea = {
 };
 
 type RentValue = {
-	nomeImovel: string;
-	numCentroCusto: number;
-	nomeLocatario: string;
-	somaAreaUtil: number;
-	somaValorAluguel: number;
-	somaPrecoM2: number;
-	somaValorPotencial: number;
-	precoMesReferencia: number;
+	imovel: string;
+	centroDeCusto: number;
+	locador: string;
+	locatario: string;
+	areaTotalSelecionada: number;
+	valorPotencial: number;
+	precoM2: number;
+	precoM2Referencia: number;
+	precoM2ReferenciaJan: number;
 };
 
 type SupplyContract = {
-	nomeImovel: string;
-	nomeLocador: string;
-	baseReajuste: string
+	imovel: string;
+	locatario: string;
+	locador: string;
+	percUltimoReajuste: string;
 	inicioContrato: Date;
 	fimContrato: Date;
-	proximaAtualizacao: Date;
+	proxReajuste: Date;
+	perdDesconto: string;
+	prazoDesconto: number;
+	carencia: boolean;
+	prazoCarencia: number;
 };
 
 type Expenses = {

@@ -34,7 +34,7 @@ public class ReportController : ControllerBase
         [FromQuery] bool? Status,
         [FromQuery] DateTime? DateRef
     ) =>
-        Ok(await contratoAluguelService.GetReportRentValue(Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario, DateRef));
+        Ok(await contratoAluguelService.GetReportRentValue(IdImovel, IdTipoImovel, IdLocador, IdLocatario, DateRef));
     
     [HttpGet("expenses")]
     public async Task<IActionResult> GetExpenses(
@@ -65,10 +65,9 @@ public class ReportController : ControllerBase
         [FromQuery] int? IdImovel,
         [FromQuery] int? IdLocador,
         [FromQuery] int? IdTipoImovel,
-        [FromQuery] int? IdLocatario,
-        [FromQuery] bool? Status
+        [FromQuery] int? IdLocatario
     ) =>
-        Ok(await contratoAluguelService.GetReportSupplyContract(Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario));
+        Ok(await contratoAluguelService.GetReportSupplyContract(IdImovel, IdTipoImovel, IdLocador, IdLocatario));
     
     [HttpGet("dimob")]
     public async Task<IActionResult> GetDimob(

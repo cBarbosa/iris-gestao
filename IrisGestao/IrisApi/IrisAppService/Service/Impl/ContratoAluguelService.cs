@@ -320,14 +320,13 @@ public class ContratoAluguelService: IContratoAluguelService
     }
 
     public async Task<CommandResult> GetReportRentValue(
-        bool? status,
         int? idImovel,
         int? idTipoImovel,
         int? idLocador,
         int? idLocatario,
         DateTime? dateRef)
     {
-        var retorno = await contratoAluguelRepository.GetReportRentValue(status, idImovel, idTipoImovel, idLocador, idLocatario, dateRef);
+        var retorno = await contratoAluguelRepository.GetReportRentValue(idImovel, idTipoImovel, idLocador, idLocatario, dateRef);
         
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -368,10 +367,10 @@ public class ContratoAluguelService: IContratoAluguelService
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
-    public async Task<CommandResult> GetReportSupplyContract(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario)
+    public async Task<CommandResult> GetReportSupplyContract(int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario)
     {
         var retorno = await contratoAluguelRepository
-            .GetReportSupplyContract(status, idImovel, idTipoImovel, idLocador, idLocatario);
+            .GetReportSupplyContract(idImovel, idTipoImovel, idLocador, idLocatario);
         
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
