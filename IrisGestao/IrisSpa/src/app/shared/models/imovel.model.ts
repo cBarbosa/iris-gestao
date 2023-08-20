@@ -33,7 +33,8 @@ export class Imovel {
 		public idClienteProprietarioNavigation?: Cliente,
 		public imovelEndereco?: ImovelEndereco[],
 		public unidade?: ImovelUnidade[],
-		public imagens?: ImageData[]
+		public imagens?: ImageData[],
+		public eventos?: any[]
 	) {}
 
 	deserialize(input: any) {
