@@ -367,10 +367,10 @@ public class ContratoAluguelService: IContratoAluguelService
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
-    public async Task<CommandResult> GetReportSupplyContract(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario)
+    public async Task<CommandResult> GetReportSupplyContract(int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario)
     {
         var retorno = await contratoAluguelRepository
-            .GetReportSupplyContract(status, idImovel, idTipoImovel, idLocador, idLocatario);
+            .GetReportSupplyContract(idImovel, idTipoImovel, idLocador, idLocatario);
         
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)

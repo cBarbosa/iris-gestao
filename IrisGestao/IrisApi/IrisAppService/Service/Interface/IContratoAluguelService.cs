@@ -23,7 +23,7 @@ public interface IContratoAluguelService
     Task<CommandResult> GetReportRentValue(int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario, DateTime? dateRef);
     Task<CommandResult> GetReportExpenses(DateTime dateInit, DateTime dateEnd, bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
     Task<CommandResult> GetReportRevenues(DateTime dateInit, DateTime dateEnd, bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
-    Task<CommandResult> GetReportSupplyContract(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
+    Task<CommandResult> GetReportSupplyContract(int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
     Task<CommandResult> GetAllActivePropertTypes();
     Task<CommandResult> GetActiveRenters();
     Task<CommandResult> GetReportDimob(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idLocatario);

@@ -65,10 +65,9 @@ public class ReportController : ControllerBase
         [FromQuery] int? IdImovel,
         [FromQuery] int? IdLocador,
         [FromQuery] int? IdTipoImovel,
-        [FromQuery] int? IdLocatario,
-        [FromQuery] bool? Status
+        [FromQuery] int? IdLocatario
     ) =>
-        Ok(await contratoAluguelService.GetReportSupplyContract(Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario));
+        Ok(await contratoAluguelService.GetReportSupplyContract(IdImovel, IdTipoImovel, IdLocador, IdLocatario));
     
     [HttpGet("dimob")]
     public async Task<IActionResult> GetDimob(

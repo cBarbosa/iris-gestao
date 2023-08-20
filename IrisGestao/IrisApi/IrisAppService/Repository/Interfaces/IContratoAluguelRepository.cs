@@ -22,7 +22,7 @@ public interface IContratoAluguelRepository : IRepository<ContratoAluguel>, IDis
     Task<IEnumerable<SpRentValueResult>?> GetReportRentValue(int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario, DateTime? dateRef);
     Task<IEnumerable<SpExpensesResult>?> GetReportExpenses(DateTime dateInit, DateTime dateEnd, bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
     Task<IEnumerable<SpRevenuesResult>?> GetReportRevenues(DateTime dateInit, DateTime dateEnd, bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
-    Task<IEnumerable<SpSupplyContractsResult>?> GetReportSupplyContract(bool? status, int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
+    Task<IEnumerable<SpSupplyContractsResult>?> GetReportSupplyContract(int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario);
     Task<IEnumerable<dynamic>> GetAllActivePropertTypes();
     Task<IEnumerable<dynamic>> GetActiveRenters();
     Task<IEnumerable<dynamic>> GetReportDimob(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idLocatario);

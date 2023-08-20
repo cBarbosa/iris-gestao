@@ -101,6 +101,7 @@ export class ReportSupplyContractsComponent {
 		this.getOwnersListData();
 		this.getUnitTypesData();
 		this.getPropertiesListData();
+		this.getRentersListData();
 	};
 
 	openFilters() {
@@ -111,11 +112,12 @@ export class ReportSupplyContractsComponent {
 		this.isLoading = true;
 
 		const idLocador = this.filterLocador ?? null;
+		const idLocatario = this.filterLocatario ?? null;
 		const idTipo = this.filterTipoImovel ?? null;
 		const idImovel = this.filterImovel ?? null;
 		const status = this.filterStatus ?? null;
 
-		this.getData(idImovel, status, idTipo, undefined, idLocador);
+		this.getData(idImovel, status, idTipo, idLocatario, idLocador);
 
 	};
 
@@ -225,6 +227,29 @@ export class ReportSupplyContractsComponent {
 				next: (e: any) => {
 					if (e.success) {
 						this.opcoesTipoImovel.push(
+							...e.data.map((item: any) => {
+								return {
+									label: this.truncateChar(item.nome),
+									value: item.id,
+								};
+							})
+						);
+					} else console.error(e.message);
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+	};
+
+	getRentersListData() {
+		this.rentContract
+			.getActiveRenters()
+			.pipe(first())
+			.subscribe({
+				next: (e: any) => {
+					if (e.success) {
+						this.opcoesLocador.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),

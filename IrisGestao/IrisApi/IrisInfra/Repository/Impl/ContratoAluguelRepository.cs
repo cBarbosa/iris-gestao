@@ -617,26 +617,24 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
     }
 
     public async Task<IEnumerable<SpSupplyContractsResult>?> GetReportSupplyContract(
-        bool? status,
         int? idImovel,
         int? idTipoImovel,
         int? idLocador,
         int? idLocatario)
     {
-        
         var parameters = new List<SqlParameter> {
-            new ("@Status", SqlDbType.Bit)
-                {Value = status.HasValue ? status : DBNull.Value, IsNullable = true},
             new ("@IdImovel", SqlDbType.Int)
                 {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true},
             new ("@IdTipoImovel", SqlDbType.Int)
                 {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true},
             new ("@IdLocatario", SqlDbType.Int)
-                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true}
+                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true},
+            new ("@IdLocador", SqlDbType.Int)
+            {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true}
         };
 
         return await Db
-            .SqlQueryAsync<SpSupplyContractsResult>("Exec Sp_SupplyContract @Status, @IdImovel, @IdTipoImovel",
+            .SqlQueryAsync<SpSupplyContractsResult>("Exec Sp_SupplyContract @IdImovel, @IdTipoImovel, @IdLocador, @IdLocatario",
                 parameters.ToArray());
     }
 

@@ -28,12 +28,17 @@ type RentValue = {
 };
 
 type SupplyContract = {
-	nomeImovel: string;
-	nomeLocador: string;
-	baseReajuste: string
+	imovel: string;
+	locatario: string;
+	locador: string;
+	percUltimoReajuste: string;
 	inicioContrato: Date;
 	fimContrato: Date;
-	proximaAtualizacao: Date;
+	proxReajuste: Date;
+	perdDesconto: string;
+	prazoDesconto: number;
+	carencia: boolean;
+	prazoCarencia: number;
 };
 
 type Expenses = {
