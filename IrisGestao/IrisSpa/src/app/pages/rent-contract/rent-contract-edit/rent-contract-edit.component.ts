@@ -194,6 +194,7 @@ export class RentContractEditComponent {
 					this.isCpf = cliente.cpfCnpj.length <= 11;
 
 					this.editForm.controls['valueInfo'].patchValue({
+						name : this.data.numeroContrato,
 						netValue: this.data.valorAluguelLiquido,
 						taxRetention: this.data.percentualRetencaoImpostos,
 						discount: this.data.percentualDescontoAluguel,

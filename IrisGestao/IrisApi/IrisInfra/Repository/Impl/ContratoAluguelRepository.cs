@@ -30,6 +30,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         var contratoDb = await DbSet
             .Include(y => y.IdClienteNavigation)
                 .ThenInclude(y => y.IdTipoClienteNavigation)
+            .Include(z=> z.IdTipoContratoNavigation)
             .Include(x => x.ContratoAluguelImovel)
                 .ThenInclude(x => x.ContratoAluguelUnidade)
 
@@ -77,6 +78,11 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
             contratoDb.DataUltimaModificacao,
             contratoDb.GuidReferencia,
             ExibirAlertaVencimento = (contratoDb.DataFimContrato - DateTime.Now).Days <= 90,
+            TipoContrato = contratoDb.IdTipoContratoNavigation == null ? null : new
+            {
+                contratoDb.IdTipoContratoNavigation.Id,
+                contratoDb.IdTipoContratoNavigation.Nome,
+            },
             IndiceReajuste = contratoDb.IdIndiceReajusteNavigation == null ? null : new
             {
                 contratoDb.IdIndiceReajusteNavigation.Id,
@@ -134,7 +140,6 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                 AreaHabitese = imovel.IdImovelNavigation.Unidade.Where(u => u.Status).Sum(u => u.AreaHabitese),
                 NroUnidadesTotal = imovel.IdImovelNavigation.Unidade.Where(u => u.Status).Count(),
                 NroUnidadesContrato = imovel.ContratoAluguelUnidade.Where(u => u.IdUnidadeNavigation.Status).Count(),
-                ImgCapa = "../../../../assets/images/imovel.png",
                 IdCategoriaImovelNavigation = imovel.IdImovelNavigation.IdCategoriaImovelNavigation == null ? null : new
                 {
                     imovel.IdImovelNavigation.IdCategoriaImovelNavigation.Id,
