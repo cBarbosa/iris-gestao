@@ -205,7 +205,7 @@ export class ReportRentValueComponent {
 						this.totalSum = data.reduce(
 							(acc, entry) => {
 								acc.area += entry.areaTotalSelecionada;
-								//acc.aluguelContratado += entry.areacontratada;
+								acc.aluguelContratado += entry.valorAluguel;
 								acc.aluguelPotencial += entry.valorPotencial;
 								acc.precoM2 += entry.precoM2;
 								acc.precoMesReferencia += entry.precoM2Referencia;

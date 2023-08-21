@@ -113,21 +113,31 @@
 						<th>Imóvel</th>
 						<th>Locatário</th>
 						<th>Locador</th>
-						<th>Início do Contrato</th>
-						<th>Vencimento do Contrato</th>
-						<th>Próxima Atualização</th>
-						<th>Perc. de Reajuste</th>
+						<th>Início do contrato</th>
+						<th>Vencimento do contrato</th>
+						<th>Perc. último reajuste</th>
+						<th>Próxima atualização</th>
+						<th>Base reajuste</th>
+						<th>Perc. desconto</th>
+						<th>Prazo desconto</th>
+						<th>Carência</th>
+						<th>Prazo carência</th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
 						<td class="font-bold max-w-[160px]">{{ entry.imovel }}</td>
 						<td class="max-w-[160px]">{{ entry.locatario }}</td>
-						<td>{{ entry.locador }}</td>
+						<td class="max-w-[160px]">{{ entry.locador }}</td>
 						<td >{{ entry.inicioContrato | date:'shortDate' }}</td>
 						<td >{{ entry.fimContrato | date:'shortDate' }}</td>
-						<td >{{ entry.proxReajuste | date:'shortDate' }}</td>
 						<td>{{ entry.percUltimoReajuste }}</td>
+						<td >{{ entry.proxReajuste | date:'shortDate' }}</td>
+						<td >{{ entry.baseReajuste }}</td>
+						<td >{{ entry.percDesconto }}</td>
+						<td >{{ entry.prazoDesconto }}</td>
+						<td >{{ entry.carencia ? "Sim" : "Não" }}</td>
+						<td >{{ entry.prazoCarencia }}</td>
 					</tr>
 				</ng-template> 
 

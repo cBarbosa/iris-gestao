@@ -7,6 +7,7 @@ public partial class SpRentValueResult
     public string? Locador { get; set; }
     public string? Locatario { get; set; }
     public decimal? AreaTotalSelecionada { get; set; }
+    public decimal? ValorAluguel { get; set; }
     public decimal? ValorPotencial { get; set; }
     public decimal? PrecoM2 { get; set; }
     public decimal? PrecoM2Referencia { get; set; }

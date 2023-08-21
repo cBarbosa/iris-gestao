@@ -121,29 +121,30 @@
 			>
 				<ng-template pTemplate="header">
 					<tr *ngIf="!isLoading && !noRestults">
+						<th>Imóvel</th>
 						<th>Centro de custo</th>
 						<th>Locador</th>
-						<th>Imóvel</th>
 						<th>Locatário</th>
 						<th>Área Selecionada</th>
-						<!-- <th>Aluguel contratado</th> -->
+						<th>Aluguel Contratado</th>
 						<th>Aluguel Potencial</th>
 						<th>Preço/m²</th>
 						<th>Preço mês referência</th>
+						<th>Preço m² Jan</th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="font-bold">{{ entry.centroDeCusto }}</td>
-						<td class="max-w-[120px]">{{ entry.locatario ?? "-" }}</td>
 						<td class="max-w-[120px]">{{ entry.imovel }}</td>
+						<td class="font-bold">{{ entry.centroDeCusto }}</td>
 						<td class="max-w-[120px]">{{ entry.locador ?? "-" }}</td>
-
+						<td class="max-w-[120px]">{{ entry.locatario ?? "-" }}</td>
 						<td>{{ entry.areaTotalSelecionada | area }}</td>
-						<!-- <td>{{ entry.somaValorAluguel | currency }}</td> -->
+						<td>{{ entry.valorAluguel | currency }}</td>
 						<td>{{ entry.valorPotencial | currency }}</td>
 						<td>{{ entry.precoM2 | currency }}</td>
 						<td>{{ entry.precoM2Referencia | percent : "2.2-2" }}</td>
+						<td>{{ entry.precoM2ReferenciaJan | percent : "2.2-2" }}</td>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="footer">
@@ -153,25 +154,19 @@
 							<div class="mb-1 text-xs font-normal">Área selecionada</div>
 							<div>{{ totalSum?.area | area }}</div>
 						</td>
-						<!-- <td class="bg-transparent text-white">
+						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Aluguel contratado</div>
 							<div>{{ totalSum?.aluguelContratado | currency }}</div>
-						</td> -->
+						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Aluguel potencial</div>
 							<div>{{ totalSum?.aluguelPotencial | currency }}</div>
 						</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Preço/m²</div>
-							<div>
-								<!-- {{
-									(totalSum?.aluguelContratado ?? 0) / (totalSum?.area ?? 1)
-										| currency
-								}} -->
-								{{ totalSum?.precoM2 | currency }}
-							</div>
+							<div>{{ totalSum?.precoM2 | currency }}</div>
 						</td>
-						<td class="bg-transparent text-white">
+						<td class="bg-transparent text-white" colspan="2">
 							<div class="mb-1 text-xs font-normal">Preço mês referência</div>
 							<div>{{ totalSum?.precoMesReferencia | percent : "2.2-2" }}</div>
 						</td>
