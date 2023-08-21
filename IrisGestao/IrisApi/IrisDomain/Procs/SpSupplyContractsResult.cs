@@ -13,4 +13,5 @@ public partial class SpSupplyContractsResult
     public int? PrazoDesconto { get; set; }
     public bool? Carencia { get; set; }
     public int? PrazoCarencia { get; set; }
+    public string? BaseReajuste { get; set; }
 }

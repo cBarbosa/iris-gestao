@@ -21,6 +21,7 @@ type RentValue = {
 	locador: string;
 	locatario: string;
 	areaTotalSelecionada: number;
+	valorAluguel: number;
 	valorPotencial: number;
 	precoM2: number;
 	precoM2Referencia: number;
