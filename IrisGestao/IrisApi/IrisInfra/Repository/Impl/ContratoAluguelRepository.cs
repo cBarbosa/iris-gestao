@@ -38,7 +38,6 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
             .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.ContratoAluguelUnidade).ThenInclude(x => x.IdUnidadeNavigation).ThenInclude(x => x.IdTipoUnidadeNavigation)
 
             .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.IdImovelNavigation).ThenInclude(x => x.Unidade)
-            .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.IdImovelNavigation).ThenInclude(x => x.ImovelEndereco)
             .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.IdImovelNavigation).ThenInclude(x => x.IdCategoriaImovelNavigation)
             .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.IdImovelNavigation).ThenInclude(x => x.IdClienteProprietarioNavigation)
             .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.IdImovelNavigation).ThenInclude(x => x.IdClienteProprietarioNavigation).ThenInclude(x => x.IdTipoClienteNavigation)
@@ -133,7 +132,19 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                 imovel.IdImovelNavigation.GuidReferencia,
                 imovel.IdImovelNavigation.Nome,
                 imovel.IdImovelNavigation.NumCentroCusto,
-                imovel.IdImovelNavigation.ImovelEndereco,
+                ImovelEndereco = imovel.IdImovelNavigation.ImovelEndereco.Select(endereco => new
+                {
+                    endereco.Id,
+                    endereco.IdImovel,
+                    endereco.Bairro,
+                    endereco.DataCriacao,
+                    endereco.Cep,
+                    endereco.Cidade,
+                    endereco.Complemento,
+                    endereco.Rua,
+                    endereco.UF,
+                    endereco.DataUltimaModificacao
+                }),
                 imovel.IdImovelNavigation.Status,
                 AreaTotal = imovel.IdImovelNavigation.Unidade.Where(u => u.Status).Sum(u => u.AreaTotal),
                 AreaUtil = imovel.IdImovelNavigation.Unidade.Where(u => u.Status).Sum(u => u.AreaUtil),
