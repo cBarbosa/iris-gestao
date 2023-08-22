@@ -126,7 +126,19 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                 imovel.IdImovelNavigation.GuidReferencia,
                 imovel.IdImovelNavigation.Nome,
                 imovel.IdImovelNavigation.NumCentroCusto,
-                imovel.IdImovelNavigation.ImovelEndereco,
+                ImovelEndereco = imovel.IdImovelNavigation.ImovelEndereco.Select(endereco => new
+                {
+                    endereco.Id,
+                    endereco.IdImovel,
+                    endereco.Bairro,
+                    endereco.DataCriacao,
+                    endereco.Cep,
+                    endereco.Cidade,
+                    endereco.Complemento,
+                    endereco.Rua,
+                    endereco.UF,
+                    endereco.DataUltimaModificacao
+                }),
                 imovel.IdImovelNavigation.Status,
                 AreaTotal = imovel.IdImovelNavigation.Unidade.Where(u => u.Status).Sum(u => u.AreaTotal),
                 AreaUtil = imovel.IdImovelNavigation.Unidade.Where(u => u.Status).Sum(u => u.AreaUtil),
