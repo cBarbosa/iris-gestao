@@ -290,6 +290,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                             DataOcupacao = x.DataOcupacao,
                             DiaVencimentoAluguel = x.DiaVencimentoAluguel,
                             DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,
+                            DataProximoReajuste = x.DataProximoReajuste,
                             PeriodicidadeReajuste = x.PeriodicidadeReajuste,
                             DataCriacao = x.DataCriacao,
                             DataAtualização = x.DataUltimaModificacao,
