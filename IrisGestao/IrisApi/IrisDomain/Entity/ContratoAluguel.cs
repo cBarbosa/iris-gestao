@@ -50,6 +50,9 @@ public partial class ContratoAluguel: BaseEntity<ContratoAluguel>
     [Column(TypeName = "date")]
     public DateTime DataInicioContrato { get; set; }
 
+    [Column(TypeName = "date")]
+    public DateTime? DataProximoReajuste { get; set; }
+
     public int PrazoTotalContrato { get; set; }
 
     [Column(TypeName = "date")]

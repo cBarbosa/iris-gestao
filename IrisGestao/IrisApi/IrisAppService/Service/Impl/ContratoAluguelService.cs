@@ -520,6 +520,7 @@ public class ContratoAluguelService: IContratoAluguelService
         ContratoAluguel.DataOcupacao                    = cmd.DataOcupacao;
         ContratoAluguel.DiaVencimentoAluguel            = cmd.DataVencimentoPrimeraParcela.Value.Day;
         ContratoAluguel.PeriodicidadeReajuste           = cmd.PeriodicidadeReajuste;
+        ContratoAluguel.DataProximoReajuste             = cmd.DataInicioContrato.AddMonths(cmd.PeriodicidadeReajuste);
         ContratoAluguel.DataVencimentoPrimeraParcela    = cmd.DataVencimentoPrimeraParcela;
         ContratoAluguel.Status                          = true;
     }
@@ -542,6 +543,7 @@ public class ContratoAluguelService: IContratoAluguelService
         ContratoAluguel.DataUltimaModificacao               = DateTime.Now;
         ContratoAluguel.PercentualRetencaoImpostosReajuste  = novoPercentualReajuste;
         ContratoAluguel.DataFimContrato                     = ContratoAluguel.DataFimContrato >= dataVencimento ? ContratoAluguel.DataFimContrato : dataVencimento;
+        ContratoAluguel.DataProximoReajuste                 = ContratoAluguel.DataProximoReajuste.Value.AddMonths(ContratoAluguel.PeriodicidadeReajuste);
     }
 
     protected String validarDados(CriarContratoAluguelCommand cmd) 
