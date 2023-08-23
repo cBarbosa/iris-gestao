@@ -537,6 +537,7 @@ public class ContratoAluguelService: IContratoAluguelService
         cmd.PercentualReajusteNovo                          = novoPercentualReajuste;
         cmd.ValorAluguelAnterior                            = ContratoAluguel.ValorAluguel;
         cmd.ValorAluguelNovo                                = novoValorAluguel;
+        cmd.DataReajuste                                    = ContratoAluguel.DataProximoReajuste;
 
         ContratoAluguel.ValorAluguel                        = novoValorAluguel;
         ContratoAluguel.ValorAluguelLiquido                 = valorLiquido;
