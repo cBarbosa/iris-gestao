@@ -50,6 +50,7 @@
 			</span>
 
 			<p-dropdown
+				appendTo="body"
 				[styleClass]="
 					'w-full md:w-[11.2rem]' + (isMobile ? '' : ' white-theme')
 				"
@@ -70,28 +71,16 @@
 				></p-dropdown> -->
 
 			<p-calendar
-				dateFormat="dd/mm/yy"
-				class=""
-				[styleClass]="'w-full md:w-32' + (isMobile ? '' : ' white-theme')"
-				(onInput)="onInputDate($event)"
-				(onBlur)="onBlurDate()"
-				placeholder="Data de início"
-				panelStyleClass="hidden"
-				[(ngModel)]="filterStart"
+				[styleClass]="'mr-2 w-full md:w-44'"
+				placeholder="Período"
+				aria-describedby="periodo-help"
+				[(ngModel)]="filterPeriodo"
+				view="month"
+				selectionMode="range"
+				dateFormat="mm/yy"
 				(ngModelChange)="filterContractsDebounce($event)"
 			></p-calendar>
 
-			<p-calendar
-				dateFormat="dd/mm/yy"
-				class=""
-				[styleClass]="'w-full md:w-32' + (isMobile ? '' : ' white-theme')"
-				(onInput)="onInputDate($event)"
-				(onBlur)="onBlurDate()"
-				placeholder="Data de fim"
-				panelStyleClass="hidden"
-				[(ngModel)]="filterEnd"
-				(ngModelChange)="filterContractsDebounce($event)"
-			></p-calendar>
 
 			<!-- <p-dropdown
 					class="mx-2"

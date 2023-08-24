@@ -265,17 +265,20 @@
 					<p-table [value]="eventos" class="w-full">
 						<ng-template pTemplate="header">
 							<tr class="bg-gray-100">
-								<th>Data Evento</th>
-								<th>Nome Evento</th>
+								<th>Data</th>
 								<th>Cliente</th>
+								<th>Nome</th>
+								<th>Descrição</th>
 								<th>Unidades Visitadas</th>
+								<th>Anexos</th>
 							</tr>
 						</ng-template>
 						<ng-template pTemplate="body" let-Eventos>
 							<tr class="even:bg-gray-50">
 								<td>{{ Eventos.dataRealizacao }}</td>
-								<td>{{ Eventos.nome }}</td>
 								<td>{{ Eventos?.clienteVisitante?.nome }}</td>
+								<td>{{ Eventos.nome }}</td>
+								<td>{{ Eventos.descricao }}</td>
 								<td>
 									<ng-template pTemplate="bodyUnidade" *ngFor="let unidade of Eventos.unidadesVisitadas">
 										{{ unidade.tipo }}
@@ -285,6 +288,14 @@
 											severity="success"
 										></p-tag>
 									</ng-template>
+								</td>
+								<td>
+									<div class="document-list">
+										<app-upload-list
+											[guid]="Eventos.guidReferenciaEvento"
+											[editable]="false"
+										></app-upload-list>
+									</div>
 								</td>
 							</tr>
 						</ng-template>

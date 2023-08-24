@@ -518,7 +518,7 @@ public class ContratoAluguelService: IContratoAluguelService
         ContratoAluguel.PrazoTotalContrato              = cmd.PrazoTotalContrato;
         ContratoAluguel.DataFimContrato                 = cmd.DataInicioContrato.AddMonths(cmd.PrazoTotalContrato);
         ContratoAluguel.DataOcupacao                    = cmd.DataOcupacao;
-        ContratoAluguel.DiaVencimentoAluguel            = cmd.DataVencimentoPrimeraParcela.Value.Day;
+        ContratoAluguel.DiaVencimentoAluguel            = cmd.DataVencimentoPrimeraParcela.HasValue ? cmd.DataVencimentoPrimeraParcela.Value.Day : 1;
         ContratoAluguel.PeriodicidadeReajuste           = cmd.PeriodicidadeReajuste;
         ContratoAluguel.DataProximoReajuste             = cmd.DataInicioContrato.AddMonths(cmd.PeriodicidadeReajuste);
         ContratoAluguel.DataVencimentoPrimeraParcela    = cmd.DataVencimentoPrimeraParcela;
@@ -561,7 +561,10 @@ public class ContratoAluguelService: IContratoAluguelService
         if (cmd?.PeriodicidadeReajuste > cmd?.PrazoTotalContrato)
             msgRetorno += "A periodicidade de reajuste não pode ser maior que o prazo total do contrato";
 
-        if (cmd?.DataVencimentoPrimeraParcela.Value < cmd?.DataInicioContrato)
+        if (!cmd.DataVencimentoPrimeraParcela.HasValue)
+            msgRetorno += "A data de vencimento da primeira parcela não pode ser vazia";
+
+        if (cmd.DataVencimentoPrimeraParcela.HasValue && cmd.DataVencimentoPrimeraParcela.Value < cmd?.DataInicioContrato)
             msgRetorno += "A data de vencimento da primeira parcela não pode ser menor que a data de início do contrato";
 
         return msgRetorno;

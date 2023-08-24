@@ -76,7 +76,8 @@ export class RentContractListingComponent {
 	filterBase: number;
 	filterType: number;
 	filterStart: string | null = null;
-	filterEnd: string | null = null;
+	filterEnd: string | null = null;	
+	filterPeriodo: Date[];
 
 	constructor(
 		private router: Router,
@@ -98,6 +99,10 @@ export class RentContractListingComponent {
 		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
 			this.isMobile = screenWidth < 768;
 		});
+
+		const currYear = new Date().getFullYear();
+		this.filterPeriodo = [new Date(currYear-10, 0, 1), new Date(currYear+10, 11, 1)];
+
 
 		if (this.isMobile) this.setContractsEntries();
 
@@ -273,8 +278,15 @@ export class RentContractListingComponent {
 		page: number = 1,
 		stack: boolean = false
 	): Promise<any> => {
-		const startDate = this.filterStart && new Date(this.filterStart);
-		const endDate = this.filterEnd && new Date(this.filterEnd);
+		console.log('Filtro >> ' + JSON.stringify(this.filterPeriodo));
+		if ((this.filterPeriodo?.[0], this.filterPeriodo?.[1])) {
+			const startDate = new Date(this.filterPeriodo[0]);
+			startDate.setDate(1);
+			const endDate = new Date(this.filterPeriodo[1]);
+			endDate.setDate(1);
+		
+		//const startDate = this.filterStart && new Date(this.filterStart);
+		//const endDate = this.filterEnd && new Date(this.filterEnd);
 
 		const startISODate = !isNaN(Date.parse(startDate + ''))
 			? (startDate as Date).toISOString()
@@ -283,24 +295,35 @@ export class RentContractListingComponent {
 			? (endDate as Date).toISOString()
 			: undefined;
 
-		if (stack)
-			return this.getContractPage(
-				page,
-				+this.filterText,
-				this.filterBase,
-				this.filterType,
-				startISODate,
-				endISODate
-			);
-		else
-			return this.setContractsEntries(
-				page,
-				+this.filterText,
-				this.filterBase,
-				this.filterType,
-				startISODate,
-				endISODate
-			);
+			if (stack)
+				return this.getContractPage(
+					page,
+					+this.filterText,
+					this.filterBase,
+					this.filterType,
+					startISODate,
+					endISODate
+				);
+			else
+				return this.setContractsEntries(
+					page,
+					+this.filterText,
+					this.filterBase,
+					this.filterType,
+					startISODate,
+					endISODate
+				);
+			}
+			else{
+				return this.getContractPage(
+					page,
+					+this.filterText,
+					this.filterBase,
+					this.filterType,
+					'',
+					''
+				);
+			}
 	};
 
 	filterContractsDebounce: Function = Utils.debounce(

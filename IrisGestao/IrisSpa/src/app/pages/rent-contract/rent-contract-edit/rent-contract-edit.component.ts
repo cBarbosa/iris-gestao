@@ -176,7 +176,7 @@ export class RentContractEditComponent {
 						contractType: this.data.tipoContrato.id,
 						startDate: new Date(this.data.dataInicioContrato),
 						endDate: new Date(this.data.dataFimContrato),
-						dueDate: new Date(this.data.dataVencimentoPrimeraParcela),
+						dueDate: this.data.dataVencimentoPrimeraParcela ? new Date(this.data.dataVencimentoPrimeraParcela) : '',
 						dataOcupacao: new Date(this.data.dataOcupacao),
 						rentValue: this.data.valorAluguel,
 					});
