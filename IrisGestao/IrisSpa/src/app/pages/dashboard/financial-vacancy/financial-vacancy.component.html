@@ -41,6 +41,7 @@
 
 		<ng-template #filtersTemplate>
 			<p-dropdown
+				appendTo="body"
 				[styleClass]="'mr-2 w-full md:w-44'"
 				placeholder="Locador"
 				[options]="proprietaryOptions"
@@ -51,6 +52,7 @@
 
 			<p-dropdown
 				[styleClass]="'mr-2 w-full md:w-44'"
+				appendTo="body"
 				placeholder="Tipo de imóvel"
 				[options]="categoryOptions"
 				aria-describedby="tipo-imovel-help"

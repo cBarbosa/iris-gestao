@@ -15,31 +15,6 @@
 
 		<ng-template pTemplate="content">
 			<div class="field">
-				<label for="tipoEvento" class="block">Tipo de Evento</label>
-				<input
-					id="tipoEvento"
-					type="text"
-					formControlName="tipoEvento"
-					aria-describedby="tipoEvento-help"
-					pInputText
-				/>
-				<ng-container *ngIf="checkHasError(f['tipoEvento'])">
-					<small
-						id="tipoEvento-help"
-						*ngIf="f['tipoEvento'].hasError('required'); else error2"
-						class="p-error block"
-					>
-						Informe o tipo do evento
-					</small>
-					<ng-template #error2>
-						<small id="tipoEvento-help" class="p-error block">
-							Tipo do evento inválido
-						</small>
-					</ng-template>
-				</ng-container>
-			</div> 
-
-			<div class="field">
 				<label for="nomeEvento" class="block">Nome do Evento</label>
 				<input
 					id="nomeEvento"
@@ -191,7 +166,7 @@
 				<app-file-upload
 					name="uploadDoc"
 					id="anexoNf"
-					[fileLimit]="4"
+					[fileLimit]="1"
 					(selectEvent)="onFileSelect($event)"
 					accept=".xls, .doc, .pdf, .xlsx, .docx, image/*"
 				></app-file-upload>
