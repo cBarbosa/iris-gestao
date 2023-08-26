@@ -25,7 +25,7 @@
 							</span>
 							<!-- <span>{{ cliente?.idTipoClienteNavigation?.nome }}</span> -->
 						</h3>
-						<div class="actions">
+						<div class="actions" *ngIf="isFormEditable">
 							<button
 								pButton
 								type="button"
@@ -117,6 +117,7 @@
 							iconPos="left"
 							class="p-button-outlined icon-left h-9"
 							(click)="showContactRegister()"
+							*ngIf="isFormEditable"
 						>
 							Novo contato
 						</button>
@@ -220,6 +221,7 @@
 								iconPos="left"
 								class="p-button-outlined icon-left h-9"
 								(click)="showContactRegister()"
+								*ngIf="isFormEditable"
 							>
 								Novo contato
 							</button>
@@ -246,6 +248,7 @@
 						iconPos="left"
 						class="p-button-outlined icon-left h-9"
 						(click)="showContactRegister()"
+						*ngIf="isFormEditable"
 					>
 						Novo contato
 					</button>
@@ -357,6 +360,7 @@
 		[data]="selectedContact"
 		[openEditForm]="showContactEdit"
 		[onDelete]="onUpdateContactList"
+		[isFormEditable]="isFormEditable"
 	></app-contact-detail-sidebar>
 </p-sidebar>
 

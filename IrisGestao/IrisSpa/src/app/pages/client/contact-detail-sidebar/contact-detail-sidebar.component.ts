@@ -30,6 +30,9 @@ export class ContactDetailSidebarComponent {
 	@Input()
 	onDelete: Function;
 
+	@Input()
+	isFormEditable?: boolean;
+
 	displayConfirmationModal = false;
 
 	displayModal: false;

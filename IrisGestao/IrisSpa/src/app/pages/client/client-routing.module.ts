@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from 'src/app/shared/helpers/auth/auth.guard';
 
 const routes: Routes = [
 	{
@@ -31,8 +32,9 @@ const routes: Routes = [
 			import('./client-register/client-register.module').then(
 				(m) => m.ClientRegisterModule
 			),
+		canActivate: [AuthGuard],
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR',
 		},
 	},
 	{
@@ -42,8 +44,9 @@ const routes: Routes = [
 			import('./client-register/client-register.module').then(
 				(m) => m.ClientRegisterModule
 			),
+		canActivate: [AuthGuard],
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR',
 		},
 	},
 ];
