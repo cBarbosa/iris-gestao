@@ -42,6 +42,7 @@
 				[(ngModel)]="filterLocador"
 				(ngModelChange)="filterClientDebounce($event)"
 				[options]="proprietaryOptions"
+				[hidden]="!locadorComboEnabled"
 			></p-dropdown>
 
 			<p-dropdown
