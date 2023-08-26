@@ -55,6 +55,7 @@ public class UnidadeRepository : Repository<Unidade>, IUnidadeRepository
                                            DataCriacao = y.DataCriacao,
                                            DataUltimaModificacao = y.DataUltimaModificacao,
                                            Ativo = y.Status,
+                                           UnidadeLocada = y.UnidadeLocada,
                                            IdTipoUnidadeNavigation = new
                                            {
                                                Id = y.IdTipoUnidadeNavigation.Id,
@@ -92,6 +93,7 @@ public class UnidadeRepository : Repository<Unidade>, IUnidadeRepository
                     DataCriacao = y.DataCriacao,
                     DataUltimaModificacao = y.DataUltimaModificacao,
                     Ativo = y.Status,
+                    UnidadeLocada = y.UnidadeLocada,
                     IdTipoUnidadeNavigation = new
                     {
                         Id = y.IdTipoUnidadeNavigation.Id,

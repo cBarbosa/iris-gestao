@@ -325,11 +325,22 @@
 	<ng-template pTemplate="header">
 		<h4>
 			{{ unit.tipo }}
-			<p-tag
-				value="Unidade disponivel"
-				[rounded]="true"
-				severity="success"
-			></p-tag>
+			<ng-container *ngIf="unit.unidadeLocada; else disponivel">
+				<p-tag
+					value="Unidade locada"
+					[rounded]="true"
+					severity="danger"
+					styleClass="w-36"
+				></p-tag>
+			</ng-container>
+			<ng-template #disponivel>
+				<p-tag
+					value="Unidade disponível"
+					[rounded]="true"
+					severity="success"
+					styleClass="w-36"
+				></p-tag>
+			</ng-template>
 		</h4>
 	</ng-template>
 	<ng-template pTemplate="content">
