@@ -19,7 +19,7 @@ const routes: Routes = [
 					import('./pages/home/home.module').then((m) => m.HomeModule),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA,CLIENTE',
 				},
 			},
 			{
@@ -113,7 +113,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA,CLIENTE',
 				},
 			},
 			{

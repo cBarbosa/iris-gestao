@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
 import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
-import { RentContractService } from 'src/app/shared/services';
+import { LoginService, RentContractService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
@@ -54,11 +54,14 @@ export class FinancialVacancyComponent implements OnInit {
 		{ label: 'Área Habite-se', value: '3' }
 	];
 
+	locadorComboEnabled:boolean = true;
+
 	constructor(
 		private router: Router,
 		private responsiveService: ResponsiveService,
 		private dashboardService: DashboardService,
-		private rentContract: RentContractService
+		private rentContract: RentContractService,
+		private loginService: LoginService
 	) { };
 
 	ngOnInit():void {
@@ -142,6 +145,10 @@ export class FinancialVacancyComponent implements OnInit {
 		IdTipoImovel?: number,
 		IdTipoArea?: number) {
 
+		if(!this.locadorComboEnabled)	{
+			IdLocador = this.loginService.usuarioLogado.id;
+		}
+
 		this.dashboardService // resultado invertido
 			.getFinancialVacancy(startDateString, endDateString, IdLocador, IdTipoImovel, IdTipoArea)
 			.pipe(first())
@@ -173,6 +180,11 @@ export class FinancialVacancyComponent implements OnInit {
 	};
 
 	getFinancialVacancyData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number) {
+		
+		if(!this.locadorComboEnabled)	{
+			IdLocador = this.loginService.usuarioLogado.id;
+		}
+
 		this.dashboardService
 			.getPhysicalVacancy(startDateString, endDateString, IdLocador, IdTipoImovel)
 			.pipe(first())
@@ -254,6 +266,7 @@ export class FinancialVacancyComponent implements OnInit {
 
 		const currYear = new Date().getFullYear();
 		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 1)];
+		this.locadorComboEnabled = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'cliente';
 
 		this.getOwnersListData();
 		this.getUnitTypesData();

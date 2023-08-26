@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
+import { LoginService } from 'src/app/shared/services';
 
 @Component({
 	selector: 'app-topbar',
@@ -16,7 +17,8 @@ export class TopbarComponent {
 
 	constructor(
 		private router: Router,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
 	) {
 		router.events
 			.pipe(filter((event) => event instanceof NavigationEnd))
@@ -47,6 +49,7 @@ export class TopbarComponent {
 				label: 'Imóveis',
 				// id: route.startsWith('/property/') ? 'current' : '',
 				// command: () => this.navigateTo('property/listing'),
+				visible: this.isUserAdmin(),
 				items: [
 					{
 						label: 'Imóvel de mercado',
@@ -64,9 +67,11 @@ export class TopbarComponent {
 				label: 'Clientes',
 				id: route.startsWith('/client/') ? 'current' : '',
 				command: () => this.navigateTo('client/listing'),
+				visible: this.isUserAdmin(),
 			},
 			{
 				label: 'Contratos',
+				visible: this.isUserAdmin(),
 				items: [
 					{
 						label: 'Contrato de aluguel',
@@ -87,11 +92,13 @@ export class TopbarComponent {
 			// },
 			{
 				label: 'Fornecedores',
+				visible: this.isUserAdmin(),
 				id: route.startsWith('/supplier/') ? 'current' : '',
 				command: () => this.navigateTo('supplier/listing'),
 			},
 			{
 				label: 'Financeiro',
+				visible: this.isUserAdmin(),
 				items: [
 					{
 						label: 'Receitas',
@@ -163,6 +170,7 @@ export class TopbarComponent {
 			},
 			{
 				label: 'Relatórios',
+				visible: this.isUserAdmin(),
 				items: [
 					{
 						label: 'Área locada             ',
@@ -215,4 +223,8 @@ export class TopbarComponent {
 	navigateTo(route: string) {
 		this.router.navigate([route]);
 	}
+
+	isUserAdmin():boolean {
+		return this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'cliente';
+	};
 }
