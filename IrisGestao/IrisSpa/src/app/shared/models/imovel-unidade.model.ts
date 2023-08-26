@@ -20,6 +20,7 @@ export class ImovelUnidade {
         public dataCriacao?: Date,
         public dataUltimaModificacao?: Date,
         public idImovelNavigation?: Imovel,
+        public unidadeLocada?: boolean,
         public idTipoUnidadeNavigation?: ImovelUnidadeTipo
     ) { }
 }
