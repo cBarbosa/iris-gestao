@@ -42,6 +42,7 @@
 				aria-describedby="locador-help"
 				[(ngModel)]="filterLocador"
 				(ngModelChange)="filterClientDebounce($event)"
+				[hidden]="!locadorComboEnabled"
 			></p-dropdown>
 
 			<p-dropdown
