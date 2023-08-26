@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from 'src/app/shared/helpers/auth/auth.guard';
 
 const routes: Routes = [
 	{
@@ -61,8 +62,9 @@ const routes: Routes = [
 				path: 'edit/unit/:uid',
 				loadChildren: () =>
 					import('./unit-edit/unit-edit.module').then((m) => m.UnitEditModule),
+				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR',
 				},
 			},
 			{
@@ -71,8 +73,9 @@ const routes: Routes = [
 					import('./property-edit/property-edit.module').then(
 						(m) => m.PropertyEditModule
 					),
+				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR',
 				},
 			},
 			{
@@ -81,8 +84,9 @@ const routes: Routes = [
 					import('./property-register/property-register.module').then(
 						(m) => m.PropertyRegisterModule
 					),
+				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR',
 				},
 			},
 			{
@@ -91,8 +95,9 @@ const routes: Routes = [
 					import('./property-register/property-register.module').then(
 						(m) => m.PropertyRegisterModule
 					),
+				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR',
 				},
 			},
 			{
@@ -101,8 +106,9 @@ const routes: Routes = [
 					import('./unit-register/unit-register.module').then(
 						(m) => m.UnitRegisterModule
 					),
+				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR',
 				},
 			},
 		],

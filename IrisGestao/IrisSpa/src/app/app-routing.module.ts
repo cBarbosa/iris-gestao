@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginRoutes } from './auth/auth-routing.module';
-import { HomeComponent } from './home/home.component';
-import { PropertyListingComponent } from './pages/property/property-listing/property-listing.component';
-import { PropertyItemComponent } from './shared/components/property-item/property-item.component';
+// import { HomeComponent } from './home/home.component';
+// import { PropertyListingComponent } from './pages/property/property-listing/property-listing.component';
+// import { PropertyItemComponent } from './shared/components/property-item/property-item.component';
 import { AuthGuard } from './shared/helpers/auth/auth.guard';
 import { LoggedInLayoutComponent } from './layout/logged-in/logged-in-layout.component';
 import { LoggedInLayoutModule } from './layout/logged-in/logged-in-layout.module';

@@ -7,7 +7,7 @@ import {
 	ImovelUnidade,
 	ImageData as ImagemData,
 } from 'src/app/shared/models';
-import { ImovelService } from 'src/app/shared/services';
+import { ImovelService, LoginService } from 'src/app/shared/services';
 import {
 	AnexoService,
 	Attachment,
@@ -65,12 +65,15 @@ export class PropertyViewComponent implements OnInit {
 		message: '',
 	};
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
 		private imovelService: ImovelService,
 		private anexoService: AnexoService,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
@@ -78,27 +81,33 @@ export class PropertyViewComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
+		
 		this.tableMenu = [
 			{
 				label: 'Detalhes',
 				icon: 'ph-eye',
-				command: () => this.showDetails(),
+				command: () => this.showDetails()
 			},
 			{
 				label: 'Editar',
 				icon: 'ph-note-pencil',
 				command: () =>
 					this.navigateTo('property/edit/unit/' + this.unit!.guidReferencia),
+				visible: this.isFormEditable
 			},
 			{
 				label: 'Duplicar',
 				icon: 'ph-copy-simple',
 				command: () => this.confirmClone(),
+				visible: this.isFormEditable
 			},
 			{
 				label: 'Inativar',
 				icon: 'ph-trash',
 				command: () => this.confirmInativar(),
+				visible: this.isFormEditable
 			},
 		];
 
@@ -115,8 +124,6 @@ export class PropertyViewComponent implements OnInit {
 					);
 
 					if (cover) this.coverImage = cover.local;
-
-					console.log(this.coverImage);
 				},
 				error: (error) => {
 					console.error('Erro: ', error);
