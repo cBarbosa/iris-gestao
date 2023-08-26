@@ -171,6 +171,15 @@ public class ClienteService: IClienteService
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
             : new CommandResult(true, SuccessResponseEnums.Success_1005, proprietarios);
     }
+    
+    public async Task<CommandResult> GetByCpfCnpj(string cpfCnpj)
+    {
+        var cliente = await clienteRepository.GetByCpfCnpj(cpfCnpj);
+
+        return cliente == null
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, cliente);
+    }
 
     private static void BindClienteData(
         CriarClienteCommand cmd

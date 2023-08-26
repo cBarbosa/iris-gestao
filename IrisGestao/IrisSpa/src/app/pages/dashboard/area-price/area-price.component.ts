@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { first } from 'rxjs';
 import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
 import { DropdownItem } from 'src/app/shared/models/types';
-import { RentContractService } from 'src/app/shared/services';
+import { LoginService, RentContractService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
@@ -54,11 +54,14 @@ export class AreaPriceComponent {
 		value: string | null;
 	}[] = [{ label: 'Todos os tipos de imóveis', value: null }];
 
+	locadorComboEnabled:boolean = true;
+
 	constructor(
 		private router: Router,
 		private responsiveService: ResponsiveService,
 		private dashboardService: DashboardService,
-		private rentContract: RentContractService
+		private rentContract: RentContractService,
+		private loginService: LoginService
 	) { };
 
 	ngOnInit():void {
@@ -148,12 +151,18 @@ export class AreaPriceComponent {
 
 		const currYear = new Date().getFullYear();
 		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 31)];
+		this.locadorComboEnabled = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'cliente';
 
 		this.getOwnersListData();
 		this.getUnitTypesData();
 	};
 
 	getAreaPriceData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number):void {
+
+		if(!this.locadorComboEnabled)	{
+			IdLocador = this.loginService.usuarioLogado.id;
+		}
+
 		this.dashboardService
 			.getAreaPrice(startDateString, endDateString, IdLocador, IdTipoImovel)
 			.pipe(first())

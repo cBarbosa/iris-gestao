@@ -25,13 +25,13 @@ public class AuthController : Controller
             User.Claims.FirstOrDefault(x => x.Type.Equals("jobTitle"))!.Value.ToUpper(),
             int.Parse(User.Claims.FirstOrDefault(x => x.Type.Equals("exp"))!.Value)
         );
-
+        
         if (!result.Success)
         {
-            return Unauthorized(result.Message);
+            return await Task.FromResult(Unauthorized(result.Message));
         }
 
-        return Ok(result);
+        return await Task.FromResult(Ok(result));
     }
     
     [Produces("application/json")]
@@ -42,16 +42,18 @@ public class AuthController : Controller
         {
             return await Task.FromResult(Unauthorized("parâmetros inválidos"));
         }
-
-        return await Task.FromResult(Ok(new
+        
+        var result = await Service.GetAuthData(User.Claims.FirstOrDefault(x => x.Type.Equals("emails"))!.Value,
+            User.Claims.FirstOrDefault(x => x.Type.Equals("name"))!.Value ?? "Anonymous",
+            User.Claims.FirstOrDefault(x => x.Type.Equals("jobTitle"))!.Value.ToUpper(),
+            int.Parse(User.Claims.FirstOrDefault(x => x.Type.Equals("exp"))!.Value)
+        );
+        
+        if (!result.Success)
         {
-            Email = User.Claims.FirstOrDefault(x => x.Type.Equals("emails"))!.Value,
-            Name = User.Claims.FirstOrDefault(x => x.Type.Equals("name"))!.Value ?? "Anonymous",
-            JobTitle = User.Claims.FirstOrDefault(x => x.Type.Equals("jobTitle"))!.Value.ToUpper(),
-            RequestUTCDateTime = DateTime.Now.ToLocalTime(),
-            Expiration = User.Claims.FirstOrDefault(x => x.Type.Equals("exp"))!.Value,
-            ExpirationUTCDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0)
-                .AddSeconds(int.Parse(User.Claims.FirstOrDefault(x => x.Type.Equals("exp"))!.Value)).ToLocalTime()
-        }));
+            return await Task.FromResult(Unauthorized(result.Message));
+        }
+
+        return await Task.FromResult(Ok(result));
     }
 }

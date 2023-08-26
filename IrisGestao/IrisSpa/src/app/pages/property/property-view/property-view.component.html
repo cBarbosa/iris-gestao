@@ -80,7 +80,7 @@
 							<div class="value">{{ property.areaTotal ?? 0 | area }}</div>
 						</span>
 					</div>
-					<span class="property-options">
+					<span class="property-options" *ngIf="isFormEditable">
 						<button
 							pButton
 							type="button"
@@ -131,7 +131,7 @@
 						iconPos="left"
 						class="p-button-outlined icon-left h-9"
 						(click)="navigateTo('property/register/unit/' + this.uid)"
-						*ngIf="!isCorporativeBuilding"
+						*ngIf="!isCorporativeBuilding && isFormEditable"
 					>
 						{{ isMobile ? "Add. unidade" : "Adicionar unidade" }}
 					</button>
@@ -482,7 +482,7 @@
 			</p-tabPanel> -->
 		</p-tabView>
 	</ng-template>
-	<ng-template pTemplate="footer">
+	<ng-template pTemplate="footer" *ngIf="isFormEditable">
 		<div class="flex justify-between gap-4">
 			<button
 				pButton
