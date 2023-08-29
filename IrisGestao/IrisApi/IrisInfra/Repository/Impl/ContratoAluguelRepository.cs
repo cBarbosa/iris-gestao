@@ -375,21 +375,19 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         return null!;
     }
 
-    public async Task<object> GetDashboardTotalManagedArea(int? idLocador, int? idTipoImovel)
+    public async Task<object> GetDashboardTotalManagedArea(int? idLocador)
     {
         try
         {
             return await Db.Unidade
                 .Include(u => u.IdImovelNavigation)
                     .ThenInclude(i => i.IdClienteProprietarioNavigation)
-                .Where(u => (!idLocador.HasValue || idLocador.HasValue && u.IdImovelNavigation.IdClienteProprietario == idLocador)
-                             && (!idTipoImovel.HasValue || idTipoImovel.HasValue && u.IdTipoUnidade == idTipoImovel)
-                            )
+                .Where(u => !idLocador.HasValue || idLocador.HasValue && u.IdImovelNavigation.IdClienteProprietario == idLocador)
                 .GroupBy(
                     u => u.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
                     (key, group) => new {
                         Percent = Math.Round((decimal)group.Count() * 100 / Db.Unidade
-                            .Count(x => !idTipoImovel.HasValue || idTipoImovel.HasValue && x.IdTipoUnidade == idTipoImovel), 2),
+                            .Count(), 2),
                         Title = key,
                         Color = $"#{new Random().Next(0x1000000):X6}"
                     })
@@ -412,7 +410,6 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         DateTime dateRefInit,
         DateTime dateRefEnd,
         int? idLocador,
-        int? idTipoImovel,
         int? idTipoArea)
     {
         var parameters = new List<SqlParameter> {
@@ -422,18 +419,16 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                 {Value = dateRefEnd},
             new ("@ClienteID", SqlDbType.Int)
                 {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
-            new ("@TipoUnidade", SqlDbType.Int)
-                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true},
             new ("@TipoArea", SqlDbType.Int)
                 {Value = idTipoArea.HasValue ? idTipoArea : DBNull.Value, IsNullable = true}
         };
 
         return await Db
-            .SqlQueryAsync<SpFinancialVacancyResult>("Exec Sp_FinancialVacancy @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade, @TipoArea",
+            .SqlQueryAsync<SpFinancialVacancyResult>("Exec Sp_FinancialVacancy @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoArea",
                 parameters.ToArray());
     }
 
-    public async Task<IEnumerable<SpReceivingPerformanceResult>> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    public async Task<IEnumerable<SpReceivingPerformanceResult>> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador)
     {
         var parameters = new List<SqlParameter> {
             new ("@DataInicioContrato", SqlDbType.Date)
@@ -442,16 +437,30 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                 {Value = dateRefEnd},
             new ("@ClienteID", SqlDbType.Int)
                 {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
-            new ("@TipoUnidade", SqlDbType.Int)
-                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true}
         };
 
         return await Db
-            .SqlQueryAsync<SpReceivingPerformanceResult>("Exec Sp_ReceivingPerformance @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade",
+            .SqlQueryAsync<SpReceivingPerformanceResult>("Exec Sp_ReceivingPerformance @DataInicioContrato, @DataFimContrato, @ClienteID",
                 parameters.ToArray());
     }
 
-    public async Task<IEnumerable<SpAreaPriceResult>> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    public async Task<IEnumerable<SpAreaPriceResult>> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@DataInicioContrato", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimContrato", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@ClienteID", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpAreaPriceResult>("Exec Sp_AreaPrice @DataInicioContrato, @DataFimContrato, @ClienteID",
+                parameters.ToArray());
+    }
+
+    public async Task<IEnumerable<SpPhysicalVacancyResult>?> GetDashbaordPhysicalVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador)
     {
         var parameters = new List<SqlParameter> {
             new ("@DataInicioContrato", SqlDbType.Date)
@@ -460,30 +469,10 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                 {Value = dateRefEnd},
             new ("@ClienteID", SqlDbType.Int)
                 {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
-            new ("@TipoUnidade", SqlDbType.Int)
-                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true}
         };
 
         return await Db
-            .SqlQueryAsync<SpAreaPriceResult>("Exec Sp_AreaPrice @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade",
-                parameters.ToArray());
-    }
-
-    public async Task<IEnumerable<SpPhysicalVacancyResult>?> GetDashbaordPhysicalVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
-    {
-        var parameters = new List<SqlParameter> {
-            new ("@DataInicioContrato", SqlDbType.Date)
-                {Value = dateRefInit},
-            new ("@DataFimContrato", SqlDbType.Date)
-                {Value = dateRefEnd},
-            new ("@ClienteID", SqlDbType.Int)
-                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
-            new ("@TipoUnidade", SqlDbType.Int)
-                {Value = idTipoImovel.HasValue ? idTipoImovel : DBNull.Value, IsNullable = true}
-        };
-
-        return await Db
-            .SqlQueryAsync<SpPhysicalVacancyResult>("Exec Sp_PhysicalVacancy @DataInicioContrato, @DataFimContrato, @ClienteID, @TipoUnidade",
+            .SqlQueryAsync<SpPhysicalVacancyResult>("Exec Sp_PhysicalVacancy @DataInicioContrato, @DataFimContrato, @ClienteID",
                 parameters.ToArray());
     }
 

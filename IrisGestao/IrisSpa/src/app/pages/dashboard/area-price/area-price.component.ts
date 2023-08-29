@@ -49,10 +49,6 @@ export class AreaPriceComponent {
 		value: string | null;
 	}[] = [{ label: 'Todos os proprietários', value: null }];
 
-	categoryOptions: {
-		label: string;
-		value: string | null;
-	}[] = [{ label: 'Todos os tipos de imóveis', value: null }];
 
 	locadorComboEnabled:boolean = true;
 
@@ -96,9 +92,8 @@ export class AreaPriceComponent {
 			const startDateString = startDate.toISOString().split('T')[0];
 			const endDateString = endDate.toISOString().split('T')[0];
 			const idLocador = this.filterLocador ?? null;
-			const idTipo = this.filterTipo ?? null;
 
-			this.getAreaPriceData(startDateString, endDateString, idLocador, idTipo);
+			this.getAreaPriceData(startDateString, endDateString, idLocador);
 
 		}
 	};
@@ -154,17 +149,16 @@ export class AreaPriceComponent {
 		this.locadorComboEnabled = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'cliente';
 
 		this.getOwnersListData();
-		this.getUnitTypesData();
 	};
 
-	getAreaPriceData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number):void {
+	getAreaPriceData(startDateString: string, endDateString: string, IdLocador?: number):void {
 
 		if(!this.locadorComboEnabled)	{
 			IdLocador = this.loginService.usuarioLogado.id;
 		}
 
 		this.dashboardService
-			.getAreaPrice(startDateString, endDateString, IdLocador, IdTipoImovel)
+			.getAreaPrice(startDateString, endDateString, IdLocador)
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
@@ -198,29 +192,6 @@ export class AreaPriceComponent {
 				next: (e: any) => {
 					if (e.success) {
 						this.proprietaryOptions.push(
-							...e.data.map((item: any) => {
-								return {
-									label: this.truncateChar(item.nome),
-									value: item.id,
-								};
-							})
-						);
-					} else console.error(e.message);
-				},
-				error: (err) => {
-					console.error(err);
-				},
-			});
-	};
-
-	getUnitTypesData() {
-		this.rentContract
-			.getActiveUnitType()
-			.pipe(first())
-			.subscribe({
-				next: (e: any) => {
-					if (e.success) {
-						this.categoryOptions.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),

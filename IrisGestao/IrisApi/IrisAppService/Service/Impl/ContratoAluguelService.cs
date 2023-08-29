@@ -229,12 +229,11 @@ public class ContratoAluguelService: IContratoAluguelService
         DateTime DateRefInit,
         DateTime DateRefEnd,
         int? IdLocador,
-        int? IdTipoImovel,
         int? IdTipoArea)
     {
         
         var retorno = await contratoAluguelRepository
-            .GetDashbaordFinancialVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel, IdTipoArea);
+            .GetDashbaordFinancialVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoArea);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -244,31 +243,31 @@ public class ContratoAluguelService: IContratoAluguelService
     public async Task<CommandResult> GetDashbaordPhysicalVacancy(
         DateTime DateRefInit,
         DateTime DateRefEnd,
-        int? IdLocador, int? IdTipoImovel)
+        int? IdLocador)
     {
         
         var retorno = await contratoAluguelRepository
-            .GetDashbaordPhysicalVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel);
+            .GetDashbaordPhysicalVacancy(DateRefInit, DateRefEnd, IdLocador);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
-    public async Task<CommandResult> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    public async Task<CommandResult> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador)
     {
         var retorno = await contratoAluguelRepository
-            .GetDashbaordReceivingPerformance(dateRefInit, dateRefEnd, idLocador, idTipoImovel);
+            .GetDashbaordReceivingPerformance(dateRefInit, dateRefEnd, idLocador);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
-    public async Task<CommandResult> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    public async Task<CommandResult> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador)
     {
         var retorno = await contratoAluguelRepository
-            .GetDashbaordAreaPrice(dateRefInit, dateRefEnd, idLocador, idTipoImovel);
+            .GetDashbaordAreaPrice(dateRefInit, dateRefEnd, idLocador);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -278,9 +277,9 @@ public class ContratoAluguelService: IContratoAluguelService
     public async Task<CommandResult> GetDashboardTotalManagedArea(
         DateTime DateRefInit,
         DateTime DateRefEnd,
-        int? IdLocador, int? IdTipoImovel)
+        int? IdLocador)
     {
-        var retorno = await contratoAluguelRepository.GetDashboardTotalManagedArea(IdLocador, IdTipoImovel);
+        var retorno = await contratoAluguelRepository.GetDashboardTotalManagedArea(IdLocador);
     
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
