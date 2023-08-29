@@ -19,7 +19,6 @@ export class ReceivingPerformanceComponent {
 	data: any;
 	data2: any;
 	filterLocador: number;
-	filterTipo: number;
 	filterPeriodo: Date[];
 
 	isLoading: boolean = true;
@@ -30,11 +29,6 @@ export class ReceivingPerformanceComponent {
 		label: string;
 		value: string | null;
 	}[] = [{ label: 'Todos os proprietários', value: null }];
-
-	categoryOptions: {
-		label: string;
-		value: string | null;
-	}[] = [{ label: 'Todos os tipos de imóveis', value: null }];
 
 	locadorComboEnabled:boolean = true;
 	
@@ -93,8 +87,6 @@ export class ReceivingPerformanceComponent {
 		this.locadorComboEnabled = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'cliente';
 
 		this.getOwnersListData();
-		this.getUnitTypesData();
-
 	};
 
 	filter = (e?: Event) => {
@@ -115,9 +107,8 @@ export class ReceivingPerformanceComponent {
 			const startDateString = startDate.toISOString().split('T')[0];
 			const endDateString = endDate.toISOString().split('T')[0];
 			const idLocador = this.filterLocador ?? null;
-			const idTipo = this.filterTipo ?? null;
 
-			this.getReceivingPerformanceData(startDateString, endDateString, idLocador, idTipo);
+			this.getReceivingPerformanceData(startDateString, endDateString, idLocador);
 		}
 	};
 
@@ -158,29 +149,6 @@ export class ReceivingPerformanceComponent {
 			});
 	};
 
-	getUnitTypesData() {
-		this.rentContract
-			.getActiveUnitType()
-			.pipe(first())
-			.subscribe({
-				next: (e: any) => {
-					if (e.success) {
-						this.categoryOptions.push(
-							...e.data.map((item: any) => {
-								return {
-									label: this.truncateChar(item.nome),
-									value: item.id,
-								};
-							})
-						);
-					} else console.error(e.message);
-				},
-				error: (err) => {
-					console.error(err);
-				}
-			});
-	};
-
 	truncateChar(text: string): string {
 		const charlimit = 48;
 		if (!text || text.length <= charlimit) {
@@ -192,14 +160,14 @@ export class ReceivingPerformanceComponent {
 		return shortened;
 	};
 
-	getReceivingPerformanceData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number):void {
+	getReceivingPerformanceData(startDateString: string, endDateString: string, IdLocador?: number):void {
 
 		if(!this.locadorComboEnabled)	{
 			IdLocador = this.loginService.usuarioLogado.id;
 		}
 		
 		this.dashboardService
-			.getReceivingPerformance(startDateString, endDateString, IdLocador, IdTipoImovel)
+			.getReceivingPerformance(startDateString, endDateString, IdLocador)
 			.pipe(first())
 			.subscribe({
 				next: (event) => {

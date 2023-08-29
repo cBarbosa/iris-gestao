@@ -52,13 +52,13 @@
 				(ngModelChange)="filterResultDebounce($event)"
 			></p-dropdown>
 
-			<p-dropdown
+			<!-- <p-dropdown
 				appendTo="body"
 				styleClass="w-full md:w-[9rem]"
 				[options]="opcoesTipoImovel"
 				[(ngModel)]="filterTipoImovel"
 				(ngModelChange)="filterResultDebounce($event)"
-			></p-dropdown>
+			></p-dropdown> -->
 
 			<p-dropdown
 				appendTo="body"
@@ -115,24 +115,23 @@
 			>
 				<ng-template pTemplate="header">
 					<tr *ngIf="!isLoading">
-						<th>Data Pagamento/Vencimento</th>
-						<th>Documento</th>
-						<th>Complemento</th>
-						<th>Título</th>
-						<th>Valor total do título</th>
-						<th>Valor pago / a pagar</th>
-						<th>Total da conta</th>
+						<th>Data Pagamento</th>
+						<th>Locador</th>
+						<th>Tipo</th>
+						<th>Valor</th>
+						<th>Valor pago</th>
+						<th>Valor título</th>
+						<th>Total total</th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
 						<td class="font-bold">{{ entry.dataVencimento | date:'shortDate' }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeDocumento ?? "-" }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeImovel }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeTitulo ?? '-' }}</td>
-
+						<td class="max-w-[120px]">{{ entry.locador ?? "-" }}</td>
+						<td class="max-w-[120px]">{{ entry.tipoTitulo }}</td>
 						<td>{{ entry.valor | currency }}</td>
-						<td>{{ entry.valorRealPago ?? entry.valor | currency  }}</td>
+						<td>{{ entry.valorRealPago | currency }}</td>
+						<td>{{ entry.valorTitulo | currency  }}</td>
 						<td>{{ entry.valorTotalTitulo | currency }}</td>
 					</tr>
 				</ng-template>

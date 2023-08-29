@@ -229,12 +229,11 @@ public class ContratoAluguelService: IContratoAluguelService
         DateTime DateRefInit,
         DateTime DateRefEnd,
         int? IdLocador,
-        int? IdTipoImovel,
         int? IdTipoArea)
     {
         
         var retorno = await contratoAluguelRepository
-            .GetDashbaordFinancialVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel, IdTipoArea);
+            .GetDashbaordFinancialVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoArea);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -244,31 +243,31 @@ public class ContratoAluguelService: IContratoAluguelService
     public async Task<CommandResult> GetDashbaordPhysicalVacancy(
         DateTime DateRefInit,
         DateTime DateRefEnd,
-        int? IdLocador, int? IdTipoImovel)
+        int? IdLocador)
     {
         
         var retorno = await contratoAluguelRepository
-            .GetDashbaordPhysicalVacancy(DateRefInit, DateRefEnd, IdLocador, IdTipoImovel);
+            .GetDashbaordPhysicalVacancy(DateRefInit, DateRefEnd, IdLocador);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
-    public async Task<CommandResult> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    public async Task<CommandResult> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador)
     {
         var retorno = await contratoAluguelRepository
-            .GetDashbaordReceivingPerformance(dateRefInit, dateRefEnd, idLocador, idTipoImovel);
+            .GetDashbaordReceivingPerformance(dateRefInit, dateRefEnd, idLocador);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
-    public async Task<CommandResult> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoImovel)
+    public async Task<CommandResult> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador)
     {
         var retorno = await contratoAluguelRepository
-            .GetDashbaordAreaPrice(dateRefInit, dateRefEnd, idLocador, idTipoImovel);
+            .GetDashbaordAreaPrice(dateRefInit, dateRefEnd, idLocador);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -278,9 +277,9 @@ public class ContratoAluguelService: IContratoAluguelService
     public async Task<CommandResult> GetDashboardTotalManagedArea(
         DateTime DateRefInit,
         DateTime DateRefEnd,
-        int? IdLocador, int? IdTipoImovel)
+        int? IdLocador)
     {
-        var retorno = await contratoAluguelRepository.GetDashboardTotalManagedArea(IdLocador, IdTipoImovel);
+        var retorno = await contratoAluguelRepository.GetDashboardTotalManagedArea(IdLocador);
     
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -306,13 +305,10 @@ public class ContratoAluguelService: IContratoAluguelService
     }
     
     public async Task<CommandResult> GetReportLeasedArea(
-        bool? status,
         int? idImovel,
-        int? idTipoImovel,
-        int? idLocador,
         int? idLocatario)
     {
-        var retorno = await contratoAluguelRepository.GetReportLeasedArea(status, idImovel, idTipoImovel, idLocador, idLocatario);
+        var retorno = await contratoAluguelRepository.GetReportLeasedArea(idImovel, idLocatario);
         
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -321,12 +317,11 @@ public class ContratoAluguelService: IContratoAluguelService
 
     public async Task<CommandResult> GetReportRentValue(
         int? idImovel,
-        int? idTipoImovel,
         int? idLocador,
         int? idLocatario,
         DateTime? dateRef)
     {
-        var retorno = await contratoAluguelRepository.GetReportRentValue(idImovel, idTipoImovel, idLocador, idLocatario, dateRef);
+        var retorno = await contratoAluguelRepository.GetReportRentValue(idImovel, idLocador, idLocatario, dateRef);
         
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -336,14 +331,12 @@ public class ContratoAluguelService: IContratoAluguelService
     public async Task<CommandResult> GetReportExpenses(
         DateTime DateRefInit,
         DateTime DateRefEnd,
-        bool? status,
         int? idImovel,
-        int? idTipoImovel,
         int? idLocador,
         int? idLocatario)
     {
         var retorno = await contratoAluguelRepository
-            .GetReportExpenses(DateRefInit, DateRefEnd, status, idImovel, idTipoImovel, idLocador, idLocatario);
+            .GetReportExpenses(DateRefInit, DateRefEnd, idImovel, idLocador, idLocatario);
         
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
@@ -353,24 +346,22 @@ public class ContratoAluguelService: IContratoAluguelService
     public async Task<CommandResult> GetReportRevenues(
         DateTime DateRefInit,
         DateTime DateRefEnd,
-        bool? status,
         int? idImovel,
-        int? idTipoImovel,
         int? idLocador,
         int? idLocatario)
     {
         var retorno = await contratoAluguelRepository
-            .GetReportRevenues(DateRefInit,DateRefEnd,status, idImovel, idTipoImovel, idLocador, idLocatario);
+            .GetReportRevenues(DateRefInit,DateRefEnd, idImovel, idLocador, idLocatario);
         
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
-    public async Task<CommandResult> GetReportSupplyContract(int? idImovel, int? idTipoImovel, int? idLocador, int? idLocatario)
+    public async Task<CommandResult> GetReportSupplyContract(int? idImovel, int? idLocador, int? idLocatario)
     {
         var retorno = await contratoAluguelRepository
-            .GetReportSupplyContract(idImovel, idTipoImovel, idLocador, idLocatario);
+            .GetReportSupplyContract(idImovel, idLocador, idLocatario);
         
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)

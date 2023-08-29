@@ -2,13 +2,12 @@
 
 public partial class SpDimobResult
 {
+    public string? Competencia { get; set; }
+    public string? Contrato { get; set; }
+    public DateTime? DtContrato { get; set; }
     public string? Locador { get; set; }
-    public string? MesReferencia { get; set; }
-    public decimal? ValorAluguel { get; set; }
-    public DateTime? VencimentoAluguel { get; set; }
-    public DateTime? DataRecebimento { get; set; }
-    public decimal? ValorBruto { get; set; }
-    public decimal? ValorLiquido { get; set; }
-    public decimal? VencimentoPagamento { get; set; }
-    public decimal? DataPagamento { get; set; }
+    public string? Locatario { get; set; }
+    public string? Endereco { get; set; }
+    public decimal? RendimentoBruto { get; set; }
+    public decimal? ValorComissao { get; set; }
 }

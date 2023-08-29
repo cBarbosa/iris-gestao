@@ -22,17 +22,9 @@ export class ManagedAreaComponent {
 	displayMobileFilters: boolean = false;
 
 	filterLocador: number;
-	filterTipo: number;
 	filterPeriodo: Date[];
 
 	tabIndex: number = 0;
-
-	tiposImovel: DropdownItem[] = [
-		{
-			label: 'Tipo de imóvel',
-			value: null,
-		},
-	];
 
 	locador: DropdownItem[] = [
 		{
@@ -87,9 +79,8 @@ export class ManagedAreaComponent {
 			const startDateString = startDate.toISOString().split('T')[0];
 			const endDateString = endDate.toISOString().split('T')[0];
 			const idLocador = this.filterLocador ?? null;
-			const idTipo = this.filterTipo ?? null;
 
-			this.getManagedAreaData(startDateString, endDateString, idLocador, idTipo);
+			this.getManagedAreaData(startDateString, endDateString, idLocador);
 		}
 	};
 
@@ -113,17 +104,16 @@ export class ManagedAreaComponent {
 		this.locadorComboEnabled = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'cliente';
 
 		this.getOwnersListData();
-		this.getUnitTypesData();
 	};
 
-	getManagedAreaData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number): void {
+	getManagedAreaData(startDateString: string, endDateString: string, IdLocador?: number): void {
 
 		if(!this.locadorComboEnabled)	{
 			IdLocador = this.loginService.usuarioLogado.id;
 		}
 
 		this.dashboardService
-			.getManagedArea(startDateString, endDateString, IdLocador, IdTipoImovel)
+			.getManagedArea(startDateString, endDateString, IdLocador)
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
@@ -162,29 +152,6 @@ export class ManagedAreaComponent {
 				next: (e: any) => {
 					if (e.success) {
 						this.proprietaryOptions.push(
-							...e.data.map((item: any) => {
-								return {
-									label: this.truncateChar(item.nome),
-									value: item.id,
-								};
-							})
-						);
-					} else console.error(e.message);
-				},
-				error: (err) => {
-					console.error(err);
-				},
-			});
-	};
-
-	getUnitTypesData() {
-		this.rentContract
-			.getActiveUnitType()
-			.pipe(first())
-			.subscribe({
-				next: (e: any) => {
-					if (e.success) {
-						this.categoryOptions.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),

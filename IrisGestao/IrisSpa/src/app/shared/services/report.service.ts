@@ -103,18 +103,12 @@ export class ReportService {
 
 	getLeasedArea(
 		imovelId?: number,
-		status?: boolean,
-		tipoImovelId?: number,
-		locatarioId?: number,
 		locadorId?: number
 	) {
 		return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Report/leased-area`, {
 				params: {
-					Status: status ?? '',
 					IdImovel: imovelId ?? '',
-					IdTipoImovel: tipoImovelId ?? '',
-					IdLocatario: locatarioId ?? '',
 					IdLocador: locadorId ?? '',
 				},
 			})
@@ -130,8 +124,6 @@ export class ReportService {
 
 	getRentValue(
 		imovelId?: number,
-		status?: boolean,
-		tipoImovelId?: number,
 		locatarioId?: number,
 		locadorId?: number,
 		dateRef?: string
@@ -139,9 +131,7 @@ export class ReportService {
 		return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Report/rent-value`, {
 				params: {
-					Status: status ?? '',
 					IdImovel: imovelId ?? '',
-					IdTipoImovel: tipoImovelId ?? '',
 					IdLocatario: locatarioId ?? '',
 					IdLocador: locadorId ?? '',
 					DateRef: dateRef ?? ''
@@ -159,16 +149,12 @@ export class ReportService {
 
 	getSupplyContract(
 		imovelId: number | undefined,
-		status: boolean | undefined,
-		tipoImovelId: number | undefined,
 		locatarioId: number | undefined,
 		locadorId: number | undefined) {
 			return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Report/supply-contract`, {
 				params: {
-					Status: status ?? '',
 					IdImovel: imovelId ?? '',
-					IdTipoImovel: tipoImovelId ?? '',
 					IdLocatario: locatarioId ?? '',
 					IdLocador: locadorId ?? ''
 				},
@@ -187,8 +173,6 @@ export class ReportService {
 		DateRefInit: string,
 		DateRefEnd: string,
 		imovelId: number | undefined,
-		status: boolean | undefined,
-		tipoImovelId: number | undefined,
 		locatarioId: number | undefined,
 		locadorId: number | undefined) {
 			return this.http
@@ -196,9 +180,7 @@ export class ReportService {
 				params: {
 					DateRefInit,
 					DateRefEnd,
-					Status: status ?? '',
 					IdImovel: imovelId ?? '',
-					IdTipoImovel: tipoImovelId ?? '',
 					IdLocatario: locatarioId ?? '',
 					IdLocador: locadorId ?? ''
 				},
@@ -217,8 +199,6 @@ export class ReportService {
 		DateRefInit: string,
 		DateRefEnd: string,
 		imovelId: number | undefined,
-		status: boolean | undefined,
-		tipoImovelId: number | undefined,
 		locatarioId: number | undefined,
 		locadorId: number | undefined) {
 			return this.http
@@ -226,9 +206,7 @@ export class ReportService {
 				params: {
 					DateRefInit,
 					DateRefEnd,
-					Status: status ?? '',
 					IdImovel: imovelId ?? '',
-					IdTipoImovel: tipoImovelId ?? '',
 					IdLocatario: locatarioId ?? '',
 					IdLocador: locadorId ?? ''
 				},

@@ -45,17 +45,6 @@
 				[hidden]="!locadorComboEnabled"
 			></p-dropdown>
 
-			<p-dropdown
-				appendTo="body"
-				[styleClass]="'mr-2 w-full md:w-44'"
-				placeholder="Tipo de imóvel"
-				[options]="tiposImovel"
-				aria-describedby="tipo-imovel-help"
-				[(ngModel)]="filterTipo"
-				(ngModelChange)="filterClientDebounce($event)"
-				[options]="categoryOptions"
-			></p-dropdown>
-
 			<p-calendar
 				[styleClass]="'mr-2 w-full md:w-44'"
 				placeholder="Período"
