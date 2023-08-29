@@ -20,17 +20,12 @@ export class DashboardService {
 		DateRefInit: string,
 		DateRefEnd: string,
 		IdLocador?: number,
-		IdTipoImovel?: number,
 		IdTipoArea?: number,
 	) {
 		const optionalClause:any = {};
 
 		if(IdLocador) {
 			optionalClause.IdLocador=IdLocador;
-		}
-
-		if(IdTipoImovel) {
-			optionalClause.IdTipoImovel = IdTipoImovel;
 		}
 
 		if(IdTipoArea) {
@@ -58,18 +53,13 @@ export class DashboardService {
 	getPhysicalVacancy(
 		DateRefInit: string,
 		DateRefEnd: string,
-		IdLocador?: number,
-		IdTipoImovel?: number
+		IdLocador?: number
 	) {
 
 		const optionalClause:any = {};
 
 		if(IdLocador) {
 			optionalClause.IdLocador=IdLocador;
-		}
-
-		if(IdTipoImovel) {
-			optionalClause.IdTipoImovel = IdTipoImovel;
 		}
 
 		return this.http
@@ -93,18 +83,13 @@ export class DashboardService {
 	getReceivingPerformance(
 		DateRefInit: string,
 		DateRefEnd: string,
-		IdLocador?: number,
-		IdTipoImovel?: number
+		IdLocador?: number
 	) {
 
 		const optionalClause:any = {};
 
 		if(IdLocador) {
 			optionalClause.IdLocador=IdLocador;
-		}
-
-		if(IdTipoImovel) {
-			optionalClause.IdTipoImovel = IdTipoImovel;
 		}
 
 		return this.http
@@ -128,17 +113,12 @@ export class DashboardService {
 	getAreaPrice(
 		DateRefInit: string,
 		DateRefEnd: string,
-		IdLocador?: number,
-		IdTipoImovel?: number
+		IdLocador?: number
 	) {
 		const optionalClause:any = {};
 
 		if(IdLocador) {
 			optionalClause.IdLocador=IdLocador;
-		}
-
-		if(IdTipoImovel) {
-			optionalClause.IdTipoImovel = IdTipoImovel;
 		}
 
 		return this.http
@@ -162,17 +142,12 @@ export class DashboardService {
 	getManagedArea(
 		DateRefInit: string,
 		DateRefEnd: string,
-		IdLocador?: number,
-		IdTipoImovel?: number
+		IdLocador?: number
 	) {
 		const optionalClause:any = {};
 
 		if(IdLocador) {
 			optionalClause.IdLocador=IdLocador;
-		}
-
-		if(IdTipoImovel) {
-			optionalClause.IdTipoImovel = IdTipoImovel;
 		}
 
 		return this.http

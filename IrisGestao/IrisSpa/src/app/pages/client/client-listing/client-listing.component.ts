@@ -8,6 +8,7 @@ import { ResponsiveService } from 'src/app/shared/services/responsive-service.se
 import { Utils } from 'src/app/shared/utils';
 import { ClienteService } from '../../../shared/services/cliente.service';
 import { DominiosService } from '../../../shared/services/dominios.service';
+import { LoginService } from 'src/app/shared/services';
 
 @Component({
 	selector: 'app-client-listing',
@@ -42,12 +43,15 @@ export class ClientListingComponent {
 	displayMobileFilters: boolean = false;
 	cardPipes: Record<string, PipeTransform>;
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private clienteService: ClienteService,
 		private dominiosService: DominiosService,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
 	) {}
 
 	ngOnInit(): void {
@@ -70,6 +74,8 @@ export class ClientListingComponent {
 				timezone: '',
 			}),
 		};
+
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	getTiposCliente(): void {

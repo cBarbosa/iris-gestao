@@ -28,7 +28,6 @@ export class ReportReceiptsComponent {
 	rows = 10;
 
 	filterImovel: number;
-	filterTipoImovel: number;
 	filterLocador: number;
 	filterLocatario: number;
 	filterStatus: boolean;
@@ -37,12 +36,6 @@ export class ReportReceiptsComponent {
 	opcoesImovel = [
 		{
 			label: 'Todos Imóveis',
-			value: null,
-		},
-	];
-	opcoesTipoImovel = [
-		{
-			label: 'Tipo Imóvel',
 			value: null,
 		},
 	];
@@ -116,7 +109,6 @@ export class ReportReceiptsComponent {
 
 		this.filterResult();
 		this.getOwnersListData();
-		this.getUnitTypesData();
 		this.getPropertiesListData();
 		this.getRentersListData();
 	}
@@ -138,12 +130,10 @@ export class ReportReceiptsComponent {
 			const endDateString = endDate.toISOString().split('T')[0];
 
 			const idLocador = this.filterLocador ?? null;
-			const idTipo = this.filterTipoImovel ?? null;
 			const idImovel = this.filterImovel ?? null;
-			const status = this.filterStatus ?? null;
 			const idLocatario = this.filterLocatario ?? null;
 	
-			this.getData(startDateString, endDateString, idImovel, status, idTipo, idLocatario, idLocador);
+			this.getData(startDateString, endDateString, idImovel, idLocatario, idLocador);
 		}
 
 		
@@ -179,15 +169,13 @@ export class ReportReceiptsComponent {
 		startDateString: string,
 		endDateString: string,
 		imovelId?: number,
-		status?: boolean,
-		tipoImovelId?: number,
 		locatarioId?: number,
 		locadorId?: number
 	): void {
 		this.isLoading = true;
 
 		this.reportService
-			.getReceipts(startDateString, endDateString, imovelId, status, tipoImovelId, locatarioId, locadorId)
+			.getReceipts(startDateString, endDateString, imovelId, locatarioId, locadorId)
 			.pipe(first())
 			.subscribe({
 				next: (data) => {
@@ -224,7 +212,7 @@ export class ReportReceiptsComponent {
 			.subscribe({
 				next: (e: any) => {
 					if (e.success) {
-						this.opcoesLocatario.push(
+						this.opcoesLocador.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),
@@ -263,29 +251,6 @@ export class ReportReceiptsComponent {
 			});
 	}
 
-	getUnitTypesData() {
-		this.rentContract
-			.getActiveUnitType()
-			.pipe(first())
-			.subscribe({
-				next: (e: any) => {
-					if (e.success) {
-						this.opcoesTipoImovel.push(
-							...e.data.map((item: any) => {
-								return {
-									label: this.truncateChar(item.nome),
-									value: item.id,
-								};
-							})
-						);
-					} else console.error(e.message);
-				},
-				error: (err) => {
-					console.error(err);
-				},
-			});
-	}
-
 	getRentersListData() {
 		this.rentContract
 			.getActiveRenters()
@@ -293,7 +258,7 @@ export class ReportReceiptsComponent {
 			.subscribe({
 				next: (e: any) => {
 					if (e.success) {
-						this.opcoesLocador.push(
+						this.opcoesLocatario.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),

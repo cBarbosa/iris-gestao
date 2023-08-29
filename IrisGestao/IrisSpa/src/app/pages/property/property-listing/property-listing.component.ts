@@ -14,6 +14,7 @@ import {
 	ImovelService,
 	ClienteService,
 	CommonService,
+	LoginService,
 } from 'src/app/shared/services';
 import { AnexoService } from 'src/app/shared/services/anexo.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
@@ -56,6 +57,8 @@ export class PropertyListingComponent implements OnInit {
 		value: string | null;
 	}[] = [{ label: 'Todos os tipos de imóveis', value: null }];
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private imovelService: ImovelService,
 		private clienteService: ClienteService,
@@ -63,7 +66,8 @@ export class PropertyListingComponent implements OnInit {
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private anexoService: AnexoService,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
 	) {}
 
 	ngOnInit(): void {
@@ -150,6 +154,8 @@ export class PropertyListingComponent implements OnInit {
 		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
 			this.isMobile = screenWidth < 768;
 		});
+
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	loadClientsPage(event: LazyLoadEvent) {

@@ -63,12 +63,6 @@ export class ReportRentValueComponent {
 			value: null,
 		},
 	];
-	opcoesTipoImovel = [
-		{
-			label: 'Tipo Imóvel',
-			value: null,
-		},
-	];
 	opcoesLocador = [
 		{
 			label: 'Locador',
@@ -140,8 +134,8 @@ export class ReportRentValueComponent {
 
 		this.filterResult();
 		this.getOwnersListData();
-		this.getUnitTypesData();
 		this.getPropertiesListData();
+		this.getRentersListData();
 	};
 
 	filterResult = (e?: Event, page: number = 1, stack: boolean = false) => {
@@ -149,11 +143,10 @@ export class ReportRentValueComponent {
 
 		const dateString = this.filterReferencia.toISOString().split('T')[0];
 		const idLocador = this.filterLocador ?? null;
-		const idTipo = this.filterTipoImovel ?? null;
+		const idLocatario = this.filterLocatario ?? null;
 		const idImovel = this.filterImovel ?? null;
-		const status = this.filterStatus ?? null;
 
-		this.getData(idImovel, status, idTipo, undefined, idLocador, dateString);
+		this.getData(idImovel, idLocatario, idLocador, dateString);
 
 	};
 
@@ -184,8 +177,6 @@ export class ReportRentValueComponent {
 
 	getData(
 		imovelId?: number,
-		status?: boolean,
-		tipoImovelId?: number,
 		locatarioId?: number,
 		locadorId?: number,
 		dateRef?: string) : void {
@@ -193,7 +184,7 @@ export class ReportRentValueComponent {
 		this.isLoading = true;
 
 		this.reportService
-			.getRentValue(imovelId, status, tipoImovelId, locatarioId, locadorId, dateRef)
+			.getRentValue(imovelId, locatarioId, locadorId, dateRef)
 			.pipe(first())
 			.subscribe({
 				next: (data) => {
@@ -202,11 +193,11 @@ export class ReportRentValueComponent {
 						this.noRestults = this.resultEntries.length == 0;
 						this.totalSum = data.reduce(
 							(acc, entry) => {
-								acc.area += entry.somaAreaUtil;
-								acc.aluguelContratado += entry.somaValorAluguel;
-								acc.aluguelPotencial += entry.somaValorPotencial;
-								acc.precoM2 += entry.somaPrecoM2;
-								acc.precoMesReferencia += entry.precoMesReferencia;
+								acc.area += entry.areaTotalSelecionada;
+								acc.aluguelContratado += entry.valorAluguel;
+								acc.aluguelPotencial += entry.valorPotencial;
+								acc.precoM2 += entry.precoM2;
+								acc.precoMesReferencia += entry.precoM2Referencia;
 								return acc;
 							},
 							{
@@ -277,14 +268,15 @@ export class ReportRentValueComponent {
 			});
 	};
 
-	getUnitTypesData() {
+
+	getRentersListData() {
 		this.rentContract
-			.getActiveUnitType()
+			.getActiveRenters()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {
 					if (e.success) {
-						this.opcoesTipoImovel.push(
+						this.opcoesLocatario.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),

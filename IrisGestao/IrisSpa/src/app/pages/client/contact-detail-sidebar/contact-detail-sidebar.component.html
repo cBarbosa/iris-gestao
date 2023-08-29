@@ -22,7 +22,7 @@
 		<span class="value">{{ data.telefone | telefone }}</span>
 	</div>
 
-	<div class="flex gap-5 mt-9">
+	<div class="flex gap-5 mt-9" *ngIf="isFormEditable">
 		<button
 			pButton
 			pRipple

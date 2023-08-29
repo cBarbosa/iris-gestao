@@ -28,6 +28,7 @@
 					type="button"
 					class="p-button-outlined h-9 addButton"
 					(click)="navigateTo('client/register/new')"
+					*ngIf="isFormEditable"
 				>
 					<i class="pi pi-plus mr-3"></i>
 					Adicionar Cliente
@@ -49,6 +50,7 @@
 			</span>
 
 			<p-dropdown
+				appendTo="body"
 				class="mx-2"
 				[styleClass]="'w-full md:w-44' + (isMobile ? '' : ' white-theme')"
 				placeholder="Tipo de cliente"

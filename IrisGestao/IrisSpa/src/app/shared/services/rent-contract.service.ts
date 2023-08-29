@@ -25,7 +25,7 @@ export class RentContractService {
 		idBaseReajuste?: number,
 		dthInicioVigencia?: string,
 		dthFimVigencia?: string,
-		numeroContrato?: number
+		numeroContrato?: string
 	) {
 		return this.http
 			.get<ApiResponse>(

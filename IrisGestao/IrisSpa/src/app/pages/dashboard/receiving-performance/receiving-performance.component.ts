@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
-import { RentContractService } from 'src/app/shared/services';
+import { LoginService, RentContractService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
@@ -19,7 +19,6 @@ export class ReceivingPerformanceComponent {
 	data: any;
 	data2: any;
 	filterLocador: number;
-	filterTipo: number;
 	filterPeriodo: Date[];
 
 	isLoading: boolean = true;
@@ -31,16 +30,14 @@ export class ReceivingPerformanceComponent {
 		value: string | null;
 	}[] = [{ label: 'Todos os proprietários', value: null }];
 
-	categoryOptions: {
-		label: string;
-		value: string | null;
-	}[] = [{ label: 'Todos os tipos de imóveis', value: null }];
+	locadorComboEnabled:boolean = true;
 	
 	constructor(
 		private router: Router,
 		private responsiveService: ResponsiveService,
 		private dashboardService: DashboardService,
-		private rentContract: RentContractService
+		private rentContract: RentContractService,
+		private loginService: LoginService
 	) { };
 
 	ngOnInit() {
@@ -87,10 +84,9 @@ export class ReceivingPerformanceComponent {
 
 		const currYear = new Date().getFullYear();
 		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 1)];
+		this.locadorComboEnabled = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'cliente';
 
 		this.getOwnersListData();
-		this.getUnitTypesData();
-
 	};
 
 	filter = (e?: Event) => {
@@ -111,9 +107,8 @@ export class ReceivingPerformanceComponent {
 			const startDateString = startDate.toISOString().split('T')[0];
 			const endDateString = endDate.toISOString().split('T')[0];
 			const idLocador = this.filterLocador ?? null;
-			const idTipo = this.filterTipo ?? null;
 
-			this.getReceivingPerformanceData(startDateString, endDateString, idLocador, idTipo);
+			this.getReceivingPerformanceData(startDateString, endDateString, idLocador);
 		}
 	};
 
@@ -154,29 +149,6 @@ export class ReceivingPerformanceComponent {
 			});
 	};
 
-	getUnitTypesData() {
-		this.rentContract
-			.getActiveUnitType()
-			.pipe(first())
-			.subscribe({
-				next: (e: any) => {
-					if (e.success) {
-						this.categoryOptions.push(
-							...e.data.map((item: any) => {
-								return {
-									label: this.truncateChar(item.nome),
-									value: item.id,
-								};
-							})
-						);
-					} else console.error(e.message);
-				},
-				error: (err) => {
-					console.error(err);
-				}
-			});
-	};
-
 	truncateChar(text: string): string {
 		const charlimit = 48;
 		if (!text || text.length <= charlimit) {
@@ -188,9 +160,14 @@ export class ReceivingPerformanceComponent {
 		return shortened;
 	};
 
-	getReceivingPerformanceData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number):void {
+	getReceivingPerformanceData(startDateString: string, endDateString: string, IdLocador?: number):void {
+
+		if(!this.locadorComboEnabled)	{
+			IdLocador = this.loginService.usuarioLogado.id;
+		}
+		
 		this.dashboardService
-			.getReceivingPerformance(startDateString, endDateString, IdLocador, IdTipoImovel)
+			.getReceivingPerformance(startDateString, endDateString, IdLocador)
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
