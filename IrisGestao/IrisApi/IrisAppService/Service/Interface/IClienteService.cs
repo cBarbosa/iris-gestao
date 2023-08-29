@@ -12,4 +12,5 @@ public interface IClienteService
     Task<CommandResult> Delete(int? codigo);
     Task<CommandResult> GetAllOwners();
     Task<CommandResult> AlterarStatus(Guid uuid, bool status);
+    Task<CommandResult> GetByCpfCnpj(string cpfCnpj);
 }

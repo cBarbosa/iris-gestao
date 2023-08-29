@@ -213,17 +213,10 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                             Eventos = x.Evento.Select(y => new
                             {
                                 GuidReferenciaEvento = y.GuidReferencia,
-                                DataRealizacao = y.DthRealizacao,
+                                DataRealizacao = y.DthRealizacao.HasValue ? y.DthRealizacao.Value.ToString("dd/MM/yyyy") : "",
                                 Nome           = y.Nome,
                                 Descricao = y.descricao,
                                 TipoEvento = y.TipoEvento,
-                                TipoEventoNavigation = y.IdTipoEventoNavigation == null
-                                    ? null
-                                    : new
-                                    {
-                                        Id = y.IdTipoEventoNavigation.Id,
-                                        Nome = y.IdTipoEventoNavigation.Nome
-                                },
                                 ClienteVisitante = y.IdClienteNavigation == null
                                     ? null
                                     : new

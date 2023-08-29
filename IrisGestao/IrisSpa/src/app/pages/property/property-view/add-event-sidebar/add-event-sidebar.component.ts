@@ -133,7 +133,7 @@ export class AddEventSidebarComponent {
 			);
 
 		this.form = this.fb.group({
-			tipoEvento: ['', Validators.required],
+			//tipoEvento: ['', Validators.required],
 			proprietary: [null, Validators.required],
 			unidade: [null, Validators.required],
 			nomeEvento: ['', Validators.required],
@@ -218,7 +218,6 @@ export class AddEventSidebarComponent {
 
 		const edicaoObj: CreateEventObj = {
 			guidImovel: this.guidProperty,
-			tipoEvento: editFormData.tipoEvento,
 			guidCliente: editFormData.proprietary,
 			nome: editFormData.nomeEvento,
 			descricao: editFormData.descricao,

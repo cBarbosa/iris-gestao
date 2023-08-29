@@ -80,7 +80,7 @@
 							<div class="value">{{ property.areaTotal ?? 0 | area }}</div>
 						</span>
 					</div>
-					<span class="property-options">
+					<span class="property-options" *ngIf="isFormEditable">
 						<button
 							pButton
 							type="button"
@@ -131,7 +131,7 @@
 						iconPos="left"
 						class="p-button-outlined icon-left h-9"
 						(click)="navigateTo('property/register/unit/' + this.uid)"
-						*ngIf="!isCorporativeBuilding"
+						*ngIf="!isCorporativeBuilding && isFormEditable"
 					>
 						{{ isMobile ? "Add. unidade" : "Adicionar unidade" }}
 					</button>
@@ -256,7 +256,52 @@
 					</button>
 				</ng-template>
 			</section>
-
+			<section *ngIf="eventos">
+				<!-- Eventos -->
+				<div class="flex justify-between items-center">
+					<h3>Eventos</h3>
+				</div>
+				<div>
+					<p-table [value]="eventos" class="w-full">
+						<ng-template pTemplate="header">
+							<tr class="bg-gray-100">
+								<th>Data</th>
+								<th>Cliente</th>
+								<th>Nome</th>
+								<th>Descrição</th>
+								<th>Unidades Visitadas</th>
+								<th>Anexos</th>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="body" let-Eventos>
+							<tr class="even:bg-gray-50">
+								<td>{{ Eventos.dataRealizacao }}</td>
+								<td>{{ Eventos?.clienteVisitante?.nome }}</td>
+								<td>{{ Eventos.nome }}</td>
+								<td>{{ Eventos.descricao }}</td>
+								<td>
+									<ng-template pTemplate="bodyUnidade" *ngFor="let unidade of Eventos.unidadesVisitadas">
+										{{ unidade.tipo }}
+										<p-tag
+											value="Unidade disponivel"
+											[rounded]="true"
+											severity="success"
+										></p-tag>
+									</ng-template>
+								</td>
+								<td>
+									<div class="document-list">
+										<app-upload-list
+											[guid]="Eventos.guidReferenciaEvento"
+											[editable]="false"
+										></app-upload-list>
+									</div>
+								</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</div>	
+			</section>
 			<section class="attachments" *ngIf="hasAttachmentDocs">
 				<h3>Anexos</h3>
 
@@ -269,6 +314,7 @@
 					<app-photo-gallery [imageList]="imageList"></app-photo-gallery>
 				</section>
 			</ng-container>
+		
 		</div>
 	</div>
 </ng-template>
@@ -279,11 +325,22 @@
 	<ng-template pTemplate="header">
 		<h4>
 			{{ unit.tipo }}
-			<p-tag
-				value="Unidade disponivel"
-				[rounded]="true"
-				severity="success"
-			></p-tag>
+			<ng-container *ngIf="unit.unidadeLocada; else disponivel">
+				<p-tag
+					value="Unidade locada"
+					[rounded]="true"
+					severity="danger"
+					styleClass="w-36"
+				></p-tag>
+			</ng-container>
+			<ng-template #disponivel>
+				<p-tag
+					value="Unidade disponível"
+					[rounded]="true"
+					severity="success"
+					styleClass="w-36"
+				></p-tag>
+			</ng-template>
 		</h4>
 	</ng-template>
 	<ng-template pTemplate="content">
@@ -425,7 +482,7 @@
 			</p-tabPanel> -->
 		</p-tabView>
 	</ng-template>
-	<ng-template pTemplate="footer">
+	<ng-template pTemplate="footer" *ngIf="isFormEditable">
 		<div class="flex justify-between gap-4">
 			<button
 				pButton

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
 import { DropdownItem } from 'src/app/shared/models/types';
-import { RentContractService } from 'src/app/shared/services';
+import { LoginService, RentContractService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
@@ -22,17 +22,9 @@ export class ManagedAreaComponent {
 	displayMobileFilters: boolean = false;
 
 	filterLocador: number;
-	filterTipo: number;
 	filterPeriodo: Date[];
 
 	tabIndex: number = 0;
-
-	tiposImovel: DropdownItem[] = [
-		{
-			label: 'Tipo de imóvel',
-			value: null,
-		},
-	];
 
 	locador: DropdownItem[] = [
 		{
@@ -51,11 +43,14 @@ export class ManagedAreaComponent {
 		value: string | null;
 	}[] = [{ label: 'Todos os tipos de imóveis', value: null }];
 
+	locadorComboEnabled:boolean = true;
+
 	constructor(
 		private router: Router,
 		private responsiveService: ResponsiveService,
 		private dashboardService: DashboardService,
-		private rentContract: RentContractService
+		private rentContract: RentContractService,
+		private loginService: LoginService
 	) {}
 
 	ngOnInit():void {
@@ -84,9 +79,8 @@ export class ManagedAreaComponent {
 			const startDateString = startDate.toISOString().split('T')[0];
 			const endDateString = endDate.toISOString().split('T')[0];
 			const idLocador = this.filterLocador ?? null;
-			const idTipo = this.filterTipo ?? null;
 
-			this.getManagedAreaData(startDateString, endDateString, idLocador, idTipo);
+			this.getManagedAreaData(startDateString, endDateString, idLocador);
 		}
 	};
 
@@ -107,15 +101,19 @@ export class ManagedAreaComponent {
 	init():void {
 		const currYear = new Date().getFullYear();
 		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 31)];
+		this.locadorComboEnabled = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'cliente';
 
 		this.getOwnersListData();
-		this.getUnitTypesData();
 	};
 
-	getManagedAreaData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number): void {
+	getManagedAreaData(startDateString: string, endDateString: string, IdLocador?: number): void {
+
+		if(!this.locadorComboEnabled)	{
+			IdLocador = this.loginService.usuarioLogado.id;
+		}
 
 		this.dashboardService
-			.getManagedArea(startDateString, endDateString, IdLocador, IdTipoImovel)
+			.getManagedArea(startDateString, endDateString, IdLocador)
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
@@ -154,29 +152,6 @@ export class ManagedAreaComponent {
 				next: (e: any) => {
 					if (e.success) {
 						this.proprietaryOptions.push(
-							...e.data.map((item: any) => {
-								return {
-									label: this.truncateChar(item.nome),
-									value: item.id,
-								};
-							})
-						);
-					} else console.error(e.message);
-				},
-				error: (err) => {
-					console.error(err);
-				},
-			});
-	};
-
-	getUnitTypesData() {
-		this.rentContract
-			.getActiveUnitType()
-			.pipe(first())
-			.subscribe({
-				next: (e: any) => {
-					if (e.success) {
-						this.categoryOptions.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),

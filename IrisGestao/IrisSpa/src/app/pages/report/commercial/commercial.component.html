@@ -45,6 +45,7 @@
 		<ng-template #filtersTemplate>
 
 			<p-dropdown
+				appendTo="body"
 				styleClass="w-full md:w-[10rem]"
 				[options]="opcoesImovel"
 				[(ngModel)]="filterImovel"
@@ -52,6 +53,7 @@
 			></p-dropdown>
 
 			<p-dropdown
+				appendTo="body"
 				styleClass="w-full md:w-[8rem]"
 				[options]="opcoesLocador"
 				[(ngModel)]="filterLocador"
@@ -59,6 +61,7 @@
 			></p-dropdown>
 
 			<p-dropdown
+				appendTo="body"
 				styleClass="w-full md:w-[8rem]"
 				[options]="opcoesLocatario"
 				[(ngModel)]="filterLocatario"
@@ -111,7 +114,7 @@
 					<th>Email</th>
 					<th>Telefone</th>
 					<th>Imóvel</th>
-					<th>Tipo de visita</th>
+					<th>Evento</th>
 					<th>Descrição</th>
 				</tr>
 			</ng-template>

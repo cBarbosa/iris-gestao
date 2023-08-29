@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
 import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
-import { RentContractService } from 'src/app/shared/services';
+import { LoginService, RentContractService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
@@ -28,7 +28,6 @@ export class FinancialVacancyComponent implements OnInit {
 	displayMobileFilters: boolean = false;
 
 	filterLocador: number;
-	filterTipo: number;
 	filterPeriodo: Date[];
 	filterArea: number;
 
@@ -38,11 +37,6 @@ export class FinancialVacancyComponent implements OnInit {
 		label: string;
 		value: string | null;
 	}[] = [{ label: 'Todos os proprietários', value: null }];
-
-	categoryOptions: {
-		label: string;
-		value: string | null;
-	}[] = [{ label: 'Todos os tipos de imóveis', value: null }];
 
 	areaOptions: {
 		label: string;
@@ -54,11 +48,14 @@ export class FinancialVacancyComponent implements OnInit {
 		{ label: 'Área Habite-se', value: '3' }
 	];
 
+	locadorComboEnabled:boolean = true;
+
 	constructor(
 		private router: Router,
 		private responsiveService: ResponsiveService,
 		private dashboardService: DashboardService,
-		private rentContract: RentContractService
+		private rentContract: RentContractService,
+		private loginService: LoginService
 	) { };
 
 	ngOnInit():void {
@@ -109,13 +106,12 @@ export class FinancialVacancyComponent implements OnInit {
 			const startDateString = startDate.toISOString().split('T')[0];
 			const endDateString = endDate.toISOString().split('T')[0];
 			const idLocador = this.filterLocador ?? null;
-			const idTipo = this.filterTipo ?? null;
 			const idTipoArea = this.filterArea ?? null;
 
 			if(this.tabIndex == 0)
-				this.getFinancialVacancyData(startDateString, endDateString, idLocador, idTipo);
+				this.getFinancialVacancyData(startDateString, endDateString, idLocador);
 			else
-				this.getPhysicalVacancyDataArea(startDateString, endDateString, idLocador, idTipo, idTipoArea);
+				this.getPhysicalVacancyDataArea(startDateString, endDateString, idLocador, idTipoArea);
 		}
 
 		// this.setClientEntries(1, this.filterText, this.filterType);
@@ -139,11 +135,14 @@ export class FinancialVacancyComponent implements OnInit {
 		startDateString: string,
 		endDateString: string,
 		IdLocador?: number,
-		IdTipoImovel?: number,
 		IdTipoArea?: number) {
 
+		if(!this.locadorComboEnabled)	{
+			IdLocador = this.loginService.usuarioLogado.id;
+		}
+
 		this.dashboardService // resultado invertido
-			.getFinancialVacancy(startDateString, endDateString, IdLocador, IdTipoImovel, IdTipoArea)
+			.getFinancialVacancy(startDateString, endDateString, IdLocador, IdTipoArea)
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
@@ -172,9 +171,14 @@ export class FinancialVacancyComponent implements OnInit {
 			});
 	};
 
-	getFinancialVacancyData(startDateString: string, endDateString: string, IdLocador?: number, IdTipoImovel?: number) {
+	getFinancialVacancyData(startDateString: string, endDateString: string, IdLocador?: number) {
+		
+		if(!this.locadorComboEnabled)	{
+			IdLocador = this.loginService.usuarioLogado.id;
+		}
+
 		this.dashboardService
-			.getPhysicalVacancy(startDateString, endDateString, IdLocador, IdTipoImovel)
+			.getPhysicalVacancy(startDateString, endDateString, IdLocador)
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
@@ -254,9 +258,9 @@ export class FinancialVacancyComponent implements OnInit {
 
 		const currYear = new Date().getFullYear();
 		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 1)];
+		this.locadorComboEnabled = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'cliente';
 
 		this.getOwnersListData();
-		this.getUnitTypesData();
 	};
 
 	truncateChar(text: string): string {
@@ -278,29 +282,6 @@ export class FinancialVacancyComponent implements OnInit {
 				next: (e: any) => {
 					if (e.success) {
 						this.proprietaryOptions.push(
-							...e.data.map((item: any) => {
-								return {
-									label: this.truncateChar(item.nome),
-									value: item.id,
-								};
-							})
-						);
-					} else console.error(e.message);
-				},
-				error: (err) => {
-					console.error(err);
-				},
-			});
-	};
-
-	getUnitTypesData() {
-		this.rentContract
-			.getActiveUnitType()
-			.pipe(first())
-			.subscribe({
-				next: (e: any) => {
-					if (e.success) {
-						this.categoryOptions.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),

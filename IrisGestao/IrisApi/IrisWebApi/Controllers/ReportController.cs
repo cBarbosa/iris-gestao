@@ -18,23 +18,18 @@ public class ReportController : ControllerBase
     [HttpGet("leased-area")]
     public async Task<IActionResult> GetLeasedArea(
         [FromQuery] int? IdImovel,
-        [FromQuery] int? IdLocador,
-        [FromQuery] int? IdTipoImovel,
-        [FromQuery] int? IdLocatario,
-        [FromQuery] bool? Status
+        [FromQuery] int? IdLocatario
     ) =>
-        Ok(await contratoAluguelService.GetReportLeasedArea(Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario));
+        Ok(await contratoAluguelService.GetReportLeasedArea(IdImovel, IdLocatario));
     
     [HttpGet("rent-value")]
     public async Task<IActionResult> GetRentValue(
         [FromQuery] int? IdImovel,
         [FromQuery] int? IdLocador,
-        [FromQuery] int? IdTipoImovel,
         [FromQuery] int? IdLocatario,
-        [FromQuery] bool? Status,
         [FromQuery] DateTime? DateRef
     ) =>
-        Ok(await contratoAluguelService.GetReportRentValue(Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario, DateRef));
+        Ok(await contratoAluguelService.GetReportRentValue(IdImovel, IdLocador, IdLocatario, DateRef));
     
     [HttpGet("expenses")]
     public async Task<IActionResult> GetExpenses(
@@ -42,11 +37,9 @@ public class ReportController : ControllerBase
         [FromQuery] DateTime? DateRefEnd,
         [FromQuery] int? IdImovel,
         [FromQuery] int? IdLocador,
-        [FromQuery] int? IdTipoImovel,
-        [FromQuery] int? IdLocatario,
-        [FromQuery] bool? Status
+        [FromQuery] int? IdLocatario
     ) =>
-        Ok(await contratoAluguelService.GetReportExpenses(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario));
+        Ok(await contratoAluguelService.GetReportExpenses(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdImovel, IdLocador, IdLocatario));
     
     [HttpGet("revenues")]
     public async Task<IActionResult> GetRevenues(
@@ -54,21 +47,17 @@ public class ReportController : ControllerBase
         [FromQuery] DateTime? DateRefEnd,
         [FromQuery] int? IdImovel,
         [FromQuery] int? IdLocador,
-        [FromQuery] int? IdTipoImovel,
-        [FromQuery] int? IdLocatario,
-        [FromQuery] bool? Status
-        ) =>
-        Ok(await contratoAluguelService.GetReportRevenues(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario));
+        [FromQuery] int? IdLocatario
+    ) =>
+        Ok(await contratoAluguelService.GetReportRevenues(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdImovel, IdLocador, IdLocatario));
     
     [HttpGet("supply-contract")]
     public async Task<IActionResult> GetSupplyContract(
         [FromQuery] int? IdImovel,
         [FromQuery] int? IdLocador,
-        [FromQuery] int? IdTipoImovel,
-        [FromQuery] int? IdLocatario,
-        [FromQuery] bool? Status
+        [FromQuery] int? IdLocatario
     ) =>
-        Ok(await contratoAluguelService.GetReportSupplyContract(Status, IdImovel, IdTipoImovel, IdLocador, IdLocatario));
+        Ok(await contratoAluguelService.GetReportSupplyContract(IdImovel, IdLocador, IdLocatario));
     
     [HttpGet("dimob")]
     public async Task<IActionResult> GetDimob(

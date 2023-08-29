@@ -16,6 +16,7 @@ import { Contato } from 'src/app/shared/models/contato.model';
 import { ContatoService } from 'src/app/shared/services/contato.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { TelefonePipe } from 'src/app/shared/pipes/telefone.pipe';
+import { LoginService } from 'src/app/shared/services';
 
 @Component({
 	selector: 'app-client-view',
@@ -61,12 +62,15 @@ export class ClientViewComponent implements OnInit {
 
 	contractidSelected: string;
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
 		private clienteService: ClienteService,
 		private contatoService: ContatoService,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
@@ -86,6 +90,8 @@ export class ClientViewComponent implements OnInit {
 			}),
 		};
 
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
+
 		this.tableMenu = [
 			{
 				label: 'Detalhes',
@@ -96,11 +102,13 @@ export class ClientViewComponent implements OnInit {
 				label: 'Editar',
 				icon: 'ph-note-pencil',
 				command: () => this.showContactEdit(),
+				visible: this.isFormEditable
 			},
 			{
 				label: 'Excluir',
 				icon: 'ph-trash',
 				command: () => this.confirmDelete(),
+				visible: this.isFormEditable
 			},
 		];
 
@@ -108,7 +116,7 @@ export class ClientViewComponent implements OnInit {
 			{
 				label: 'Detalhes',
 				icon: 'ph-eye',
-				command: () => this.showContract(),
+				command: () => this.showContract()
 			},
 		];
 		this.getByIdCliente();

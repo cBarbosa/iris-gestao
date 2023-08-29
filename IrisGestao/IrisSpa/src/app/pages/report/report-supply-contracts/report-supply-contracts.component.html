@@ -55,6 +55,7 @@
 			></p-calendar> -->
 
 			<p-dropdown
+				appendTo="body"
 				styleClass="w-full md:w-[10rem]"
 				[options]="opcoesImovel"
 				[(ngModel)]="filterImovel"
@@ -62,13 +63,7 @@
 			></p-dropdown>
 
 			<p-dropdown
-				styleClass="w-full md:w-[9rem]"
-				[options]="opcoesTipoImovel"
-				[(ngModel)]="filterTipoImovel"
-				(ngModelChange)="filterResultDebounce($event)"
-			></p-dropdown>
-
-			<p-dropdown
+				appendTo="body"
 				styleClass="w-full md:w-[8rem]"
 				[options]="opcoesLocador"
 				[(ngModel)]="filterLocador"
@@ -76,11 +71,11 @@
 			></p-dropdown>
 
 			<p-dropdown
+				appendTo="body"
 				styleClass="w-full md:w-[8rem]"
 				[options]="opcoesLocatario"
 				[(ngModel)]="filterLocatario"
 				(ngModelChange)="filterResultDebounce($event)"
-				[hidden]="true"
 			></p-dropdown>
 
 		</ng-template>
@@ -112,23 +107,33 @@
 				<ng-template pTemplate="header">
 					<tr *ngIf="!isLoading">
 						<th>Imóvel</th>
-						<th>Unidade Locada</th>
-						<th>Início do Contrato</th>
-						<th>Vencimento do Contrato</th>
-						<th>Próxima Atualização</th>
-						<th>Base de Reajuste</th>
-						<!-- <th>Obs</th> -->
+						<th>Locatário</th>
+						<th>Locador</th>
+						<th>Início do contrato</th>
+						<th>Vencimento do contrato</th>
+						<th>Perc. último reajuste</th>
+						<th>Próxima atualização</th>
+						<th>Base reajuste</th>
+						<th>Perc. desconto</th>
+						<th>Prazo desconto</th>
+						<th>Carência</th>
+						<th>Prazo carência</th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="font-bold max-w-[160px]">{{ entry.nomeImovel }}</td>
-						<td class="max-w-[160px]">{{ entry.nomeLocador }}</td>
+						<td class="font-bold max-w-[160px]">{{ entry.imovel }}</td>
+						<td class="max-w-[160px]">{{ entry.locatario }}</td>
+						<td class="max-w-[160px]">{{ entry.locador }}</td>
 						<td >{{ entry.inicioContrato | date:'shortDate' }}</td>
 						<td >{{ entry.fimContrato | date:'shortDate' }}</td>
-						<td >{{ entry.proximaAtualizacao | date:'shortDate' }}</td>
-						<td>{{ entry.baseReajuste }}</td>
-						<!-- <td>{{ entry.somaValorPotencial }}</td> -->
+						<td>{{ entry.percUltimoReajuste }}</td>
+						<td >{{ entry.proxReajuste | date:'shortDate' }}</td>
+						<td >{{ entry.baseReajuste }}</td>
+						<td >{{ entry.percDesconto }}</td>
+						<td >{{ entry.prazoDesconto }}</td>
+						<td >{{ entry.carencia ? "Sim" : "Não" }}</td>
+						<td >{{ entry.prazoCarencia }}</td>
 					</tr>
 				</ng-template> 
 

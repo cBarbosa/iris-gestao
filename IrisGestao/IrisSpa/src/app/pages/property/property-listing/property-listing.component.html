@@ -26,6 +26,7 @@
 				type="button"
 				class="p-button-outlined h-9 addButton"
 				(click)="navigateTo('property/' + propertyType + '/register')"
+				*ngIf="isFormEditable"
 			>
 				<i class="pi pi-plus mr-3"></i>
 				Adicionar imóvel
@@ -45,6 +46,7 @@
 			/>
 		</span>
 		<p-dropdown
+			appendTo="body"
 			class="mx-2"
 			styleClass="w-[14.5rem]"
 			placeholder="Tipo de imóvel"
@@ -53,6 +55,7 @@
 			(ngModelChange)="filterProperties($event)"
 		></p-dropdown>
 		<p-dropdown
+			appendTo="body"
 			class="mx-2 mr-4"
 			styleClass="w-52"
 			placeholder="Proprietário"

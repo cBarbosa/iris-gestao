@@ -45,20 +45,23 @@
 		<ng-template #filtersTemplate>
 
 			<p-dropdown
+				appendTo="body"
 				styleClass="w-full md:w-[10rem]"
 				[options]="opcoesImovel"
 				[(ngModel)]="filterImovel"
 				(ngModelChange)="filterResultDebounce($event)"
 			></p-dropdown>
 
-			<p-dropdown
+			<!-- <p-dropdown
+				appendTo="body"
 				styleClass="w-full md:w-[9rem]"
 				[options]="opcoesTipoImovel"
 				[(ngModel)]="filterTipoImovel"
 				(ngModelChange)="filterResultDebounce($event)"
-			></p-dropdown>
+			></p-dropdown> -->
 
 			<p-dropdown
+				appendTo="body"
 				styleClass="w-full md:w-[8rem]"
 				[options]="opcoesLocador"
 				[(ngModel)]="filterLocador"
@@ -66,6 +69,7 @@
 			></p-dropdown>
 
 			<p-dropdown
+				appendTo="body"
 				styleClass="w-full md:w-[8rem]"
 				[options]="opcoesLocatario"
 				[(ngModel)]="filterLocatario"
@@ -111,43 +115,46 @@
 			>
 				<ng-template pTemplate="header">
 					<tr *ngIf="!isLoading">
-						<th>Data Baixa</th>
 						<th>Vecimento</th>
+						<th>Data Baixa</th>
 						<th>Cliente</th>
-						<th>Documento</th>
 						<th>Titulo</th>
-						<th>Valor Baixa</th>
+						<th>Valor</th>
+						<th>Valor baixa</th>
+						<th>Valor título</th>
+						<th>Total</th>
 						<th>Desconto</th>
-						<th>Liquido</th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="font-bold">{{ entry.dataBaixa | date:'shortDate' }}</td>
-						<td class="max-w-[120px]">{{ entry.dataVencimento | date:'shortDate' }}</td>
+						<td class="font-bold">{{ entry.dataVencimento | date:'shortDate' }}</td>
+						<td class="max-w-[120px]">{{ entry.dataBaixa | date:'shortDate' }}</td>
 						<td class="max-w-[120px]">{{ entry.nomeCliente }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeDocumento }}</td>
 						<td class="max-w-[120px]">{{ entry.nomeTitulo }}</td>
-						<td>{{ entry.valorBaixa | currency }}</td>
-						<td>{{ entry.valorDesconto | currency }}</td>
+
 						<td>{{ entry.valorLiquido | currency }}</td>
+						<td>{{ entry.valorBaixa | currency }}</td>
+						<td>{{ entry.valorTitulo | currency }}</td>
+						<td>{{ entry.valorTotalTitulo | currency }}</td>
+						<td>{{ entry.valorDesconto | currency }}</td>
 					</tr>
 				</ng-template> 
 
 				<ng-template pTemplate="footer">
 					<tr class="bg-[#262626]">
-						<td colspan="5" class="bg-transparent text-white">Total</td>
+						<td colspan="4" class="bg-transparent text-white">Total</td>
 						<td class="bg-transparent text-white">
-							<div class="mb-1 text-xs font-normal">Valor da Baixa</div>
+							<div class="mb-1 text-xs font-normal">Valor</div>
+							<div>{{ totalSum?.totalLiquido | currency }}</div>
+						</td>
+						<td colspan="3" class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Valor da baixa</div>
 							<div>{{ totalSum?.totalBaixa | currency }}</div>
 						</td>
 						<td class="bg-transparent text-white">
-							<div class="mb-1 text-xs font-normal">Valor Desconto</div>
+							<div class="mb-1 text-xs font-normal">Valor desconto</div>
 							<div>{{ totalSum?.totalDesconto | currency }}</div>
-						</td>
-						<td class="bg-transparent text-white">
-							<div class="mb-1 text-xs font-normal">Liquido</div>
-							<div>{{ totalSum?.totalLiquido | currency }}</div>
 						</td>
 					</tr>
 				</ng-template>
