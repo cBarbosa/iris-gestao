@@ -101,7 +101,7 @@ export class RentContractListingComponent {
 		});
 
 		const currYear = new Date().getFullYear();
-		this.filterPeriodo = [new Date(currYear-10, 0, 1), new Date(currYear+10, 11, 1)];
+		this.filterPeriodo = [new Date(2020, 0, 1), new Date(currYear+20, 0, 1)];
 
 
 		if (this.isMobile) this.setContractsEntries();
@@ -167,7 +167,7 @@ export class RentContractListingComponent {
 
 	setContractsEntries(
 		page = 1,
-		numeroContrato?: number,
+		numeroContrato?: string,
 		idBaseReajuste?: number,
 		idTipoImovel?: number,
 		dthInicioVigencia?: string,
@@ -215,7 +215,7 @@ export class RentContractListingComponent {
 
 	getContractPage(
 		page = 1,
-		numeroContrato?: number,
+		numeroContrato?: string,
 		idBaseReajuste?: number,
 		idTipoImovel?: number,
 		dthInicioVigencia?: string,
@@ -279,6 +279,7 @@ export class RentContractListingComponent {
 		stack: boolean = false
 	): Promise<any> => {
 		console.log('Filtro >> ' + JSON.stringify(this.filterPeriodo));
+		console.log('Filtro Número Contrato >> ' + this.filterText);
 		if ((this.filterPeriodo?.[0], this.filterPeriodo?.[1])) {
 			const startDate = new Date(this.filterPeriodo[0]);
 			startDate.setDate(1);
@@ -298,7 +299,7 @@ export class RentContractListingComponent {
 			if (stack)
 				return this.getContractPage(
 					page,
-					+this.filterText,
+					this.filterText,
 					this.filterBase,
 					this.filterType,
 					startISODate,
@@ -307,7 +308,7 @@ export class RentContractListingComponent {
 			else
 				return this.setContractsEntries(
 					page,
-					+this.filterText,
+					this.filterText,
 					this.filterBase,
 					this.filterType,
 					startISODate,
@@ -317,7 +318,7 @@ export class RentContractListingComponent {
 			else{
 				return this.getContractPage(
 					page,
-					+this.filterText,
+					this.filterText,
 					this.filterBase,
 					this.filterType,
 					'',
