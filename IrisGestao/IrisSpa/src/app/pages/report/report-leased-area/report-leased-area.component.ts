@@ -130,11 +130,9 @@ export class ReportLeasedAreaComponent {
 		this.isLoading = true;
 
 		const idLocador = this.filterLocador ?? null;
-		const idTipo = this.filterTipoImovel ?? null;
 		const idImovel = this.filterImovel ?? null;
-		const status = this.filterStatus ?? null;
 
-		this.getData(idImovel, status, idTipo, undefined, idLocador);
+		this.getData(idImovel, idLocador);
 	};
 
 	loadResultPage(event: LazyLoadEvent): void {
@@ -172,13 +170,10 @@ export class ReportLeasedAreaComponent {
 
 	getData(
 		imovelId?: number,
-		status?: boolean,
-		tipoImovelId?: number,
-		locatarioId?: number,
 		locadorId?: number):void {
 
 		this.reportLeasedAreaService
-			.getLeasedArea(imovelId, status, tipoImovelId, locatarioId, locadorId)
+			.getLeasedArea(imovelId, locadorId)
 			.pipe(first())
 			.subscribe({
 				next: (data) => {

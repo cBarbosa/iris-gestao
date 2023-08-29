@@ -23,7 +23,6 @@ export class ReportSupplyContractsComponent {
 	rows = 10;
 
 	filterImovel: number;
-	filterTipoImovel: number;
 	filterLocador: number;
 	filterLocatario: number;
 	filterStatus: boolean;
@@ -31,12 +30,6 @@ export class ReportSupplyContractsComponent {
   opcoesImovel = [
 		{
 			label: 'Todos Imóveis',
-			value: null,
-		},
-	];
-	opcoesTipoImovel = [
-		{
-			label: 'Tipo Imóvel',
 			value: null,
 		},
 	];
@@ -99,7 +92,6 @@ export class ReportSupplyContractsComponent {
 	init():void {
 		this.filterResult();
 		this.getOwnersListData();
-		this.getUnitTypesData();
 		this.getPropertiesListData();
 		this.getRentersListData();
 	};
@@ -113,11 +105,9 @@ export class ReportSupplyContractsComponent {
 
 		const idLocador = this.filterLocador ?? null;
 		const idLocatario = this.filterLocatario ?? null;
-		const idTipo = this.filterTipoImovel ?? null;
 		const idImovel = this.filterImovel ?? null;
-		const status = this.filterStatus ?? null;
 
-		this.getData(idImovel, status, idTipo, idLocatario, idLocador);
+		this.getData(idImovel, idLocatario, idLocador);
 
 	};
 
@@ -148,15 +138,13 @@ export class ReportSupplyContractsComponent {
 
 	getData(
 		imovelId?: number,
-		status?: boolean,
-		tipoImovelId?: number,
 		locatarioId?: number,
 		locadorId?: number) : void {
 
 		this.isLoading = true;
 
 		this.reportService
-			.getSupplyContract(imovelId, status, tipoImovelId, locatarioId, locadorId)
+			.getSupplyContract(imovelId, locatarioId, locadorId)
 			.pipe(first())
 			.subscribe({
 				next: (data) => {
@@ -219,29 +207,6 @@ export class ReportSupplyContractsComponent {
 			});
 	};
 
-	getUnitTypesData() {
-		this.rentContract
-			.getActiveUnitType()
-			.pipe(first())
-			.subscribe({
-				next: (e: any) => {
-					if (e.success) {
-						this.opcoesTipoImovel.push(
-							...e.data.map((item: any) => {
-								return {
-									label: this.truncateChar(item.nome),
-									value: item.id,
-								};
-							})
-						);
-					} else console.error(e.message);
-				},
-				error: (err) => {
-					console.error(err);
-				},
-			});
-	};
-
 	getRentersListData() {
 		this.rentContract
 			.getActiveRenters()
@@ -249,7 +214,7 @@ export class ReportSupplyContractsComponent {
 			.subscribe({
 				next: (e: any) => {
 					if (e.success) {
-						this.opcoesLocador.push(
+						this.opcoesLocatario.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),

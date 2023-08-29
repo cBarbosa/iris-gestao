@@ -35,12 +35,12 @@ export class ReportCostsComponent {
 			value: null,
 		},
 	];
-	opcoesTipoImovel = [
-		{
-			label: 'Tipo Imóvel',
-			value: null,
-		},
-	];
+	// opcoesTipoImovel = [
+	// 	{
+	// 		label: 'Tipo Imóvel',
+	// 		value: null,
+	// 	},
+	// ];
 	opcoesLocador = [
 		{
 			label: 'Locador',
@@ -110,7 +110,7 @@ export class ReportCostsComponent {
 
 		this.filterResult();
 		this.getOwnersListData();
-		this.getUnitTypesData();
+		// this.getUnitTypesData();
 		this.getPropertiesListData();
 		this.getRentersListData();
 	};
@@ -134,11 +134,9 @@ export class ReportCostsComponent {
 
 			const idLocador = this.filterLocador ?? null;
 			const idLocatario = this.filterLocatario ?? null;
-			const idTipo = this.filterTipoImovel ?? null;
 			const idImovel = this.filterImovel ?? null;
-			const status = this.filterStatus ?? null;
 
-			this.getData(startDateString, endDateString, idImovel, status, idTipo, idLocatario, idLocador);
+			this.getData(startDateString, endDateString, idImovel, idLocatario, idLocador);
 		}
 	};
 
@@ -164,15 +162,13 @@ export class ReportCostsComponent {
 		startDateString: string,
 		endDateString: string,
 		imovelId?: number,
-		status?: boolean,
-		tipoImovelId?: number,
 		locatarioId?: number,
 		locadorId?: number) : void {
 
 		this.isLoading = true;
 
 		this.reportService
-			.getCosts(startDateString, endDateString, imovelId, status, tipoImovelId, locatarioId, locadorId)
+			.getCosts(startDateString, endDateString, imovelId, locatarioId, locadorId)
 			.pipe(first())
 			.subscribe({
 				next: (data) => {
@@ -183,7 +179,7 @@ export class ReportCostsComponent {
 						this.totalSum = data.reduce(
 							(acc, entry) => {
 								acc.totalTitulo += entry.valorTotalTitulo;
-								acc.totalValorPagoPagar += entry.valorRealPago ?? entry.valor;
+								acc.totalValorPagoPagar += entry.valorTitulo;
 
 								return acc;
 							},
@@ -209,7 +205,7 @@ export class ReportCostsComponent {
 			.subscribe({
 				next: (e: any) => {
 					if (e.success) {
-						this.opcoesLocatario.push(
+						this.opcoesLocador.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),
@@ -248,28 +244,28 @@ export class ReportCostsComponent {
 			});
 	};
 
-	getUnitTypesData() {
-		this.rentContract
-			.getActiveUnitType()
-			.pipe(first())
-			.subscribe({
-				next: (e: any) => {
-					if (e.success) {
-						this.opcoesTipoImovel.push(
-							...e.data.map((item: any) => {
-								return {
-									label: this.truncateChar(item.nome),
-									value: item.id,
-								};
-							})
-						);
-					} else console.error(e.message);
-				},
-				error: (err) => {
-					console.error(err);
-				},
-			});
-	};
+	// getUnitTypesData() {
+	// 	this.rentContract
+	// 		.getActiveUnitType()
+	// 		.pipe(first())
+	// 		.subscribe({
+	// 			next: (e: any) => {
+	// 				if (e.success) {
+	// 					this.opcoesTipoImovel.push(
+	// 						...e.data.map((item: any) => {
+	// 							return {
+	// 								label: this.truncateChar(item.nome),
+	// 								value: item.id,
+	// 							};
+	// 						})
+	// 					);
+	// 				} else console.error(e.message);
+	// 			},
+	// 			error: (err) => {
+	// 				console.error(err);
+	// 			},
+	// 		});
+	// };
 
 	getRentersListData() {
 		this.rentContract
@@ -278,7 +274,7 @@ export class ReportCostsComponent {
 			.subscribe({
 				next: (e: any) => {
 					if (e.success) {
-						this.opcoesLocador.push(
+						this.opcoesLocatario.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),

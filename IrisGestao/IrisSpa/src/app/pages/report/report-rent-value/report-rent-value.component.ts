@@ -63,12 +63,6 @@ export class ReportRentValueComponent {
 			value: null,
 		},
 	];
-	opcoesTipoImovel = [
-		{
-			label: 'Tipo Imóvel',
-			value: null,
-		},
-	];
 	opcoesLocador = [
 		{
 			label: 'Locador',
@@ -140,7 +134,6 @@ export class ReportRentValueComponent {
 
 		this.filterResult();
 		this.getOwnersListData();
-		this.getUnitTypesData();
 		this.getPropertiesListData();
 		this.getRentersListData();
 	};
@@ -151,11 +144,9 @@ export class ReportRentValueComponent {
 		const dateString = this.filterReferencia.toISOString().split('T')[0];
 		const idLocador = this.filterLocador ?? null;
 		const idLocatario = this.filterLocatario ?? null;
-		const idTipo = this.filterTipoImovel ?? null;
 		const idImovel = this.filterImovel ?? null;
-		const status = this.filterStatus ?? null;
 
-		this.getData(idImovel, status, idTipo, idLocatario, idLocador, dateString);
+		this.getData(idImovel, idLocatario, idLocador, dateString);
 
 	};
 
@@ -186,8 +177,6 @@ export class ReportRentValueComponent {
 
 	getData(
 		imovelId?: number,
-		status?: boolean,
-		tipoImovelId?: number,
 		locatarioId?: number,
 		locadorId?: number,
 		dateRef?: string) : void {
@@ -195,7 +184,7 @@ export class ReportRentValueComponent {
 		this.isLoading = true;
 
 		this.reportService
-			.getRentValue(imovelId, status, tipoImovelId, locatarioId, locadorId, dateRef)
+			.getRentValue(imovelId, locatarioId, locadorId, dateRef)
 			.pipe(first())
 			.subscribe({
 				next: (data) => {
@@ -279,28 +268,6 @@ export class ReportRentValueComponent {
 			});
 	};
 
-	getUnitTypesData() {
-		this.rentContract
-			.getActiveUnitType()
-			.pipe(first())
-			.subscribe({
-				next: (e: any) => {
-					if (e.success) {
-						this.opcoesTipoImovel.push(
-							...e.data.map((item: any) => {
-								return {
-									label: this.truncateChar(item.nome),
-									value: item.id,
-								};
-							})
-						);
-					} else console.error(e.message);
-				},
-				error: (err) => {
-					console.error(err);
-				},
-			});
-	};
 
 	getRentersListData() {
 		this.rentContract
@@ -309,7 +276,7 @@ export class ReportRentValueComponent {
 			.subscribe({
 				next: (e: any) => {
 					if (e.success) {
-						this.opcoesLocador.push(
+						this.opcoesLocatario.push(
 							...e.data.map((item: any) => {
 								return {
 									label: this.truncateChar(item.nome),

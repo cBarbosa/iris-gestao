@@ -99,32 +99,30 @@
 			>
 				<ng-template pTemplate="header">
 					<tr *ngIf="!isLoading">
+						<th>Competência</th>
+						<th>Contrato</th>
+						<th>Data contrato</th>
 						<th>Locador</th>
-						<th>Mês Referência</th>
-						<th>Valor do Aluguel</th>
-						<th>Vencimento</th>
-						<th>Data do recebimento</th>
-						<th>Valor bruto</th>
-						<th>Valor líquido</th>
-						<th>Vencimento</th>
-						<th>Data de pagamento</th>
+						<th>Locatário</th>
+						<th>Endereço</th>
+						<th>Rendimento bruto</th>
+						<th>Valor comissão</th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="font-bold">{{ entry.Locador }}</td>
-						<td>{{ entry.mesReferencia | date:'shortDate' }}</td>
-						<td>{{ entry.valorAluguel | currency }}</td>
-						<td>{{ entry.vencimentoAluguel | date:'shortDate' }}</td>
-						<td>{{ entry.dataRecebimento }}</td>
-						<td>{{ entry.valorBruto | currency }}</td>
-						<td>{{ entry.valorLiquido | currency }}</td>
-						<td>{{ entry.vencimentoPagamento | date:'shortDate' }}</td>
-						<td>{{ entry.dataPagamento | date:'shortDate' }}</td>
+						<td class="font-bold">{{ entry.competencia }}</td>
+						<td>{{ entry.contrato }}</td>
+						<td>{{ entry.dtContrato | date:'shortDate' }}</td>
+						<td>{{ entry.locador }}</td>
+						<td>{{ entry.locatario }}</td>
+						<td>{{ entry.endereco }}</td>
+						<td>{{ entry.rendimentoBruto | currency }}</td>
+						<td>{{ entry.valorComissao | currency }}</td>
 					</tr>
 				</ng-template>
 
-				<ng-template pTemplate="footer">
+				<!-- <ng-template pTemplate="footer">
 					<tr class="bg-[#262626]">
 						<td colspan="5" class="bg-transparent text-white">Total</td>
 						<td class="bg-transparent text-white">
@@ -140,7 +138,7 @@
 							<div>{{ totalSum?.valorLiquidoTotal | currency }}</div>
 						</td>
 					</tr>
-				</ng-template>
+				</ng-template> -->
 
 			</p-table>
 
