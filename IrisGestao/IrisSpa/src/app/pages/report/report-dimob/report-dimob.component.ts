@@ -192,13 +192,13 @@ export class ReportDimobComponent {
 	getData(
 		startDateString: string,
 		endDateString: string,
-		locatarioId?: number,
-		locadorId?: number) : void {
+		locadorId?: number,
+		locatarioId?: number) : void {
 
 		this.isLoading = true;
 
 		this.reportService
-			.getDimob(startDateString, endDateString, locatarioId, locadorId)
+			.getDimob(startDateString, endDateString, locadorId, locatarioId)
 			.pipe(first())
 			.subscribe({
 				next: (data) => {
