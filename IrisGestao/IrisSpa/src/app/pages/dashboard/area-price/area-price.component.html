@@ -33,6 +33,15 @@
 		</header>
 
 		<ng-template #filtersTemplate>
+
+			<p-dropdown
+				appendTo="body"
+				styleClass="mr-2 w-full md:w-[10rem]"
+				[options]="opcoesImovel"
+				[(ngModel)]="filterImovel"
+				(ngModelChange)="filterClientDebounce($event)"
+			></p-dropdown>
+
 			<p-dropdown
 				appendTo="body"
 				[styleClass]="'mr-2 w-full md:w-44'"

@@ -113,12 +113,17 @@ export class DashboardService {
 	getAreaPrice(
 		DateRefInit: string,
 		DateRefEnd: string,
-		IdLocador?: number
+		IdLocador?: number,
+		IdImovel?: number
 	) {
 		const optionalClause:any = {};
 
 		if(IdLocador) {
 			optionalClause.IdLocador=IdLocador;
+		}
+
+		if(IdImovel) {
+			optionalClause.IdImovel=IdImovel;
 		}
 
 		return this.http

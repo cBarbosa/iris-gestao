@@ -264,10 +264,10 @@ public class ContratoAluguelService: IContratoAluguelService
             : new CommandResult(false, ErrorResponseEnums.Error_1005, null!);
     }
 
-    public async Task<CommandResult> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador)
+    public async Task<CommandResult> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idImovel)
     {
         var retorno = await contratoAluguelRepository
-            .GetDashbaordAreaPrice(dateRefInit, dateRefEnd, idLocador);
+            .GetDashbaordAreaPrice(dateRefInit, dateRefEnd, idLocador, idImovel);
 
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)
