@@ -42,8 +42,9 @@ public class DashboardController : ControllerBase
     public async Task<IActionResult> GetAreaPrice(
         [FromQuery] DateTime? DateRefInit,
         [FromQuery] DateTime? DateRefEnd,
-        [FromQuery] int? IdLocador) =>
-        Ok(await contratoAluguelService.GetDashbaordAreaPrice(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador));
+        [FromQuery] int? IdLocador,
+        [FromQuery] int? IdImovel) =>
+        Ok(await contratoAluguelService.GetDashbaordAreaPrice(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador, IdImovel));
     
     [HttpGet("total-managed-area")]
     public async Task<IActionResult> GetTotalManagedArea(

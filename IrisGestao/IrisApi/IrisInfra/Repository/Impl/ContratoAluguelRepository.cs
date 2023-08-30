@@ -474,7 +474,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                 parameters.ToArray());
     }
 
-    public async Task<IEnumerable<SpAreaPriceResult>> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador)
+    public async Task<IEnumerable<SpAreaPriceResult>> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idImovel)
     {
         var parameters = new List<SqlParameter> {
             new ("@DataInicioContrato", SqlDbType.Date)
@@ -482,11 +482,13 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
             new ("@DataFimContrato", SqlDbType.Date)
                 {Value = dateRefEnd},
             new ("@ClienteID", SqlDbType.Int)
-                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true}
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true},
+            new ("@ImovelID", SqlDbType.Int)
+                {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true}
         };
 
         return await Db
-            .SqlQueryAsync<SpAreaPriceResult>("Exec Sp_AreaPrice @DataInicioContrato, @DataFimContrato, @ClienteID",
+            .SqlQueryAsync<SpAreaPriceResult>("Exec Sp_AreaPrice @DataInicioContrato, @DataFimContrato, @ClienteID, @ImovelID",
                 parameters.ToArray());
     }
 

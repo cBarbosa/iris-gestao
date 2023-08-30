@@ -24,15 +24,15 @@ export class AreaPriceComponent {
 	isMobile: boolean = false;
 	displayMobileFilters: boolean = false;
 
+	filterImovel: number;
 	filterLocador: number;
-	filterTipo: number;
 	filterPeriodo: [Date, Date];
 
 	tabIndex: number = 0;
 
-	tiposImovel: DropdownItem[] = [
+	opcoesImovel = [
 		{
-			label: 'Tipo de imóvel',
+			label: 'Imóveis',
 			value: null,
 		},
 	];
@@ -47,7 +47,7 @@ export class AreaPriceComponent {
 	proprietaryOptions: {
 		label: string;
 		value: string | null;
-	}[] = [{ label: 'Todos os proprietários', value: null }];
+	}[] = [{ label: 'Proprietários', value: null }];
 
 
 	locadorComboEnabled:boolean = true;
@@ -92,8 +92,9 @@ export class AreaPriceComponent {
 			const startDateString = startDate.toISOString().split('T')[0];
 			const endDateString = endDate.toISOString().split('T')[0];
 			const idLocador = this.filterLocador ?? null;
+			const idImovel = this.filterImovel ?? null;
 
-			this.getAreaPriceData(startDateString, endDateString, idLocador);
+			this.getAreaPriceData(startDateString, endDateString, idLocador, idImovel);
 
 		}
 	};
@@ -149,16 +150,17 @@ export class AreaPriceComponent {
 		this.locadorComboEnabled = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'cliente';
 
 		this.getOwnersListData();
+		this.getPropertiesListData();
 	};
 
-	getAreaPriceData(startDateString: string, endDateString: string, IdLocador?: number):void {
+	getAreaPriceData(startDateString: string, endDateString: string, IdLocador?: number, IdImovel?: number):void {
 
 		if(!this.locadorComboEnabled)	{
 			IdLocador = this.loginService.usuarioLogado.id;
 		}
 
 		this.dashboardService
-			.getAreaPrice(startDateString, endDateString, IdLocador)
+			.getAreaPrice(startDateString, endDateString, IdLocador, IdImovel)
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
@@ -221,5 +223,28 @@ export class AreaPriceComponent {
 	savePDF():void {
 
 		Utils.saveChartAsPdf(this.chartComponent.chart, 'preco-m2', 'Preço m²');
+	};
+
+	getPropertiesListData() {
+		this.rentContract
+			.getActiveProperties()
+			.pipe(first())
+			.subscribe({
+				next: (e: any) => {
+					if (e.success) {
+						this.opcoesImovel.push(
+							...e.data.map((item: any) => {
+								return {
+									label: this.truncateChar(item.nome),
+									value: item.id,
+								};
+							})
+						);
+					} else console.error(e.message);
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
 	};
 }
