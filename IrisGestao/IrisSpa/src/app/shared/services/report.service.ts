@@ -224,15 +224,16 @@ export class ReportService {
 	getDimob(
 		DateRefInit: string,
 		DateRefEnd: string,
-		locatarioId: number | undefined,
-		locadorId: number | undefined) {
+		locadorId: number | undefined,
+		locatarioId: number | undefined
+		) {
 			return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Report/Dimob`, {
 				params: {
 					DateRefInit,
 					DateRefEnd,
-					IdLocatario: locatarioId ?? '',
-					IdLocador: locadorId ?? ''
+					IdLocador: locadorId ?? '',
+					IdLocatario: locatarioId ?? ''
 				},
 			})
 			.pipe(
