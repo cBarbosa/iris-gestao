@@ -20,7 +20,7 @@ export class ManagedAreaComponent {
 
 	isMobile: boolean = false;
 	displayMobileFilters: boolean = false;
-
+	
 	filterLocador: number;
 	filterPeriodo: Date[];
 
@@ -36,12 +36,7 @@ export class ManagedAreaComponent {
 	proprietaryOptions: {
 		label: string;
 		value: string | null;
-	}[] = [{ label: 'Todos os proprietários', value: null }];
-
-	categoryOptions: {
-		label: string;
-		value: string | null;
-	}[] = [{ label: 'Todos os tipos de imóveis', value: null }];
+	}[] = [{ label: 'Proprietários', value: null }];
 
 	locadorComboEnabled:boolean = true;
 
