@@ -24,9 +24,11 @@ public partial class ContratoAluguelHistoricoReajuste : BaseEntity<ContratoAlugu
     [Column(TypeName = "decimal(8, 6)")]
     public double? PercentualReajusteNovo { get; set; }
 
-
     [Column(TypeName = "date")]
     public DateTime? DataReajuste { get; set; }
+
+    [Column(TypeName = "date")]
+    public DateTime? DataFimReajuste { get; set; }
 
 
     [Unicode(false)]
