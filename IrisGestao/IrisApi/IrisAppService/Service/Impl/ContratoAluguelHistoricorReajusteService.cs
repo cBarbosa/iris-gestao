@@ -85,6 +85,8 @@ public class ContratoAluguelHistoricorReajusteService : IContratoAluguelHistoric
         contratoAluguelHistoricoReajuste.PercentualReajusteAnterior  = cmd.PercentualReajusteAntigo;
         contratoAluguelHistoricoReajuste.ValorAluguelNovo          = cmd.ValorAluguelNovo;
         contratoAluguelHistoricoReajuste.ValorAluguelAnterior      = cmd.ValorAluguelAnterior;
+        contratoAluguelHistoricoReajuste.DataReajuste              = cmd.DataReajuste;
+        contratoAluguelHistoricoReajuste.DataFimReajuste           = cmd.DataFimReajuste;
         contratoAluguelHistoricoReajuste.AlteradoPor               = cmd.AlteradoPor;
     }
 }

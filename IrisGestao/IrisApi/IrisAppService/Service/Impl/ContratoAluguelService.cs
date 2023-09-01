@@ -521,7 +521,9 @@ public class ContratoAluguelService: IContratoAluguelService
         double valorLiquido, novoValorAluguel;
         novoValorAluguel = calculaValorReajuste(ContratoAluguel.ValorAluguel, novoPercentualReajuste);
         valorLiquido = calculaValorImpostos(novoValorAluguel, ContratoAluguel.PercentualRetencaoImpostos);
+
         DateTime dataVencimento                             = ContratoAluguel.DataFimContrato.AddMonths(12);
+        DateTime DataProximoReajuste                        = ContratoAluguel.DataProximoReajuste.Value.AddMonths(ContratoAluguel.PeriodicidadeReajuste);
 
         cmd.IdContratoAluguel                               = ContratoAluguel.Id;
         cmd.PercentualReajusteAntigo                        = ContratoAluguel.PercentualRetencaoImpostos;
@@ -529,13 +531,14 @@ public class ContratoAluguelService: IContratoAluguelService
         cmd.ValorAluguelAnterior                            = ContratoAluguel.ValorAluguel;
         cmd.ValorAluguelNovo                                = novoValorAluguel;
         cmd.DataReajuste                                    = ContratoAluguel.DataProximoReajuste;
+        cmd.DataFimReajuste                                 = DataProximoReajuste.AddDays(-1);
 
         ContratoAluguel.ValorAluguel                        = novoValorAluguel;
         ContratoAluguel.ValorAluguelLiquido                 = valorLiquido;
         ContratoAluguel.DataUltimaModificacao               = DateTime.Now;
         ContratoAluguel.PercentualRetencaoImpostosReajuste  = novoPercentualReajuste;
         ContratoAluguel.DataFimContrato                     = ContratoAluguel.DataFimContrato >= dataVencimento ? ContratoAluguel.DataFimContrato : dataVencimento;
-        ContratoAluguel.DataProximoReajuste                 = ContratoAluguel.DataProximoReajuste.Value.AddMonths(ContratoAluguel.PeriodicidadeReajuste);
+        ContratoAluguel.DataProximoReajuste                 = DataProximoReajuste;
     }
 
     protected String validarDados(CriarContratoAluguelCommand cmd) 
