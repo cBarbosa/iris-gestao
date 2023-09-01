@@ -85,11 +85,11 @@ export class TopbarComponent {
 					},
 				],
 			},
-			// {
-			// 	label: 'Gerenciamento de obras',
-			// 	id: route.startsWith('/construction/') ? 'current' : '',
-			// 	command: () => this.navigateTo('construction/listing'),
-			// },
+			{
+				label: 'Gerenciamento de obras',
+				id: route.startsWith('/construction/') ? 'current' : '',
+				command: () => this.navigateTo('construction/listing'),
+			},
 			{
 				label: 'Fornecedores',
 				visible: this.isUserAdmin(),
