@@ -27,4 +27,5 @@ public interface IContratoAluguelRepository : IRepository<ContratoAluguel>, IDis
     Task<IEnumerable<dynamic>> GetActiveRenters();
     Task<IEnumerable<dynamic>> GetReportDimob(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idLocatario);
     Task<IEnumerable<dynamic>> GetReportCommercial(DateTime dateRefInit, DateTime dateRefEnd, int? idImovel, int? idLocador, int? idLocatario);
+    Task<IEnumerable<SpRentContractsResult>?> GetReportRentContract(int? idImovel, int? idLocador);
 }
