@@ -585,11 +585,13 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
             new ("@IdImovel", SqlDbType.Int)
                 {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true},
             new ("@IdLocatario", SqlDbType.Int)
-                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true}
+                {Value = idLocatario.HasValue ? idLocatario : DBNull.Value, IsNullable = true},
+            new ("@IdTipoDespesa", SqlDbType.Int)
+                {Value = DBNull.Value, IsNullable = true}
         };
 
         return await Db
-            .SqlQueryAsync<SpRevenuesResult>("Exec Sp_Revenues @DataInicioReferencia, @DataFimReferencia, @IdLocador, @IdLocatario, @IdImovel",
+            .SqlQueryAsync<SpRevenuesResult>("Exec Sp_Revenues @DataInicioReferencia, @DataFimReferencia, @IdLocador, @IdLocatario, @IdImovel, @IdTipoDespesa",
                 parameters.ToArray());
     }
 
