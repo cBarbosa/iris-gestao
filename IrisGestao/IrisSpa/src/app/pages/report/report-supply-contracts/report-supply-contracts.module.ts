@@ -12,6 +12,8 @@ import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/sp
 import { CardItemComponent } from 'src/app/shared/components/card-item/card-item.component';
 import { CalendarModule } from 'primeng/calendar';
 import { MenuModule } from 'primeng/menu';
+import { PillTabComponent } from 'src/app/shared/components/pill-tab/pill-tab.component';
+import { TabViewModule } from 'primeng/tabview';
 
 
 @NgModule({
@@ -30,7 +32,9 @@ import { MenuModule } from 'primeng/menu';
 		SpinnerComponent,
     CardItemComponent,
 		CalendarModule,
-    MenuModule
+    MenuModule,
+    PillTabComponent,
+    TabViewModule
   ]
 })
 export class ReportSupplyContractsModule { }

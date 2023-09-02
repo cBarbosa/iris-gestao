@@ -740,5 +740,21 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
             .SqlQueryAsync<SpCommercialResult>("Exec Sp_Commercial @DataInicioReferencia, @DataFimReferencia, @IdLocador, @IdLocatario, @IdImovel",
                 parameters.ToArray());
     }
+    
+    public async Task<IEnumerable<SpRentContractsResult>?> GetReportRentContract(
+        int? idImovel,
+        int? idLocador)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@IdImovel", SqlDbType.Int)
+                {Value = idImovel.HasValue ? idImovel : DBNull.Value, IsNullable = true},
+            new ("@IdLocador", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpRentContractsResult>("Exec Sp_RentContract @IdImovel, @IdLocador",
+                parameters.ToArray());
+    }
 
 }

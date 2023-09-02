@@ -12,6 +12,7 @@ import { Utils } from 'src/app/shared/utils';
 })
 export class ReportSupplyContractsComponent {
   	@ViewChild('reportToPdf', {read: ElementRef}) childElement: ElementRef<HTMLElement>;
+	@ViewChild('newReportToPdf', {read: ElementRef}) newChildElement: ElementRef<HTMLElement>;
   
 	isLoading: boolean = true;
 	isMobile: boolean = false;
@@ -26,6 +27,8 @@ export class ReportSupplyContractsComponent {
 	filterLocador: number;
 	filterLocatario: number;
 	filterStatus: boolean;
+
+	tabIndex: number = 0;
 
   opcoesImovel = [
 		{
@@ -107,18 +110,36 @@ export class ReportSupplyContractsComponent {
 		const idLocatario = this.filterLocatario ?? null;
 		const idImovel = this.filterImovel ?? null;
 
-		this.getData(idImovel, idLocatario, idLocador);
-
+		if(this.tabIndex == 0)
+			this.getRentData(idImovel, idLocador);
+		else
+			this.getSupplyData(idImovel, idLocatario, idLocador);
 	};
 
   	filterResultDebounce: Function = Utils.debounce(this.filterResult, 1000);
 
   	exportarPdf(): void {
-		Utils.saveReportAsPdf(this.childElement.nativeElement, 'vencimento-reajuste-contrato', 'Relatório Valor de Aluguel');
+		const element = this.tabIndex == 0
+			? this.newChildElement.nativeElement
+			: this.childElement.nativeElement;
+
+		const subject = this.tabIndex == 0
+			? `Relatório contrato de aluguel`
+			: `Relatório contrato de fornecedor`;
+
+		Utils.saveReportAsPdf(element, 'gestao-contrato', subject);
 	};
 
   	exportarExcell(): void {
-		Utils.saveReportAsExcell(this.childElement.nativeElement, 'vencimento-reajuste-contrato', 'Relatório Valor de Aluguel');
+		const element = this.tabIndex == 0
+			? this.newChildElement.nativeElement
+			: this.childElement.nativeElement;
+
+		const subject = this.tabIndex == 0
+			? `Relatório contrato de aluguel`
+			: `Relatório contrato de fornecedor`;
+
+		Utils.saveReportAsExcell(element, 'gestao-contrato', subject);
 	};
 
   	loadResultPage(event: LazyLoadEvent): void {
@@ -136,7 +157,31 @@ export class ReportSupplyContractsComponent {
 		});
 	};
 
-	getData(
+	getRentData(
+		imovelId?: number,
+		locadorId?: number) : void {
+
+		this.isLoading = true;
+
+		this.reportService
+			.getRentContract(imovelId, locadorId)
+			.pipe(first())
+			.subscribe({
+				next: (data) => {
+					if (data) {
+						this.resultEntries = data;
+						this.totalRecords = this.resultEntries.length;
+					}
+				},
+				error: () => {
+					console.error(console.error);
+				},
+				complete : () => this.isLoading = false,
+			});
+	
+	};
+
+	getSupplyData(
 		imovelId?: number,
 		locatarioId?: number,
 		locadorId?: number) : void {
@@ -239,5 +284,10 @@ export class ReportSupplyContractsComponent {
 		const without_html = text.replace(/<(?:.|\n)*?>/gm, '');
 		const shortened = without_html.substring(0, charlimit) + '...';
 		return shortened;
+	};
+
+	changeTab(i: number) {
+		this.tabIndex = i;
+		this.filterResult();
 	};
 }
