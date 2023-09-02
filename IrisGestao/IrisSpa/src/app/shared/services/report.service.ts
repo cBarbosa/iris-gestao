@@ -43,25 +43,24 @@ type SupplyContract = {
 };
 
 type Expenses = {
+	dataBaixa: Date;
 	dataVencimento: Date;
-	valor: number;
+	locador: string;
+	classificacao: string;
+	valorAPagar: number;
 	valorRealPago: number;
-	valorTitulo: number;
-	valorTotalTitulo: number;
-	nomeTitulo: string;
-	nomeDocumento: string;
-	nomeImovel: string;
+	desconto: number;
 };
 
 type Revenues = {
 	dataVencimento: Date;
 	dataBaixa: Date;
-	valorBaixa: number;
-	valorDesconto: number;
-	valorLiquido: number;
-	nomeCliente: string;
-	nomeTitulo: string;
-	nomeDocumento: string;
+	locador: string;
+	locatario: string;
+	classificacao: string;
+	valorAPagar: number;
+	valorRealPago: number;
+	desconto: number;
 };
 
 type Dimob = {

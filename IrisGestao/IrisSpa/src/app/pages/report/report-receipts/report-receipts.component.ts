@@ -185,9 +185,9 @@ export class ReportReceiptsComponent {
 
 						this.totalSum = data.reduce(
 							(acc, entry) => {
-								acc.totalBaixa += entry.valorBaixa ?? 0.0;
-								acc.totalLiquido += entry.valorLiquido ?? 0.0;
-								acc.totalDesconto += entry.valorDesconto ?? 0.0;
+								acc.totalBaixa += entry.valorAPagar ?? 0.0;
+								acc.totalLiquido += entry.valorRealPago ?? 0.0;
+								acc.totalDesconto += entry.desconto ?? 0.0;
 								return acc;
 							},
 							{
