@@ -272,4 +272,24 @@ export class ReportService {
 			);
 	};
 
+	getRentContract(
+		imovelId: number | undefined,
+		locadorId: number | undefined) {
+			return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Report/rent-contract`, {
+				params: {
+					IdImovel: imovelId ?? '',
+					IdLocador: locadorId ?? ''
+				},
+			})
+			.pipe(
+				map((response): SupplyContract[] | null => {
+					console.debug('response', response);
+					if (!response.success)
+						console.error(`getRentContract: ${response.message}`);
+					return response.data;
+				})
+			);
+	};
+
 }
