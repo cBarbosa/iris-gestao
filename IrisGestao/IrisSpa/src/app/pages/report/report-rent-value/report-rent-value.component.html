@@ -140,8 +140,8 @@
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="max-w-[120px]">{{ entry.imovel }}</td>
-						<td class="font-bold">{{ entry.centroDeCusto }}</td>
+						<td class="max-w-[120px] font-bold">{{ entry.imovel }}</td>
+						<td>{{ entry.centroDeCusto }}</td>
 						<td class="max-w-[120px]">{{ entry.locador ?? "-" }}</td>
 						<td class="max-w-[120px]">{{ entry.locatario ?? "-" }}</td>
 						<td>{{ entry.areaTotalSelecionada | area }}</td>
