@@ -117,9 +117,7 @@ export class PercentChartCardComponent {
 	};
 
 	ngAfterViewInit() {
-		console.log('passo 1');
 		if (this.PercentChartCardComponent) {
-			console.log('passo 2');
 			this.chart = this.PercentChartCardComponent.chart;
 		}
 	}
