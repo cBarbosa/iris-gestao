@@ -162,6 +162,7 @@ export class ManagedAreaComponent {
 				next: (event) => {
 
 					this.data.datasets[0].data = [];
+					this.data.labels = [];
 					this.dataDoughnut.datasets = [];
 
 					event.data.forEach((item: { title: string, percent: number, color: string }) => {

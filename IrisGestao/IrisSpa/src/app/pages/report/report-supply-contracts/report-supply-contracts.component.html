@@ -82,7 +82,7 @@
 				[options]="opcoesLocatario"
 				[(ngModel)]="filterLocatario"
 				(ngModelChange)="filterResultDebounce($event)"
-				*ngIf="tabIndex == 1"
+				*ngIf="tabIndex == 0"
 			></p-dropdown>
 
 		</ng-template>
@@ -99,6 +99,56 @@
 
 
 			<ng-container *ngIf="tabIndex == 0">
+
+				<p-table
+					*ngIf="!isMobile && totalRecords > 0"
+					[value]="resultEntries"
+					styleClass="p-datatable-striped"
+					[tableStyle]="{ 'min-width': '50rem' }"
+					[paginator]="false"
+					[rows]="rows"
+					[(first)]="first"
+					responsiveLayout="scroll"
+					[totalRecords]="totalRecords"
+					[lazy]="true"
+					(onLazyLoad)="loadResultPage($event)"
+					#reportToPdf
+				>
+					<ng-template pTemplate="header">
+						<tr *ngIf="!isLoading">
+							<th>Imóvel</th>
+							<th>Locatário</th>
+							<th>Locador</th>
+							<th>Início do contrato</th>
+							<th>Vencimento do contrato</th>
+							<th>Perc. último reajuste</th>
+							<th>Próxima atualização</th>
+							<th>Base reajuste</th>
+							<th>Perc. desconto</th>
+							<th>Carência</th>
+							<th>Prazo carência</th>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="body" let-entry>
+						<tr>
+							<td class="font-bold max-w-[160px]">{{ entry.imovel }}</td>
+							<td class="max-w-[160px]">{{ entry.locatario }}</td>
+							<td class="max-w-[160px]">{{ entry.locador }}</td>
+							<td >{{ entry.inicioContrato | date:'shortDate' }}</td>
+							<td >{{ entry.fimContrato | date:'shortDate' }}</td>
+							<td>{{ entry.percUltimoReajuste }}</td>
+							<td >{{ entry.proxReajuste | date:'shortDate' }}</td>
+							<td >{{ entry.baseReajuste }}</td>
+							<td >{{ entry.percDesconto }}</td>
+							<td >{{ entry.carencia ? "Sim" : "Não" }}</td>
+							<td >{{ entry.prazoCarencia }}</td>
+						</tr>
+					</ng-template> 
+				</p-table>
+
+			</ng-container>
+
+			<ng-container *ngIf="tabIndex == 1">
 
 				<p-table
 					*ngIf="!isMobile && totalRecords > 0"
@@ -134,58 +184,6 @@
 							<td >{{ entry.fimContrato | date:'shortDate' }}</td>
 							<td >{{ entry.valorMensal | currency }}</td>
 							<td >{{ entry.baseReajuste }}</td>
-						</tr>
-					</ng-template> 
-				</p-table>
-
-			</ng-container>
-
-			<ng-container *ngIf="tabIndex == 1">
-
-				<p-table
-					*ngIf="!isMobile && totalRecords > 0"
-					[value]="resultEntries"
-					styleClass="p-datatable-striped"
-					[tableStyle]="{ 'min-width': '50rem' }"
-					[paginator]="false"
-					[rows]="rows"
-					[(first)]="first"
-					responsiveLayout="scroll"
-					[totalRecords]="totalRecords"
-					[lazy]="true"
-					(onLazyLoad)="loadResultPage($event)"
-					#reportToPdf
-				>
-					<ng-template pTemplate="header">
-						<tr *ngIf="!isLoading">
-							<th>Imóvel</th>
-							<th>Locatário</th>
-							<th>Locador</th>
-							<th>Início do contrato</th>
-							<th>Vencimento do contrato</th>
-							<th>Perc. último reajuste</th>
-							<th>Próxima atualização</th>
-							<th>Base reajuste</th>
-							<th>Perc. desconto</th>
-							<th>Prazo desconto</th>
-							<th>Carência</th>
-							<th>Prazo carência</th>
-						</tr>
-					</ng-template>
-					<ng-template pTemplate="body" let-entry>
-						<tr>
-							<td class="font-bold max-w-[160px]">{{ entry.imovel }}</td>
-							<td class="max-w-[160px]">{{ entry.locatario }}</td>
-							<td class="max-w-[160px]">{{ entry.locador }}</td>
-							<td >{{ entry.inicioContrato | date:'shortDate' }}</td>
-							<td >{{ entry.fimContrato | date:'shortDate' }}</td>
-							<td>{{ entry.percUltimoReajuste }}</td>
-							<td >{{ entry.proxReajuste | date:'shortDate' }}</td>
-							<td >{{ entry.baseReajuste }}</td>
-							<td >{{ entry.percDesconto }}</td>
-							<td >{{ entry.prazoDesconto }}</td>
-							<td >{{ entry.carencia ? "Sim" : "Não" }}</td>
-							<td >{{ entry.prazoCarencia }}</td>
 						</tr>
 					</ng-template> 
 				</p-table>

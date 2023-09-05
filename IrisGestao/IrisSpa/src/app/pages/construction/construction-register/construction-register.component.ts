@@ -10,8 +10,7 @@ import { Router } from '@angular/router';
 import { first } from 'rxjs';
 import { DominiosService, ImovelService } from 'src/app/shared/services';
 import {
-	AnexoService,
-	ArquivoClassificacoes,
+	AnexoService
 } from 'src/app/shared/services/anexo.service';
 import { ConstructionService } from 'src/app/shared/services/obra.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
@@ -96,7 +95,6 @@ export class ConstructionRegisterComponent {
 		private router: Router,
 		private constructionService: ConstructionService,
 		private dominiosService: DominiosService,
-		// private commonService: CommonService,
 		private imovelService: ImovelService,
 		private anexoService: AnexoService,
 		private responsiveService: ResponsiveService
@@ -143,35 +141,6 @@ export class ConstructionRegisterComponent {
 			edificio: [null, Validators.required],
 			unidade: [null, [Validators.required]],
 		});
-
-		/*
-		{
-    "cpfCnpj": "55642822000168",
-    "nome": "Segurança Patrimonial",
-    "razaoSocial": "Segurança Patrimonial LTDA",
-    "endereco": "Quadra SQN 115",
-    "bairro": "Asa Norte",
-    "cidade": "Brasília",
-    "estado": "DF",
-    "cep": 70772000,
-    "email": "renato.s.almeida@outlook.com",
-    "telefone": "61991363588",
-    "contato": {
-        "nome": "Segurança Patrimonial ",
-        "email": "renato.s.almeida@outlook.com",
-        "telefone": "61991363588",
-        "cargo": "Executivo",
-        "dataNascimento": "1988-04-26"
-    },
-    "dadosBancarios": {
-        "agencia": 1041,
-        "operacao": 1,
-        "conta": 22630,
-        "banco": "Caixa Economica Federal",
-        "chavePix": "61991363588"
-    }
-}
- */
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
@@ -308,7 +277,6 @@ export class ConstructionRegisterComponent {
 	}
 
 	onFileSelect(e: any) {
-		console.log('e', e);
 		this.attachments = e;
 	}
 
@@ -391,6 +359,12 @@ export class ConstructionRegisterComponent {
 	}
 
 	onProprietarySubmit(e: any = null) {
+
+		if(!this.propertyAddForm.valid)	{
+			this.linkedPropertiesInvalid = true;
+			return;
+		}
+
 		const formData: {
 			edificio: {
 				guid: string;
