@@ -28,7 +28,7 @@ type RentValue = {
 	precoM2ReferenciaJan: number;
 };
 
-type SupplyContract = {
+type RentContract = {
 	imovel: string;
 	locatario: string;
 	locador: string;
@@ -40,6 +40,16 @@ type SupplyContract = {
 	prazoDesconto: number;
 	carencia: boolean;
 	prazoCarencia: number;
+};
+
+type SupplyContract = {
+	imovel: string;
+	locador: string;
+	prestadorServico: string;
+	inicioContrato: Date;
+	fimContrato: Date;
+	valorMensal: number;
+	baseReajuste: string;
 };
 
 type Expenses = {
@@ -148,14 +158,12 @@ export class ReportService {
 
 	getSupplyContract(
 		imovelId: number | undefined,
-		locatarioId: number | undefined,
-		locadorId: number | undefined) {
+		LocadorId: number | undefined) {
 			return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Report/supply-contract`, {
 				params: {
 					IdImovel: imovelId ?? '',
-					IdLocatario: locatarioId ?? '',
-					IdLocador: locadorId ?? ''
+					IdLocador: LocadorId ?? ''
 				},
 			})
 			.pipe(
@@ -273,16 +281,18 @@ export class ReportService {
 
 	getRentContract(
 		imovelId: number | undefined,
-		locadorId: number | undefined) {
+		locadorId: number | undefined,
+		LocatarioId: number | undefined) {
 			return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Report/rent-contract`, {
 				params: {
 					IdImovel: imovelId ?? '',
-					IdLocador: locadorId ?? ''
+					IdLocador: locadorId ?? '',
+					IdLocatario: LocatarioId ?? ''
 				},
 			})
 			.pipe(
-				map((response): SupplyContract[] | null => {
+				map((response): RentContract[] | null => {
 					console.debug('response', response);
 					if (!response.success)
 						console.error(`getRentContract: ${response.message}`);

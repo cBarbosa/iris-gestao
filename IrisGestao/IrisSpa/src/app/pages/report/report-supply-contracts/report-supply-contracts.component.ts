@@ -111,21 +111,21 @@ export class ReportSupplyContractsComponent {
 		const idImovel = this.filterImovel ?? null;
 
 		if(this.tabIndex == 0)
-			this.getRentData(idImovel, idLocador);
+			this.getRentData(idImovel, idLocador, idLocatario);
 		else
-			this.getSupplyData(idImovel, idLocatario, idLocador);
+			this.getSupplyData(idImovel, idLocador);
 	};
 
   	filterResultDebounce: Function = Utils.debounce(this.filterResult, 1000);
 
   	exportarPdf(): void {
 		const element = this.tabIndex == 0
-			? this.newChildElement.nativeElement
-			: this.childElement.nativeElement;
+			? this.childElement.nativeElement
+			: this.newChildElement.nativeElement;
 
 		const subject = this.tabIndex == 0
-			? `Relatório contrato de aluguel`
-			: `Relatório contrato de fornecedor`;
+			? `Relatório contrato de fornecedor`
+			: `Relatório contrato de aluguel`;
 
 		Utils.saveReportAsPdf(element, 'gestao-contrato', subject);
 	};
@@ -159,12 +159,13 @@ export class ReportSupplyContractsComponent {
 
 	getRentData(
 		imovelId?: number,
-		locadorId?: number) : void {
+		locadorId?: number,
+		LocatarioId?: number) : void {
 
 		this.isLoading = true;
 
 		this.reportService
-			.getRentContract(imovelId, locadorId)
+			.getRentContract(imovelId, locadorId, LocatarioId)
 			.pipe(first())
 			.subscribe({
 				next: (data) => {
@@ -183,13 +184,12 @@ export class ReportSupplyContractsComponent {
 
 	getSupplyData(
 		imovelId?: number,
-		locatarioId?: number,
-		locadorId?: number) : void {
+		LocadorId?: number) : void {
 
 		this.isLoading = true;
 
 		this.reportService
-			.getSupplyContract(imovelId, locatarioId, locadorId)
+			.getSupplyContract(imovelId, LocadorId)
 			.pipe(first())
 			.subscribe({
 				next: (data) => {
@@ -288,6 +288,7 @@ export class ReportSupplyContractsComponent {
 
 	changeTab(i: number) {
 		this.tabIndex = i;
+		this.totalRecords = 0;
 		this.filterResult();
 	};
 }
