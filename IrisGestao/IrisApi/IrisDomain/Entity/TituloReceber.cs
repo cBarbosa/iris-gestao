@@ -12,17 +12,42 @@ public partial class TituloReceber : BaseEntity<TituloReceber>
     [Unicode(false)]
     public string NumeroTitulo { get; set; } = null!;
 
-    [StringLength(50)]
-    [Unicode(false)]
-    public string NomeTitulo { get; set; } = null!;
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public int Sequencial { get; set; }
-
     public int IdTipoTitulo { get; set; }
 
-    public int? IdContratoAluguel { get; set; } = null!;
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal? ValorTitulo { get; set; }
+
+    public int? Parcelas { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataCriacao { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataUltimaModificacao { get; set; }
+
+    public bool? Status { get; set; }
+
+    public Guid? GuidReferencia { get; set; }
+
+    [Column(TypeName = "date")]
+    public DateTime? DataFimTitulo { get; set; }
+
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal? ValorTotalTitulo { get; set; }
+
+    public int Sequencial { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string? NomeTitulo { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DataVencimentoPrimeraParcela { get; set; }
+
+    [Column(TypeName = "decimal(18, 0)")]
+    public decimal? PorcentagemTaxaAdministracao { get; set; }
+
+    public int? IdContratoAluguel { get; set; }
 
     public int? IdCliente { get; set; }
 
@@ -32,61 +57,33 @@ public partial class TituloReceber : BaseEntity<TituloReceber>
 
     public int? IdFormaPagamento { get; set; }
 
-    [Column(TypeName = "decimal(18, 0)")]
-    public double ValorTitulo { get; set; }
-
-    public int? Parcelas { get; set; }
-
-    public bool Status { get; set; }
-
-    [Unicode(false)]
-    public Guid? GuidReferencia { get; set; }
-
-    [Column(TypeName = "decimal(18, 0)")]
-    public double? ValorTotalTitulo { get; set; }
-
-    [Column(TypeName = "date")]
-    public DateTime? DataFimTitulo { get; set; }
-
-    [Column(TypeName = "date")]
-    public DateTime? DataVencimentoPrimeraParcela { get; set; }
-
-    [Column(TypeName = "decimal(10, 2)")]
-    public double? PorcentagemTaxaAdministracao { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime? DataCriacao { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime? DataUltimaModificacao { get; set; }
-
-    [InverseProperty("IdTituloReceberNavigation")]
+    [InverseProperty("IdTituloNavigation")]
     public virtual ICollection<FaturaTitulo> FaturaTitulo { get; } = new List<FaturaTitulo>();
-
-    [ForeignKey("IdTipoTitulo")]
-    [InverseProperty("TituloReceber")]
-    public virtual TipoTitulo? IdTipoTituloNavigation { get; set; } = null!;
-
-    [ForeignKey("IdContratoAluguel")]
-    [InverseProperty("TituloReceber")]
-    public virtual ContratoAluguel? IdContratoAluguelNavigation { get; set; } = null!;
 
     [ForeignKey("IdCliente")]
     [InverseProperty("TituloReceber")]
-    public virtual Cliente IdClienteNavigation { get; set; } = null!;
+    public virtual Cliente? IdClienteNavigation { get; set; }
 
-    [ForeignKey("IdIndiceReajuste")]
+    [ForeignKey("IdContratoAluguel")]
     [InverseProperty("TituloReceber")]
-    public virtual IndiceReajuste? IdIndiceReajusteNavigation { get; set; } = null!;
-
-    [ForeignKey("IdTipoCreditoAluguel")]
-    [InverseProperty("TituloReceber")]
-    public virtual TipoCreditoAluguel IdTipoCreditoAluguelNavigation { get; set; } = null!;
-
-    [InverseProperty("IdTituloReceberNavigation")]
-    public virtual ICollection<TituloImovel> TituloImovel { get; } = new List<TituloImovel>();
+    public virtual ContratoAluguel? IdContratoAluguelNavigation { get; set; }
 
     [ForeignKey("IdFormaPagamento")]
     [InverseProperty("TituloReceber")]
-    public virtual FormaPagamento? IdFormaPagamentoNavigation { get; set; } = null!;
+    public virtual FormaPagamento? IdFormaPagamentoNavigation { get; set; }
+
+    [ForeignKey("IdIndiceReajuste")]
+    [InverseProperty("TituloReceber")]
+    public virtual IndiceReajuste? IdIndiceReajusteNavigation { get; set; }
+
+    [ForeignKey("IdTipoCreditoAluguel")]
+    [InverseProperty("TituloReceber")]
+    public virtual TipoCreditoAluguel? IdTipoCreditoAluguelNavigation { get; set; }
+
+    [ForeignKey("IdTipoTitulo")]
+    [InverseProperty("TituloReceber")]
+    public virtual TipoTitulo IdTipoTituloNavigation { get; set; } = null!;
+
+    [InverseProperty("IdTituloReceberNavigation")]
+    public virtual ICollection<TituloImovel> TituloImovel { get; } = new List<TituloImovel>();
 }
