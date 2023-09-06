@@ -56,7 +56,7 @@ export class ConstructionService {
 
 	registerConstruction(constructionObj: IConstrucao) {
 		return this.http.post<ApiResponse>(
-			`${env.config.apiUrl}Obra/Criar`,
+			`${env.config.apiUrl}Obra`,
 			JSON.stringify(constructionObj, null, 2),
 			httpOptions
 		);
@@ -73,7 +73,7 @@ export class ConstructionService {
 		}
 	) {
 		return this.http.put<ApiResponse>(
-			`${env.config.apiUrl}Obra/${guid}/atualizar`,
+			`${env.config.apiUrl}Obra/${guid}`,
 			JSON.stringify(constructionObj, null, 2),
 			httpOptions
 		);

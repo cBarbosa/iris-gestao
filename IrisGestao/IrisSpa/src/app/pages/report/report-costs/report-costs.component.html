@@ -115,37 +115,37 @@
 			>
 				<ng-template pTemplate="header">
 					<tr *ngIf="!isLoading">
-						<th>Data Pagamento</th>
+						<th>Data baixa</th>
+						<th>Data pagamento</th>
 						<th>Locador</th>
-						<th>Tipo</th>
+						<th>Classificação</th>
 						<th>Valor</th>
 						<th>Valor pago</th>
-						<th>Valor título</th>
-						<th>Total total</th>
+						<th>Valor desconto</th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="font-bold">{{ entry.dataVencimento | date:'shortDate' }}</td>
-						<td class="max-w-[120px]">{{ entry.locador ?? "-" }}</td>
-						<td class="max-w-[120px]">{{ entry.tipoTitulo }}</td>
-						<td>{{ entry.valor | currency }}</td>
+						<td class="font-bold">{{ entry.dataBaixa | date:'shortDate' }}</td>
+						<td>{{ entry.dataVencimento | date:'shortDate' }}</td>
+						<td class="max-w-[160px]">{{ entry.locador ?? "-" }}</td>
+						<td>{{ entry.classificacao }}</td>
+						<td>{{ entry.valorAPagar | currency }}</td>
 						<td>{{ entry.valorRealPago | currency }}</td>
-						<td>{{ entry.valorTitulo | currency  }}</td>
-						<td>{{ entry.valorTotalTitulo | currency }}</td>
+						<td>{{ entry.desconto | currency  }}</td>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="footer">
 					<tr class="bg-[#262626]">
-						<td colspan="5" class="bg-transparent text-white">Total de saídas / Total de saídas previstas</td>
-						<td class="bg-transparent text-white">
+						<td colspan="5" class="bg-transparent text-white">Total</td>
+						<td colspan="2" class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Valor pago / a pagar</div>
 							<div>{{ totalSum?.totalValorPagoPagar | currency }}</div>
 						</td>
-						<td class="bg-transparent text-white">
+						<!-- <td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Valor total do título</div>
 							<div>{{ totalSum?.totalTitulo | currency }}</div>
-						</td>
+						</td> -->
 					</tr>
 				</ng-template>
 

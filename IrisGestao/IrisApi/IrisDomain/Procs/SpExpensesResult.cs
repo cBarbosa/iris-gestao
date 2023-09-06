@@ -2,11 +2,11 @@
 
 public partial class SpExpensesResult
 {
+    public DateTime? DataBaixa { get; set; }
     public DateTime? DataVencimento { get; set; }
-    public decimal? Valor { get; set; }
-    public decimal? ValorRealPago { get; set; }
     public string? Locador { get; set; }
-    public string? TipoTitulo { get; set; }
-    public decimal? ValorTitulo { get; set; }
-    public decimal? ValorTotalTitulo { get; set; }
+    public string? Classificacao { get; set; }
+    public decimal? ValorAPagar { get; set; }
+    public decimal? ValorRealPago { get; set; }
+    public decimal? Desconto { get; set; }
 }

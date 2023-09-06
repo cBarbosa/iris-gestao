@@ -178,8 +178,8 @@ export class ReportCostsComponent {
 
 						this.totalSum = data.reduce(
 							(acc, entry) => {
-								acc.totalTitulo += entry.valorTotalTitulo;
-								acc.totalValorPagoPagar += entry.valorTitulo;
+								// acc.totalTitulo += entry.valorTotalTitulo;
+								acc.totalValorPagoPagar += entry.valorRealPago;
 
 								return acc;
 							},

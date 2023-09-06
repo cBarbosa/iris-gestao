@@ -28,7 +28,7 @@ type RentValue = {
 	precoM2ReferenciaJan: number;
 };
 
-type SupplyContract = {
+type RentContract = {
 	imovel: string;
 	locatario: string;
 	locador: string;
@@ -42,26 +42,35 @@ type SupplyContract = {
 	prazoCarencia: number;
 };
 
+type SupplyContract = {
+	imovel: string;
+	locador: string;
+	prestadorServico: string;
+	inicioContrato: Date;
+	fimContrato: Date;
+	valorMensal: number;
+	baseReajuste: string;
+};
+
 type Expenses = {
+	dataBaixa: Date;
 	dataVencimento: Date;
-	valor: number;
+	locador: string;
+	classificacao: string;
+	valorAPagar: number;
 	valorRealPago: number;
-	valorTitulo: number;
-	valorTotalTitulo: number;
-	nomeTitulo: string;
-	nomeDocumento: string;
-	nomeImovel: string;
+	desconto: number;
 };
 
 type Revenues = {
 	dataVencimento: Date;
 	dataBaixa: Date;
-	valorBaixa: number;
-	valorDesconto: number;
-	valorLiquido: number;
-	nomeCliente: string;
-	nomeTitulo: string;
-	nomeDocumento: string;
+	locador: string;
+	locatario: string;
+	classificacao: string;
+	valorAPagar: number;
+	valorRealPago: number;
+	desconto: number;
 };
 
 type Dimob = {
@@ -149,14 +158,12 @@ export class ReportService {
 
 	getSupplyContract(
 		imovelId: number | undefined,
-		locatarioId: number | undefined,
-		locadorId: number | undefined) {
+		LocadorId: number | undefined) {
 			return this.http
 			.get<ApiResponse>(`${env.config.apiUrl}Report/supply-contract`, {
 				params: {
 					IdImovel: imovelId ?? '',
-					IdLocatario: locatarioId ?? '',
-					IdLocador: locadorId ?? ''
+					IdLocador: LocadorId ?? ''
 				},
 			})
 			.pipe(
@@ -267,6 +274,28 @@ export class ReportService {
 					console.debug('response', response);
 					if (!response.success)
 						console.error(`getCommercial: ${response.message}`);
+					return response.data;
+				})
+			);
+	};
+
+	getRentContract(
+		imovelId: number | undefined,
+		locadorId: number | undefined,
+		LocatarioId: number | undefined) {
+			return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Report/rent-contract`, {
+				params: {
+					IdImovel: imovelId ?? '',
+					IdLocador: locadorId ?? '',
+					IdLocatario: LocatarioId ?? ''
+				},
+			})
+			.pipe(
+				map((response): RentContract[] | null => {
+					console.debug('response', response);
+					if (!response.success)
+						console.error(`getRentContract: ${response.message}`);
 					return response.data;
 				})
 			);

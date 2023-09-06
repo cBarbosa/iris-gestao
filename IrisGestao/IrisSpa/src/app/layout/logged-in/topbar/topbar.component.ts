@@ -183,7 +183,7 @@ export class TopbarComponent {
 						command: () => this.navigateTo('report/rent-amount'),
 					},
 					{
-						label: 'Gestão de contratos',
+						label: 'Gestão de Contratos',
 						id: route.startsWith('/report/supply-contracts') ? 'current' : '',
 						command: () => this.navigateTo('report/supply-contracts'),
 					},

@@ -140,16 +140,16 @@
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="max-w-[120px]">{{ entry.imovel }}</td>
-						<td class="font-bold">{{ entry.centroDeCusto }}</td>
+						<td class="max-w-[120px] font-bold">{{ entry.imovel }}</td>
+						<td>{{ entry.centroDeCusto }}</td>
 						<td class="max-w-[120px]">{{ entry.locador ?? "-" }}</td>
 						<td class="max-w-[120px]">{{ entry.locatario ?? "-" }}</td>
 						<td>{{ entry.areaTotalSelecionada | area }}</td>
 						<td>{{ entry.valorAluguel | currency }}</td>
 						<td>{{ entry.valorPotencial | currency }}</td>
 						<td>{{ entry.precoM2 | currency }}</td>
-						<td>{{ entry.precoM2Referencia | percent : "2.2-2" }}</td>
-						<td>{{ entry.precoM2ReferenciaJan | percent : "2.2-2" }}</td>
+						<td>{{ entry.precoM2Referencia | currency }}</td>
+						<td>{{ entry.precoM2ReferenciaJan | currency }}</td>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="footer">
@@ -173,7 +173,7 @@
 						</td>
 						<td class="bg-transparent text-white" colspan="2">
 							<div class="mb-1 text-xs font-normal">Preço mês referência</div>
-							<div>{{ totalSum?.precoMesReferencia | percent : "2.2-2" }}</div>
+							<div>{{ totalSum?.precoMesReferencia | currency }}</div>
 						</td>
 					</tr>
 				</ng-template>

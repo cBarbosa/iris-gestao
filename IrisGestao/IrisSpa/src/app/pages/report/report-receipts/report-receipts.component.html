@@ -115,41 +115,38 @@
 			>
 				<ng-template pTemplate="header">
 					<tr *ngIf="!isLoading">
-						<th>Vecimento</th>
 						<th>Data Baixa</th>
-						<th>Cliente</th>
-						<th>Titulo</th>
-						<th>Valor</th>
-						<th>Valor baixa</th>
-						<th>Valor título</th>
-						<th>Total</th>
+						<th>Vecimento</th>
+						<th>Locador</th>
+						<th>Locatário</th>
+						<th>Classificação</th>
+						<th>Valor a pagar</th>
+						<th>Valor pago</th>
 						<th>Desconto</th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-entry>
 					<tr>
-						<td class="font-bold">{{ entry.dataVencimento | date:'shortDate' }}</td>
-						<td class="max-w-[120px]">{{ entry.dataBaixa | date:'shortDate' }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeCliente }}</td>
-						<td class="max-w-[120px]">{{ entry.nomeTitulo }}</td>
-
-						<td>{{ entry.valorLiquido | currency }}</td>
-						<td>{{ entry.valorBaixa | currency }}</td>
-						<td>{{ entry.valorTitulo | currency }}</td>
-						<td>{{ entry.valorTotalTitulo | currency }}</td>
-						<td>{{ entry.valorDesconto | currency }}</td>
+						<td class="max-w-[120px] font-bold">{{ entry.dataBaixa | date:'shortDate' }}</td>
+						<td>{{ entry.dataVencimento | date:'shortDate' }}</td>
+						<td class="max-w-[120px]">{{ entry.locador }}</td>
+						<td class="max-w-[120px]">{{ entry.locatario }}</td>
+						<td>{{ entry.classificacao }}</td>
+						<td>{{ entry.valorAPagar | currency }}</td>
+						<td>{{ entry.valorRealPago | currency }}</td>
+						<td>{{ entry.desconto | currency }}</td>
 					</tr>
 				</ng-template> 
 
 				<ng-template pTemplate="footer">
 					<tr class="bg-[#262626]">
-						<td colspan="4" class="bg-transparent text-white">Total</td>
+						<td colspan="5" class="bg-transparent text-white">Total</td>
 						<td class="bg-transparent text-white">
 							<div class="mb-1 text-xs font-normal">Valor</div>
 							<div>{{ totalSum?.totalLiquido | currency }}</div>
 						</td>
-						<td colspan="3" class="bg-transparent text-white">
-							<div class="mb-1 text-xs font-normal">Valor da baixa</div>
+						<td class="bg-transparent text-white">
+							<div class="mb-1 text-xs font-normal">Valor pago</div>
 							<div>{{ totalSum?.totalBaixa | currency }}</div>
 						</td>
 						<td class="bg-transparent text-white">
