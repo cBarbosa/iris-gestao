@@ -75,6 +75,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
             contratoDb.PeriodicidadeReajuste,
             contratoDb.DataCriacao,
             contratoDb.DataUltimaModificacao,
+            contratoDb.DataVencimentoPrimeraParcela,
             contratoDb.GuidReferencia,
             ExibirAlertaVencimento = (contratoDb.DataFimContrato - DateTime.Now).Days <= 90,
             TipoContrato = contratoDb.IdTipoContratoNavigation == null ? null : new

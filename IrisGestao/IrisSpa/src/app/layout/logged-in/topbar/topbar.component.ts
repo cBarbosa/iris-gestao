@@ -52,15 +52,15 @@ export class TopbarComponent {
 				visible: this.isUserAdmin(),
 				items: [
 					{
-						label: 'Imóvel de mercado',
-						id: route.startsWith('property/mercado/') ? 'current' : '',
-						command: () => this.navigateTo('property/mercado/listing'),
-					},
-					{
 						label: 'Imóvel de carteira',
 						id: route.startsWith('property/carteira/') ? 'current' : '',
 						command: () => this.navigateTo('property/carteira/listing'),
 					},
+					{
+						label: 'Imóvel de mercado',
+						id: route.startsWith('property/mercado/') ? 'current' : '',
+						command: () => this.navigateTo('property/mercado/listing'),
+					}
 				],
 			},
 			{
@@ -161,11 +161,11 @@ export class TopbarComponent {
 						id: route.startsWith('/dashboard/') ? 'current' : '',
 						command: () => this.navigateTo('dashboard/area-price'),
 					},
-					//{
-					//	label: 'M² Gerenciados',
-					//	id: route.startsWith('/dashboard/') ? 'current' : '',
-					//	command: () => this.navigateTo('dashboard/managed-area'),
-					//},
+					{
+						label: 'M² Gerenciados',
+						id: route.startsWith('/dashboard/') ? 'current' : '',
+						command: () => this.navigateTo('dashboard/managed-area'),
+					},
 				],
 			},
 			{
@@ -177,11 +177,11 @@ export class TopbarComponent {
 						id: route.startsWith('/report/') ? 'current' : '',
 						command: () => this.navigateTo('report/leased-area'),
 					},
-					//{
-					//	label: 'Valor aluguel',
-					//	id: route.startsWith('/report/rent-amount') ? 'current' : '',
-					//	command: () => this.navigateTo('report/rent-amount'),
-					//},
+					{
+						label: 'Valor aluguel',
+						id: route.startsWith('/report/rent-amount') ? 'current' : '',
+						command: () => this.navigateTo('report/rent-amount'),
+					},
 					{
 						label: 'Gestão de Contratos',
 						id: route.startsWith('/report/supply-contracts') ? 'current' : '',
@@ -197,18 +197,18 @@ export class TopbarComponent {
 						id: route.startsWith('/report/receipts') ? 'current' : '',
 						command: () => this.navigateTo('report/receipts'),
 					},
-					// {
-					// 	label: 'DIMOB',
-					// 	id: route.startsWith('/report/dimob') ? 'current' : '',
-					// 	command: () => this.navigateTo('report/dimob'),
-					// },
+					{
+						label: 'DIMOB',
+						id: route.startsWith('/report/dimob') ? 'current' : '',
+						command: () => this.navigateTo('report/dimob'),
+					},
 					{
 						label: 'Comercial de Imóveis',
 						id: route.startsWith('/report/commercial') ? 'current' : '',
 						command: () => this.navigateTo('report/commercial'),
 					}
-				],
-			},
+				]
+			}
 		];
 	}
 
