@@ -59,7 +59,7 @@ export class ConstructionRegisterComponent {
 	linkedProperties: {
 		nome: string;
 		guid: string;
-		tipo: string;
+		type: number;
 		unidades: {
 			guid: string;
 			name: string;
@@ -82,12 +82,22 @@ export class ConstructionRegisterComponent {
 			label: 'Selecione',
 			value: null,
 			disabled: true,
-		},
+		}
 	];
+
+	propertiesList: Array<{
+		label: string;
+		value: any,
+		units: Array<{
+			units: any
+		}>
+	}> = [];
 
 	opcoesUnidades: DropdownItem[] = [];
 
 	attachments: File[] = [];
+
+	propertyType = '';
 
 	constructor(
 		private fb: FormBuilder,
@@ -149,32 +159,8 @@ export class ConstructionRegisterComponent {
 		// this.getListaFornecedores();
 		// this.getFormasPagamento();
 		// this.getIndicesReajuste();
-
-		this.dominiosService.getCategoriaImovel().subscribe((event) => {
-			if (event) {
-				event.data.forEach((item: any) => {
-					this.opcoesTipoImovel.push({
-						label: item.nome,
-						value: item.id,
-					});
-				});
-			}
-		});
-
-		this.imovelService.getProperties(100, 1).subscribe((event) => {
-			if (event) {
-				event.data.items.forEach((item: any) => {
-					this.opcoesPropriedades.push({
-						label: item.nome,
-						value: {
-							guid: item.guidReferencia,
-							name: item.nome,
-						},
-						units: item.unidade,
-					});
-				});
-			}
-		});
+		this.getAllProperties();
+		this.getAllPropertyCategories();
 	}
 
 	get selecaoImovelForm() {
@@ -281,12 +267,13 @@ export class ConstructionRegisterComponent {
 	}
 
 	onSubmit(e: any = null) {
+
 		if (this.registerForm.invalid) {
 			this.registerForm.markAllAsTouched();
 			return;
 		}
 
-		let formData: {
+		const formData: {
 			selecaoImovel: {
 				tipoImovel: number;
 				imovel: string;
@@ -299,18 +286,26 @@ export class ConstructionRegisterComponent {
 			};
 		} = this.registerForm.getRawValue();
 
+		const linkedProperty = this.linkedProperties[0];
+
+		const unitGuidReferences = linkedProperty.unidades.map(item => {
+			return item.guid;
+		});
+
 		const constructionObj: {
-			IdImovel: string;
+			ImovelGuidReference: string;
 			Nome: string;
 			DataInicio: string;
 			DataPrevistaTermino: string;
 			ValorOrcamento: number;
+			UnidadeGuidReferences: Array<string>;
 		} = {
-			IdImovel: formData.selecaoImovel.imovel,
+			ImovelGuidReference: linkedProperty.guid,
 			Nome: formData.dadosObra.nome,
 			DataInicio: formData.dadosObra.dataInicio,
 			DataPrevistaTermino: formData.dadosObra.dataFim,
 			ValorOrcamento: formData.dadosObra.valorOrcamento,
+			UnidadeGuidReferences: unitGuidReferences
 		};
 
 		const registerAttachments = (guid: string) => {
@@ -369,6 +364,7 @@ export class ConstructionRegisterComponent {
 			edificio: {
 				guid: string;
 				name: string;
+				type: number;
 			};
 			unidade: {
 				guid: string;
@@ -387,7 +383,7 @@ export class ConstructionRegisterComponent {
 				this.linkedProperties.push({
 					nome: formData.edificio.name,
 					guid: formData.edificio.guid,
-					tipo: 'Edifício Coorporativo',
+					type: formData.edificio.type,
 					unidades: formData.unidade,
 				});
 			}
@@ -399,7 +395,7 @@ export class ConstructionRegisterComponent {
 			this.linkedProperties.splice(index, 1, {
 				nome: formData.edificio.name,
 				guid: formData.edificio.guid,
-				tipo: 'Edifício Coorporativo',
+				type: formData.edificio.type,
 				unidades: formData.unidade,
 			});
 
@@ -452,12 +448,14 @@ export class ConstructionRegisterComponent {
 	}
 
 	editLinkedProperty(property: any) {
+
 		this.propertyAddForm.patchValue({
 			edificio: {
 				name: property.nome,
 				guid: property.guid,
+				type: property.type
 			},
-			unidade: property.unidades,
+			unidade: property.unidades
 		});
 
 		const building = this.opcoesPropriedades.find(
@@ -473,12 +471,12 @@ export class ConstructionRegisterComponent {
 		building?.['units']?.forEach((item: any) => {
 			const value = {
 				guid: item.guidReferencia,
-				name: item.tipo,
+				name: item.tipo
 			};
 
 			this.opcoesUnidades.push({
 				label: item.tipo,
-				value: value,
+				value: value
 			});
 
 			if (property.unidades.some((u: any) => u.guid === item.guidReferencia)) {
@@ -526,5 +524,59 @@ export class ConstructionRegisterComponent {
 
 	navigateTo = (route: string) => {
 		this.router.navigate([route]);
+	};
+
+	changePropertiesTypes(event: any) {
+
+		const building = this.propertiesList.filter(
+			(b) => b.value.type === event.value
+		);
+
+		this.opcoesPropriedades = [];
+		this.opcoesUnidades = [];
+
+		building.forEach((item:any) => {
+			this.opcoesPropriedades.push(item);
+		});
+
+		this.opcoesPropriedades.unshift({
+			label: 'Selecione',
+			value: null,
+			disabled: true,
+		});
+
+		this.propertyType = this.opcoesTipoImovel.find((b) => b.value === event.value)?.label ?? '';
+		this.resetLinkedProperties();
+	};
+
+	getAllProperties = ():void => {
+		this.imovelService.getProperties(999, 1).subscribe((event) => {
+			if (event) {
+				event.data.items.forEach((item: any) => {
+					this.propertiesList.push({
+						label: item.nome,
+						value: {
+							guid: item.guidReferencia,
+							name: item.nome,
+							type: item.idCategoriaImovelNavigation.id
+						},
+						units: item.unidade
+					});
+				});
+			}
+		});
+	};
+
+	getAllPropertyCategories = ():void => {
+		this.dominiosService.getCategoriaImovel().subscribe((event) => {
+			if (event) {
+				event.data.forEach((item: any) => {
+					this.opcoesTipoImovel.push({
+						label: item.nome,
+						value: item.id
+					});
+				});
+			}
+		});
 	};
 }

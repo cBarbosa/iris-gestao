@@ -19,9 +19,9 @@
 						<div class="actions">
 							<app-progress-bar
 								[title]="
-									'Obra ' + construction?.percentual * 100 + '% concluída'
+									'Obra ' + (construction?.percentual ?? 0) + '% concluída'
 								"
-								[value]="construction?.percentual * 100"
+								[value]="construction?.percentual"
 								class="progress-bar"
 							></app-progress-bar>
 							<button

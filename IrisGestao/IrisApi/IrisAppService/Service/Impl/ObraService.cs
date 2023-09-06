@@ -12,15 +12,21 @@ public class ObraService: IObraService
 {
     private readonly IObraRepository obraRepository;
     private readonly INotaFiscalRepository notaFiscalRepository;
+    private readonly IUnidadeRepository unidaderepository;
+    private readonly IImovelRepository imovelRepository;
     private readonly ILogger<IObraService> logger;
     
     public ObraService(
         IObraRepository obraRepository
         , INotaFiscalRepository notaFiscalRepository
+        , IUnidadeRepository unidaderepository
+        , IImovelRepository imovelRepository
         , ILogger<IObraService> logger)
     {
         this.obraRepository = obraRepository;
         this.notaFiscalRepository = notaFiscalRepository;
+        this.unidaderepository = unidaderepository;
+        this.imovelRepository = imovelRepository;
         this.logger = logger;
     }
 
@@ -55,6 +61,10 @@ public class ObraService: IObraService
         try
         {
             BindObraData(cmd, ref obra);
+
+            var imovel = await imovelRepository.GetByReferenceGuid(cmd.ImovelGuidReference.Value);
+            
+            obra.IdImovel = imovel.Id;
             obra.IdOrcamentoNavigation = new Orcamento
             {
                 ValorEstimado = cmd.ValorOrcamento ?? 0,
@@ -63,6 +73,9 @@ public class ObraService: IObraService
             };
             
             obraRepository.Insert(obra);
+
+            await InsereUnidades(obra.Id, cmd.UnidadeGuidReferences);
+            
             return new CommandResult(true, SuccessResponseEnums.Success_1000, obra);
         }
         catch (Exception e)
@@ -85,6 +98,7 @@ public class ObraService: IObraService
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
+        
         cmd.GuidReferencia = uuid;
 
         try
@@ -190,7 +204,6 @@ public class ObraService: IObraService
         {
             case null:
                 obra.GuidReferencia = Guid.NewGuid();
-                obra.IdImovel = cmd.IdImovel;
                 break;
             default:
                 obra.DataUltimaModificacao = DateTime.Now;
@@ -202,5 +215,22 @@ public class ObraService: IObraService
         obra.ValorOrcamento = cmd.ValorOrcamento;
         obra.DataInicio = cmd.DataInicio;
         obra.DataPrevistaTermino = cmd.DataPrevistaTermino;
+    }
+
+    private async Task InsereUnidades(int obraId, IEnumerable<Guid> Guids)
+    {
+        foreach (var item in Guids)
+        {
+            var unit = await unidaderepository.GetByReferenceGuid(item);
+            if(unit == null)
+                continue;
+
+            await obraRepository.InsertObraUnidade(
+                new ObraUnidade
+                    {
+                        IdObra = obraId,
+                        IdUnidade = unit.Id
+                    });
+        }
     }
 }
