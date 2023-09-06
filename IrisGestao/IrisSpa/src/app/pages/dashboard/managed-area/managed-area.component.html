@@ -25,7 +25,7 @@
 					pButton
 					type="button"
 					class="p-button-outlined h-9 addButton"
-					(click)="navigateTo('dashboard/managed-area')"
+					(click)="savePDF()"
 				>
 					Salvar como PDF
 				</button>
@@ -62,16 +62,28 @@
 			<app-spinner styleClass="mt-11"></app-spinner>
 		</ng-container>
 
-		<div class="" *ngIf="!isLoading">
-			<div class="flex flex-wrap gap-x-10 gap-y-14 justify-evenly">
+		<div *ngIf="!isLoading">
+			<!-- <div class="flex flex-wrap gap-x-10 gap-y-14 justify-evenly"> -->
+
 				<app-percent-chart-card
-					*ngFor="let card of data"
-					[title]="card.title"
-					[percent]="card.percent"
-					[color]="card.color"
-					class="grow basis-0"
+					[data]="dataDoughnut.datasets"
+					[title]="dataDoughnut.title"
+					#chartDoughnut
 				></app-percent-chart-card>
-			</div>
+
+				<h5 class="my-7 text-xl text-center font-bold">
+					Total m² gerenciados
+				</h5>
+
+				<div class="p-10 bg-white">
+					<app-chart
+						[data]="data.datasets"
+						[labels]="data.labels"
+						#chart
+					></app-chart>
+				</div>
+
+			<!-- </div> -->
 		</div>
 	</div>
 </div>

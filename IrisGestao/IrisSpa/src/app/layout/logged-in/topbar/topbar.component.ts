@@ -85,11 +85,11 @@ export class TopbarComponent {
 					},
 				],
 			},
-			// {
-			// 	label: 'Gerenciamento de obras',
-			// 	id: route.startsWith('/construction/') ? 'current' : '',
-			// 	command: () => this.navigateTo('construction/listing'),
-			// },
+			{
+				label: 'Gerenciamento de obras',
+				id: route.startsWith('/construction/') ? 'current' : '',
+				command: () => this.navigateTo('construction/listing'),
+			},
 			{
 				label: 'Fornecedores',
 				visible: this.isUserAdmin(),
@@ -183,7 +183,7 @@ export class TopbarComponent {
 					//	command: () => this.navigateTo('report/rent-amount'),
 					//},
 					{
-						label: 'Vencimento/Reajuste de Contratos',
+						label: 'Gestão de Contratos',
 						id: route.startsWith('/report/supply-contracts') ? 'current' : '',
 						command: () => this.navigateTo('report/supply-contracts'),
 					},

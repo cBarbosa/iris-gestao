@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
 import { first } from 'rxjs';
 import { DropdownItem } from 'src/app/shared/models/types';
 import { LoginService, RentContractService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
+import { PercentChartCardComponent } from 'src/app/shared/components/percent-chart-card/percent-chart-card.component';
 
 @Component({
 	selector: 'app-managed-area',
@@ -13,7 +15,31 @@ import { Utils } from 'src/app/shared/utils';
 	styleUrls: ['./managed-area.component.scss'],
 })
 export class ManagedAreaComponent {
-	data: any = [];
+	@ViewChild('chartDoughnut') chartDoughnutComponent: PercentChartCardComponent;
+	@ViewChild('chart') chartComponent: ChartComponent;
+
+	data: {
+		labels: Array<string>,
+		datasets: Array<{
+			label?: string;
+			data: Array<number>,
+			type: 'doughnut' | 'line' | 'bar' | 'percent' | 'pie',
+			[index: string]: any,
+			opt?: number
+		}>
+	} = {
+		labels: [],
+		datasets: []
+	};
+	dataDoughnut: {
+		title: string;
+		datasets: Array<{
+			percent: number;
+			title: string;
+			color: string;
+		}>
+	};
+
 	options: any;
 
 	isLoading: boolean = false;
@@ -94,6 +120,24 @@ export class ManagedAreaComponent {
 	}
 
 	init():void {
+
+		this.data = {
+			labels: [],
+			datasets: [
+				{
+					type: 'bar',
+					label: 'Total m² gerenciados',
+					backgroundColor: `#641B1E`,
+					data: []
+				}
+			]
+		};
+
+		this.dataDoughnut = {
+			title: 'Total m² gerenciados',
+			datasets: []
+		};
+
 		const currYear = new Date().getFullYear();
 		this.filterPeriodo = [new Date(currYear, 0, 1), new Date(currYear, 11, 31)];
 		this.locadorComboEnabled = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'cliente';
@@ -101,7 +145,11 @@ export class ManagedAreaComponent {
 		this.getOwnersListData();
 	};
 
-	getManagedAreaData(startDateString: string, endDateString: string, IdLocador?: number): void {
+	getManagedAreaData(
+		startDateString: string,
+		endDateString: string,
+		IdLocador?: number)
+	: void {
 
 		if(!this.locadorComboEnabled)	{
 			IdLocador = this.loginService.usuarioLogado.id;
@@ -113,10 +161,18 @@ export class ManagedAreaComponent {
 			.subscribe({
 				next: (event) => {
 
-					this.data = [];
+					this.data.datasets[0].data = [];
+					this.data.labels = [];
+					this.dataDoughnut.datasets = [];
 
-					event.data.forEach((item: any) => {
-						this.data.push(item);
+					event.data.forEach((item: { title: string, percent: number, color: string }) => {
+						this.data.labels.push(item.title);
+						this.data.datasets[0].data.push(item.percent);
+						this.dataDoughnut.datasets.push({
+							color: item.color,
+							percent: item.percent,
+							title: item.title
+						});
 					});
 				},
 				error: () => {
@@ -160,5 +216,13 @@ export class ManagedAreaComponent {
 					console.error(err);
 				},
 			});
+	};
+
+	savePDF():void {
+
+		const fileName = `m²_gerenciados`;
+		const title = `Total m² gerenciados`;
+
+		Utils.saveChartsAsPdf(this.chartDoughnutComponent.chart, this.chartComponent.chart, fileName, title);
 	};
 }

@@ -14,7 +14,7 @@ export class ChartComponent {
 	@Input('data')
 	dataInput: {
 		data: number[];
-		type: 'doughnut' | 'line' | 'bar' | 'percent';
+		type: 'doughnut' | 'line' | 'bar' | 'percent' | 'pie';
 		[index: string]: any;
 		opt?: number;
 	}[];
@@ -42,7 +42,7 @@ export class ChartComponent {
 	ngOnInit() {
 		this.type = this.dataInput[0]['type'];
 		this.opt = this.dataInput[0]['opt'];
-
+		
 		const plugin = {
 			id: 'canvasBackgroundColor',
 			beforeDraw: (chart: Chart, args: any, options: any) => {

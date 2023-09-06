@@ -9,6 +9,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { FormsModule } from '@angular/forms';
 import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/spinner.component';
+import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
 
 @NgModule({
 	declarations: [ManagedAreaComponent],
@@ -21,6 +22,7 @@ import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/sp
 		DropdownModule,
 		CalendarModule,
 		SpinnerComponent,
+		ChartComponent
 	],
 })
 export class ManagedAreaModule {}

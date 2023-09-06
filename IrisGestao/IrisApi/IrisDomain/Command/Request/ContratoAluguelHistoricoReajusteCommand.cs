@@ -16,5 +16,6 @@ namespace IrisGestao.Domain.Command.Request
         public double ValorAluguelNovo { get; set; }
         public string AlteradoPor { get; set; }
         public DateTime? DataReajuste { get; set; }
+        public DateTime? DataFimReajuste { get; set; }
     }
 }

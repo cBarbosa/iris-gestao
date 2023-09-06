@@ -1,13 +1,24 @@
-<div [class]="'p-10 bg-white shadow' + (styleClass ? ' ' + styleClass : '')">
-	<h5 class="mb-7 text-xl text-center font-bold">{{ title }}</h5>
+<div [class]="'p-10 bg-white shadow' + (styleClass ? ' ' +styleClass : '')">
+	
+	<!-- <h5 class="mb-7 text-xl text-center font-bold">
+		{{ title }}
+	</h5> -->
 
 	<div class="relative" style="container-type: inline-size">
 		<div
 			class="absolute flex justify-center items-center h-full w-full font-bold relative-size"
+			*ngIf="percent"
 		>
 			{{ percent }}%
 		</div>
-		<p-chart type="doughnut" [data]="data" [options]="options" class="">
-		</p-chart>
+
+		<p-chart
+			type="doughnut"
+			[data]="data"
+			[options]="options"
+			class=""
+			#chart
+		></p-chart>
 	</div>
 </div>
+

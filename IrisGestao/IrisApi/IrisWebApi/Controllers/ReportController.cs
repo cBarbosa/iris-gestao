@@ -54,11 +54,18 @@ public class ReportController : ControllerBase
     [HttpGet("supply-contract")]
     public async Task<IActionResult> GetSupplyContract(
         [FromQuery] int? IdImovel,
+        [FromQuery] int? IdLocador
+    ) =>
+        Ok(await contratoAluguelService.GetReportSupplyContract(IdImovel, IdLocador));
+    
+    [HttpGet("rent-contract")]
+    public async Task<IActionResult> GetRentContract(
+        [FromQuery] int? IdImovel,
         [FromQuery] int? IdLocador,
         [FromQuery] int? IdLocatario
     ) =>
-        Ok(await contratoAluguelService.GetReportSupplyContract(IdImovel, IdLocador, IdLocatario));
-    
+        Ok(await contratoAluguelService.GetReportRentContract(IdImovel, IdLocador, IdLocatario));
+
     [HttpGet("dimob")]
     public async Task<IActionResult> GetDimob(
         [FromQuery] DateTime? DateRefInit,
