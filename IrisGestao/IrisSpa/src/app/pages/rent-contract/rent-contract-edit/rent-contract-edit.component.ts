@@ -167,8 +167,6 @@ export class RentContractEditComponent {
 */
 					this.data = event.data[0];
 
-					console.log('Contrato Aluguel >>>', this.data);
-
 					this.imovel = this.data.imovelAlugado[0];
 
 					this.editForm.controls['contractInfo'].patchValue({
@@ -291,8 +289,6 @@ export class RentContractEditComponent {
 	}
 
 	setSelectedUnits(units: string[]) {
-		console.log('esse >>>', units);
-
 		this.selectedUnits = units;
 	}
 

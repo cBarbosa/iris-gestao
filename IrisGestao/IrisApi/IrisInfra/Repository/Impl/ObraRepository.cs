@@ -63,6 +63,7 @@ public class ObraRepository : Repository<Obra>, IObraRepository
     public async Task<Obra?> GetByGuid(Guid uuid)
     {
         return await DbSet
+            .Include(x => x.ObraUnidade)
             .SingleOrDefaultAsync(x => x.GuidReferencia.Equals(uuid));
     }
 
@@ -70,8 +71,12 @@ public class ObraRepository : Repository<Obra>, IObraRepository
     {
         return await DbSet
             .Include(x => x.IdImovelNavigation)
+            .ThenInclude(x => x.IdCategoriaImovelNavigation)
+            .Include(x => x.IdImovelNavigation.ImovelEndereco)
             .Include(x => x.NotaFiscal)
             .ThenInclude(x => x.IdTipoServicoNavigation)
+            .Include(x => x.ObraUnidade)
+            .ThenInclude(x => x.IdUnidadeNavigation)
             .Where(x => x.GuidReferencia.Equals(uuid))
             .Select(x => new
             {
@@ -84,10 +89,33 @@ public class ObraRepository : Repository<Obra>, IObraRepository
                 Imovel = new
                 {
                     x.IdImovelNavigation.GuidReferencia,
-                    x.IdImovelNavigation.Nome
+                    x.IdImovelNavigation.Nome,
+                    x.IdImovelNavigation.ImovelEndereco,
+                    x.IdImovelNavigation.IdCategoriaImovelNavigation
                 },
-                NotasFiscais = x.NotaFiscal
+                NotasFiscais = x.NotaFiscal,
+                Unidades = x.ObraUnidade.Select(x =>
+                    new
+                    {
+                        x.IdUnidadeNavigation.GuidReferencia,
+                        x.IdUnidadeNavigation.Tipo
+                    })
             })
             .ToListAsync();
+    }
+    
+    public async Task<int?> InsertObraUnidade(ObraUnidade obraUnidade)
+    {
+        try
+        {
+            await Db.ObraUnidade.AddAsync(obraUnidade);
+            return await Db.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        return null;
     }
 }

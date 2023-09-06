@@ -15,7 +15,7 @@ public partial class Obra: BaseEntity<Obra>
     public Guid? GuidReferencia { get; set; }
 
     [StringLength(100)]
-    public string Nome { get; set; }
+    public string? Nome { get; set; }
 
     [Column(TypeName = "date")]
     public DateTime? DataInicio { get; set; }
@@ -45,4 +45,7 @@ public partial class Obra: BaseEntity<Obra>
 
     [InverseProperty("IdObraNavigation")]
     public virtual ICollection<NotaFiscal> NotaFiscal { get; } = new List<NotaFiscal>();
+
+    [InverseProperty("IdObraNavigation")]
+    public virtual ICollection<ObraUnidade> ObraUnidade { get; } = new List<ObraUnidade>();
 }

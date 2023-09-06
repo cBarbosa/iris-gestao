@@ -44,7 +44,7 @@ export class ConstructionEditComponent {
 	isLoading = false;
 	invalidGuid = false;
 
-	constructionProperty: IImovel | null = null;
+	constructionProperty: IImovel;
 
 	displayModal = false;
 	modalContent: {
@@ -95,6 +95,9 @@ export class ConstructionEditComponent {
 		},
 	];
 
+	units = [];
+	selectedUnits:Array<string> = [];
+
 	constructor(
 		private fb: FormBuilder,
 		private location: Location,
@@ -141,6 +144,7 @@ export class ConstructionEditComponent {
 			.subscribe((event: any) => {
 				if (event) {
 					const data = event.data[0];
+
 					console.log(data);
 
 					this.editForm.controls['constructionInfo'].patchValue({
@@ -148,18 +152,17 @@ export class ConstructionEditComponent {
 						dataInicio: new Date(data.dataInicio),
 						dataFim: new Date(data.dataPrevistaTermino),
 						valorOrcamento: data.valorOrcamento,
-						porcentagemConclusao: data.percentual * 100,
+						porcentagemConclusao: data.percentual
 					});
 
-					this.imovelService.getProperty(data.imovel.guidReferencia).subscribe({
-						next: (response) => {
-							console.log('==>>', response);
-							this.constructionProperty = response;
-						},
-						error(err) {
-							console.error(err);
-						},
-					});
+					this.constructionProperty = data.imovel;
+
+					this.units = data.unidades.map(
+						(p: any) => p.guidReferencia
+					);
+
+					console.log(this.units);
+
 				} else {
 					this.invalidGuid = true;
 				}
@@ -413,4 +416,8 @@ export class ConstructionEditComponent {
 	navigateTo = (route: string) => {
 		this.router.navigate([route]);
 	};
+
+	setSelectedUnits(units: string[]) {
+		this.selectedUnits = units;
+	}
 }

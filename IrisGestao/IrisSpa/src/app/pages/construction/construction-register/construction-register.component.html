@@ -31,6 +31,7 @@
 						optionValue="value"
 						formControlName="tipoImovel"
 						aria-describedby="tipoImovel-help"
+						(onChange)="changePropertiesTypes($event)"
 					></p-dropdown>
 					<ng-container *ngIf="checkHasError(f['tipoImovel'])">
 						<small
@@ -94,8 +95,8 @@
 						<div
 							class="text-sm flex flex-wrap flex-col gap-4 max-h-24 justify-center"
 						>
-							<div *ngIf="property.tipo" class="basis-0 max-w-[50%]">
-								{{ property.tipo }}
+							<div *ngIf="property.type" class="basis-0 max-w-[50%]">
+								{{ propertyType }}
 							</div>
 							<div *ngIf="property.unidades.length > 0" class="basis-0">
 								Unidade(s):
@@ -109,7 +110,7 @@
 						</div>
 					</div>
 
-					<div class="add-property-button">
+					<div class="add-property-button" [hidden]="true">
 						<button
 							pButton
 							type="button"
