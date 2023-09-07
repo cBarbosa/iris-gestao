@@ -137,7 +137,6 @@ export class RentContractEditComponent {
 				telephone: ['', [Validators.required]],
 			}),
 			valueInfo: this.fb.group({
-				netValue: ['', [Validators.required]],
 				taxRetention: ['', [Validators.required]],
 				discount: ['', [Validators.required]],
 				readjust: [null, [Validators.required]],
@@ -194,7 +193,6 @@ export class RentContractEditComponent {
 					this.isCpf = cliente.cpfCnpj.length <= 11;
 
 					this.editForm.controls['valueInfo'].patchValue({
-						netValue: this.data.valorAluguelLiquido,
 						taxRetention: this.data.percentualRetencaoImpostos,
 						discount: this.data.percentualDescontoAluguel,
 						readjust: this.data.indiceReajuste.id,
@@ -344,7 +342,6 @@ export class RentContractEditComponent {
 				telephone: string;
 			};
 			valueInfo: {
-				netValue: number;
 				taxRetention: string;
 				discount: string;
 				prazoDesconto: number;
@@ -363,7 +360,7 @@ export class RentContractEditComponent {
 			idIndiceReajuste: formData.valueInfo.readjust,
 			idTipoContrato: formData.contractInfo.contractType,
 			numeroContrato: formData.contractInfo.name,
-			valorAluguel: formData.valueInfo.netValue,
+			valorAluguel: formData.contractInfo.rentValue,
 			percentualRetencaoImpostos: +formData.valueInfo.taxRetention,
 			percentualDescontoAluguel: +formData.valueInfo.discount,
 			prazoDesconto: +formData.valueInfo.prazoDesconto,

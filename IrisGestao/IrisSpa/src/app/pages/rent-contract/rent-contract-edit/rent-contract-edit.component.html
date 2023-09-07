@@ -525,34 +525,7 @@
 
 						<p-accordionTab header="Taxas e valores">
 							<section formGroupName="valueInfo">
-								<div class="field">
-									<label for="net-value" class="block">Valor líquido</label>
-									<input
-										id="net-value"
-										type="text"
-										formControlName="netValue"
-										aria-describedby="net-value-help"
-										currencyMask
-										pInputText
-									/>
-									<ng-container *ngIf="checkHasError(valueInfo['netValue'])">
-										<small
-											id="net-value-help"
-											*ngIf="
-												valueInfo['netValue'].hasError('required');
-												else error2
-											"
-											class="p-error block"
-										>
-											Informe o valor líquido
-										</small>
-										<ng-template #error2>
-											<small id="net-value-help" class="p-error block">
-												Valor líquido inválido
-											</small>
-										</ng-template>
-									</ng-container>
-								</div>
+								
 
 								<div class="field">
 									<label for="tax-retention" class="block">
