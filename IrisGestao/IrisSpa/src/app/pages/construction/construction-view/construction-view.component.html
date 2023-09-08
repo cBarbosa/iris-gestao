@@ -95,7 +95,7 @@
 				</div>
 			</section>
 
-			<section class="services" *ngIf="construction?.notasFiscais?.length > 0">
+			<section class="services">
 				<header class="flex justify-between flex-wrap items-start mb-5">
 					<h2 class="mb-2">Histórico de serviços</h2>
 					<button
@@ -111,7 +111,7 @@
 				</header>
 
 				<p-table
-					*ngIf="!isMobile; else servicesCardListTemplate"
+					*ngIf="!isMobile && construction?.notasFiscais?.length > 0; else servicesCardListTemplate"
 					[value]="construction?.notasFiscais"
 					styleClass="p-datatable-striped"
 					[tableStyle]="{ 'min-width': '50rem' }"
@@ -297,6 +297,7 @@
 	<ng-template pTemplate="content">
 		<app-issue-invoice-sidebar
 			[onSubmitForm]="onInvoiceRegisterSubmit"
+			[cancel]="hideRegisterInvoice"
 		></app-issue-invoice-sidebar
 	></ng-template>
 </p-sidebar>

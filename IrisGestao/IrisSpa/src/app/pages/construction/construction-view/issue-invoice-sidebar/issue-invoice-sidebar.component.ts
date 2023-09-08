@@ -197,4 +197,5 @@ export class IssueInvoiceSidebarComponent {
 	cancelEdit() {
 		this.cancel();
 	}
+	
 }

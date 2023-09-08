@@ -30,7 +30,8 @@ public class ObraController : Controller
         Ok(await obraService.GetByReferenceGuid(guid));
     
     [HttpPost]
-    public async Task<IActionResult> Insert([FromBody] CriarObraCommand cmd) =>
+    public async Task<IActionResult> Insert(
+        [FromBody] CriarObraCommand cmd) =>
         Ok(await obraService.Insert(cmd));
 
     [HttpPut("{guid}")]

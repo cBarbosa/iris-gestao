@@ -101,24 +101,20 @@ export class UnitSelectComponent {
 						this.units.forEach((u) => {
 							if (this.currentUnits.includes(u.guid)) {
 								this.selectedUnits.push(u);
-							} else {
-								this.options.push({
-									label: u.name,
-									value: u,
-								});
 							}
+							//  else {
+							// 	this.options.push({
+							// 		label: u.name,
+							// 		value: u,
+							// 	});
+							// }
 						});
 
 						this.selectedEvent.emit(this.selectedUnits.map((u) => u.guid));
-
-						console.log('current', this.currentUnits);
-						console.log('units', this.units);
-						console.log(this.options);
-
 						this.setCheckboxes();
 					}
 				},
-				error: (err) => {},
+				error: (err) => { console.error(err)},
 			});
 	}
 
@@ -153,17 +149,13 @@ export class UnitSelectComponent {
 	}
 
 	selectUnit(e: any) {
-		console.log('>>>>', e);
 		const unit = e.value;
 
 		if (!this.selectedUnits.some((u) => u.guid === unit.guid)) {
 			this.selectedUnits.push(unit);
 		}
-		console.log(this.selectedUnits);
 		this.setCheckboxes();
-
 		this.setIsAdding(false);
-
 		this.setOptions();
 	}
 

@@ -439,7 +439,7 @@
 	</p-sidebar>
 </form>
 
-<!-- <app-responsive-dialog
+<app-responsive-dialog
 	[isMobile]="isMobile"
 	[visible]="displayModal"
 	styleClass="form-modal"
@@ -451,17 +451,16 @@
 			{{ modalContent.message }}
 		</p>
 
-		<button
+		<!-- <button
 			pButton
 			label="Continuar"
 			(click)="closeModal(setNewSupplier); registerSupplierVisible = false"
 			*ngIf="registerSupplierVisible"
-		></button>
+		></button> -->
 
 		<button
 			pButton
 			label="Continuar"
-			*ngIf="!registerSupplierVisible"
 			(click)="closeModal(navigateTo, 'supplier-contract/listing')"
 		></button>
 	</div>
@@ -475,4 +474,4 @@
 			<button pButton label="Continuar" (click)="closeModal()"></button>
 		</div>
 	</ng-template>
-</app-responsive-dialog> -->
+</app-responsive-dialog>
