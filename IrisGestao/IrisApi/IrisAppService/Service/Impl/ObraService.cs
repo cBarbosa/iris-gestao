@@ -104,8 +104,13 @@ public class ObraService: IObraService
         try
         {
             BindObraData(cmd, ref obra);
+
+            await RemoveAllUnits(obra.ObraUnidade.Count, obra);
+
             obraRepository.Update(obra);
 
+            await InsereUnidades(obra.Id, cmd.UnidadeGuidReferences);
+            
             return new CommandResult(true, SuccessResponseEnums.Success_1001, obra);
         }
         catch (Exception e)
@@ -231,6 +236,16 @@ public class ObraService: IObraService
                         IdObra = obraId,
                         IdUnidade = unit.Id
                     });
+        }
+    }
+    
+    private async Task RemoveAllUnits(int obraUnidadeCount, Obra obra)
+    {
+        for (var i = 0; i < obraUnidadeCount; i++)
+        {
+            var item = obra.ObraUnidade.First();
+            await obraRepository.DeleteObraUnidade(item);
+            obra.ObraUnidade.Remove(item);
         }
     }
 }

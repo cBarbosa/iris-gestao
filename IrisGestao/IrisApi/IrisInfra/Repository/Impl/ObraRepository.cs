@@ -64,6 +64,7 @@ public class ObraRepository : Repository<Obra>, IObraRepository
     {
         return await DbSet
             .Include(x => x.ObraUnidade)
+            .ThenInclude(x => x.IdUnidadeNavigation)
             .SingleOrDefaultAsync(x => x.GuidReferencia.Equals(uuid));
     }
 
@@ -109,6 +110,24 @@ public class ObraRepository : Repository<Obra>, IObraRepository
         try
         {
             await Db.ObraUnidade.AddAsync(obraUnidade);
+            return await Db.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        return null;
+    }
+
+    public async Task<int?> DeleteObraUnidade(ObraUnidade obraUnidade)
+    {
+        var entity = await Db.ObraUnidade
+            .SingleOrDefaultAsync(t => t.Id == obraUnidade.Id);
+        
+        try
+        {
+            Db.Remove(entity);
             return await Db.SaveChangesAsync();
         }
         catch (Exception e)

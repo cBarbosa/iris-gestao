@@ -97,6 +97,7 @@ export class ConstructionEditComponent {
 
 	units = [];
 	selectedUnits:Array<string> = [];
+	enderedoImovel:string | null = null;
 
 	constructor(
 		private fb: FormBuilder,
@@ -125,13 +126,13 @@ export class ConstructionEditComponent {
 				dataInicio: [null, [Validators.required]],
 				dataFim: [null, [Validators.required]],
 				valorOrcamento: [null, [Validators.required]],
-				porcentagemConclusao: [null, Validators.required],
+				porcentagemConclusao: [null, Validators.required]
 			}),
-			attachments: this.fb.group({
-				projeto: [null, [Validators.required]],
-				matricula: [null, [Validators.required]],
-				habitese: [null, [Validators.required]],
-			}),
+			// attachments: this.fb.group({
+			// 	projeto: [null, [Validators.required]],
+			// 	matricula: [null, [Validators.required]],
+			// 	habitese: [null, [Validators.required]],
+			// }),
 			photos: this.fb.group({}),
 		});
 
@@ -139,35 +140,7 @@ export class ConstructionEditComponent {
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
 
-		this.constructionService
-			.getConstructionByGuid(this.constructionGuid)
-			.subscribe((event: any) => {
-				if (event) {
-					const data = event.data[0];
-
-					console.log(data);
-
-					this.editForm.controls['constructionInfo'].patchValue({
-						nome: data.nome,
-						dataInicio: new Date(data.dataInicio),
-						dataFim: new Date(data.dataPrevistaTermino),
-						valorOrcamento: data.valorOrcamento,
-						porcentagemConclusao: data.percentual
-					});
-
-					this.constructionProperty = data.imovel;
-
-					this.units = data.unidades.map(
-						(p: any) => p.guidReferencia
-					);
-
-					console.log(this.units);
-
-				} else {
-					this.invalidGuid = true;
-				}
-				this.isLoading = false;
-			});
+		this.getData();
 
 		this.anexoService
 			.getFiles(this.constructionGuid)
@@ -175,36 +148,11 @@ export class ConstructionEditComponent {
 			.subscribe({
 				next: (event) => {
 					this.attachmentsObj = {
-						// capa: event?.find(
-						// 	({ classificacao }: { classificacao: string }) =>
-						// 		classificacao === 'capa'
-						// ),
 						foto: event?.filter(
 							({ classificacao }: { classificacao: string }) =>
 								classificacao === 'foto'
-						),
-						// habitese: event?.find(
-						// 	({ classificacao }: { classificacao: string }) =>
-						// 		classificacao === 'habitese'
-						// ),
-						// projeto: event?.find(
-						// 	({ classificacao }: { classificacao: string }) =>
-						// 		classificacao === 'projeto'
-						// ),
-						// matricula: event?.find(
-						// 	({ classificacao }: { classificacao: string }) =>
-						// 		classificacao === 'matricula'
-						// ),
-						// outrosdocs: event?.filter(
-						// 	({ classificacao }: { classificacao: string }) =>
-						// 		classificacao === 'outrosdocs'
-						// ),
+						)
 					};
-
-					console.debug('attachmentsObj', this.attachmentsObj);
-
-					// if (this.attachmentsObj?.capa)
-					// 	this.defaultCoverImage = this.attachmentsObj.capa.local;
 
 					if (this.attachmentsObj?.foto?.length)
 						this.constructionPhotos = this.attachmentsObj.foto.map((foto) => {
@@ -260,8 +208,6 @@ export class ConstructionEditComponent {
 		files.forEach((file) => {
 			formData.append('files', file);
 		});
-
-		console.debug('sending', formData);
 
 		return new Promise<{
 			classificacao: ArquivoClassificacoes;
@@ -319,12 +265,12 @@ export class ConstructionEditComponent {
 
 		return Promise.all(promises);
 	}
-	/* END PHOTO UPLOAD */
 
 	onSubmit(e: Event) {
+
 		if (this.editForm.invalid) {
 			this.editForm.markAllAsTouched();
-			//return;
+			return;
 		}
 
 		const editFormData =
@@ -336,6 +282,7 @@ export class ConstructionEditComponent {
 			DataPrevistaTermino: string;
 			Percentual: number;
 			ValorOrcamento: number;
+			UnidadeGuidReferences: Array<string>;
 		} = {
 			Nome: editFormData.nome,
 			DataInicio: editFormData.dataInicio
@@ -344,11 +291,10 @@ export class ConstructionEditComponent {
 			DataPrevistaTermino: editFormData.dataFim
 				? editFormData.dataFim.toISOString()
 				: '',
-			Percentual: +editFormData.valorOrcamento,
-			ValorOrcamento: editFormData.porcentagemConclusao,
+			Percentual: +editFormData.porcentagemConclusao,
+			ValorOrcamento: editFormData.valorOrcamento,
+			UnidadeGuidReferences: this.selectedUnits
 		};
-
-		console.log('constructionObj', constructionObj);
 
 		Promise.all([this.deletePhotos(), this.savePhotos()])
 			.then((result) => {
@@ -420,4 +366,40 @@ export class ConstructionEditComponent {
 	setSelectedUnits(units: string[]) {
 		this.selectedUnits = units;
 	}
+
+	getData():void {
+
+		this.isLoading = true;
+
+		this.constructionService
+			.getConstructionByGuid(this.constructionGuid)
+			.subscribe((event: any) => {
+				if (event) {
+					const data = event.data[0];
+
+					this.editForm.controls['constructionInfo'].patchValue({
+						nome: data.nome,
+						dataInicio: new Date(data.dataInicio),
+						dataFim: new Date(data.dataPrevistaTermino),
+						valorOrcamento: data.valorOrcamento,
+						porcentagemConclusao: data.percentual
+					});
+
+					this.constructionProperty = data.imovel;
+					
+					this.enderedoImovel = `${data.imovel.imovelEndereco[0].rua},
+						${data.imovel.imovelEndereco[0].cidade} -
+						${data.imovel.imovelEndereco[0].uf}`;
+
+					this.units = data.unidades.map(
+						(p: any) => p.guidReferencia
+					);
+
+				} else {
+					this.invalidGuid = true;
+				}
+
+				this.isLoading = false;
+			});
+	};
 }

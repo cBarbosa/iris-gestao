@@ -2,11 +2,7 @@ import { CurrencyPipe, DatePipe, PercentPipe } from '@angular/common';
 import { Component, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
-import { ImageData, Imovel } from 'src/app/shared/models';
-import {
-	Construcao,
-	IConstrucao,
-} from 'src/app/shared/models/construcao.model';
+import { ImageData } from 'src/app/shared/models';
 import { DominiosService } from 'src/app/shared/services';
 import {
 	AnexoService,
@@ -79,7 +75,6 @@ export class ConstructionViewComponent {
 					response?.data.forEach((servico: any) => {
 						this.tiposServicos[servico.id] = servico.nome;
 					});
-					console.log(this.tiposServicos);
 				},
 				error(err) {
 					console.error(err);
@@ -125,7 +120,6 @@ export class ConstructionViewComponent {
 			.pipe(first())
 			.subscribe({
 				next: (event: any) => {
-					console.log('event', event);
 					if (event.success) {
 						this.construction = event.data[0];
 						this.imageList = event.imagens ?? [];
@@ -141,13 +135,13 @@ export class ConstructionViewComponent {
 					this.construction = null;
 					this.isLoadingView = false;
 				},
+				complete: () => {
+					this.isLoadingView = false;
+				}
 			});
-
-		this.isLoadingView = false;
 	}
 
 	setCurrentService = (item: any): void => {
-		console.log('Contrato Selecionado >> ', item);
 		this.serviceSelected = item;
 	};
 
@@ -204,8 +198,6 @@ export class ConstructionViewComponent {
 			ValorContratado: values.formValues.valorContratado,
 			Percentual: values.formValues.porcentagemAdm,
 		};
-
-		console.log('formObj', formObj);
 
 		this.constructionService
 			.updateConstructionInvoice(this.serviceSelected?.guidReferencia, formObj)
@@ -292,4 +284,5 @@ export class ConstructionViewComponent {
 	navigateTo = (route: string): void => {
 		this.router.navigate([route]);
 	};
+	
 }
