@@ -105,5 +105,5 @@
 	<div *ngIf="errorMessage.length > 0" class="mx-3 mt-4 text-sm text-red-700">
 		{{ errorMessage }}
 	</div>
-	<input type="file" (change)="addAttachment($event)" multiple #fileInput />
+	<input type="file" (change)="addAttachment($event)" multiple #fileInput title="file" />
 </div>

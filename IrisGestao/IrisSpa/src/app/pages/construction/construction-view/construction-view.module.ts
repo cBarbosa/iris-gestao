@@ -20,6 +20,7 @@ import { PropertyItemModule } from 'src/app/shared/components/property-item/prop
 import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { NgxMaskModule } from 'ngx-mask';
+import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
 
 @NgModule({
 	declarations: [ConstructionViewComponent],
@@ -42,7 +43,8 @@ import { NgxMaskModule } from 'ngx-mask';
 		AttachmentListComponent,
 		UploadListComponent,
 		NgxMaskModule.forChild(),
-		NgxCurrencyModule
+		NgxCurrencyModule,
+		ResponsiveDialogComponent
 	],
 })
 export class ConstructionViewModule {}

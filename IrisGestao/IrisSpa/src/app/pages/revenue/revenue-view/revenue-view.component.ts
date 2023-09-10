@@ -66,7 +66,6 @@ export class RevenueViewComponent {
 			.pipe(first())
 			.subscribe({
 				next: (event: any) => {
-					console.log('event', event);
 					if (event.success) {
 						this.revenue = event.data[0];
 						this.imageList ||= event.imagens ?? [];
@@ -89,7 +88,6 @@ export class RevenueViewComponent {
 	}
 
 	setCurrentFatura = (item: any): void => {
-		console.log('Fatura Selecionado >> ', item);
 		this.faturaSelected = item;
 	};
 
