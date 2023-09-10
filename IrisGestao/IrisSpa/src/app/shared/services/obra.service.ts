@@ -79,9 +79,9 @@ export class ConstructionService {
 		);
 	}
 
-	registerConstructionInvoice(
-		constructionGuid: string,
-		invoiceObj: {
+	registerObraServico(
+		guid: string,
+		servico: {
 			IdTipoServico: number;
 			NumeroNota: string;
 			DataEmissao: string;
@@ -93,15 +93,15 @@ export class ConstructionService {
 		}
 	) {
 		return this.http.post<ApiResponse>(
-			`${env.config.apiUrl}Obra/${constructionGuid}/notafiscal`,
-			JSON.stringify(invoiceObj, null, 2),
+			`${env.config.apiUrl}Obra/servico/${guid}`,
+			JSON.stringify(servico, null, 2),
 			httpOptions
 		);
 	}
 
-	updateConstructionInvoice(
+	updateObraServico(
 		guid: string,
-		invoiceObj: {
+		servico: {
 			IdTipoServico: number;
 			NumeroNota: string;
 			DataEmissao: string;
@@ -113,15 +113,15 @@ export class ConstructionService {
 		}
 	) {
 		return this.http.put<ApiResponse>(
-			`${env.config.apiUrl}Obra/notafiscal/${guid}`,
-			JSON.stringify(invoiceObj, null, 2),
+			`${env.config.apiUrl}Obra/servico/${guid}`,
+			JSON.stringify(servico, null, 2),
 			httpOptions
 		);
 	}
 
-	getConstructionInvoiceByGuid(invoiceGuid: string) {
+	getConstructionInvoiceByGuid(guid: string) {
 		return this.http
-			.get<ApiResponse>(`${env.config.apiUrl}Obra/notafiscal/${invoiceGuid}`)
+			.get<ApiResponse>(`${env.config.apiUrl}Obra/servico/${guid}`)
 			.pipe(
 				map((response) => {
 					if (!response.success)

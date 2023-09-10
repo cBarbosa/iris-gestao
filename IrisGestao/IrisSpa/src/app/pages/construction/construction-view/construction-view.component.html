@@ -111,8 +111,8 @@
 				</header>
 
 				<p-table
-					*ngIf="!isMobile && construction?.notasFiscais?.length > 0; else servicesCardListTemplate"
-					[value]="construction?.notasFiscais"
+					*ngIf="!isMobile && construction?.servicos?.length > 0; else servicesCardListTemplate"
+					[value]="construction?.servicos"
 					styleClass="p-datatable-striped"
 					[tableStyle]="{ 'min-width': '50rem' }"
 				>
@@ -128,7 +128,7 @@
 					</ng-template>
 					<ng-template pTemplate="body" let-service>
 						<tr>
-							<td>{{ tiposServicos[service.idTipoServico] }}</td>
+							<td>{{ tiposServicos[service.idTipoObraServicoNavigation.id] }}</td>
 							<td>{{ service.valorOrcado | currency }}</td>
 							<td>{{ service.valorContratado | currency }}</td>
 							<td>{{ service.valorServico | currency }}</td>
@@ -237,7 +237,7 @@
 <p-sidebar [(visible)]="serviceDetailsVisible" position="right">
 	<app-detail-sidebar
 		[data]="[
-			{ label: 'Serviço', data: serviceSelected?.idTipoServico, span: true },
+			{ label: 'Serviço', data: serviceSelected?.idTipoObraServicoNavigation?.nome, span: true },
 			{ label: 'Número da NF', data: serviceSelected?.numeroNota, span: true },
 			{
 				label: 'Data da emissão',
@@ -288,6 +288,7 @@
 	<ng-template pTemplate="content">
 		<app-issue-invoice-sidebar
 			[guidInvoice]="serviceSelected?.guidReferencia"
+			[data]="serviceSelected"
 			[onSubmitForm]="onInvoiceEditSubmit"
 		></app-issue-invoice-sidebar
 	></ng-template>

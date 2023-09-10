@@ -10,8 +10,6 @@ public partial class Obra: BaseEntity<Obra>
 {
     public int IdImovel { get; set; }
 
-    public int IdOrcamento { get; set; }
-
     public Guid? GuidReferencia { get; set; }
 
     [StringLength(100)]
@@ -30,21 +28,17 @@ public partial class Obra: BaseEntity<Obra>
     public decimal? Percentual { get; set; }
 
     [Column(TypeName = "datetime")]
-    public DateTime DataCriacao { get; set; }
+    public DateTime? DataUltimaModificacao { get; set; }
 
     [Column(TypeName = "datetime")]
-    public DateTime? DataUltimaModificacao { get; set; }
+    public DateTime DataCriacao { get; set; }
 
     [ForeignKey("IdImovel")]
     [InverseProperty("Obra")]
     public virtual Imovel IdImovelNavigation { get; set; } = null!;
 
-    [ForeignKey("IdOrcamento")]
-    [InverseProperty("Obra")]
-    public virtual Orcamento IdOrcamentoNavigation { get; set; } = null!;
-
     [InverseProperty("IdObraNavigation")]
-    public virtual ICollection<NotaFiscal> NotaFiscal { get; } = new List<NotaFiscal>();
+    public virtual ICollection<ObraServico> ObraServico { get; } = new List<ObraServico>();
 
     [InverseProperty("IdObraNavigation")]
     public virtual ICollection<ObraUnidade> ObraUnidade { get; } = new List<ObraUnidade>();

@@ -10,4 +10,8 @@ public interface IObraRepository: IRepository<Obra>, IDisposable
     Task<object?> GetByReferenceGuid(Guid uuid);
     Task<int?> InsertObraUnidade(ObraUnidade obraUnidade);
     Task<int?> DeleteObraUnidade(ObraUnidade obraUnidade);
+    Task<int?> InsertServico(ObraServico obraServico);
+    Task<ObraServico?> GetServicoByGuid(Guid guid);
+    Task<int?> UpdateServico(ObraServico obraServico);
+    Task<IEnumerable<TipoObraServico>?> GetAllTipoObraServico();
 }

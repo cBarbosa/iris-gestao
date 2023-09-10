@@ -51,6 +51,7 @@ export class ConstructionViewComponent {
 	}
 
 	ngOnInit(): void {
+
 		this.getByIdConstruction();
 		this.getAttachs();
 
@@ -68,10 +69,11 @@ export class ConstructionViewComponent {
 		};
 
 		this.dominiosService
-			.getTiposServico()
+			.getTiposServicoObra()
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
+					
 					response?.data.forEach((servico: any) => {
 						this.tiposServicos[servico.id] = servico.nome;
 					});
@@ -126,6 +128,10 @@ export class ConstructionViewComponent {
 						//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
 						// this.properties = [...event.data.imovel];
 						this.propertyGuid = event.data[0].imovel?.guidReferencia as string;
+
+
+						console.log(this.construction);
+
 					} else {
 						this.construction = null;
 					}
@@ -200,7 +206,7 @@ export class ConstructionViewComponent {
 		};
 
 		this.constructionService
-			.updateConstructionInvoice(this.serviceSelected?.guidReferencia, formObj)
+			.updateObraServico(this.serviceSelected?.guidReferencia, formObj)
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
@@ -246,7 +252,7 @@ export class ConstructionViewComponent {
 		console.log('formObj', formObj);
 
 		this.constructionService
-			.registerConstructionInvoice(this.guid, formObj)
+			.registerObraServico(this.guid, formObj)
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
@@ -284,5 +290,5 @@ export class ConstructionViewComponent {
 	navigateTo = (route: string): void => {
 		this.router.navigate([route]);
 	};
-	
+
 }

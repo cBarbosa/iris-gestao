@@ -18,6 +18,8 @@ import { IssueInvoiceSidebarComponent } from './issue-invoice-sidebar/issue-invo
 import { AttachmentListComponent } from 'src/app/shared/components/attachment-list/attachment-list.component';
 import { PropertyItemModule } from 'src/app/shared/components/property-item/property-item.module';
 import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
+import { NgxCurrencyModule } from 'ngx-currency';
+import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
 	declarations: [ConstructionViewComponent],
@@ -39,6 +41,8 @@ import { UploadListComponent } from 'src/app/shared/components/upload-list/uploa
 		IssueInvoiceSidebarComponent,
 		AttachmentListComponent,
 		UploadListComponent,
+		NgxMaskModule.forChild(),
+		NgxCurrencyModule
 	],
 })
 export class ConstructionViewModule {}

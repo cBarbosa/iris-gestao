@@ -22,6 +22,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-
 import { ConstructionService } from 'src/app/shared/services/obra.service';
 import { first } from 'rxjs';
 import { DominiosService } from 'src/app/shared/services';
+import { NgxCurrencyModule } from 'ngx-currency';
 
 type DropdownItem = {
 	label: string;
@@ -41,6 +42,7 @@ type DropdownItem = {
 		InputTextModule,
 		DropdownModule,
 		FileUploadComponent,
+		NgxCurrencyModule
 	],
 	templateUrl: './issue-invoice-sidebar.component.html',
 	styleUrls: ['./issue-invoice-sidebar.component.scss'],
@@ -64,14 +66,16 @@ export class IssueInvoiceSidebarComponent {
 
 	@Input()
 	data: {
-		descricao: number;
-		valorOrcamento: number;
+		idTipoObraServicoNavigation: {
+			id: number;
+		};
+		valorOrcado: number;
 		valorContratado: number;
 		valorServico: number;
 		dataEmissao: Date;
 		numeroNota: string;
-		dataVencimentoFatura: Date;
-		porcentagemAdm: number;
+		dataVencimento: Date;
+		percentualAdministracaoObra: number;
 		anexoNf: string;
 	} | null;
 
@@ -103,17 +107,17 @@ export class IssueInvoiceSidebarComponent {
 			);
 
 		this.registerForm = this.fb.group({
-			descricao: [this.data?.descricao ?? null, Validators.required],
-			valorOrcamento: [this.data?.valorOrcamento ?? '', Validators.required],
+			descricao: [this.data?.idTipoObraServicoNavigation?.id ?? null, Validators.required],
+			valorOrcamento: [this.data?.valorOrcado ?? '', Validators.required],
 			valorContratado: [this.data?.valorContratado ?? '', Validators.required],
 			valorServico: [this.data?.valorServico ?? '', Validators.required],
 			dataEmissao: [this.data?.dataEmissao ?? '', Validators.required],
-			numeroNota: [this.data?.numeroNota ?? '', Validators.required],
 			dataVencimentoFatura: [
-				this.data?.dataVencimentoFatura ?? '',
+				this.data?.dataVencimento ?? '',
 				Validators.required,
 			],
-			porcentagemAdm: [this.data?.porcentagemAdm ?? null, Validators.required],
+			numeroNota: [this.data?.numeroNota ?? ''],
+			porcentagemAdm: [this.data?.percentualAdministracaoObra ?? null, Validators.required],
 			anexoNf: [this.data?.anexoNf ?? null],
 		});
 
@@ -121,31 +125,13 @@ export class IssueInvoiceSidebarComponent {
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
 
-		if (this.guidInvoice)
-			this.constructionService
-				.getConstructionInvoiceByGuid(this.guidInvoice)
-				.pipe(first())
-				.subscribe({
-					next: (response) => {
-						const [data] = response.data;
-
-						this.registerForm.patchValue({
-							descricao: data.tipoServico?.idTipoServico,
-							valorOrcamento: data.valorOrcado,
-							valorContratado: data.valorContratado,
-							valorServico: data.valorServico,
-							dataEmissao: data.dataEmissao ? new Date(data.dataEmissao) : '',
-							numeroNota: data.numeroNota,
-							dataVencimentoFatura: data.dataVencimento
-								? new Date(data.dataVencimento)
-								: '',
-							porcentagemAdm: data.percentualAdministracaoObra,
-						});
-					},
-				});
-
+		this.getData();
+		this.getTiposServicoObra();
+	}
+	
+	getTiposServicoObra = ():void => {
 		this.dominiosService
-			.getTiposServico()
+			.getTiposServicoObra()
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
@@ -155,12 +141,57 @@ export class IssueInvoiceSidebarComponent {
 							value: servico.id,
 						});
 					});
+
+					this.registerForm.patchValue({
+						descricao: this.data?.idTipoObraServicoNavigation?.id ?? ''
+					});
 				},
 				error(err) {
 					console.error(err);
 				},
 			});
-	}
+	};
+
+	getData = ():void => {
+		
+		if(!this.guidInvoice)
+			return;
+
+		// this.constructionService
+		// 		.getConstructionInvoiceByGuid(this.guidInvoice)
+		// 		.pipe(first())
+		// 		.subscribe({
+		// 			next: (response) => {
+		// 				const [data] = response.data;
+		// 				this.registerForm.patchValue({
+		// 					descricao: data.tipoServico?.idTipoServico,
+		// 					valorOrcamento: data.valorOrcado,
+		// 					valorContratado: data.valorContratado,
+		// 					valorServico: data.valorServico,
+		// 					dataEmissao: data.dataEmissao ? new Date(data.dataEmissao) : '',
+		// 					numeroNota: data.numeroNota,
+		// 					dataVencimentoFatura: data.dataVencimento
+		// 						? new Date(data.dataVencimento)
+		// 						: '',
+		// 					porcentagemAdm: data.percentualAdministracaoObra,
+		// 				});
+		// 			},
+		// 		});
+
+		this.registerForm.patchValue({
+			descricao: this.data?.idTipoObraServicoNavigation?.id,
+			valorOrcamento: this.data?.valorOrcado,
+			valorContratado: this.data?.valorContratado,
+			valorServico: this.data?.valorServico,
+			dataEmissao: this.data?.dataEmissao ? new Date(this.data?.dataEmissao) : '',
+			numeroNota: this.data?.numeroNota,
+			dataVencimentoFatura: this.data?.dataVencimento
+				? new Date(this.data?.dataVencimento)
+				: '',
+			porcentagemAdm: this.data?.percentualAdministracaoObra,
+		});
+
+	};
 
 	get f(): { [key: string]: AbstractControl<any, any> } {
 		return this.registerForm.controls;
@@ -171,6 +202,7 @@ export class IssueInvoiceSidebarComponent {
 	}
 
 	onSubmit(e: any) {
+
 		if (this.registerForm.invalid) {
 			this.registerForm.markAllAsTouched();
 			return;
