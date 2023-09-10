@@ -23,6 +23,7 @@ import { ConstructionService } from 'src/app/shared/services/obra.service';
 import { first } from 'rxjs';
 import { DominiosService } from 'src/app/shared/services';
 import { NgxCurrencyModule } from 'ngx-currency';
+import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
 
 type DropdownItem = {
 	label: string;
@@ -42,7 +43,8 @@ type DropdownItem = {
 		InputTextModule,
 		DropdownModule,
 		FileUploadComponent,
-		NgxCurrencyModule
+		NgxCurrencyModule,
+		ResponsiveDialogComponent
 	],
 	templateUrl: './issue-invoice-sidebar.component.html',
 	styleUrls: ['./issue-invoice-sidebar.component.scss'],
@@ -111,14 +113,11 @@ export class IssueInvoiceSidebarComponent {
 			valorOrcamento: [this.data?.valorOrcado ?? '', Validators.required],
 			valorContratado: [this.data?.valorContratado ?? '', Validators.required],
 			valorServico: [this.data?.valorServico ?? '', Validators.required],
-			dataEmissao: [this.data?.dataEmissao ?? '', Validators.required],
-			dataVencimentoFatura: [
-				this.data?.dataVencimento ?? '',
-				Validators.required,
-			],
-			numeroNota: [this.data?.numeroNota ?? ''],
 			porcentagemAdm: [this.data?.percentualAdministracaoObra ?? null, Validators.required],
-			anexoNf: [this.data?.anexoNf ?? null],
+			dataEmissao: [this.data?.dataEmissao ?? '', Validators.required],
+			dataVencimentoFatura: [this.data?.dataVencimento ?? '', Validators.required],
+			numeroNota: [this.data?.numeroNota ?? ''],
+			anexoNf: [this.data?.anexoNf ?? null]
 		});
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
@@ -142,9 +141,12 @@ export class IssueInvoiceSidebarComponent {
 						});
 					});
 
-					this.registerForm.patchValue({
-						descricao: this.data?.idTipoObraServicoNavigation?.id ?? ''
-					});
+					if(this.guidInvoice)	{
+						this.registerForm.patchValue({
+							descricao: this.data?.idTipoObraServicoNavigation?.id ?? ''
+						});
+					}
+
 				},
 				error(err) {
 					console.error(err);

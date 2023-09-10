@@ -235,6 +235,9 @@
 </ng-template>
 
 <p-sidebar [(visible)]="serviceDetailsVisible" position="right">
+	<ng-template pTemplate="header">
+		<h2 class="text-xl font-bold">Detalhe do serviço</h2>
+	</ng-template>
 	<app-detail-sidebar
 		[data]="[
 			{ label: 'Serviço', data: serviceSelected?.idTipoObraServicoNavigation?.nome, span: true },
@@ -285,16 +288,23 @@
 </p-sidebar>
 
 <p-sidebar [(visible)]="issueInvoiceVisible" position="right">
+	<ng-template pTemplate="header">
+		<h2 class="text-xl font-bold">Editar serviço</h2>
+	</ng-template>
 	<ng-template pTemplate="content">
 		<app-issue-invoice-sidebar
 			[guidInvoice]="serviceSelected?.guidReferencia"
 			[data]="serviceSelected"
 			[onSubmitForm]="onInvoiceEditSubmit"
+			[cancel]="hideIssueInvoice"
 		></app-issue-invoice-sidebar
 	></ng-template>
 </p-sidebar>
 
 <p-sidebar [(visible)]="registerInvoiceVisible" position="right">
+	<ng-template pTemplate="header">
+		<h2 class="text-xl font-bold">Registrar serviço</h2>
+	</ng-template>
 	<ng-template pTemplate="content">
 		<app-issue-invoice-sidebar
 			[onSubmitForm]="onInvoiceRegisterSubmit"
@@ -302,3 +312,25 @@
 		></app-issue-invoice-sidebar
 	></ng-template>
 </p-sidebar>
+
+<app-responsive-dialog [visible]="displayModal" styleClass="form-modal">
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+
+		<button pButton label="Continuar" (click)="closeModal()"></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</app-responsive-dialog>

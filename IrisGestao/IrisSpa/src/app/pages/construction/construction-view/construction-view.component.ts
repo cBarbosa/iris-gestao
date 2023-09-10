@@ -37,6 +37,18 @@ export class ConstructionViewComponent {
 	issueInvoiceVisible = false;
 	registerInvoiceVisible = false;
 
+	displayModal: boolean = false;
+
+	editSuccess = false;
+
+	modalContent: {
+		isError?: boolean;
+		header?: string;
+		message: string;
+	} = {
+		message: '',
+	};
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
@@ -129,9 +141,6 @@ export class ConstructionViewComponent {
 						// this.properties = [...event.data.imovel];
 						this.propertyGuid = event.data[0].imovel?.guidReferencia as string;
 
-
-						console.log(this.construction);
-
 					} else {
 						this.construction = null;
 					}
@@ -197,12 +206,12 @@ export class ConstructionViewComponent {
 		} = {
 			IdTipoServico: values.formValues.descricao,
 			NumeroNota: values.formValues.numeroNota,
-			DataEmissao: values.formValues.dataEmissao?.toISOString(),
-			DataVencimento: values.formValues.dataVencimentoFatura?.toISOString(),
+			DataEmissao: values.formValues.dataEmissao ?? values.formValues.dataEmissao?.toISOString(),
+			DataVencimento: values.formValues.dataVencimentoFatura ?? values.formValues.dataVencimentoFatura?.toISOString(),
 			ValorServico: values.formValues.valorServico,
 			ValorOrcado: values.formValues.valorOrcamento,
 			ValorContratado: values.formValues.valorContratado,
-			Percentual: values.formValues.porcentagemAdm,
+			Percentual: values.formValues.porcentagemAdm
 		};
 
 		this.constructionService
@@ -210,22 +219,38 @@ export class ConstructionViewComponent {
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
-					console.log('invoice response', response);
+					this.openModal();
+
+					if (response.success) {
+						this.modalContent = {
+							header: 'Edição realizado com sucesso',
+							message: response.message ?? '',
+							isError: false,
+						};
+
+						this.editSuccess = true;
+
+						const formData = new FormData();
+
+						formData.append('files', values.invoiceFile);
+
+						this.anexoService.registerFile(
+							this.serviceSelected.guidReferencia,
+							formData,
+							'outrosdocs'
+						);
+					} else {
+						this.modalContent = {
+							header: 'Edição não realizado',
+							message: response.message ?? '',
+							isError: true,
+						};
+					}
 				},
 				error: (err) => {
 					console.error(err);
 				},
 			});
-
-		const formData = new FormData();
-
-		formData.append('files', values.invoiceFile);
-
-		this.anexoService.registerFile(
-			this.serviceSelected.guidReferencia,
-			formData,
-			'outrosdocs'
-		);
 	};
 
 	onInvoiceRegisterSubmit = (values: any) => {
@@ -241,37 +266,52 @@ export class ConstructionViewComponent {
 		} = {
 			IdTipoServico: values.formValues.descricao,
 			NumeroNota: values.formValues.numeroNota,
-			DataEmissao: values.formValues.dataEmissao?.toISOString(),
-			DataVencimento: values.formValues.dataVencimentoFatura?.toISOString(),
+			DataEmissao: values.formValues.dataEmissao ?? values.formValues.dataEmissao?.toISOString(),
+			DataVencimento: values.formValues.dataVencimentoFatura ?? values.formValues.dataVencimentoFatura?.toISOString(),
 			ValorServico: values.formValues.valorServico,
 			ValorOrcado: values.formValues.valorOrcamento,
 			ValorContratado: values.formValues.valorContratado,
-			Percentual: values.formValues.porcentagemAdm,
+			Percentual: values.formValues.porcentagemAdm
 		};
-
-		console.log('formObj', formObj);
 
 		this.constructionService
 			.registerObraServico(this.guid, formObj)
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
-					console.log('invoice register response', response);
+
+					this.openModal();
+
+					if (response.success) {
+						this.modalContent = {
+							header: 'Cadastro realizado com sucesso',
+							message: response.message ?? '',
+							isError: false,
+						};
+
+						this.editSuccess = true;
+
+						const formData = new FormData();
+
+						formData.append('files', values.invoiceFile);
+
+						this.anexoService.registerFile(
+							this.serviceSelected.guidReferencia,
+							formData,
+							'outrosdocs'
+						);
+					} else {
+						this.modalContent = {
+							header: 'Cadastro não realizado',
+							message: response.message ?? '',
+							isError: true,
+						};
+					}
 				},
 				error: (err) => {
 					console.error(err);
 				},
 			});
-
-		const formData = new FormData();
-
-		formData.append('files', values.invoiceFile);
-
-		this.anexoService.registerFile(
-			this.serviceSelected.guidReferencia,
-			formData,
-			'outrosdocs'
-		);
 	};
 
 	async downloadFile(
@@ -290,5 +330,18 @@ export class ConstructionViewComponent {
 	navigateTo = (route: string): void => {
 		this.router.navigate([route]);
 	};
+
+	openModal() {
+		this.displayModal = true;
+	}
+
+	closeModal() {
+		this.displayModal = false;
+
+		if (this.editSuccess) {
+			this.editSuccess = false;
+			location.reload();
+		}
+	}
 
 }
