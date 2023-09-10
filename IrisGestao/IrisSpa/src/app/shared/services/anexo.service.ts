@@ -1,9 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map } from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
 import { environment as env } from '../../../environments/environment';
-import { ImovelUnidadeType } from '../models';
 
 import { first } from 'rxjs/internal/operators/first';
 

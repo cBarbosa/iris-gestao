@@ -1,8 +1,9 @@
 ﻿namespace IrisGestao.Domain.Command.Request;
 
-public class CriarObraNotaFiscalCommand
+public class CriarObraServicoCommand
 {
-    public int IdTipoServico { get; set; }
+    public Guid?  GuidReferencia { get; set; }
+    public int  IdTipoServico { get; set; }
     public string NumeroNota { get; set; }
     public decimal ValorServico { get; set; }
     public decimal Percentual { get; set; }

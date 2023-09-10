@@ -20,77 +20,43 @@ public partial class IrisContext : DbContext
     }
 
     public virtual DbSet<Anexo> Anexo { get; set; } = null!;
-    
     public virtual DbSet<Bancos> Bancos { get; set; }
-
     public virtual DbSet<CategoriaImovel> CategoriaImovel { get; set; } = null!;
-
     public virtual DbSet<Cliente> Cliente { get; set; } = null!;
-
     public virtual DbSet<Contato> Contato { get; set; } = null!;
-
     public virtual DbSet<ContratoAluguel> ContratoAluguel { get; set; } = null!;
-
     public virtual DbSet<ContratoAluguelHistoricoReajuste> ContratoAluguelHistoricoReajuste { get; set; }
     public virtual DbSet<ContratoAluguelImovel> ContratoAluguelImovel { get; set; }
-
     public virtual DbSet<ContratoAluguelUnidade> ContratoAluguelUnidade { get; set; }
-
     public virtual DbSet<ContratoFornecedor> ContratoFornecedor { get; set; } = null!;
-
     public virtual DbSet<DadoBancario> DadoBancario { get; set; } = null!;
-
     public virtual DbSet<DespesaLocatario> DespesaLocatario { get; set; } = null!;
-
     public virtual DbSet<DespesaProprietario> DespesaProprietario { get; set; } = null!;
-
     public virtual DbSet<Evento> Evento { get; set; } = null!;
     public virtual DbSet<EventoUnidade> EventoUnidade { get; set; } = null!;
-
     public virtual DbSet<FaturaTitulo> FaturaTitulo { get; set; } = null!;
-
     public virtual DbSet<FaturaTituloPagar> FaturaTituloPagar { get; set; } = null!;
-
     public virtual DbSet<FormaPagamento> FormaPagamento { get; set; } = null!;
-
     public virtual DbSet<Fornecedor> Fornecedor { get; set; } = null!;
-
     public virtual DbSet<Imovel> Imovel { get; set; } = null!;
-
     public virtual DbSet<ImovelEndereco> ImovelEndereco { get; set; } = null!;
-
     public virtual DbSet<IndiceReajuste> IndiceReajuste { get; set; } = null!;
-
-    public virtual DbSet<NotaFiscal> NotaFiscal { get; set; } = null!;
-
     public virtual DbSet<Obra> Obra { get; set; } = null!;
     public virtual DbSet<ObraUnidade> ObraUnidade { get; set; }
-
-    public virtual DbSet<Orcamento> Orcamento { get; set; } = null!;
-
+    public virtual DbSet<ObraServico> ObraServico { get; set; }
+    public virtual DbSet<TipoObraServico> TipoObraServico { get; set; }
     public virtual DbSet<TipoCliente> TipoCliente { get; set; } = null!;
-
     public virtual DbSet<TipoContrato> TipoContrato { get; set; } = null!;
-
     public virtual DbSet<TipoCreditoAluguel> TipoCreditoAluguel { get; set; } = null!;
-
     public virtual DbSet<TipoDespesa> TipoDespesa { get; set; } = null!;
-
     public virtual DbSet<TipoEvento> TipoEvento { get; set; } = null!;
-
     public virtual DbSet<TipoServico> TipoServico { get; set; } = null!;
-
     public virtual DbSet<TipoTitulo> TipoTitulo { get; set; } = null!;
-
     public virtual DbSet<TipoUnidade> TipoUnidade { get; set; } = null!;
-
     public virtual DbSet<TituloReceber> TituloReceber { get; set; } = null!;
     public virtual DbSet<TituloPagar> TituloPagar { get; set; } = null!;
-
     public virtual DbSet<TituloImovel> TituloImovel { get; set; }
-    
     public virtual DbSet<TituloUnidade> TituloUnidade { get; set; }
-
     public virtual DbSet<Unidade> Unidade { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -365,21 +331,6 @@ public partial class IrisContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__IndiceRe__3214EC07E8989E25");
         });
 
-        modelBuilder.Entity<NotaFiscal>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__NotaFisc__3214EC07C58C269C");
-
-            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
-
-            entity.HasOne(d => d.IdObraNavigation).WithMany(p => p.NotaFiscal)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_Obra_NotaFiscal");
-
-            entity.HasOne(d => d.IdTipoServicoNavigation).WithMany(p => p.NotaFiscal)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_TipoServico_NotaFiscal");
-        });
-
         modelBuilder.Entity<Obra>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Obra__3214EC0706C7315A");
@@ -389,10 +340,20 @@ public partial class IrisContext : DbContext
             entity.HasOne(d => d.IdImovelNavigation).WithMany(p => p.Obra)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Imovel_Obra");
+        });
 
-            entity.HasOne(d => d.IdOrcamentoNavigation).WithMany(p => p.Obra)
+        modelBuilder.Entity<ObraServico>(entity =>
+        {
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.GuidReferencia).HasDefaultValueSql("(newid())");
+
+            entity.HasOne(d => d.IdObraNavigation).WithMany(p => p.ObraServico)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_Orcamento_Obra");
+                .HasConstraintName("FK_ObraServico_Obra");
+
+            entity.HasOne(d => d.IdTipoObraServicoNavigation).WithMany(p => p.ObraServico)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ObraServico_TipoObraServico");
         });
 
         modelBuilder.Entity<ObraUnidade>(entity =>
@@ -406,17 +367,6 @@ public partial class IrisContext : DbContext
             entity.HasOne(d => d.IdUnidadeNavigation).WithMany(p => p.ObraUnidade)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ObraUnidade_Unidade");
-        });
-
-        modelBuilder.Entity<Orcamento>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Orcament__3214EC07A8D543C8");
-
-            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
-
-            entity.HasOne(d => d.IdTipoServicoNavigation).WithMany(p => p.Orcamento)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_TipoServico_Orcamento");
         });
 
         modelBuilder.Entity<TipoCliente>(entity =>
@@ -442,6 +392,12 @@ public partial class IrisContext : DbContext
         modelBuilder.Entity<TipoEvento>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__TipoEven__3214EC07DC5B9792");
+        });
+
+        modelBuilder.Entity<TipoObraServico>(entity =>
+        {
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Nome).IsFixedLength();
         });
 
         modelBuilder.Entity<TipoServico>(entity =>

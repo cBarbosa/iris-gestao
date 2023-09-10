@@ -146,4 +146,16 @@ export class DominiosService {
 				})
 			);
 	}
+
+	getTiposServicoObra = (): Observable<ApiResponse> => {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dominios/tipo-servico-obra`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getTiposServicoObra: ${response.message}`);
+					return response;
+				})
+			);
+	};
 }

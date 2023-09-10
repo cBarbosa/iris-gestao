@@ -11,20 +11,17 @@ namespace IrisGestao.ApplicationService.Service.Impl;
 public class ObraService: IObraService
 {
     private readonly IObraRepository obraRepository;
-    private readonly INotaFiscalRepository notaFiscalRepository;
     private readonly IUnidadeRepository unidaderepository;
     private readonly IImovelRepository imovelRepository;
     private readonly ILogger<IObraService> logger;
     
     public ObraService(
         IObraRepository obraRepository
-        , INotaFiscalRepository notaFiscalRepository
         , IUnidadeRepository unidaderepository
         , IImovelRepository imovelRepository
         , ILogger<IObraService> logger)
     {
         this.obraRepository = obraRepository;
-        this.notaFiscalRepository = notaFiscalRepository;
         this.unidaderepository = unidaderepository;
         this.imovelRepository = imovelRepository;
         this.logger = logger;
@@ -65,12 +62,6 @@ public class ObraService: IObraService
             var imovel = await imovelRepository.GetByReferenceGuid(cmd.ImovelGuidReference.Value);
             
             obra.IdImovel = imovel.Id;
-            obra.IdOrcamentoNavigation = new Orcamento
-            {
-                ValorEstimado = cmd.ValorOrcamento ?? 0,
-                ValorContratado = cmd.ValorOrcamento ?? 0,
-                IdTipoServico = 1
-            };
             
             obraRepository.Insert(obra);
 
@@ -120,87 +111,72 @@ public class ObraService: IObraService
         }
     }
 
-    public async Task<CommandResult> InsertNotaFiscal(Guid uuid, CriarObraNotaFiscalCommand cmd)
+    public async Task<CommandResult> InsertServico(Guid guid, CriarObraServicoCommand cmd)
     {
-        if (cmd == null || uuid.Equals(Guid.Empty))
-        {
-            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
-        }
-
-        var obra = await obraRepository.GetByGuid(uuid);
+        var obraServico = new ObraServico();
         
-        if (obra == null)
-        {
-            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
-        }
-
         try
         {
-            var notaFiscal = new NotaFiscal
+            BindObraServicoData(cmd, ref obraServico);
+
+            var obra = await obraRepository.GetByGuid(guid);
+
+            if (obra == null)
             {
-                GuidReferencia = Guid.NewGuid(),
-                IdObra = obra.Id,
-                IdTipoServico = cmd.IdTipoServico,
-                NumeroNota = cmd.NumeroNota,
-                DataEmissao = cmd.DataEmissao,
-                ValorServico = cmd.ValorServico,
-                ValorOrcado = cmd.ValorOrcado,
-                ValorContratado = cmd.ValorContratado,
-                PercentualAdministracaoObra = cmd.Percentual,
-                DataVencimento = cmd.DataVencimento
-            };
-            notaFiscalRepository.Insert(notaFiscal);
-        
-            return new CommandResult(true, SuccessResponseEnums.Success_1000, notaFiscal);
+                return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+            }
+
+            obraServico.IdObra = obra.Id;
+            obraServico.GuidReferencia = Guid.NewGuid();
+            
+            await obraRepository.InsertServico(obraServico);
+            
+            return new CommandResult(true, SuccessResponseEnums.Success_1000, obraServico);
         }
         catch (Exception e)
         {
             logger.LogError(e, e.Message);
-            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+            return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
         }
     }
 
-    public async Task<CommandResult> GetNotaFiscalByGuid(Guid uuid)
+    public async Task<CommandResult> UpdateServico(Guid guid, CriarObraServicoCommand cmd)
     {
-        var notaFiscal = await notaFiscalRepository.GetByReferenceGuid(uuid);
-
-        return notaFiscal == null
-            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
-            : new CommandResult(true, SuccessResponseEnums.Success_1005, notaFiscal);
-    }
-
-    public async Task<CommandResult> UpdateNotaFiscal(Guid uuid, CriarObraNotaFiscalCommand cmd)
-    {
-        if (cmd == null || uuid.Equals(Guid.Empty))
+        if (cmd == null || guid.Equals(Guid.Empty))
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
-        var notaFiscal = await notaFiscalRepository.GetByGuid(uuid);
+        var obraServico = await obraRepository.GetServicoByGuid(guid);
         
-        if (notaFiscal == null)
+        if (obraServico == null)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
 
         try
         {
-            notaFiscal.IdTipoServico = cmd.IdTipoServico;
-            notaFiscal.NumeroNota = cmd.NumeroNota;
-            notaFiscal.DataEmissao = cmd.DataEmissao;
-            notaFiscal.ValorServico = cmd.ValorServico;
-            notaFiscal.ValorOrcado = cmd.ValorOrcado;
-            notaFiscal.ValorContratado = cmd.ValorContratado;
-            notaFiscal.PercentualAdministracaoObra = cmd.Percentual;
-            notaFiscal.DataVencimento = cmd.DataVencimento;
+            BindObraServicoData(cmd, ref obraServico);
 
-            return new CommandResult(true, SuccessResponseEnums.Success_1001, notaFiscal);
+            await obraRepository.UpdateServico(obraServico);
+            
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, obraServico);
         }
         catch (Exception e)
         {
             logger.LogError(e, e.Message);
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
+    }
+
+    public async Task<CommandResult> GetTiposServicoObra()
+    {
+        var result = await obraRepository
+            .GetAllTipoObraServico();
+
+        return result == null
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, result);
     }
 
     private static void BindObraData(CriarObraCommand cmd, ref Obra obra)
@@ -220,6 +196,20 @@ public class ObraService: IObraService
         obra.ValorOrcamento = cmd.ValorOrcamento;
         obra.DataInicio = cmd.DataInicio;
         obra.DataPrevistaTermino = cmd.DataPrevistaTermino;
+    }
+
+    private static void BindObraServicoData(
+        CriarObraServicoCommand cmd,
+        ref ObraServico obraServico)
+    {
+        obraServico.NumeroNota = cmd.NumeroNota;
+        obraServico.ValorServico = cmd.ValorServico;
+        obraServico.PercentualAdministracaoObra = cmd.Percentual;
+        obraServico.ValorOrcado = cmd.ValorOrcado;
+        obraServico.ValorContratado = cmd.ValorContratado;
+        obraServico.DataEmissao = cmd.DataEmissao;
+        obraServico.DataVencimento = cmd.DataVencimento;
+        obraServico.IdTipoObraServico = cmd.IdTipoServico;
     }
 
     private async Task InsereUnidades(int obraId, IEnumerable<Guid> Guids)

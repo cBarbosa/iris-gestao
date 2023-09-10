@@ -83,6 +83,5 @@ public class IoCRegisterServices
         services.AddScoped<ITituloImovelRepository, Repository.Impl.TituloImovelRepository>();
         services.AddScoped<ITituloUnidadeRepository, Repository.Impl.TituloUnidadeRepository>();
         services.AddScoped<IObraRepository, Repository.Impl.ObraRepository>();
-        services.AddScoped<INotaFiscalRepository, Repository.Impl.NotaFiscalRepository>();
     }
 }

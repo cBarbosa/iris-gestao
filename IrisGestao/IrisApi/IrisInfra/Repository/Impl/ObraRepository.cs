@@ -27,7 +27,6 @@ public class ObraRepository : Repository<Obra>, IObraRepository
         {
             var obras = await DbSet
                     .Include(x => x.IdImovelNavigation)
-                    .Include(x => x.NotaFiscal)
                     .Select(x => new
                     {
                         x.GuidReferencia,
@@ -40,8 +39,7 @@ public class ObraRepository : Repository<Obra>, IObraRepository
                         {
                             x.IdImovelNavigation.GuidReferencia,
                             x.IdImovelNavigation.Nome
-                        },
-                        NotasFiscais = x.NotaFiscal
+                        }
                     })
                     .ToListAsync();
 
@@ -74,10 +72,11 @@ public class ObraRepository : Repository<Obra>, IObraRepository
             .Include(x => x.IdImovelNavigation)
             .ThenInclude(x => x.IdCategoriaImovelNavigation)
             .Include(x => x.IdImovelNavigation.ImovelEndereco)
-            .Include(x => x.NotaFiscal)
-            .ThenInclude(x => x.IdTipoServicoNavigation)
             .Include(x => x.ObraUnidade)
             .ThenInclude(x => x.IdUnidadeNavigation)
+            .ThenInclude(x => x.IdTipoUnidadeNavigation)
+            .Include(x => x.ObraServico)
+            .ThenInclude(x => x.IdTipoObraServicoNavigation)
             .Where(x => x.GuidReferencia.Equals(uuid))
             .Select(x => new
             {
@@ -94,12 +93,25 @@ public class ObraRepository : Repository<Obra>, IObraRepository
                     x.IdImovelNavigation.ImovelEndereco,
                     x.IdImovelNavigation.IdCategoriaImovelNavigation
                 },
-                NotasFiscais = x.NotaFiscal,
                 Unidades = x.ObraUnidade.Select(x =>
                     new
                     {
                         x.IdUnidadeNavigation.GuidReferencia,
-                        x.IdUnidadeNavigation.Tipo
+                        x.IdUnidadeNavigation.Tipo,
+                        x.IdUnidadeNavigation.IdTipoUnidadeNavigation
+                    }),
+                Servicos = x.ObraServico.Select(x => new
+                    {
+                        x.GuidReferencia,
+                        x.NumeroNota,
+                        x.ValorServico,
+                        x.PercentualAdministracaoObra,
+                        x.ValorOrcado,
+                        x.ValorContratado,
+                        x.DataEmissao,
+                        x.DataVencimento,
+                        x.DataCriacao,
+                        x.IdTipoObraServicoNavigation
                     })
             })
             .ToListAsync();
@@ -114,7 +126,7 @@ public class ObraRepository : Repository<Obra>, IObraRepository
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Logger.LogError(e, e.Message);
         }
 
         return null;
@@ -132,9 +144,61 @@ public class ObraRepository : Repository<Obra>, IObraRepository
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Logger.LogError(e, e.Message);
         }
 
+        return null;
+    }
+
+    public async Task<int?> InsertServico(ObraServico obraServico)
+    {
+        try
+        {
+            await Db.ObraServico.AddAsync(obraServico);
+            return await Db.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, e.Message);
+        }
+
+        return null;
+    }
+
+    public async Task<ObraServico?> GetServicoByGuid(Guid guid)
+    {
+        return await Db.ObraServico
+            .Include(x => x.IdTipoObraServicoNavigation)
+            .SingleOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
+    }
+
+    public async Task<int?> UpdateServico(ObraServico obraServico)
+    {
+        try
+        {
+            Db.Entry(obraServico).State = EntityState.Modified;
+            Db.ObraServico.Update(obraServico);
+            return await Db.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, e.Message);
+        }
+
+        return null;
+    }
+
+    public async Task<IEnumerable<TipoObraServico>?> GetAllTipoObraServico()
+    {
+        try
+        {
+            return await Db.TipoObraServico.ToListAsync();
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, e.Message);
+        }
+        
         return null;
     }
 }
