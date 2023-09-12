@@ -169,16 +169,6 @@ public class ObraService: IObraService
         }
     }
 
-    public async Task<CommandResult> GetTiposServicoObra()
-    {
-        var result = await obraRepository
-            .GetAllTipoObraServico();
-
-        return result == null
-            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
-            : new CommandResult(true, SuccessResponseEnums.Success_1005, result);
-    }
-
     private static void BindObraData(CriarObraCommand cmd, ref Obra obra)
     {
         switch (obra.GuidReferencia)
@@ -203,13 +193,14 @@ public class ObraService: IObraService
         ref ObraServico obraServico)
     {
         obraServico.NumeroNota = cmd.NumeroNota;
-        obraServico.ValorServico = cmd.ValorServico;
-        obraServico.PercentualAdministracaoObra = cmd.Percentual;
+        obraServico.PercentualAdministracaoObra = cmd.Percentual.HasValue
+            ? cmd.Percentual.Value
+            : 0;
         obraServico.ValorOrcado = cmd.ValorOrcado;
         obraServico.ValorContratado = cmd.ValorContratado;
         obraServico.DataEmissao = cmd.DataEmissao;
         obraServico.DataVencimento = cmd.DataVencimento;
-        obraServico.IdTipoObraServico = cmd.IdTipoServico;
+        obraServico.Descricao = cmd.Descricao;
     }
 
     private async Task InsereUnidades(int obraId, IEnumerable<Guid> Guids)

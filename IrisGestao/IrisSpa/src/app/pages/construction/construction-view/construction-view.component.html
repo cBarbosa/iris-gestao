@@ -128,7 +128,7 @@
 					</ng-template>
 					<ng-template pTemplate="body" let-service>
 						<tr>
-							<td>{{ tiposServicos[service.idTipoObraServicoNavigation.id] }}</td>
+							<td>{{ service.descricao }}</td>
 							<td>{{ service.valorOrcado | currency }}</td>
 							<td>{{ service.valorContratado | currency }}</td>
 							<td>{{ service.valorServico | currency }}</td>
@@ -178,7 +178,7 @@
 									infos: [
 										{
 											label: 'Serviço',
-											data: service.idTipoServico
+											data: service.descricao
 										},
 										{
 											label: 'Valores estimados orçados',
@@ -240,7 +240,7 @@
 	</ng-template>
 	<app-detail-sidebar
 		[data]="[
-			{ label: 'Serviço', data: serviceSelected?.idTipoObraServicoNavigation?.nome, span: true },
+			{ label: 'Serviço', data: serviceSelected?.descricao, span: true },
 			{ label: 'Número da NF', data: serviceSelected?.numeroNota, span: true },
 			{
 				label: 'Data da emissão',
@@ -265,7 +265,7 @@
 			},
 			{
 				label: 'T.A. da obra',
-				data: serviceSelected?.percentualAdministracaoObra,
+				data: serviceSelected?.percentualAdministracaoObra / 100.0,
 				pipe: cardPipes['percent']
 			}
 		]"

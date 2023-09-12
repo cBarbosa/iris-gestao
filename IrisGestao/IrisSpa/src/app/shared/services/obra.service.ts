@@ -82,14 +82,13 @@ export class ConstructionService {
 	registerObraServico(
 		guid: string,
 		servico: {
-			IdTipoServico: number;
-			NumeroNota: string;
-			DataEmissao: string;
+			Descricao: string;
+			NumeroNota?: string;
+			DataEmissao?: string;
 			DataVencimento: string;
-			ValorServico: number;
 			ValorOrcado: number;
 			ValorContratado: number;
-			Percentual: number;
+			Percentual?: number;
 		}
 	) {
 		return this.http.post<ApiResponse>(
@@ -102,14 +101,13 @@ export class ConstructionService {
 	updateObraServico(
 		guid: string,
 		servico: {
-			IdTipoServico: number;
-			NumeroNota: string;
-			DataEmissao: string;
+			Descricao: string;
+			NumeroNota?: string;
+			DataEmissao?: string;
 			DataVencimento: string;
-			ValorServico: number;
 			ValorOrcado: number;
 			ValorContratado: number;
-			Percentual: number;
+			Percentual?: number;
 		}
 	) {
 		return this.http.put<ApiResponse>(

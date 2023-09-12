@@ -375,41 +375,41 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         return null!;
     }
 
-    public async Task<object> GetDashboardTotalManagedArea(
-        DateTime dateRefInit,
-        DateTime dateRefEnd,
-        int? idLocador)
-    {
-        try
-        {
-            return await Db.Unidade
-                .Include(u => u.IdImovelNavigation)
-                    .ThenInclude(i => i.IdClienteProprietarioNavigation)
-                .Where(u => (!idLocador.HasValue || idLocador.HasValue && u.IdImovelNavigation.IdClienteProprietario == idLocador)
-                    && (u.IdImovelNavigation.IdClienteProprietarioNavigation.DataCriacao >= dateRefInit
-                        && u.IdImovelNavigation.IdClienteProprietarioNavigation.DataCriacao <= dateRefEnd))
-                .GroupBy(
-                    u => u.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
-                    (key, group) => new {
-                        Percent = Math.Round((decimal)group.Count() * 100 / Db.Unidade
-                            .Count(), 2),
-                        Title = key,
-                        Color = $"#{new Random().Next(0x1000000):X6}"
-                    })
-                .OrderByDescending(r => r.Percent)
-                .Select(r => new {
-                    r.Percent,
-                    r.Title,
-                    r.Color
-                })
-                .ToListAsync();
-        }
-        catch (Exception e)
-        {
-            Logger.LogError(e, e.Message);
-        }
-        return null!;
-    }
+    // public async Task<object> GetDashboardTotalManagedArea(
+    //     DateTime dateRefInit,
+    //     DateTime dateRefEnd,
+    //     int? idLocador)
+    // {
+    //     try
+    //     {
+    //         return await Db.Unidade
+    //             .Include(u => u.IdImovelNavigation)
+    //                 .ThenInclude(i => i.IdClienteProprietarioNavigation)
+    //             .Where(u => (!idLocador.HasValue || idLocador.HasValue && u.IdImovelNavigation.IdClienteProprietario == idLocador)
+    //                 && (u.IdImovelNavigation.IdClienteProprietarioNavigation.DataCriacao >= dateRefInit
+    //                     && u.IdImovelNavigation.IdClienteProprietarioNavigation.DataCriacao <= dateRefEnd))
+    //             .GroupBy(
+    //                 u => u.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
+    //                 (key, group) => new {
+    //                     Percent = Math.Round((decimal)group.Count() * 100 / Db.Unidade
+    //                         .Count(), 2),
+    //                     Title = key,
+    //                     Color = $"#{new Random().Next(0x1000000):X6}"
+    //                 })
+    //             .OrderByDescending(r => r.Percent)
+    //             .Select(r => new {
+    //                 r.Percent,
+    //                 r.Title,
+    //                 r.Color
+    //             })
+    //             .ToListAsync();
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         Logger.LogError(e, e.Message);
+    //     }
+    //     return null!;
+    // }
     
     public async Task<IEnumerable<SpFinancialVacancyResult>?> GetDashbaordFinancialVacancy(
         DateTime dateRefInit,
@@ -763,6 +763,26 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
 
         return await Db
             .SqlQueryAsync<SpRentContractsResult>("Exec Sp_RentContract @IdImovel, @IdLocador, @IdLocador",
+                parameters.ToArray());
+    }
+    
+    
+    public async Task<IEnumerable<SpTotalManagedAreaResult>?> GetDashboardTotalManagedArea(
+        DateTime dateRefInit,
+        DateTime dateRefEnd,
+        int? idLocador)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@DataInicioReferencia", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimReferencia", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@IdLocador", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpTotalManagedAreaResult>("Exec Sp_TotalManagedArea @DataInicioReferencia, @DataFimReferencia, @IdLocador",
                 parameters.ToArray());
     }
 

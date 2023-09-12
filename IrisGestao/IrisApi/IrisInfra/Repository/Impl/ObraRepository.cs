@@ -76,8 +76,6 @@ public class ObraRepository : Repository<Obra>, IObraRepository
             .ThenInclude(x => x.IdUnidadeNavigation)
             .ThenInclude(x => x.IdTipoUnidadeNavigation)
             .Include(x => x.ObraServico)
-            .ThenInclude(x => x.IdTipoObraServicoNavigation)
-            .Where(x => x.GuidReferencia.Equals(uuid))
             .Select(x => new
             {
                 x.GuidReferencia,
@@ -111,7 +109,7 @@ public class ObraRepository : Repository<Obra>, IObraRepository
                         x.DataEmissao,
                         x.DataVencimento,
                         x.DataCriacao,
-                        x.IdTipoObraServicoNavigation
+                        x.Descricao
                     })
             })
             .ToListAsync();
@@ -168,7 +166,6 @@ public class ObraRepository : Repository<Obra>, IObraRepository
     public async Task<ObraServico?> GetServicoByGuid(Guid guid)
     {
         return await Db.ObraServico
-            .Include(x => x.IdTipoObraServicoNavigation)
             .SingleOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
     }
 
@@ -185,20 +182,6 @@ public class ObraRepository : Repository<Obra>, IObraRepository
             Logger.LogError(e, e.Message);
         }
 
-        return null;
-    }
-
-    public async Task<IEnumerable<TipoObraServico>?> GetAllTipoObraServico()
-    {
-        try
-        {
-            return await Db.TipoObraServico.ToListAsync();
-        }
-        catch (Exception e)
-        {
-            Logger.LogError(e, e.Message);
-        }
-        
         return null;
     }
 }

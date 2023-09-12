@@ -28,9 +28,6 @@ export class ConstructionViewComponent {
 	isMobile: boolean = false;
 	displayConstructionDetails = false;
 	cardPipes: Record<string, PipeTransform>;
-
-	tiposServicos: string[] = [];
-
 	serviceSelected: any;
 
 	serviceDetailsVisible = false;
@@ -79,21 +76,6 @@ export class ConstructionViewComponent {
 			currency: new CurrencyPipe('pt-BR', 'R$'),
 			percent: new PercentPipe('pt-BR'),
 		};
-
-		this.dominiosService
-			.getTiposServicoObra()
-			.pipe(first())
-			.subscribe({
-				next: (response) => {
-					
-					response?.data.forEach((servico: any) => {
-						this.tiposServicos[servico.id] = servico.nome;
-					});
-				},
-				error(err) {
-					console.error(err);
-				},
-			});
 	}
 
 	getAttachs(): void {
@@ -194,32 +176,34 @@ export class ConstructionViewComponent {
 	}
 
 	onInvoiceEditSubmit = (values: any) => {
+		
 		const formObj: {
-			IdTipoServico: number;
+			Descricao: string;
 			NumeroNota: string;
 			DataEmissao: string;
 			DataVencimento: string;
-			ValorServico: number;
 			ValorOrcado: number;
 			ValorContratado: number;
-			Percentual: number;
+			Percentual?: number;
 		} = {
-			IdTipoServico: values.formValues.descricao,
+			Descricao: values.formValues.descricao,
 			NumeroNota: values.formValues.numeroNota,
-			DataEmissao: values.formValues.dataEmissao ?? values.formValues.dataEmissao?.toISOString(),
-			DataVencimento: values.formValues.dataVencimentoFatura ?? values.formValues.dataVencimentoFatura?.toISOString(),
-			ValorServico: values.formValues.valorServico,
+			DataEmissao: values.formValues.dataEmissao
+				? values.formValues.dataEmissao?.toISOString()
+				: null,
+			DataVencimento: values.formValues.dataVencimentoFatura
+				? values.formValues.dataVencimentoFatura?.toISOString()
+				: null,
 			ValorOrcado: values.formValues.valorOrcamento,
 			ValorContratado: values.formValues.valorContratado,
-			Percentual: values.formValues.porcentagemAdm
+			Percentual: +values.formValues.porcentagemAdm ?? null
 		};
 
 		this.constructionService
-			.updateObraServico(this.serviceSelected?.guidReferencia, formObj)
+			.updateObraServico(this.serviceSelected.guidReferencia, formObj)
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
-					this.openModal();
 
 					if (response.success) {
 						this.modalContent = {
@@ -249,38 +233,49 @@ export class ConstructionViewComponent {
 				},
 				error: (err) => {
 					console.error(err);
+					this.modalContent = {
+						header: 'Edição não realizado',
+						message: err ?? '',
+						isError: true,
+					};
 				},
+				complete: () => {
+					this.openModal();
+				}
 			});
 	};
 
 	onInvoiceRegisterSubmit = (values: any) => {
+
+		console.log(values);
+
 		const formObj: {
-			IdTipoServico: number;
+			Descricao: string;
 			NumeroNota: string;
 			DataEmissao: string;
 			DataVencimento: string;
-			ValorServico: number;
 			ValorOrcado: number;
 			ValorContratado: number;
 			Percentual: number;
 		} = {
-			IdTipoServico: values.formValues.descricao,
-			NumeroNota: values.formValues.numeroNota,
-			DataEmissao: values.formValues.dataEmissao ?? values.formValues.dataEmissao?.toISOString(),
-			DataVencimento: values.formValues.dataVencimentoFatura ?? values.formValues.dataVencimentoFatura?.toISOString(),
-			ValorServico: values.formValues.valorServico,
+			Descricao: values.formValues.descricao,
+			NumeroNota: values.formValues.numeroNota ?? null,
+			DataEmissao: values.formValues.dataEmissao
+				? values.formValues.dataEmissao?.toISOString()
+				: null,
+			DataVencimento: values.formValues.dataVencimentoFatura
+				? values.formValues.dataVencimentoFatura?.toISOString()
+				: null,
 			ValorOrcado: values.formValues.valorOrcamento,
 			ValorContratado: values.formValues.valorContratado,
-			Percentual: values.formValues.porcentagemAdm
+			Percentual: +values.formValues.porcentagemAdm ?? null
 		};
 
 		this.constructionService
-			.registerObraServico(this.guid, formObj)
+			.registerObraServico(this.serviceSelected.guidReferencia, formObj)
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
-
-					this.openModal();
 
 					if (response.success) {
 						this.modalContent = {
@@ -310,7 +305,15 @@ export class ConstructionViewComponent {
 				},
 				error: (err) => {
 					console.error(err);
+					this.modalContent = {
+						header: 'Edição não realizado',
+						message: err ?? '',
+						isError: true,
+					};
 				},
+				complete: () => {
+					this.openModal();
+				}
 			});
 	};
 
