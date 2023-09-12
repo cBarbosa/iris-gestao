@@ -10,9 +10,10 @@ public partial class ObraServico: BaseEntity<ObraServico>
 {
     public int IdObra { get; set; }
 
-    public int IdTipoObraServico { get; set; }
-
     public Guid GuidReferencia { get; set; }
+
+    [StringLength(50)]
+    public string? Descricao { get; set; }
 
     [StringLength(70)]
     public string NumeroNota { get; set; } = null!;
@@ -38,8 +39,4 @@ public partial class ObraServico: BaseEntity<ObraServico>
     [ForeignKey("IdObra")]
     [InverseProperty("ObraServico")]
     public virtual Obra IdObraNavigation { get; set; } = null!;
-
-    [ForeignKey("IdTipoObraServico")]
-    [InverseProperty("ObraServico")]
-    public virtual TipoObraServico IdTipoObraServicoNavigation { get; set; } = null!;
 }

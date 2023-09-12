@@ -13,7 +13,7 @@ public interface IContratoAluguelRepository : IRepository<ContratoAluguel>, IDis
     Task<IEnumerable<SpReceivingPerformanceResult>> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador);
     Task<IEnumerable<SpAreaPriceResult>> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idImovel);
     Task<IEnumerable<SpPhysicalVacancyResult>?> GetDashbaordPhysicalVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador);
-    Task<object> GetDashboardTotalManagedArea(DateTime dateRefInit, DateTime dateRefEnd,  int? idLocador);
+    Task<IEnumerable<SpTotalManagedAreaResult>?> GetDashboardTotalManagedArea(DateTime dateRefInit, DateTime dateRefEnd,  int? idLocador);
     Task<IEnumerable<Object>?> GetImoveisUnidadesContratoAluguelAtivos();
     Task<IEnumerable<dynamic>> GetAllActiveProperties();
     Task<IEnumerable<dynamic>> GetAllActiveOwners();

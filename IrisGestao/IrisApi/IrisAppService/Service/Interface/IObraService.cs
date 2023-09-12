@@ -11,5 +11,4 @@ public interface IObraService
     Task<CommandResult> Update(Guid guid, CriarObraCommand cmd);
     Task<CommandResult> InsertServico(Guid guid, CriarObraServicoCommand cmd);
     Task<CommandResult> UpdateServico(Guid guid, CriarObraServicoCommand cmd);
-    Task<CommandResult> GetTiposServicoObra();
 }

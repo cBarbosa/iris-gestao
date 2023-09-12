@@ -44,7 +44,6 @@ public partial class IrisContext : DbContext
     public virtual DbSet<Obra> Obra { get; set; } = null!;
     public virtual DbSet<ObraUnidade> ObraUnidade { get; set; }
     public virtual DbSet<ObraServico> ObraServico { get; set; }
-    public virtual DbSet<TipoObraServico> TipoObraServico { get; set; }
     public virtual DbSet<TipoCliente> TipoCliente { get; set; } = null!;
     public virtual DbSet<TipoContrato> TipoContrato { get; set; } = null!;
     public virtual DbSet<TipoCreditoAluguel> TipoCreditoAluguel { get; set; } = null!;
@@ -350,10 +349,6 @@ public partial class IrisContext : DbContext
             entity.HasOne(d => d.IdObraNavigation).WithMany(p => p.ObraServico)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ObraServico_Obra");
-
-            entity.HasOne(d => d.IdTipoObraServicoNavigation).WithMany(p => p.ObraServico)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ObraServico_TipoObraServico");
         });
 
         modelBuilder.Entity<ObraUnidade>(entity =>
@@ -392,12 +387,6 @@ public partial class IrisContext : DbContext
         modelBuilder.Entity<TipoEvento>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__TipoEven__3214EC07DC5B9792");
-        });
-
-        modelBuilder.Entity<TipoObraServico>(entity =>
-        {
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Nome).IsFixedLength();
         });
 
         modelBuilder.Entity<TipoServico>(entity =>
