@@ -101,6 +101,13 @@ public class ContratoAluguelService: IContratoAluguelService
 
         try
         {
+            foreach (var item in cmd.lstImoveis)
+            {
+                if(item.lstUnidades == null || item.lstUnidades.Count  <= 0)
+                {
+                    return new CommandResult(false, "Não é possível criar contrato de aluguel sem selecionar as unidades.", null!);
+                }
+            }
             contratoAluguelRepository.Insert(contratoAluguel);
             await CriaContratoAluguelImovel(contratoAluguel.Id, cmd.lstImoveis);
 
@@ -191,7 +198,6 @@ public class ContratoAluguelService: IContratoAluguelService
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
         }
     }
-
 
     public async Task<CommandResult> ReajusteContrato(Guid uuid, double novoPercentualReajuste)
     {
@@ -571,6 +577,9 @@ public class ContratoAluguelService: IContratoAluguelService
 
         if (cmd.DataVencimentoPrimeraParcela.HasValue && cmd.DataVencimentoPrimeraParcela.Value < cmd?.DataInicioContrato)
             msgRetorno += "A data de vencimento da primeira parcela não pode ser menor que a data de início do contrato";
+
+        if (cmd?.lstImoveis == null || cmd.lstImoveis.Count <= 0 )
+            msgRetorno += "Não é possível gravar contrato de Aluguel sem seleção de imóvel";
 
         return msgRetorno;
     }
