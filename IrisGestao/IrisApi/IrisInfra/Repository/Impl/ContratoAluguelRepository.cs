@@ -765,8 +765,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
             .SqlQueryAsync<SpRentContractsResult>("Exec Sp_RentContract @IdImovel, @IdLocador, @IdLocador",
                 parameters.ToArray());
     }
-    
-    
+
     public async Task<IEnumerable<SpTotalManagedAreaResult>?> GetDashboardTotalManagedArea(
         DateTime dateRefInit,
         DateTime dateRefEnd,
@@ -783,6 +782,25 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
 
         return await Db
             .SqlQueryAsync<SpTotalManagedAreaResult>("Exec Sp_TotalManagedArea @DataInicioReferencia, @DataFimReferencia, @IdLocador",
+                parameters.ToArray());
+    }
+    
+    public async Task<IEnumerable<SpTotalManagedAreaStackResult>?> GetDashboardTotalManagedAreaStack(
+        DateTime dateRefInit,
+        DateTime dateRefEnd,
+        int? idLocador)
+    {
+        var parameters = new List<SqlParameter> {
+            new ("@DataInicioReferencia", SqlDbType.Date)
+                {Value = dateRefInit},
+            new ("@DataFimReferencia", SqlDbType.Date)
+                {Value = dateRefEnd},
+            new ("@IdLocador", SqlDbType.Int)
+                {Value = idLocador.HasValue ? idLocador : DBNull.Value, IsNullable = true}
+        };
+
+        return await Db
+            .SqlQueryAsync<SpTotalManagedAreaStackResult>("Exec Sp_TotalManagedAreaStack @DataInicioReferencia, @DataFimReferencia, @IdLocador",
                 parameters.ToArray());
     }
 

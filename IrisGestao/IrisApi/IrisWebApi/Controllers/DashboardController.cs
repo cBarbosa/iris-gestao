@@ -53,4 +53,12 @@ public class DashboardController : ControllerBase
         [FromQuery] int? IdLocador
         ) =>
         Ok(await contratoAluguelService.GetDashboardTotalManagedArea(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador));
+    
+    [HttpGet("total-managed-area-stack")]
+    public async Task<IActionResult> GetTotalManagedAreaStack(
+        [FromQuery] DateTime? DateRefInit,
+        [FromQuery] DateTime? DateRefEnd,
+        [FromQuery] int? IdLocador
+    ) =>
+        Ok(await contratoAluguelService.GetDashboardTotalManagedAreaStack(DateRefInit ?? DateTime.Now, DateRefEnd ?? DateTime.Now.AddMonths(12), IdLocador));
 }
