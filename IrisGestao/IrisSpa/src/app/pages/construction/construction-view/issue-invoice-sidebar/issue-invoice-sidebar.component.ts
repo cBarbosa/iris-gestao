@@ -68,17 +68,16 @@ export class IssueInvoiceSidebarComponent {
 
 	@Input()
 	data: {
-		idTipoObraServicoNavigation: {
-			id: number;
-		};
+		guidReferencia: string;
+		descricao: string;
 		valorOrcado: number;
 		valorContratado: number;
 		valorServico: number;
-		dataEmissao: Date;
+		dataEmissao?: Date;
 		numeroNota: string;
 		dataVencimento: Date;
-		percentualAdministracaoObra: number;
-		anexoNf: string;
+		percentualAdministracaoObra?: number;
+		anexoNf?: string;
 	} | null;
 
 	registerForm: FormGroup;
@@ -87,14 +86,6 @@ export class IssueInvoiceSidebarComponent {
 	onBlurDate: Function;
 
 	selectedFile: File;
-
-	opcoesDescricao: DropdownItem[] = [
-		{
-			label: 'Selecione',
-			value: null,
-			disabled: true,
-		},
-	];
 
 	constructor(
 		private fb: FormBuilder,
@@ -109,14 +100,15 @@ export class IssueInvoiceSidebarComponent {
 			);
 
 		this.registerForm = this.fb.group({
-			descricao: [this.data?.idTipoObraServicoNavigation?.id ?? null, Validators.required],
+			guidReferencia: this.data?.guidReferencia,
+			descricao: [this.data?.descricao ?? null, Validators.required],
 			valorOrcamento: [this.data?.valorOrcado ?? '', Validators.required],
 			valorContratado: [this.data?.valorContratado ?? '', Validators.required],
 			valorServico: [this.data?.valorServico ?? '', Validators.required],
-			porcentagemAdm: [this.data?.percentualAdministracaoObra ?? null, Validators.required],
-			dataEmissao: [this.data?.dataEmissao ?? '', Validators.required],
+			porcentagemAdm: [this.data?.percentualAdministracaoObra ?? null],
+			dataEmissao: [this.data?.dataEmissao ?? null],
 			dataVencimentoFatura: [this.data?.dataVencimento ?? '', Validators.required],
-			numeroNota: [this.data?.numeroNota ?? ''],
+			numeroNota: [this.data?.numeroNota ?? null],
 			anexoNf: [this.data?.anexoNf ?? null]
 		});
 
@@ -125,34 +117,7 @@ export class IssueInvoiceSidebarComponent {
 		this.onBlurDate = onBlurDate;
 
 		this.getData();
-		this.getTiposServicoObra();
 	}
-	
-	getTiposServicoObra = ():void => {
-		this.dominiosService
-			.getTiposServicoObra()
-			.pipe(first())
-			.subscribe({
-				next: (response) => {
-					response?.data.forEach((servico: any) => {
-						this.opcoesDescricao.push({
-							label: servico.nome,
-							value: servico.id,
-						});
-					});
-
-					if(this.guidInvoice)	{
-						this.registerForm.patchValue({
-							descricao: this.data?.idTipoObraServicoNavigation?.id ?? ''
-						});
-					}
-
-				},
-				error(err) {
-					console.error(err);
-				},
-			});
-	};
 
 	getData = ():void => {
 		
@@ -181,16 +146,17 @@ export class IssueInvoiceSidebarComponent {
 		// 		});
 
 		this.registerForm.patchValue({
-			descricao: this.data?.idTipoObraServicoNavigation?.id,
+			guidReferencia: this.data?.guidReferencia,
+			descricao: this.data?.descricao,
 			valorOrcamento: this.data?.valorOrcado,
 			valorContratado: this.data?.valorContratado,
 			valorServico: this.data?.valorServico,
 			dataEmissao: this.data?.dataEmissao ? new Date(this.data?.dataEmissao) : '',
-			numeroNota: this.data?.numeroNota,
+			numeroNota: this.data?.numeroNota ?? null,
 			dataVencimentoFatura: this.data?.dataVencimento
 				? new Date(this.data?.dataVencimento)
 				: '',
-			porcentagemAdm: this.data?.percentualAdministracaoObra,
+			porcentagemAdm: this.data?.percentualAdministracaoObra ?? null,
 		});
 
 	};
@@ -231,5 +197,4 @@ export class IssueInvoiceSidebarComponent {
 	cancelEdit() {
 		this.cancel();
 	}
-	
 }

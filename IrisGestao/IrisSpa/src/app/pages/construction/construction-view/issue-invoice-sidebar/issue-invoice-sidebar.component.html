@@ -4,24 +4,25 @@
 	(ngSubmit)="onSubmit($event)"
 >
 	<div class="field">
-		<label for="descricao" class="block">Descrição dos serviços</label>
-		<p-dropdown
+		<label for="descricao" class="block">Descrição</label>
+		<input
 			id="descricao"
-			[options]="opcoesDescricao"
+			type="text"
 			formControlName="descricao"
 			aria-describedby="descricao-help"
-		></p-dropdown>
+			pInputText
+		/>
 		<ng-container *ngIf="checkHasError(f['descricao'])">
 			<small
 				id="descricao-help"
 				*ngIf="f['descricao'].hasError('required'); else error2"
 				class="p-error block"
 			>
-				Informe a descrição
+				Informe a descrição do serviço
 			</small>
 			<ng-template #error2>
-				<small id="descricao-help" class="p-error block">
-					Descrição dos serviços inválida
+				<small id="numeroNota-help" class="p-error block">
+					Descrição do serviço inválido
 				</small>
 			</ng-template>
 		</ng-container>
@@ -79,7 +80,7 @@
 		</ng-container>
 	</div>
 
-	<div class="field">
+	<!-- <div class="field">
 		<label for="valorServico" class="block">Valor do serviço</label>
 		<input
 			id="valorServico"
@@ -103,7 +104,7 @@
 				</small>
 			</ng-template>
 		</ng-container>
-	</div>
+	</div> -->
 
 	<div class="field">
 		<label for="dataVencimentoFatura" class="block">Data de vencimento</label>

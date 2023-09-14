@@ -172,7 +172,7 @@ export class RentContractEditComponent {
 						5
 					)}-${cep.slice(5)}`;
 */
-					this.data = event.data[0];
+					this.data = event.data;
 
 					this.imovel = this.data.imovelAlugado[0];
 					this.imoveisCadastrados = this.data.lstImoveisVinculados;
@@ -197,6 +197,8 @@ export class RentContractEditComponent {
 					this.isCpf = cliente.cpfCnpj.length <= 11;
 
 					this.editForm.controls['valueInfo'].patchValue({
+						name : this.data.numeroContrato,
+						netValue: this.data.valorAluguelLiquido,
 						taxRetention: this.data.percentualRetencaoImpostos,
 						discount: this.data.percentualDescontoAluguel,
 						readjust: this.data.indiceReajuste.id,

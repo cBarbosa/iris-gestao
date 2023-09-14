@@ -295,7 +295,8 @@ public class ContratoAluguelService: IContratoAluguelService
         DateTime DateRefEnd,
         int? IdLocador)
     {
-        var retorno = await contratoAluguelRepository.GetDashboardTotalManagedArea(DateRefInit, DateRefEnd, IdLocador);
+        var retorno = await contratoAluguelRepository
+                .GetDashboardTotalManagedArea(DateRefInit, DateRefEnd, IdLocador);
     
         return retorno != null
             ? new CommandResult(true, SuccessResponseEnums.Success_1005, retorno)

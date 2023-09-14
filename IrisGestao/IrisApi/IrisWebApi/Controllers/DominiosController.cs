@@ -18,7 +18,6 @@ public class DominiosController : Controller
     private readonly ITipoEventoService tipoEventoService;
     private readonly ITipoClienteService tipoClienteService;
     private readonly ITipoCreditoAluguelService tipoCreditoAluguelService;
-    private readonly IObraService obraService;
 
     public DominiosController(ICategoriaImovelService categoriaImovelService,
                               IIndiceReajusteService indiceReajusteService,
@@ -29,8 +28,7 @@ public class DominiosController : Controller
                               ITipoDespesaService tipoDespesaService,
                               ITipoEventoService tipoEventoService,
                               ITipoClienteService tipoClienteService,
-                              ITipoCreditoAluguelService tipoCreditoAluguelService,
-                              IObraService obraService)
+                              ITipoCreditoAluguelService tipoCreditoAluguelService)
     {
         this.categoriaImovelService = categoriaImovelService;
         this.indiceReajusteService = indiceReajusteService;
@@ -42,7 +40,6 @@ public class DominiosController : Controller
         this.tipoEventoService = tipoEventoService;
         this.tipoClienteService = tipoClienteService;
         this.tipoCreditoAluguelService = tipoCreditoAluguelService;
-        this.obraService = obraService;
     }
 
     [HttpGet("categoria-imovel")]
@@ -88,8 +85,4 @@ public class DominiosController : Controller
     [HttpGet("bancos")]
     public async Task<IActionResult> GetBancos() =>
         Ok(await formaPagamentoService.GetBancos());
-    
-    [HttpGet("tipo-servico-obra")]
-    public async Task<IActionResult> GetTiposServicoObra() =>
-        Ok(await obraService.GetTiposServicoObra());
 }
