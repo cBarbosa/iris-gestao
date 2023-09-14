@@ -185,6 +185,34 @@ public class UnidadeService: IUnidadeService
         }
     }
 
+    public async Task<CommandResult> AlocarUnidade(Guid guid)
+    {
+        if (guid.Equals(Guid.Empty))
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
+        }
+
+        var unidade = await unidadeRepository.GetByReferenceGuid(guid);
+
+        if (unidade == null)
+        {
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+
+        unidade.UnidadeLocada = true;
+        unidade.DataUltimaModificacao = DateTime.Now;
+
+        try
+        {
+            unidadeRepository.Update(unidade);
+            return new CommandResult(true, SuccessResponseEnums.Success_1001, unidade);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, e.Message);
+            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+        }
+    }
 
     public async Task<CommandResult> Delete(int? codigo)
     {

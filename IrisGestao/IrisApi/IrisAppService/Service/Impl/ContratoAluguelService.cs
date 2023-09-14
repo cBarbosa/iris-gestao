@@ -5,6 +5,8 @@ using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -148,6 +150,11 @@ public class ContratoAluguelService: IContratoAluguelService
             return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
         }
 
+        var lstUnidadesLocadas = contratoAluguelUnidadeRepository.GetAllUnidadesByContratoAluguel(uuid);
+        if(cmd.lstImoveis != null && cmd.lstImoveis[0].lstUnidades.Count<=0)
+        {
+            return new CommandResult(false, "Não é possível manter o contrato sem Unidade(s) vinculadas!", null!);
+        }
         BindContratoAluguelData(cmd, contratoAluguel);
         contratoAluguel.IdCliente = cliente.Id;
 
@@ -155,8 +162,11 @@ public class ContratoAluguelService: IContratoAluguelService
         {
 
             contratoAluguelRepository.Update(contratoAluguel);
+            await alterarUnidades(cmd);
+
+            /*
             List<ContratoAluguelImovel> lstContratosVinculados = new List<ContratoAluguelImovel>();
-            /*var contratosVinculados = await contratoAluguelImovelRepository.GetContratoImoveisByContrato(contratoAluguel.Id);
+            var contratosVinculados = await contratoAluguelImovelRepository.GetContratoImoveisByContrato(contratoAluguel.Id);
             lstContratosVinculados = contratosVinculados.ToList();
             await AtualizaContratoAluguelImovel(contratoAluguel.Id, cmd.lstImoveis, lstContratosVinculados);
             */
@@ -456,21 +466,15 @@ public class ContratoAluguelService: IContratoAluguelService
             contratoAluguelUnidadeRepository.Insert(contratoAluguelUnidade);
         }
     }
-
-    private async Task AtualizaContratoAluguelImovel(int idContratoAluguel, List<ContratoAluguelImovelCommand> lstContratoImovel, List<ContratoAluguelImovel> lstImoveisVinculados)
+    private async Task DeletarContratoAluguelUnidades(ContratoAluguelImovelVinculadosCommand contratoUnidades)
     {
-        List<ContratoAluguelImovel> lstContratoAluguelImovel = new List<ContratoAluguelImovel>();
-        foreach (ContratoAluguelImovelCommand contratoImovel in lstContratoImovel)
+        foreach (var unidadeContrato in contratoUnidades.lstUnidades)
         {
-            var imovel = await imovelRepository.GetByReferenceGuid(contratoImovel.guidImovel);
-
-            ContratoAluguelImovel _contratoAluguelImovel = new ContratoAluguelImovel();
-            _contratoAluguelImovel.IdImovel = imovel.Id;
-            _contratoAluguelImovel.IdContratoAluguel = idContratoAluguel;
-            lstContratoAluguelImovel.Add(_contratoAluguelImovel);
+            if (unidadeContrato != null)
+            {
+                contratoAluguelUnidadeRepository.Delete(unidadeContrato.idContratoUnidade);
+            }
         }
-        var list3 = lstImoveisVinculados.Except(lstContratoAluguelImovel).ToList();
-        var list4 = lstContratoAluguelImovel.Except(lstImoveisVinculados).ToList();
     }
     
     private static void BindContratoAluguelData(CriarContratoAluguelCommand cmd, ContratoAluguel ContratoAluguel)
@@ -581,6 +585,58 @@ public class ContratoAluguelService: IContratoAluguelService
             msgRetorno += "Não é possível gravar contrato de Aluguel sem seleção de imóvel";
 
         return msgRetorno;
+    }
+
+    private async Task alterarUnidades(CriarContratoAluguelCommand cmd)
+    {
+        ContratoAluguelImovelVinculadosCommand imoveisParaRemover = new ContratoAluguelImovelVinculadosCommand();
+
+        #region Unidades Adicionadas
+        foreach (var unidadeVinculada in cmd.lstImoveisVinculados[0].lstUnidades)
+        {
+            if (!cmd.lstImoveis[0].lstUnidades.Contains(unidadeVinculada.guidUnidade))
+            {
+                imoveisParaRemover.lstUnidades = new List<ContratoAluguelUnidadesCommand>();
+                ContratoAluguelUnidadesCommand unidadeRemover = new ContratoAluguelUnidadesCommand();
+                
+                imoveisParaRemover.guidImovel = cmd.lstImoveisVinculados[0].guidImovel;
+
+                unidadeRemover.idContratoUnidade = unidadeVinculada.idContratoUnidade;
+                unidadeRemover.guidUnidade = unidadeVinculada.guidUnidade;
+
+                imoveisParaRemover.lstUnidades.Add(unidadeRemover);
+            }
+        }
+
+        if (imoveisParaRemover.lstUnidades != null && imoveisParaRemover.lstUnidades.Count > 0)
+        {
+            await DeletarContratoAluguelUnidades(imoveisParaRemover);
+            foreach (var unidadeUpdate in imoveisParaRemover.lstUnidades)
+            {
+                await unidadeService.LiberarUnidade(unidadeUpdate.guidUnidade);
+            }
+        }
+        #endregion
+
+        #region Unidades Adicionadas
+        List<Guid> lstUnidadesVinculadas = new List<Guid>();
+        var imovelEditado = cmd.lstImoveisVinculados.Where(x => x.guidImovel == cmd.lstImoveis[0].guidImovel).SingleOrDefault();
+        foreach (var unidadeVinculada in imovelEditado.lstUnidades)
+        {
+            lstUnidadesVinculadas.Add(unidadeVinculada.guidUnidade);
+        }
+
+        List<Guid> lstGuidUnidadesParaAdd = cmd.lstImoveis[0].lstUnidades.Except(lstUnidadesVinculadas).ToList();
+
+        if (lstGuidUnidadesParaAdd != null && lstGuidUnidadesParaAdd.Count > 0)
+        {
+            await CriaContratoAluguelUnidades(imovelEditado.idContratoImovel, lstGuidUnidadesParaAdd);
+            foreach (var unidadeUpdate in lstGuidUnidadesParaAdd)
+            {
+                await unidadeService.AlocarUnidade(unidadeUpdate);
+            }
+        }
+        #endregion
     }
 
     private static double calculaValorLiquido(double valorAluguel, double? percentualDesconto, double percentualImpostos, bool reajuste = false)

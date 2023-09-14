@@ -1,3 +1,5 @@
+import { ReportSupplyContractsRoutingModule } from "src/app/pages/report/report-supply-contracts/report-supply-contracts-routing.module";
+
 export type ContratoAluguel = {
 	guidCliente: string;
 	idTipoCreditoAluguel: number;
@@ -20,4 +22,13 @@ export type ContratoAluguel = {
 		guidImovel: string;
 		lstUnidades: string[];
 	}[];
+	lstImoveisVinculados: {
+		guidImovel: String;
+		idContratoImovel: number;
+		lstUnidades: {
+			idContratoUnidade: number;
+			guidUnidade: string;
+			ativo: boolean
+		}[];
+	}[]; 
 };

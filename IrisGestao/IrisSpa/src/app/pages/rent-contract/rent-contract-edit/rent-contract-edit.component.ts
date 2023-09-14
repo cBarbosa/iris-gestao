@@ -29,6 +29,7 @@ export class RentContractEditComponent {
 	invalidGuid = false;
 
 	imovel: any;
+	imoveisCadastrados: any;
 
 	data: any;
 
@@ -174,6 +175,8 @@ export class RentContractEditComponent {
 					this.data = event.data[0];
 
 					this.imovel = this.data.imovelAlugado[0];
+					this.imoveisCadastrados = this.data.lstImoveisVinculados;
+					console.log('imoveisCadastrados >>  ' + JSON.stringify(this.imoveisCadastrados));
 
 					this.editForm.controls['contractInfo'].patchValue({
 						name: this.data.numeroContrato,
@@ -373,6 +376,7 @@ export class RentContractEditComponent {
 					lstUnidades: this.selectedUnits,
 				},
 			],
+			lstImoveisVinculados: this.imoveisCadastrados
 		};
 
 		console.debug('contractObj', contractObj);

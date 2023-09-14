@@ -108,6 +108,17 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                     guidReferenciaContato   = x.GuidReferencia,
                                 })
                             },
+                            lstImoveisVinculados = x.ContratoAluguelImovel.Select(x => new
+                            {
+                                idContratoImovel = x.Id,
+                                guidImovel = x.IdImovelNavigation.GuidReferencia,
+                                lstUnidades = x.ContratoAluguelUnidade.Select(y => new
+                                {
+                                    guidUnidade = y.IdUnidadeNavigation.GuidReferencia,
+                                    Ativo = y.IdUnidadeNavigation.Status,
+                                    IdContratoUnidade = y.Id
+                                }).Where(y => y.Ativo)
+                            }),
                             ImovelAlugado                   = x.ContratoAluguelImovel.Select(x => new
                             {
                                 GuidReferencia              = x.IdImovelNavigation.GuidReferencia,
