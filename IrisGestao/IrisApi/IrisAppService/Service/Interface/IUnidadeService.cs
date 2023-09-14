@@ -17,4 +17,5 @@ public interface IUnidadeService
     Task<CommandResult> AlterarStatus(Guid guid, bool status);
     Task<CommandResult> LiberarUnidade(Guid guid);
     Task<CommandResult> LiberarUnidadesLocadas(ContratoAluguel contrato);
+    Task<CommandResult> AlocarUnidade(Guid guid);
 }

@@ -544,6 +544,7 @@ export class RentContractRegisterComponent {
 					lstUnidades: p.unidades.map((u) => u.guid),
 				};
 			}),
+			lstImoveisVinculados: []
 		};
 
 		console.debug('contractObj', contractObj);
