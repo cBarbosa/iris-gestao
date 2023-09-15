@@ -128,6 +128,17 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                     c.GuidReferencia,
                 })
             },
+            lstImoveisVinculados = contratoDb.ContratoAluguelImovel.Select(imovelAlugado => new
+            {
+                idContratoImovel = imovelAlugado.Id,
+                guidImovel = imovelAlugado.IdImovelNavigation.GuidReferencia,
+                lstUnidades = imovelAlugado.ContratoAluguelUnidade.Select(unidadeAlugada => new
+                {
+                    guidUnidade = unidadeAlugada.IdUnidadeNavigation.GuidReferencia,
+                    Ativo = unidadeAlugada.IdUnidadeNavigation.Status,
+                    IdContratoUnidade = unidadeAlugada.Id
+                }).Where(unidadeAlugada => unidadeAlugada.Ativo)
+            }),
             ImovelAlugado = contratoDb.ContratoAluguelImovel.Select(imovel => new
             {
                 imovel.IdImovelNavigation.GuidReferencia,
