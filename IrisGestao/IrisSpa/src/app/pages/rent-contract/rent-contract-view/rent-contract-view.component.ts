@@ -77,6 +77,7 @@ export class RentContractViewComponent {
 			.getContractByGuid(this.guid)
 			?.pipe(first())
 			.subscribe((response: ApiResponse) => {
+				console.log('data>>', response.data);
 				this.contract = response.data;
 
 				this.taxRetention = this.contract.percentualRetencaoImpostos;
