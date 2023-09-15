@@ -52,15 +52,15 @@ export class TopbarComponent {
 				visible: this.isUserAdmin(),
 				items: [
 					{
-						label: 'Imóvel de mercado',
-						id: route.startsWith('property/mercado/') ? 'current' : '',
-						command: () => this.navigateTo('property/mercado/listing'),
-					},
-					{
 						label: 'Imóvel de carteira',
 						id: route.startsWith('property/carteira/') ? 'current' : '',
 						command: () => this.navigateTo('property/carteira/listing'),
 					},
+					{
+						label: 'Imóvel de mercado',
+						id: route.startsWith('property/mercado/') ? 'current' : '',
+						command: () => this.navigateTo('property/mercado/listing'),
+					}
 				],
 			},
 			{
@@ -206,9 +206,9 @@ export class TopbarComponent {
 						label: 'Comercial de Imóveis',
 						id: route.startsWith('/report/commercial') ? 'current' : '',
 						command: () => this.navigateTo('report/commercial'),
-					},
-				],
-			},
+					}
+				]
+			}
 		];
 	}
 

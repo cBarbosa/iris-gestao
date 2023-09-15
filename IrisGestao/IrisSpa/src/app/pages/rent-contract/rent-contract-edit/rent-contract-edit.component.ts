@@ -11,7 +11,7 @@ import { RentContractService } from 'src/app/shared/services/rent-contract.servi
 import { Utils } from 'src/app/shared/utils';
 import { PastDateValidator } from '../../../shared/validators/custom-validators';
 import { DropdownItem } from 'src/app/shared/models/types';
-import { CommonService, DominiosService } from 'src/app/shared/services';
+import { CommonService, DominiosService, ClienteService } from 'src/app/shared/services';
 import { first } from 'rxjs';
 import { ContratoAluguel } from 'src/app/shared/models/contrato-aluguel.model';
 import { Imovel } from 'src/app/shared/models';
@@ -29,6 +29,7 @@ export class RentContractEditComponent {
 	invalidGuid = false;
 
 	imovel: any;
+	imoveisCadastrados: any;
 
 	data: any;
 
@@ -79,6 +80,14 @@ export class RentContractEditComponent {
 		},
 	];
 
+	renters: DropdownItem[] = [
+		{
+			label: 'Selecione',
+			value: null,
+			disabled: true,
+		},
+	];
+
 	yesOrNo: DropdownItem[] = [
 		{
 			label: 'Sim',
@@ -105,7 +114,8 @@ export class RentContractEditComponent {
 		private activatedRoute: ActivatedRoute,
 		private rentContractService: RentContractService,
 		private commonService: CommonService,
-		private dominiosService: DominiosService
+		private dominiosService: DominiosService,
+		private clienteService: ClienteService,
 	) {}
 
 	ngOnInit() {
@@ -130,14 +140,9 @@ export class RentContractEditComponent {
 				rentValue: ['', [Validators.required]],
 			}),
 			renterInfo: this.fb.group({
-				renterName: ['', [Validators.required]],
-				renterType: [null, [Validators.required]],
-				cpfCnpj: ['', [Validators.required]],
-				email: ['', [Validators.required]],
-				telephone: ['', [Validators.required]],
+				locatario: [null, Validators.required],
 			}),
 			valueInfo: this.fb.group({
-				netValue: ['', [Validators.required]],
 				taxRetention: ['', [Validators.required]],
 				discount: ['', [Validators.required]],
 				readjust: [null, [Validators.required]],
@@ -153,6 +158,8 @@ export class RentContractEditComponent {
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
+		
+		this.getListaProprietarios();
 
 		this.rentContractService
 			.getContractByGuid(this.contractGuid)
@@ -165,9 +172,11 @@ export class RentContractEditComponent {
 						5
 					)}-${cep.slice(5)}`;
 */
-					this.data = event.data[0];
+					this.data = event.data;
 
 					this.imovel = this.data.imovelAlugado[0];
+					this.imoveisCadastrados = this.data.lstImoveisVinculados;
+					console.log('imoveisCadastrados >>  ' + JSON.stringify(this.imoveisCadastrados));
 
 					this.editForm.controls['contractInfo'].patchValue({
 						name: this.data.numeroContrato,
@@ -182,16 +191,13 @@ export class RentContractEditComponent {
 					const cliente = this.data.cliente;
 
 					this.editForm.controls['renterInfo'].patchValue({
-						renterName: cliente.nome,
-						renterType: cliente.cpfCnpj.length > 11 ? 2 : 1,
-						cpfCnpj: cliente.cpfCnpj,
-						email: cliente.email,
-						telephone: cliente.telefone,
+						locatario: this.data.cliente.guidReferencia,
 					});
 
 					this.isCpf = cliente.cpfCnpj.length <= 11;
 
 					this.editForm.controls['valueInfo'].patchValue({
+						name : this.data.numeroContrato,
 						netValue: this.data.valorAluguelLiquido,
 						taxRetention: this.data.percentualRetencaoImpostos,
 						discount: this.data.percentualDescontoAluguel,
@@ -333,14 +339,9 @@ export class RentContractEditComponent {
 				rentValue: number;
 			};
 			renterInfo: {
-				renterName: string;
-				renterType: number;
-				cpfCnpj: string;
-				email: string;
-				telephone: string;
+				locatario: string; // x
 			};
 			valueInfo: {
-				netValue: number;
 				taxRetention: string;
 				discount: string;
 				prazoDesconto: number;
@@ -353,13 +354,13 @@ export class RentContractEditComponent {
 
 		console.log('form data', formData);
 
-		const contractObj: ContratoAluguel = {
-			guidCliente: this.data.cliente.guidReferencia,
+		const contractObj: ContratoAluguel = {			
+			guidCliente: formData.renterInfo.locatario,
 			idTipoCreditoAluguel: formData.valueInfo.creditTo,
 			idIndiceReajuste: formData.valueInfo.readjust,
 			idTipoContrato: formData.contractInfo.contractType,
 			numeroContrato: formData.contractInfo.name,
-			valorAluguel: formData.valueInfo.netValue,
+			valorAluguel: formData.contractInfo.rentValue,
 			percentualRetencaoImpostos: +formData.valueInfo.taxRetention,
 			percentualDescontoAluguel: +formData.valueInfo.discount,
 			prazoDesconto: +formData.valueInfo.prazoDesconto,
@@ -377,6 +378,7 @@ export class RentContractEditComponent {
 					lstUnidades: this.selectedUnits,
 				},
 			],
+			lstImoveisVinculados: this.imoveisCadastrados
 		};
 
 		console.debug('contractObj', contractObj);
@@ -412,6 +414,29 @@ export class RentContractEditComponent {
 
 					this.openModal();
 				},
+			});
+	}
+
+	getListaProprietarios() {
+		this.clienteService
+			.getListaProprietarios()
+			.pipe(first())
+			.subscribe((event) => {
+				if (event) {
+					this.renters = [
+						{
+							label: 'Selecione',
+							value: null,
+							disabled: true,
+						},
+					];
+					event.data.forEach((item: any) => {
+						this.renters.push({
+							label: item.nome,
+							value: item.guidReferencia,
+						});
+					});
+				}
 			});
 	}
 

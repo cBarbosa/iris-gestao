@@ -30,11 +30,26 @@ namespace IrisGestao.Domain.Command.Request
         public int PeriodicidadeReajuste { get; set; }
         public bool Status { get; set; }
         public List<ContratoAluguelImovelCommand> lstImoveis { get; set; }
+        public List<ContratoAluguelImovelVinculadosCommand>? lstImoveisVinculados { get; set; }
     }
 
     public class ContratoAluguelImovelCommand
     {
         public Guid guidImovel { get; set; }
         public List<Guid> lstUnidades { get; set; }
+    }
+
+    public class ContratoAluguelImovelVinculadosCommand
+    {
+        public int idContratoImovel { get; set; }
+        public Guid guidImovel { get; set; }
+        public List<ContratoAluguelUnidadesCommand> lstUnidades { get; set; }
+    }
+
+    public class ContratoAluguelUnidadesCommand
+    {
+        public int idContratoUnidade { get; set; }
+        public Guid guidUnidade { get; set; }
+        public Boolean  ativo { get; set; }
     }
 }
