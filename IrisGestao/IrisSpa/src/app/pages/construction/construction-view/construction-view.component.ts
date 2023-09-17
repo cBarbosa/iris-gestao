@@ -111,26 +111,22 @@ export class ConstructionViewComponent {
 
 	getByIdConstruction() {
 		this.isLoadingView = true;
+		this.construction = null;
 		this.constructionService
 			.getConstructionByGuid(this.guid)
 			.pipe(first())
 			.subscribe({
 				next: (event: any) => {
 					if (event.success) {
-						this.construction = event.data[0];
+						this.construction = event.data;
 						this.imageList = event.imagens ?? [];
 						//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
 						// this.properties = [...event.data.imovel];
-						this.propertyGuid = event.data[0].imovel?.guidReferencia as string;
-
-					} else {
-						this.construction = null;
+						this.propertyGuid = event.data.imovel?.guidReferencia as string;
 					}
-					this.isLoadingView = false;
 				},
 				error: (err) => {
 					this.construction = null;
-					this.isLoadingView = false;
 				},
 				complete: () => {
 					this.isLoadingView = false;
