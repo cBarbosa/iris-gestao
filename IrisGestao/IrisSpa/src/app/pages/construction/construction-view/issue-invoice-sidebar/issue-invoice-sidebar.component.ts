@@ -72,7 +72,7 @@ export class IssueInvoiceSidebarComponent {
 		descricao: string;
 		valorOrcado: number;
 		valorContratado: number;
-		valorServico: number;
+		// valorServico: number;
 		dataEmissao?: Date;
 		numeroNota: string;
 		dataVencimento: Date;
@@ -104,7 +104,7 @@ export class IssueInvoiceSidebarComponent {
 			descricao: [this.data?.descricao ?? null, Validators.required],
 			valorOrcamento: [this.data?.valorOrcado ?? '', Validators.required],
 			valorContratado: [this.data?.valorContratado ?? '', Validators.required],
-			valorServico: [this.data?.valorServico ?? '', Validators.required],
+			// valorServico: [this.data?.valorServico ?? '', Validators.required],
 			porcentagemAdm: [this.data?.percentualAdministracaoObra ?? null],
 			dataEmissao: [this.data?.dataEmissao ?? null],
 			dataVencimentoFatura: [this.data?.dataVencimento ?? '', Validators.required],
@@ -124,33 +124,12 @@ export class IssueInvoiceSidebarComponent {
 		if(!this.guidInvoice)
 			return;
 
-		// this.constructionService
-		// 		.getConstructionInvoiceByGuid(this.guidInvoice)
-		// 		.pipe(first())
-		// 		.subscribe({
-		// 			next: (response) => {
-		// 				const [data] = response.data;
-		// 				this.registerForm.patchValue({
-		// 					descricao: data.tipoServico?.idTipoServico,
-		// 					valorOrcamento: data.valorOrcado,
-		// 					valorContratado: data.valorContratado,
-		// 					valorServico: data.valorServico,
-		// 					dataEmissao: data.dataEmissao ? new Date(data.dataEmissao) : '',
-		// 					numeroNota: data.numeroNota,
-		// 					dataVencimentoFatura: data.dataVencimento
-		// 						? new Date(data.dataVencimento)
-		// 						: '',
-		// 					porcentagemAdm: data.percentualAdministracaoObra,
-		// 				});
-		// 			},
-		// 		});
-
 		this.registerForm.patchValue({
 			guidReferencia: this.data?.guidReferencia,
 			descricao: this.data?.descricao,
 			valorOrcamento: this.data?.valorOrcado,
 			valorContratado: this.data?.valorContratado,
-			valorServico: this.data?.valorServico,
+			// valorServico: this.data?.valorServico,
 			dataEmissao: this.data?.dataEmissao ? new Date(this.data?.dataEmissao) : '',
 			numeroNota: this.data?.numeroNota ?? null,
 			dataVencimentoFatura: this.data?.dataVencimento
@@ -171,6 +150,16 @@ export class IssueInvoiceSidebarComponent {
 
 	onSubmit(e: any) {
 
+		console.log(e);
+
+		console.log(this.registerForm.invalid);
+
+		console.log(this.registerForm);
+
+		console.log(this.onSubmitForm);
+
+		console.log(this.registerOnSubmit);
+
 		if (this.registerForm.invalid) {
 			this.registerForm.markAllAsTouched();
 			return;
@@ -182,8 +171,6 @@ export class IssueInvoiceSidebarComponent {
 			formValues: formObj,
 			invoiceFile: this.selectedFile,
 		};
-
-		console.log('on register', valuesObj);
 
 		if (this.onSubmitForm) this.onSubmitForm(valuesObj);
 

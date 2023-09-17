@@ -245,8 +245,12 @@
 			{
 				label: 'Data da emissão',
 				data: serviceSelected?.dataEmissao,
-				pipe: cardPipes['date'],
-				span: true
+				pipe: cardPipes['date']
+			},
+			{
+				label: 'Data da vencimento',
+				data: serviceSelected?.dataVencimento,
+				pipe: cardPipes['date']
 			},
 			{
 				label: 'Valor orçado',
@@ -256,11 +260,6 @@
 			{
 				label: 'Valores contratados',
 				data: serviceSelected?.valorContratado,
-				pipe: cardPipes['currency']
-			},
-			{
-				label: 'Valor líquido',
-				data: serviceSelected?.valorServico,
 				pipe: cardPipes['currency']
 			},
 			{
