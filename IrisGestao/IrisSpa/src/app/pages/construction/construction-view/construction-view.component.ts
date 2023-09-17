@@ -208,8 +208,6 @@ export class ConstructionViewComponent {
 							isError: false,
 						};
 
-						this.editSuccess = true;
-
 						const formData = new FormData();
 
 						formData.append('files', values.invoiceFile);
@@ -218,7 +216,9 @@ export class ConstructionViewComponent {
 							this.serviceSelected.guidReferencia,
 							formData,
 							'outrosdocs'
-						);
+						).subscribe(result => console.log(result));
+
+						this.editSuccess = true;
 					} else {
 						this.modalContent = {
 							header: 'Edição não realizado',
@@ -243,8 +243,6 @@ export class ConstructionViewComponent {
 
 	onInvoiceRegisterSubmit = (values: any) => {
 
-		console.log(values);
-
 		const formObj: {
 			Descricao: string;
 			NumeroNota: string;
@@ -268,7 +266,7 @@ export class ConstructionViewComponent {
 		};
 
 		this.constructionService
-			.registerObraServico(this.serviceSelected.guidReferencia, formObj)
+			.registerObraServico(this.guid, formObj)
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
@@ -287,10 +285,10 @@ export class ConstructionViewComponent {
 						formData.append('files', values.invoiceFile);
 
 						this.anexoService.registerFile(
-							this.serviceSelected.guidReferencia,
+							response.data?.guidReferencia,
 							formData,
 							'outrosdocs'
-						);
+						).subscribe(result => console.log(result));
 					} else {
 						this.modalContent = {
 							header: 'Cadastro não realizado',
@@ -302,7 +300,7 @@ export class ConstructionViewComponent {
 				error: (err) => {
 					console.error(err);
 					this.modalContent = {
-						header: 'Edição não realizado',
+						header: 'Cadastro não realizado',
 						message: err ?? '',
 						isError: true,
 					};
