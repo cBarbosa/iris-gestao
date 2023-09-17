@@ -76,6 +76,7 @@ public class ObraRepository : Repository<Obra>, IObraRepository
             .ThenInclude(x => x.IdUnidadeNavigation)
             .ThenInclude(x => x.IdTipoUnidadeNavigation)
             .Include(x => x.ObraServico)
+            .Where(x => x.GuidReferencia.Equals(uuid))
             .Select(x => new
             {
                 x.GuidReferencia,
@@ -112,7 +113,7 @@ public class ObraRepository : Repository<Obra>, IObraRepository
                         x.Descricao
                     })
             })
-            .ToListAsync();
+            .SingleOrDefaultAsync();
     }
     
     public async Task<int?> InsertObraUnidade(ObraUnidade obraUnidade)

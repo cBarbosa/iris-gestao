@@ -29,4 +29,5 @@ public interface IContratoAluguelService
     Task<CommandResult> GetReportDimob(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idLocatario);
     Task<CommandResult> GetReportCommercial(DateTime dateRefInit, DateTime dateRefEnd, int? idImovel, int? idLocador, int? idLocatario);
     Task<CommandResult> GetReportRentContract(int? idImovel, int? idLocador, int?idLocatario);
+    Task<CommandResult> GetDashboardTotalManagedAreaStack(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador);
 }

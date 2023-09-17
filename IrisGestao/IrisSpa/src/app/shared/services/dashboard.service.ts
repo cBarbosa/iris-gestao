@@ -174,4 +174,34 @@ export class DashboardService {
 
 	};
 
+	getManagedAreaStack(
+		DateRefInit: string,
+		DateRefEnd: string,
+		IdLocador?: number
+	) {
+		const optionalClause:any = {};
+
+		if(IdLocador) {
+			optionalClause.IdLocador=IdLocador;
+		}
+
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Dashboard/total-managed-area-stack`, {
+				params: {
+					DateRefInit,
+					DateRefEnd,
+					...optionalClause
+				},
+			})
+			.pipe(
+				map((response) => {
+					console.log('getManagedAreaStack response', response);
+					if (!response.success)
+						console.error(`getManagedAreaStack: ${response.message}`);
+					return response;
+				})
+			);
+
+	};
+
 }

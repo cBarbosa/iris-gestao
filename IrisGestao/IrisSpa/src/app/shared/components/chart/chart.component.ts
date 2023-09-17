@@ -113,6 +113,7 @@ export class ChartComponent {
 					grid: {
 						display: false,
 					},
+					stacked: this.opt ? true :  false,
 				},
 				y: {
 					position: 'right',
@@ -129,6 +130,7 @@ export class ChartComponent {
 					border: {
 						dash: [8, 5],
 					},
+					stacked: this.opt ? true :  false,
 				},
 			},
 		};
