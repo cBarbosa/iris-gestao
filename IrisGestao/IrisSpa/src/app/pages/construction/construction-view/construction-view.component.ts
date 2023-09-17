@@ -243,10 +243,6 @@ export class ConstructionViewComponent {
 
 	onInvoiceRegisterSubmit = (values: any) => {
 
-		console.log(values);
-
-		console.log(this.serviceSelected);
-
 		const formObj: {
 			Descricao: string;
 			NumeroNota: string;

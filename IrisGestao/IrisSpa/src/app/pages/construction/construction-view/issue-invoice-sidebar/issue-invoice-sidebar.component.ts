@@ -150,16 +150,6 @@ export class IssueInvoiceSidebarComponent {
 
 	onSubmit(e: any) {
 
-		console.log(e);
-
-		console.log(this.registerForm.invalid);
-
-		console.log(this.registerForm);
-
-		console.log(this.onSubmitForm);
-
-		console.log(this.registerOnSubmit);
-
 		if (this.registerForm.invalid) {
 			this.registerForm.markAllAsTouched();
 			return;
