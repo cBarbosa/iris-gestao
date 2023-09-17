@@ -104,7 +104,6 @@
 				<ng-template pTemplate="header">
 					<tr *ngIf="!isLoadingConstructions && !noRestults">
 						<th>Nome da obra</th>
-						<th>Prédio de referência</th>
 						<th>Imóvel de referência</th>
 						<th>Valor da obra</th>
 						<th>Previsão de término</th>
@@ -115,7 +114,6 @@
 				<ng-template pTemplate="body" let-construction>
 					<tr>
 						<td class="font-bold">{{ construction.nomeObra }}</td>
-						<td>{{ construction.predio }}</td>
 						<td>{{ construction.imovel }}</td>
 						<td>{{ construction.valor }}</td>
 						<td>{{ construction.dataFim | date : "shortDate" }}</td>

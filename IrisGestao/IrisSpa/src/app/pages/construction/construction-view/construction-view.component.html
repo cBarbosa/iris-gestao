@@ -19,9 +19,9 @@
 						<div class="actions">
 							<app-progress-bar
 								[title]="
-									'Obra ' + construction?.percentual * 100 + '% concluída'
+									'Obra ' + (construction?.percentual ?? 0) + '% concluída'
 								"
-								[value]="construction?.percentual * 100"
+								[value]="construction?.percentual"
 								class="progress-bar"
 							></app-progress-bar>
 							<button
@@ -95,7 +95,7 @@
 				</div>
 			</section>
 
-			<section class="services" *ngIf="construction?.notasFiscais?.length > 0">
+			<section class="services">
 				<header class="flex justify-between flex-wrap items-start mb-5">
 					<h2 class="mb-2">Histórico de serviços</h2>
 					<button
@@ -111,8 +111,8 @@
 				</header>
 
 				<p-table
-					*ngIf="!isMobile; else servicesCardListTemplate"
-					[value]="construction?.notasFiscais"
+					*ngIf="!isMobile && construction?.servicos?.length > 0; else servicesCardListTemplate"
+					[value]="construction?.servicos"
 					styleClass="p-datatable-striped"
 					[tableStyle]="{ 'min-width': '50rem' }"
 				>
@@ -128,7 +128,7 @@
 					</ng-template>
 					<ng-template pTemplate="body" let-service>
 						<tr>
-							<td>{{ tiposServicos[service.idTipoServico] }}</td>
+							<td>{{ service.descricao }}</td>
 							<td>{{ service.valorOrcado | currency }}</td>
 							<td>{{ service.valorContratado | currency }}</td>
 							<td>{{ service.valorServico | currency }}</td>
@@ -178,7 +178,7 @@
 									infos: [
 										{
 											label: 'Serviço',
-											data: service.idTipoServico
+											data: service.descricao
 										},
 										{
 											label: 'Valores estimados orçados',
@@ -235,9 +235,12 @@
 </ng-template>
 
 <p-sidebar [(visible)]="serviceDetailsVisible" position="right">
+	<ng-template pTemplate="header">
+		<h2 class="text-xl font-bold">Detalhe do serviço</h2>
+	</ng-template>
 	<app-detail-sidebar
 		[data]="[
-			{ label: 'Serviço', data: serviceSelected?.idTipoServico, span: true },
+			{ label: 'Serviço', data: serviceSelected?.descricao, span: true },
 			{ label: 'Número da NF', data: serviceSelected?.numeroNota, span: true },
 			{
 				label: 'Data da emissão',
@@ -262,7 +265,7 @@
 			},
 			{
 				label: 'T.A. da obra',
-				data: serviceSelected?.percentualAdministracaoObra,
+				data: serviceSelected?.percentualAdministracaoObra / 100.0,
 				pipe: cardPipes['percent']
 			}
 		]"
@@ -285,18 +288,49 @@
 </p-sidebar>
 
 <p-sidebar [(visible)]="issueInvoiceVisible" position="right">
+	<ng-template pTemplate="header">
+		<h2 class="text-xl font-bold">Editar serviço</h2>
+	</ng-template>
 	<ng-template pTemplate="content">
 		<app-issue-invoice-sidebar
 			[guidInvoice]="serviceSelected?.guidReferencia"
+			[data]="serviceSelected"
 			[onSubmitForm]="onInvoiceEditSubmit"
+			[cancel]="hideIssueInvoice"
 		></app-issue-invoice-sidebar
 	></ng-template>
 </p-sidebar>
 
 <p-sidebar [(visible)]="registerInvoiceVisible" position="right">
+	<ng-template pTemplate="header">
+		<h2 class="text-xl font-bold">Registrar serviço</h2>
+	</ng-template>
 	<ng-template pTemplate="content">
 		<app-issue-invoice-sidebar
 			[onSubmitForm]="onInvoiceRegisterSubmit"
+			[cancel]="hideRegisterInvoice"
 		></app-issue-invoice-sidebar
 	></ng-template>
 </p-sidebar>
+
+<app-responsive-dialog [visible]="displayModal" styleClass="form-modal">
+	<div *ngIf="!modalContent.isError; else error" class="modal-success">
+		<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+		<i class="ph-check-circle"></i>
+		<p>
+			{{ modalContent.message }}
+		</p>
+
+		<button pButton label="Continuar" (click)="closeModal()"></button>
+	</div>
+	<ng-template #error>
+		<div class="modal-error">
+			<h2 *ngIf="modalContent.header">{{ modalContent.header }}</h2>
+			<i class="ph-x-circle"></i>
+			<p>
+				{{ modalContent.message }}
+			</p>
+			<button pButton label="Continuar" (click)="closeModal()"></button>
+		</div>
+	</ng-template>
+</app-responsive-dialog>

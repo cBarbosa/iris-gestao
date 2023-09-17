@@ -372,187 +372,40 @@
 						<p-accordionTab header="Locatário">
 							<section formGroupName="renterInfo">
 								<div class="field">
-									<label for="renter-name" class="block"
-										>Nome do locatário</label
-									>
-									<input
-										id="renter-name"
-										type="text"
-										formControlName="renterName"
-										aria-describedby="renter-name-help"
-										pInputText
-									/>
-									<ng-container *ngIf="checkHasError(renterInfo['renterName'])">
+									<label for="locatario" class="block">Nome do locatário</label>
+									<p-dropdown
+										id="locatario"
+										[options]="renters"
+										[filter]="true"
+										filterBy="label"
+										optionValue="value"
+										formControlName="locatario"
+										aria-describedby="locatario-help"
+									></p-dropdown>
+									<ng-container *ngIf="checkHasError(renterInfo['locatario'])">
 										<small
-											id="renter-name-help"
+											id="locatario-help"
 											*ngIf="
-												renterInfo['renterName'].hasError('required');
-												else error2
+											renterInfo['locatario'].hasError('required');
+											else error2
 											"
 											class="p-error block"
 										>
 											Informe o nome do locatário
 										</small>
 										<ng-template #error2>
-											<small id="renter-name-help" class="p-error block">
+											<small id="locatario-help" class="p-error block">
 												Nome do locatário inválido
 											</small>
 										</ng-template>
-									</ng-container>
-								</div>
-
-								<div class="field">
-									<label for="renter-type" class="block">
-										Tipo de locatário
-									</label>
-									<p-dropdown
-										id="renter-type"
-										[options]="renterTypes"
-										formControlName="renterType"
-										aria-describedby="renter-type-help"
-										(onChange)="setIsCpf()"
-									></p-dropdown>
-									<ng-container
-										*ngIf="checkHasError(contractInfo['renterType'])"
-									>
-										<small
-											id="renter-type-help"
-											*ngIf="
-												contractInfo['renterType'].hasError('required');
-												else error2
-											"
-											class="p-error block"
-										>
-											Informe o tipo de locatário
-										</small>
-										<ng-template #error2>
-											<small id="renter-type-help" class="p-error block">
-												Tipo de locatário inválido
-											</small>
-										</ng-template>
-									</ng-container>
-								</div>
-
-								<div class="field">
-									<label for="cpf-cnpj" class="block">{{
-										isCpf ? "CPF" : "CNPJ"
-									}}</label>
-									<input
-										id="cpf-cnpj"
-										type="text"
-										formControlName="cpfCnpj"
-										[mask]="isCpf ? '000.000.000-00' : '00.000.000/0000-00'"
-										aria-describedby="cpf-cnpj-help"
-										pInputText
-									/>
-									<ng-container *ngIf="checkHasError(renterInfo['cpfCnpj'])">
-										<small
-											id="cpf-cnpj-help"
-											*ngIf="
-												renterInfo['cpfCnpj'].hasError('required');
-												else error2
-											"
-											class="p-error block"
-										>
-											Informe o CPF
-										</small>
-										<ng-template #error2>
-											<small id="cpf-cnpj-help" class="p-error block">
-												CPF inválido
-											</small>
-										</ng-template>
-									</ng-container>
-								</div>
-
-								<div class="field">
-									<label for="email" class="block">Email</label>
-									<input
-										id="email"
-										type="text"
-										formControlName="email"
-										aria-describedby="email-help"
-										pInputText
-									/>
-									<ng-container *ngIf="checkHasError(renterInfo['email'])">
-										<small
-											id="email-help"
-											*ngIf="
-												renterInfo['email'].hasError('required');
-												else error2
-											"
-											class="p-error block"
-										>
-											Informe o email
-										</small>
-										<ng-template #error2>
-											<small id="email-help" class="p-error block">
-												Email inválido
-											</small>
-										</ng-template>
-									</ng-container>
-								</div>
-
-								<div class="field">
-									<label for="telephone" class="block">Telefone</label>
-									<input
-										id="telephone"
-										type="text"
-										formControlName="telephone"
-										aria-describedby="telephone-help"
-										mask="(00) 0000-0000||(00) 0 000-0000"
-										pInputText
-									/>
-									<ng-container *ngIf="checkHasError(renterInfo['telephone'])">
-										<small
-											id="telephone-help"
-											*ngIf="
-												renterInfo['telephone'].hasError('required');
-												else error2
-											"
-											class="p-error block"
-										>
-											Informe o telefone
-										</small>
-										<ng-template #error2>
-											<small id="telephone-help" class="p-error block">
-												Telefone inválido
-											</small>
-										</ng-template>
-									</ng-container>
+									</ng-container> 
 								</div>
 							</section>
 						</p-accordionTab>
 
 						<p-accordionTab header="Taxas e valores">
 							<section formGroupName="valueInfo">
-								<div class="field">
-									<label for="net-value" class="block">Valor líquido</label>
-									<input
-										id="net-value"
-										type="text"
-										formControlName="netValue"
-										aria-describedby="net-value-help"
-										currencyMask
-										pInputText
-									/>
-									<ng-container *ngIf="checkHasError(valueInfo['netValue'])">
-										<small
-											id="net-value-help"
-											*ngIf="
-												valueInfo['netValue'].hasError('required');
-												else error2
-											"
-											class="p-error block"
-										>
-											Informe o valor líquido
-										</small>
-										<ng-template #error2>
-											<small id="net-value-help" class="p-error block">
-												Valor líquido inválido
-											</small>
-										</ng-template>
-									</ng-container>
-								</div>
+								
 
 								<div class="field">
 									<label for="tax-retention" class="block">

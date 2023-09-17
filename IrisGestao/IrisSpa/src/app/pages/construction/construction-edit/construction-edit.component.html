@@ -28,7 +28,7 @@
 						<input
 							id="name"
 							type="text"
-							[value]="constructionProperty?.unidade?.[0]?.idTipoUnidadeNavigation?.nome ?? ''"
+							[value]="constructionProperty.idCategoriaImovelNavigation?.nome ?? ''"
 							aria-describedby="name-help"
 							maxlength="100"
 							pInputText
@@ -41,7 +41,7 @@
 						<input
 							id="name"
 							type="text"
-							[value]="constructionProperty?.unidade?.[0]?.tipo ?? ''"
+							[value]="constructionProperty.nome ?? ''"
 							aria-describedby="name-help"
 							maxlength="100"
 							pInputText
@@ -53,9 +53,32 @@
 						<img src="../../../../assets/images/imovel.png" alt="edit-photo" />
 					</div>
 
-					<h5>Ed. José Maria Lopes</h5>
-					<p>SQS 415 Bloco C</p>
-					<p><span class="icon file mr-2">&nbsp;</span>Edifício corporativo</p>
+					<h4>{{ constructionProperty.nome ?? "Não informado" }}</h4>
+					<span>
+						<ng-container
+							*ngIf="enderedoImovel;else naoInformado"
+						>
+							{{ enderedoImovel }}
+						</ng-container>
+						<ng-template #naoInformado>
+							<span class="italic text-gray-400">Endereço não informado</span>
+						</ng-template>
+					</span>
+					<br />
+					<span
+						>{{constructionProperty.idCategoriaImovelNavigation?.nome ?? 'Não informado'}}</span
+					>
+
+					<h5 class="mt-3">Unidade</h5>
+					<app-unit-select
+						[propertyGuid]="constructionProperty.guidReferencia"
+						[currentUnits]="units"
+						(selectedEvent)="setSelectedUnits($event)"
+						*ngIf="constructionGuid"
+					></app-unit-select>
+
+					<h5 class="mt-3">Anexos</h5>
+					<app-upload-list [guid]="constructionGuid"></app-upload-list>
 				</section>
 
 				<section class="aditional-data">
@@ -307,7 +330,7 @@
 											*ngFor="let photo of constructionPhotos; index as i"
 										>
 											<div class="photo">
-												<img [src]="photo.data" [alt]="photo.name" />
+												<img [src]="photo.data" [alt]="photo.name" alt="photo" />
 												<button pButton type="button" (click)="removePhoto(i)">
 													<i class="ph-trash"></i>
 												</button>
@@ -317,7 +340,7 @@
 											*ngFor="let photo of addedConstructionPhotos; index as i"
 										>
 											<div class="photo">
-												<img [src]="photo.data" [alt]="photo.name" />
+												<img [src]="photo.data" [alt]="photo.name" alt="photo" />
 												<button
 													pButton
 													type="button"

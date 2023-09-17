@@ -86,7 +86,7 @@ export class TopbarComponent {
 				],
 			},
 			{
-				label: 'Gerenciamento de obras',
+				label: 'Obras',
 				id: route.startsWith('/construction/') ? 'current' : '',
 				command: () => this.navigateTo('construction/listing'),
 			},

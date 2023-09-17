@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChartComponent } from 'src/app/shared/components/chart/chart.component';
-import { first } from 'rxjs';
+import { first, firstValueFrom } from 'rxjs';
 import { DropdownItem } from 'src/app/shared/models/types';
 import { LoginService, RentContractService } from 'src/app/shared/services';
 import { DashboardService } from 'src/app/shared/services/dashboard.service';
@@ -90,18 +90,13 @@ export class ManagedAreaComponent {
 			const startDate = new Date(this.filterPeriodo[0]);
 			startDate.setDate(1);
 			const endDate = new Date(this.filterPeriodo[1]);
-			endDate.setDate(
-				Utils.getDaysInMonth(
-					this.filterPeriodo[1].getMonth() + 1,
-					this.filterPeriodo[1].getFullYear()
-				)
-			);
+			endDate.setDate(1);
 
 			const startDateString = startDate.toISOString().split('T')[0];
 			const endDateString = endDate.toISOString().split('T')[0];
 			const idLocador = this.filterLocador ?? null;
 
-			this.getManagedAreaData(startDateString, endDateString, idLocador);
+			this.getGroupResult(startDateString, endDateString, idLocador);
 		}
 	};
 
@@ -127,7 +122,7 @@ export class ManagedAreaComponent {
 				{
 					type: 'bar',
 					label: 'Total m² gerenciados',
-					backgroundColor: `#641B1E`,
+					// backgroundColor: `#641B1E`,
 					data: []
 				}
 			]
@@ -145,43 +140,107 @@ export class ManagedAreaComponent {
 		this.getOwnersListData();
 	};
 
-	getManagedAreaData(
+	getGroupResult = (
+		startDateString: string,
+		endDateString: string,
+		IdLocador?: number):void => {
+
+		Promise.all([
+			this.getManagedAreaData(startDateString, endDateString, IdLocador),
+			this.getManagedAreaStackData(startDateString, endDateString, IdLocador)
+		]).then(([managedArea, managedAreaStack]) => {
+
+			this.data.datasets = [];
+		 	this.data.labels = [];
+
+			this.dataDoughnut.datasets = [];
+			let arrayManagedStackFinal: Array<any> = [];
+
+			if(managedArea.success) {
+				managedArea.data.forEach((item: { title: string, percent: number, color: string }) => {
+					this.dataDoughnut.datasets.push({
+						color: item.color,
+						percent: item.percent,
+						title: item.title
+					});
+				});
+			}
+
+			if(managedAreaStack.success)	{
+
+				const distinctCompanies = managedAreaStack.data.filter(
+					(thing:any, i:number, arr:[]) => arr.findIndex((t:any) => t.nomeLocador === thing.nomeLocador) === i
+				).map((k:any) => k.nomeLocador);
+
+				managedAreaStack.data.forEach((item: { periodo: string, nomeLocador: string, valor: number }) => {
+
+					if(!this.data.labels.find(i => i === item.periodo)) {
+						this.data.labels.push(item.periodo);
+
+						let arrayCompany: Array<any> = [];
+
+						distinctCompanies.forEach((comp:any) => {
+
+							const hasValue = managedAreaStack.data.find((x:any) =>
+								x.periodo === item.periodo && x.nomeLocador === comp
+							);
+
+							const valued = hasValue
+								? {nomeLocador: comp, periodo: item.periodo, valor: hasValue.valor}
+								: {nomeLocador: comp, periodo: item.periodo, valor: 0};
+
+							arrayCompany.push(valued);
+							arrayManagedStackFinal.push(valued);
+						});
+					}
+				});
+
+				distinctCompanies.forEach((element:any) => {
+					const itemsArray = arrayManagedStackFinal
+						.filter(x => x.nomeLocador === element)
+						.map(y => y);
+
+					this.data.datasets.push(
+					{
+						type: 'bar',
+						label: element,
+						opt: 1,
+						data: itemsArray.map(x => x.valor)
+					});
+				});
+			}
+		})
+		.finally(() => this.isLoading = false);
+	};
+
+	getManagedAreaData = async (
 		startDateString: string,
 		endDateString: string,
 		IdLocador?: number)
-	: void {
+	: Promise<any> => {
 
 		if(!this.locadorComboEnabled)	{
 			IdLocador = this.loginService.usuarioLogado.id;
 		}
 
-		this.dashboardService
+		return firstValueFrom(this.dashboardService
 			.getManagedArea(startDateString, endDateString, IdLocador)
-			.pipe(first())
-			.subscribe({
-				next: (event) => {
+		);
+	};
 
-					this.data.datasets[0].data = [];
-					this.data.labels = [];
-					this.dataDoughnut.datasets = [];
+	getManagedAreaStackData = async (
+		startDateString: string,
+		endDateString: string,
+		IdLocador?: number)
+	: Promise<any> => {
 
-					event.data.forEach((item: { title: string, percent: number, color: string }) => {
-						this.data.labels.push(item.title);
-						this.data.datasets[0].data.push(item.percent);
-						this.dataDoughnut.datasets.push({
-							color: item.color,
-							percent: item.percent,
-							title: item.title
-						});
-					});
-				},
-				error: () => {
-					console.error(console.error);
-				},
-				complete: () => {
-					this.isLoading = false;
-				}
-			});
+		if(!this.locadorComboEnabled)	{
+			IdLocador = this.loginService.usuarioLogado.id;
+		}
+
+		return firstValueFrom(this.dashboardService
+			.getManagedAreaStack(startDateString, endDateString, IdLocador)
+		);
 	};
 
 	truncateChar(text: string): string {

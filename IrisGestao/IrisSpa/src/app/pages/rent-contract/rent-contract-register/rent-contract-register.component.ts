@@ -544,6 +544,7 @@ export class RentContractRegisterComponent {
 					lstUnidades: p.unidades.map((u) => u.guid),
 				};
 			}),
+			lstImoveisVinculados: []
 		};
 
 		console.debug('contractObj', contractObj);
@@ -605,7 +606,10 @@ export class RentContractRegisterComponent {
 				name: string;
 			}[];
 		} = this.propertyAddForm.getRawValue();
-
+		console.log('Unidade selecionada >> ' + formData.unidade)
+		if(formData.unidade === null){
+			return;
+		}
 		if (this.editingLinkedProperty === null) {
 			const isDuplicate = this.linkedProperties.some(({ unidades }) => {
 				return unidades.some(({ guid: linkedGuid }) => {
@@ -632,11 +636,11 @@ export class RentContractRegisterComponent {
 				tipo: 'Edifício Coorporativo',
 				unidades: formData.unidade,
 			});
-
+			
 			this.linkedProperties = [...this.linkedProperties];
 		}
 
-		if (this.linkedProperties.length !== 0) {
+		if (this.linkedProperties.length !== 0 || formData.unidade == null) {
 			this.linkedPropertiesInvalid = false;
 		}
 
