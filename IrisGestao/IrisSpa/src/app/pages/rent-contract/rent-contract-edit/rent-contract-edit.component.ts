@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RentContractService } from 'src/app/shared/services/rent-contract.service';
+import { UnidadeService } from 'src/app/shared/services/unidade.service';
 import { Utils } from 'src/app/shared/utils';
 import { PastDateValidator } from '../../../shared/validators/custom-validators';
 import { DropdownItem } from 'src/app/shared/models/types';
@@ -176,8 +177,7 @@ export class RentContractEditComponent {
 
 					this.imovel = this.data.imovelAlugado[0];
 					this.imoveisCadastrados = this.data.lstImoveisVinculados;
-					console.log('imoveisCadastrados >>  ' + JSON.stringify(this.imoveisCadastrados));
-
+					
 					this.editForm.controls['contractInfo'].patchValue({
 						name: this.data.numeroContrato,
 						contractType: this.data.tipoContrato.id,
@@ -207,6 +207,7 @@ export class RentContractEditComponent {
 						creditTo: this.data.creditoAluguel.id,
 						prazoDesconto: this.data.prazoDesconto,
 					});
+					console.log('Unidades locadas >>  ' + JSON.stringify(this.data.imovelAlugado[0].unidades));
 
 					this.propertyGuid = this.data.imovelAlugado[0].guidReferencia;
 					this.units = this.data.imovelAlugado[0].unidades.map(
