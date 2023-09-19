@@ -1,0 +1,43 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+	<div class="unit-list">
+		<div
+			class="mt-1.5"
+			formArrayName="units"
+			*ngFor="let controls of unitControl.controls; let i = index"
+		>
+			<p-checkbox
+				[formControlName]="i"
+				[binary]="true"
+				(onChange)="uncheck(i)"
+			></p-checkbox>
+			<!-- <input type="checkbox" [formControlName]="i" /> -->
+			<span class="ml-2">{{ selectedUnits[i].name }}</span>
+		</div>
+
+		<ng-container *ngIf="unitControl.controls.length === 0">
+			<div class="text-gray-500 italic">Sem unidades selecionadas</div>
+		</ng-container>
+	</div>
+
+	<div class="mt-4">
+		<p-dropdown
+			id="client-type"
+			[options]="options"
+			aria-describedby="client-type-help"
+			(onChange)="selectUnit($event)"
+			*ngIf="isAdding"
+		></p-dropdown>
+
+		<button
+			pButton
+			type="button"
+			label="Adicionar unidade"
+			icon="pi pi-plus"
+			iconPos="left"
+			class="p-button-text"
+			*ngIf="!isAdding"
+			(click)="setIsAdding()"
+		></button>
+	</div>
+</form>
+	

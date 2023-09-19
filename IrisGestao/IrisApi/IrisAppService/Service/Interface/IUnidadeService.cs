@@ -18,4 +18,5 @@ public interface IUnidadeService
     Task<CommandResult> LiberarUnidade(Guid guid);
     Task<CommandResult> LiberarUnidadesLocadas(ContratoAluguel contrato);
     Task<CommandResult> AlocarUnidade(Guid guid);
+    Task<CommandResult> GetUnidadesDisponiveisPorGuidImovel(Guid imovelGuid, string lstUnidadesLocadas);
 }

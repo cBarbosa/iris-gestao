@@ -143,4 +143,22 @@ public class UnidadeRepository : Repository<Unidade>, IUnidadeRepository
         return await DbSet
             .FirstOrDefaultAsync(x => x.GuidReferencia.ToUpper().Equals(uid.ToString().ToUpper()));
     }
+
+    public async Task<object> GetUnidadesLivresByImoveis(Guid uid, List<string> unidades)
+    {
+        var result = Db.Unidade
+            .Where(u => (!u.UnidadeLocada || (unidades != null && unidades.Contains(u.GuidReferencia)))
+                && (u.Status)
+                && (u.IdImovelNavigation.Status)
+                && (u.IdImovelNavigation.GuidReferencia.Equals(uid))
+                && (u.IdImovelNavigation.IdCategoriaImovel.Equals(TipoImovelEnum.IMOVEL_CARTEIRA)))
+            .Select(u => new
+            {
+                tipo = u.Tipo,
+                guidReferencia = u.GuidReferencia,
+            }).OrderBy(u => u.tipo)
+            .ToList();
+
+        return result;
+    }
 }

@@ -8,6 +8,7 @@ public interface IContratoAluguelRepository : IRepository<ContratoAluguel>, IDis
 {
     Task<ContratoAluguel?> GetByGuid(Guid guid);
     Task<object?> GetByContratoAluguelGuid(Guid guid);
+    Task<object?> GetUnidadesLocadasByContratoAluguelGuid(Guid guid);
     Task<CommandPagingResult?> GetAllPaging(int? idTipoImovel, int? idBaseReajuste, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? numeroContrato, int limit, int page);
     Task<IEnumerable<SpFinancialVacancyResult>?> GetDashbaordFinancialVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoArea);
     Task<IEnumerable<SpReceivingPerformanceResult>> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador);

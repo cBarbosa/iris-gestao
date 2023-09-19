@@ -115,12 +115,13 @@
 					iconPos="left"
 					class="p-button-text"
 				></button> -->
-					<app-unit-select
+					<app-unit-select-avaliable
 						[propertyGuid]="propertyGuid"
+						[rentContractGuid]="contractGuid"
 						[currentUnits]="units"
 						(selectedEvent)="setSelectedUnits($event)"
 						*ngIf="propertyGuid"
-					></app-unit-select>
+					></app-unit-select-avaliable>
 
 					<h5 class="mt-3">Anexos</h5>
 					<app-upload-list [guid]="contractGuid"></app-upload-list>
