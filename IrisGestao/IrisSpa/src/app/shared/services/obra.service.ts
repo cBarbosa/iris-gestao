@@ -83,12 +83,12 @@ export class ConstructionService {
 		guid: string,
 		servico: {
 			Descricao: string;
-			NumeroNota?: string;
+			NumeroNota: string;
 			DataEmissao?: string;
-			DataVencimento: string;
+			// DataVencimento: string;
 			ValorOrcado: number;
-			ValorContratado: number;
-			Percentual?: number;
+			ValorContratado?: number;
+			// Percentual?: number;
 		}
 	) {
 		return this.http.post<ApiResponse>(
@@ -102,12 +102,12 @@ export class ConstructionService {
 		guid: string,
 		servico: {
 			Descricao: string;
-			NumeroNota?: string;
+			NumeroNota: string;
 			DataEmissao?: string;
-			DataVencimento: string;
+			// DataVencimento: string;
 			ValorOrcado: number;
-			ValorContratado: number;
-			Percentual?: number;
+			ValorContratado?: number;
+			// Percentual?: number;
 		}
 	) {
 		return this.http.put<ApiResponse>(

@@ -46,6 +46,14 @@ export class ConstructionViewComponent {
 		message: '',
 	};
 
+	totalSum:
+		| {
+				TotalOrcado: number;
+				TotalContratado: number;
+				TotalSaldo: number;
+		  }
+		| undefined;
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
@@ -120,9 +128,24 @@ export class ConstructionViewComponent {
 					if (event.success) {
 						this.construction = event.data;
 						this.imageList = event.imagens ?? [];
-						//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
+						// console.log('Detalhes Cliente >> ' + JSON.stringify(event));
 						// this.properties = [...event.data.imovel];
 						this.propertyGuid = event.data.imovel?.guidReferencia as string;
+
+						this.totalSum = this.construction.servicos.reduce(
+							(acc:any, entry: any) => {
+								acc.TotalOrcado += entry.valorOrcado;
+								acc.TotalContratado += entry.valorContratado ?? 0;
+								acc.TotalSaldo += (entry.valorOrcado - (entry.valorContratado ?? 0));
+
+								return acc;
+							},
+							{
+								TotalOrcado: 0,
+								TotalContratado: 0,
+								TotalSaldo: 0
+							}
+						);
 					}
 				},
 				error: (err) => {
@@ -135,6 +158,7 @@ export class ConstructionViewComponent {
 	}
 
 	setCurrentService = (item: any): void => {
+		item.percentualAdministracaoObra = this.construction?.percentual ?? 0.0;
 		this.serviceSelected = item;
 	};
 
@@ -176,23 +200,23 @@ export class ConstructionViewComponent {
 		const formObj: {
 			Descricao: string;
 			NumeroNota: string;
-			DataEmissao: string;
-			DataVencimento: string;
+			DataEmissao?: string;
+			// DataVencimento: string;
 			ValorOrcado: number;
-			ValorContratado: number;
-			Percentual?: number;
+			ValorContratado?: number;
+			// Percentual?: number;
 		} = {
 			Descricao: values.formValues.descricao,
-			NumeroNota: values.formValues.numeroNota,
+			NumeroNota: values.formValues.numeroNota ?? '',
 			DataEmissao: values.formValues.dataEmissao
 				? values.formValues.dataEmissao?.toISOString()
 				: null,
-			DataVencimento: values.formValues.dataVencimentoFatura
-				? values.formValues.dataVencimentoFatura?.toISOString()
-				: null,
+			// DataVencimento: values.formValues.dataVencimentoFatura
+			// 	? values.formValues.dataVencimentoFatura?.toISOString()
+			// 	: null,
 			ValorOrcado: values.formValues.valorOrcamento,
-			ValorContratado: values.formValues.valorContratado,
-			Percentual: +values.formValues.porcentagemAdm ?? null
+			ValorContratado: values.formValues.valorContratado
+			// Percentual: +values.formValues.porcentagemAdm ?? null
 		};
 
 		this.constructionService
@@ -216,7 +240,7 @@ export class ConstructionViewComponent {
 							this.serviceSelected.guidReferencia,
 							formData,
 							'outrosdocs'
-						).subscribe(result => console.log(result));
+						).subscribe(result => JSON.stringify(result));
 
 						this.editSuccess = true;
 					} else {
@@ -246,23 +270,23 @@ export class ConstructionViewComponent {
 		const formObj: {
 			Descricao: string;
 			NumeroNota: string;
-			DataEmissao: string;
-			DataVencimento: string;
+			DataEmissao?: string;
+			// DataVencimento: string;
 			ValorOrcado: number;
-			ValorContratado: number;
-			Percentual: number;
+			ValorContratado?: number;
+			// Percentual: number;
 		} = {
 			Descricao: values.formValues.descricao,
-			NumeroNota: values.formValues.numeroNota ?? null,
+			NumeroNota: values.formValues.numeroNota ?? '',
 			DataEmissao: values.formValues.dataEmissao
 				? values.formValues.dataEmissao?.toISOString()
 				: null,
-			DataVencimento: values.formValues.dataVencimentoFatura
-				? values.formValues.dataVencimentoFatura?.toISOString()
-				: null,
+			// DataVencimento: values.formValues.dataVencimentoFatura
+			// 	? values.formValues.dataVencimentoFatura?.toISOString()
+			// 	: null,
 			ValorOrcado: values.formValues.valorOrcamento,
-			ValorContratado: values.formValues.valorContratado,
-			Percentual: +values.formValues.porcentagemAdm ?? null
+			ValorContratado: values.formValues.valorContratado
+			// Percentual: +values.formValues.porcentagemAdm ?? null
 		};
 
 		this.constructionService
@@ -288,7 +312,7 @@ export class ConstructionViewComponent {
 							response.data?.guidReferencia,
 							formData,
 							'outrosdocs'
-						).subscribe(result => console.log(result));
+						).subscribe(result => JSON.stringify(result));
 					} else {
 						this.modalContent = {
 							header: 'Cadastro não realizado',

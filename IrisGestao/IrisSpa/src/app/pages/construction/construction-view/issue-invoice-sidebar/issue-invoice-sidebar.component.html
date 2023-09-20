@@ -106,7 +106,7 @@
 		</ng-container>
 	</div> -->
 
-	<div class="field">
+	<!-- <div class="field">
 		<label for="dataVencimentoFatura" class="block">Data de vencimento</label>
 		<p-calendar
 			id="dataVencimentoFatura"
@@ -131,7 +131,7 @@
 				</small>
 			</ng-template>
 		</ng-container>
-	</div>
+	</div> -->
 
 	<div class="field">
 		<label for="numeroNota" class="block">Número da nota</label>
@@ -159,7 +159,7 @@
 	</div>
 
 	<div class="field">
-		<label for="dataEmissao" class="block">Data de Emissão da Fatura</label>
+		<label for="dataEmissao" class="block">Data de emissão da Nota Fiscal</label>
 		<p-calendar
 			id="dataEmissao"
 			formControlName="dataEmissao"
@@ -175,7 +175,7 @@
 				*ngIf="f['dataEmissao'].hasError('required'); else error2"
 				class="p-error block"
 			>
-				Informe a data de emissão
+				Informe a data de emissão da nota fiscal
 			</small>
 			<ng-template #error2>
 				<small id="dataEmissao-help" class="p-error block">
@@ -185,7 +185,7 @@
 		</ng-container>
 	</div>
 
-	<div class="field">
+	<div class="field" *ngIf="guidInvoice">
 		<label for="porcentagemAdm" class="block">% de administração de obra</label>
 
 		<input
@@ -197,6 +197,7 @@
 			suffix="%"
 			[dropSpecialCharacters]="false"
 			pInputText
+			readonly="true"
 		/>
 		<ng-container *ngIf="checkHasError(f['porcentagemAdm'])">
 			<small
