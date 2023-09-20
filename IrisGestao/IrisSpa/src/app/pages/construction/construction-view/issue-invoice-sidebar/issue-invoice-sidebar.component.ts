@@ -12,15 +12,9 @@ import { NgxMaskModule } from 'ngx-mask';
 import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
-import {
-	EmailValidator,
-	PastDateValidator,
-} from 'src/app/shared/validators/custom-validators';
 import { Utils } from 'src/app/shared/utils';
-import { FileUploadModule } from 'primeng/fileupload';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
 import { ConstructionService } from 'src/app/shared/services/obra.service';
-import { first } from 'rxjs';
 import { DominiosService } from 'src/app/shared/services';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
@@ -68,14 +62,14 @@ export class IssueInvoiceSidebarComponent {
 
 	@Input()
 	data: {
-		guidReferencia: string;
+		guidReferencia?: string;
 		descricao: string;
 		valorOrcado: number;
-		valorContratado: number;
+		valorContratado?: number;
 		// valorServico: number;
 		dataEmissao?: Date;
-		numeroNota: string;
-		dataVencimento: Date;
+		numeroNota?: string;
+		dataVencimento?: Date;
 		percentualAdministracaoObra?: number;
 		anexoNf?: string;
 	} | null;
@@ -102,12 +96,12 @@ export class IssueInvoiceSidebarComponent {
 		this.registerForm = this.fb.group({
 			guidReferencia: this.data?.guidReferencia,
 			descricao: [this.data?.descricao ?? null, Validators.required],
-			valorOrcamento: [this.data?.valorOrcado ?? '', Validators.required],
-			valorContratado: [this.data?.valorContratado ?? '', Validators.required],
+			valorOrcamento: [this.data?.valorOrcado ?? null, Validators.required],
+			valorContratado: [this.data?.valorContratado ?? null],
 			// valorServico: [this.data?.valorServico ?? '', Validators.required],
 			porcentagemAdm: [this.data?.percentualAdministracaoObra ?? null],
 			dataEmissao: [this.data?.dataEmissao ?? null],
-			dataVencimentoFatura: [this.data?.dataVencimento ?? '', Validators.required],
+			// dataVencimentoFatura: [this.data?.dataVencimento ?? '', Validators.required],
 			numeroNota: [this.data?.numeroNota ?? null],
 			anexoNf: [this.data?.anexoNf ?? null]
 		});
@@ -128,13 +122,13 @@ export class IssueInvoiceSidebarComponent {
 			guidReferencia: this.data?.guidReferencia,
 			descricao: this.data?.descricao,
 			valorOrcamento: this.data?.valorOrcado,
-			valorContratado: this.data?.valorContratado,
+			valorContratado: this.data?.valorContratado ?? null,
 			// valorServico: this.data?.valorServico,
-			dataEmissao: this.data?.dataEmissao ? new Date(this.data?.dataEmissao) : '',
+			dataEmissao: this.data?.dataEmissao ? new Date(this.data?.dataEmissao) : null,
 			numeroNota: this.data?.numeroNota ?? null,
-			dataVencimentoFatura: this.data?.dataVencimento
-				? new Date(this.data?.dataVencimento)
-				: '',
+			// dataVencimentoFatura: this.data?.dataVencimento
+			// 	? new Date(this.data?.dataVencimento)
+			// 	: '',
 			porcentagemAdm: this.data?.percentualAdministracaoObra ?? null,
 		});
 

@@ -77,11 +77,32 @@
 								</div>
 							</div>
 							<div class="construction-data">
-								<div class="data-label">Orçamento</div>
+								<div class="data-label">Previsão Orçamentária</div>
 								<div class="data-value">
 									{{ construction?.['valorOrcamento'] | currency }}
 								</div>
 							</div>
+						</div>
+						<div class="construction-info">
+							<div class="construction-data">
+								<div class="data-label">Orçamento</div>
+								<div class="data-value">
+									{{ totalSum?.TotalOrcado | currency }}
+								</div>
+							</div>
+							<div class="construction-data">
+								<div class="data-label">Contratado</div>
+								<div class="data-value">
+									{{ totalSum?.TotalContratado | currency }}
+								</div>
+							</div>
+							<div class="construction-data">
+								<div class="data-label">Saldo</div>
+								<div class="data-value">
+									{{ totalSum?.TotalSaldo | currency }}
+								</div>
+							</div>
+
 						</div>
 					</ng-template>
 				</div>
@@ -131,7 +152,7 @@
 							<td>{{ service.descricao }}</td>
 							<td>{{ service.valorOrcado | currency }}</td>
 							<td>{{ service.valorContratado | currency }}</td>
-							<td>{{ service.valorServico | currency }}</td>
+							<td>{{ (service.valorOrcado - (service.valorContratado ?? 0)) | currency }}</td>
 							<td>
 								<p-tag
 									value="Emitida"
@@ -192,7 +213,7 @@
 										},
 										{
 											label: 'Saldo',
-											data: service.valorContratado,
+											data: (service.valorOrcado - (service.valorContratado ?? 0)),
 											pipe: cardPipes['currency']
 										}
 									],
@@ -243,13 +264,8 @@
 			{ label: 'Serviço', data: serviceSelected?.descricao, span: true },
 			{ label: 'Número da NF', data: serviceSelected?.numeroNota, span: true },
 			{
-				label: 'Data da emissão',
+				label: 'Data da emissão NF',
 				data: serviceSelected?.dataEmissao,
-				pipe: cardPipes['date']
-			},
-			{
-				label: 'Data da vencimento',
-				data: serviceSelected?.dataVencimento,
 				pipe: cardPipes['date']
 			},
 			{
@@ -260,6 +276,11 @@
 			{
 				label: 'Valores contratados',
 				data: serviceSelected?.valorContratado,
+				pipe: cardPipes['currency']
+			},
+			{
+				label: 'Saldo',
+				data: (serviceSelected?.valorOrcado - (serviceSelected?.valorContratado ?? 0)),
 				pipe: cardPipes['currency']
 			},
 			{
@@ -307,6 +328,7 @@
 	<ng-template pTemplate="content">
 		<app-issue-invoice-sidebar
 			[onSubmitForm]="onInvoiceRegisterSubmit"
+			[data]="serviceSelected"
 			[cancel]="hideRegisterInvoice"
 		></app-issue-invoice-sidebar
 	></ng-template>
