@@ -8,12 +8,13 @@ public interface IContratoAluguelRepository : IRepository<ContratoAluguel>, IDis
 {
     Task<ContratoAluguel?> GetByGuid(Guid guid);
     Task<object?> GetByContratoAluguelGuid(Guid guid);
+    Task<object?> GetUnidadesLocadasByContratoAluguelGuid(Guid guid);
     Task<CommandPagingResult?> GetAllPaging(int? idTipoImovel, int? idBaseReajuste, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? numeroContrato, int limit, int page);
     Task<IEnumerable<SpFinancialVacancyResult>?> GetDashbaordFinancialVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idTipoArea);
     Task<IEnumerable<SpReceivingPerformanceResult>> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador);
     Task<IEnumerable<SpAreaPriceResult>> GetDashbaordAreaPrice(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idImovel);
     Task<IEnumerable<SpPhysicalVacancyResult>?> GetDashbaordPhysicalVacancy(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador);
-    Task<object> GetDashboardTotalManagedArea(DateTime dateRefInit, DateTime dateRefEnd,  int? idLocador);
+    Task<IEnumerable<SpTotalManagedAreaResult>?> GetDashboardTotalManagedArea(DateTime dateRefInit, DateTime dateRefEnd,  int? idLocador);
     Task<IEnumerable<Object>?> GetImoveisUnidadesContratoAluguelAtivos();
     Task<IEnumerable<dynamic>> GetAllActiveProperties();
     Task<IEnumerable<dynamic>> GetAllActiveOwners();
@@ -28,4 +29,5 @@ public interface IContratoAluguelRepository : IRepository<ContratoAluguel>, IDis
     Task<IEnumerable<dynamic>> GetReportDimob(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador, int? idLocatario);
     Task<IEnumerable<dynamic>> GetReportCommercial(DateTime dateRefInit, DateTime dateRefEnd, int? idImovel, int? idLocador, int? idLocatario);
     Task<IEnumerable<SpRentContractsResult>?> GetReportRentContract(int? idImovel, int? idLocador, int?idLocatario);
+    Task<IEnumerable<SpTotalManagedAreaStackResult>?> GetDashboardTotalManagedAreaStack(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador);
 }

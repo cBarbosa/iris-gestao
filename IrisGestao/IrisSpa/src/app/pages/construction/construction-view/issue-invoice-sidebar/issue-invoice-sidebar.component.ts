@@ -12,16 +12,12 @@ import { NgxMaskModule } from 'ngx-mask';
 import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
-import {
-	EmailValidator,
-	PastDateValidator,
-} from 'src/app/shared/validators/custom-validators';
 import { Utils } from 'src/app/shared/utils';
-import { FileUploadModule } from 'primeng/fileupload';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
 import { ConstructionService } from 'src/app/shared/services/obra.service';
-import { first } from 'rxjs';
 import { DominiosService } from 'src/app/shared/services';
+import { NgxCurrencyModule } from 'ngx-currency';
+import { ResponsiveDialogComponent } from 'src/app/shared/components/responsive-dialog/responsive-dialog.component';
 
 type DropdownItem = {
 	label: string;
@@ -41,6 +37,8 @@ type DropdownItem = {
 		InputTextModule,
 		DropdownModule,
 		FileUploadComponent,
+		NgxCurrencyModule,
+		ResponsiveDialogComponent
 	],
 	templateUrl: './issue-invoice-sidebar.component.html',
 	styleUrls: ['./issue-invoice-sidebar.component.scss'],
@@ -64,15 +62,16 @@ export class IssueInvoiceSidebarComponent {
 
 	@Input()
 	data: {
-		descricao: number;
-		valorOrcamento: number;
-		valorContratado: number;
-		valorServico: number;
-		dataEmissao: Date;
-		numeroNota: string;
-		dataVencimentoFatura: Date;
-		porcentagemAdm: number;
-		anexoNf: string;
+		guidReferencia?: string;
+		descricao: string;
+		valorOrcado: number;
+		valorContratado?: number;
+		// valorServico: number;
+		dataEmissao?: Date;
+		numeroNota?: string;
+		dataVencimento?: Date;
+		percentualAdministracaoObra?: number;
+		anexoNf?: string;
 	} | null;
 
 	registerForm: FormGroup;
@@ -81,14 +80,6 @@ export class IssueInvoiceSidebarComponent {
 	onBlurDate: Function;
 
 	selectedFile: File;
-
-	opcoesDescricao: DropdownItem[] = [
-		{
-			label: 'Selecione',
-			value: null,
-			disabled: true,
-		},
-	];
 
 	constructor(
 		private fb: FormBuilder,
@@ -103,64 +94,45 @@ export class IssueInvoiceSidebarComponent {
 			);
 
 		this.registerForm = this.fb.group({
+			guidReferencia: this.data?.guidReferencia,
 			descricao: [this.data?.descricao ?? null, Validators.required],
-			valorOrcamento: [this.data?.valorOrcamento ?? '', Validators.required],
-			valorContratado: [this.data?.valorContratado ?? '', Validators.required],
-			valorServico: [this.data?.valorServico ?? '', Validators.required],
-			dataEmissao: [this.data?.dataEmissao ?? '', Validators.required],
-			numeroNota: [this.data?.numeroNota ?? '', Validators.required],
-			dataVencimentoFatura: [
-				this.data?.dataVencimentoFatura ?? '',
-				Validators.required,
-			],
-			porcentagemAdm: [this.data?.porcentagemAdm ?? null, Validators.required],
-			anexoNf: [this.data?.anexoNf ?? null],
+			valorOrcamento: [this.data?.valorOrcado ?? null, Validators.required],
+			valorContratado: [this.data?.valorContratado ?? null],
+			// valorServico: [this.data?.valorServico ?? '', Validators.required],
+			porcentagemAdm: [this.data?.percentualAdministracaoObra ?? null],
+			dataEmissao: [this.data?.dataEmissao ?? null],
+			// dataVencimentoFatura: [this.data?.dataVencimento ?? '', Validators.required],
+			numeroNota: [this.data?.numeroNota ?? null],
+			anexoNf: [this.data?.anexoNf ?? null]
 		});
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
 
-		if (this.guidInvoice)
-			this.constructionService
-				.getConstructionInvoiceByGuid(this.guidInvoice)
-				.pipe(first())
-				.subscribe({
-					next: (response) => {
-						const [data] = response.data;
-
-						this.registerForm.patchValue({
-							descricao: data.tipoServico?.idTipoServico,
-							valorOrcamento: data.valorOrcado,
-							valorContratado: data.valorContratado,
-							valorServico: data.valorServico,
-							dataEmissao: data.dataEmissao ? new Date(data.dataEmissao) : '',
-							numeroNota: data.numeroNota,
-							dataVencimentoFatura: data.dataVencimento
-								? new Date(data.dataVencimento)
-								: '',
-							porcentagemAdm: data.percentualAdministracaoObra,
-						});
-					},
-				});
-
-		this.dominiosService
-			.getTiposServico()
-			.pipe(first())
-			.subscribe({
-				next: (response) => {
-					response?.data.forEach((servico: any) => {
-						this.opcoesDescricao.push({
-							label: servico.nome,
-							value: servico.id,
-						});
-					});
-				},
-				error(err) {
-					console.error(err);
-				},
-			});
+		this.getData();
 	}
+
+	getData = ():void => {
+		
+		if(!this.guidInvoice)
+			return;
+
+		this.registerForm.patchValue({
+			guidReferencia: this.data?.guidReferencia,
+			descricao: this.data?.descricao,
+			valorOrcamento: this.data?.valorOrcado,
+			valorContratado: this.data?.valorContratado ?? null,
+			// valorServico: this.data?.valorServico,
+			dataEmissao: this.data?.dataEmissao ? new Date(this.data?.dataEmissao) : null,
+			numeroNota: this.data?.numeroNota ?? null,
+			// dataVencimentoFatura: this.data?.dataVencimento
+			// 	? new Date(this.data?.dataVencimento)
+			// 	: '',
+			porcentagemAdm: this.data?.percentualAdministracaoObra ?? null,
+		});
+
+	};
 
 	get f(): { [key: string]: AbstractControl<any, any> } {
 		return this.registerForm.controls;
@@ -171,6 +143,7 @@ export class IssueInvoiceSidebarComponent {
 	}
 
 	onSubmit(e: any) {
+
 		if (this.registerForm.invalid) {
 			this.registerForm.markAllAsTouched();
 			return;
@@ -182,8 +155,6 @@ export class IssueInvoiceSidebarComponent {
 			formValues: formObj,
 			invoiceFile: this.selectedFile,
 		};
-
-		console.log('on register', valuesObj);
 
 		if (this.onSubmitForm) this.onSubmitForm(valuesObj);
 

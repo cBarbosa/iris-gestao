@@ -9,7 +9,6 @@ public interface IObraService
     Task<CommandResult> GetByReferenceGuid(Guid uuid);
     Task<CommandResult> Insert(CriarObraCommand cmd);
     Task<CommandResult> Update(Guid guid, CriarObraCommand cmd);
-    Task<CommandResult> InsertNotaFiscal(Guid guid, CriarObraNotaFiscalCommand cmd);
-    Task<CommandResult> GetNotaFiscalByGuid(Guid guid);
-    Task<CommandResult> UpdateNotaFiscal(Guid guid, CriarObraNotaFiscalCommand cmd);
+    Task<CommandResult> InsertServico(Guid guid, CriarObraServicoCommand cmd);
+    Task<CommandResult> UpdateServico(Guid guid, CriarObraServicoCommand cmd);
 }

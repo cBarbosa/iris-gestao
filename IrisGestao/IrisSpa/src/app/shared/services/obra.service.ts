@@ -79,49 +79,47 @@ export class ConstructionService {
 		);
 	}
 
-	registerConstructionInvoice(
-		constructionGuid: string,
-		invoiceObj: {
-			IdTipoServico: number;
+	registerObraServico(
+		guid: string,
+		servico: {
+			Descricao: string;
 			NumeroNota: string;
-			DataEmissao: string;
-			DataVencimento: string;
-			ValorServico: number;
+			DataEmissao?: string;
+			// DataVencimento: string;
 			ValorOrcado: number;
-			ValorContratado: number;
-			Percentual: number;
+			ValorContratado?: number;
+			// Percentual?: number;
 		}
 	) {
 		return this.http.post<ApiResponse>(
-			`${env.config.apiUrl}Obra/${constructionGuid}/notafiscal`,
-			JSON.stringify(invoiceObj, null, 2),
+			`${env.config.apiUrl}Obra/servico/${guid}`,
+			JSON.stringify(servico, null, 2),
 			httpOptions
 		);
 	}
 
-	updateConstructionInvoice(
+	updateObraServico(
 		guid: string,
-		invoiceObj: {
-			IdTipoServico: number;
+		servico: {
+			Descricao: string;
 			NumeroNota: string;
-			DataEmissao: string;
-			DataVencimento: string;
-			ValorServico: number;
+			DataEmissao?: string;
+			// DataVencimento: string;
 			ValorOrcado: number;
-			ValorContratado: number;
-			Percentual: number;
+			ValorContratado?: number;
+			// Percentual?: number;
 		}
 	) {
 		return this.http.put<ApiResponse>(
-			`${env.config.apiUrl}Obra/notafiscal/${guid}`,
-			JSON.stringify(invoiceObj, null, 2),
+			`${env.config.apiUrl}Obra/servico/${guid}`,
+			JSON.stringify(servico, null, 2),
 			httpOptions
 		);
 	}
 
-	getConstructionInvoiceByGuid(invoiceGuid: string) {
+	getConstructionInvoiceByGuid(guid: string) {
 		return this.http
-			.get<ApiResponse>(`${env.config.apiUrl}Obra/notafiscal/${invoiceGuid}`)
+			.get<ApiResponse>(`${env.config.apiUrl}Obra/servico/${guid}`)
 			.pipe(
 				map((response) => {
 					if (!response.success)

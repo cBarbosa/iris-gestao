@@ -32,7 +32,7 @@
 					(click)="navigateTo('construction/register')"
 				>
 					<i class="pi pi-plus pr-2"></i>
-					Nova conta
+					Nova obra
 				</button>
 			</div>
 		</header>
@@ -47,7 +47,7 @@
 					[(ngModel)]="filterText"
 					(ngModelChange)="filterConstructionsDebounce($event)"
 					type="text"
-					placeholder="Buscar contrato"
+					placeholder="Buscar obra"
 				/>
 			</span>
 
@@ -104,22 +104,20 @@
 				<ng-template pTemplate="header">
 					<tr *ngIf="!isLoadingConstructions && !noRestults">
 						<th>Nome da obra</th>
-						<th>Prédio de referência</th>
 						<th>Imóvel de referência</th>
 						<th>Valor da obra</th>
-						<th>Previsão de término</th>
 						<th>Data de início</th>
+						<th>Previsão de término</th>
 						<th></th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-construction>
 					<tr>
 						<td class="font-bold">{{ construction.nomeObra }}</td>
-						<td>{{ construction.predio }}</td>
 						<td>{{ construction.imovel }}</td>
-						<td>{{ construction.valor }}</td>
-						<td>{{ construction.dataFim | date : "shortDate" }}</td>
+						<td>{{ construction.valor | currency }}</td>
 						<td>{{ construction.dataInicio | date : "shortDate" }}</td>
+						<td>{{ construction.dataFim | date : "shortDate" }}</td>
 						<td class="action min-w-[10rem]">
 							<button
 								pButton

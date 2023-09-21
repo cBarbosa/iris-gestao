@@ -13,8 +13,8 @@ namespace IrisGestao.Domain.Command.Request
         public DateTime? DataEmissaoNotaFiscal { get; set; }
         public DateTime? DataVencimento { get; set; }
         public DateTime? DataPagamento { get; set; }
-        public double? Valor { get; set; }
-        public double? ValorRealPago { get; set; }
+        public decimal? Valor { get; set; }
+        public decimal? ValorRealPago { get; set; }
         public string? DescricaoBaixaFatura { get; set; }
     }
 }

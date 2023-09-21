@@ -2,11 +2,7 @@ import { CurrencyPipe, DatePipe, PercentPipe } from '@angular/common';
 import { Component, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
-import { ImageData, Imovel } from 'src/app/shared/models';
-import {
-	Construcao,
-	IConstrucao,
-} from 'src/app/shared/models/construcao.model';
+import { ImageData } from 'src/app/shared/models';
 import { DominiosService } from 'src/app/shared/services';
 import {
 	AnexoService,
@@ -32,14 +28,31 @@ export class ConstructionViewComponent {
 	isMobile: boolean = false;
 	displayConstructionDetails = false;
 	cardPipes: Record<string, PipeTransform>;
-
-	tiposServicos: string[] = [];
-
 	serviceSelected: any;
 
 	serviceDetailsVisible = false;
 	issueInvoiceVisible = false;
 	registerInvoiceVisible = false;
+
+	displayModal: boolean = false;
+
+	editSuccess = false;
+
+	modalContent: {
+		isError?: boolean;
+		header?: string;
+		message: string;
+	} = {
+		message: '',
+	};
+
+	totalSum:
+		| {
+				TotalOrcado: number;
+				TotalContratado: number;
+				TotalSaldo: number;
+		  }
+		| undefined;
 
 	constructor(
 		private router: Router,
@@ -55,6 +68,7 @@ export class ConstructionViewComponent {
 	}
 
 	ngOnInit(): void {
+
 		this.getByIdConstruction();
 		this.getAttachs();
 
@@ -70,21 +84,6 @@ export class ConstructionViewComponent {
 			currency: new CurrencyPipe('pt-BR', 'R$'),
 			percent: new PercentPipe('pt-BR'),
 		};
-
-		this.dominiosService
-			.getTiposServico()
-			.pipe(first())
-			.subscribe({
-				next: (response) => {
-					response?.data.forEach((servico: any) => {
-						this.tiposServicos[servico.id] = servico.nome;
-					});
-					console.log(this.tiposServicos);
-				},
-				error(err) {
-					console.error(err);
-				},
-			});
 	}
 
 	getAttachs(): void {
@@ -120,34 +119,46 @@ export class ConstructionViewComponent {
 
 	getByIdConstruction() {
 		this.isLoadingView = true;
+		this.construction = null;
 		this.constructionService
 			.getConstructionByGuid(this.guid)
 			.pipe(first())
 			.subscribe({
 				next: (event: any) => {
-					console.log('event', event);
 					if (event.success) {
-						this.construction = event.data[0];
+						this.construction = event.data;
 						this.imageList = event.imagens ?? [];
-						//console.log('Detalhes Cliente >> ' + JSON.stringify(event));
+						// console.log('Detalhes Cliente >> ' + JSON.stringify(event));
 						// this.properties = [...event.data.imovel];
-						this.propertyGuid = event.data[0].imovel?.guidReferencia as string;
-					} else {
-						this.construction = null;
+						this.propertyGuid = event.data.imovel?.guidReferencia as string;
+
+						this.totalSum = this.construction.servicos.reduce(
+							(acc:any, entry: any) => {
+								acc.TotalOrcado += entry.valorOrcado;
+								acc.TotalContratado += entry.valorContratado ?? 0;
+								acc.TotalSaldo += (entry.valorOrcado - (entry.valorContratado ?? 0));
+
+								return acc;
+							},
+							{
+								TotalOrcado: 0,
+								TotalContratado: 0,
+								TotalSaldo: 0
+							}
+						);
 					}
-					this.isLoadingView = false;
 				},
 				error: (err) => {
 					this.construction = null;
-					this.isLoadingView = false;
 				},
+				complete: () => {
+					this.isLoadingView = false;
+				}
 			});
-
-		this.isLoadingView = false;
 	}
 
 	setCurrentService = (item: any): void => {
-		console.log('Contrato Selecionado >> ', item);
+		item.percentualAdministracaoObra = this.construction?.percentual ?? 0.0;
 		this.serviceSelected = item;
 	};
 
@@ -185,95 +196,143 @@ export class ConstructionViewComponent {
 	}
 
 	onInvoiceEditSubmit = (values: any) => {
+		
 		const formObj: {
-			IdTipoServico: number;
+			Descricao: string;
 			NumeroNota: string;
-			DataEmissao: string;
-			DataVencimento: string;
-			ValorServico: number;
+			DataEmissao?: string;
+			// DataVencimento: string;
 			ValorOrcado: number;
-			ValorContratado: number;
-			Percentual: number;
+			ValorContratado?: number;
+			// Percentual?: number;
 		} = {
-			IdTipoServico: values.formValues.descricao,
-			NumeroNota: values.formValues.numeroNota,
-			DataEmissao: values.formValues.dataEmissao?.toISOString(),
-			DataVencimento: values.formValues.dataVencimentoFatura?.toISOString(),
-			ValorServico: values.formValues.valorServico,
+			Descricao: values.formValues.descricao,
+			NumeroNota: values.formValues.numeroNota ?? '',
+			DataEmissao: values.formValues.dataEmissao
+				? values.formValues.dataEmissao?.toISOString()
+				: null,
+			// DataVencimento: values.formValues.dataVencimentoFatura
+			// 	? values.formValues.dataVencimentoFatura?.toISOString()
+			// 	: null,
 			ValorOrcado: values.formValues.valorOrcamento,
-			ValorContratado: values.formValues.valorContratado,
-			Percentual: values.formValues.porcentagemAdm,
+			ValorContratado: values.formValues.valorContratado
+			// Percentual: +values.formValues.porcentagemAdm ?? null
 		};
 
-		console.log('formObj', formObj);
-
 		this.constructionService
-			.updateConstructionInvoice(this.serviceSelected?.guidReferencia, formObj)
+			.updateObraServico(this.serviceSelected.guidReferencia, formObj)
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
-					console.log('invoice response', response);
+
+					if (response.success) {
+						this.modalContent = {
+							header: 'Edição realizado com sucesso',
+							message: response.message ?? '',
+							isError: false,
+						};
+
+						const formData = new FormData();
+
+						formData.append('files', values.invoiceFile);
+
+						this.anexoService.registerFile(
+							this.serviceSelected.guidReferencia,
+							formData,
+							'outrosdocs'
+						).subscribe(result => JSON.stringify(result));
+
+						this.editSuccess = true;
+					} else {
+						this.modalContent = {
+							header: 'Edição não realizado',
+							message: response.message ?? '',
+							isError: true,
+						};
+					}
 				},
 				error: (err) => {
 					console.error(err);
+					this.modalContent = {
+						header: 'Edição não realizado',
+						message: err ?? '',
+						isError: true,
+					};
 				},
+				complete: () => {
+					this.openModal();
+				}
 			});
-
-		const formData = new FormData();
-
-		formData.append('files', values.invoiceFile);
-
-		this.anexoService.registerFile(
-			this.serviceSelected.guidReferencia,
-			formData,
-			'outrosdocs'
-		);
 	};
 
 	onInvoiceRegisterSubmit = (values: any) => {
+
 		const formObj: {
-			IdTipoServico: number;
+			Descricao: string;
 			NumeroNota: string;
-			DataEmissao: string;
-			DataVencimento: string;
-			ValorServico: number;
+			DataEmissao?: string;
+			// DataVencimento: string;
 			ValorOrcado: number;
-			ValorContratado: number;
-			Percentual: number;
+			ValorContratado?: number;
+			// Percentual: number;
 		} = {
-			IdTipoServico: values.formValues.descricao,
-			NumeroNota: values.formValues.numeroNota,
-			DataEmissao: values.formValues.dataEmissao?.toISOString(),
-			DataVencimento: values.formValues.dataVencimentoFatura?.toISOString(),
-			ValorServico: values.formValues.valorServico,
+			Descricao: values.formValues.descricao,
+			NumeroNota: values.formValues.numeroNota ?? '',
+			DataEmissao: values.formValues.dataEmissao
+				? values.formValues.dataEmissao?.toISOString()
+				: null,
+			// DataVencimento: values.formValues.dataVencimentoFatura
+			// 	? values.formValues.dataVencimentoFatura?.toISOString()
+			// 	: null,
 			ValorOrcado: values.formValues.valorOrcamento,
-			ValorContratado: values.formValues.valorContratado,
-			Percentual: values.formValues.porcentagemAdm,
+			ValorContratado: values.formValues.valorContratado
+			// Percentual: +values.formValues.porcentagemAdm ?? null
 		};
 
-		console.log('formObj', formObj);
-
 		this.constructionService
-			.registerConstructionInvoice(this.guid, formObj)
+			.registerObraServico(this.guid, formObj)
 			.pipe(first())
 			.subscribe({
 				next: (response) => {
-					console.log('invoice register response', response);
+
+					if (response.success) {
+						this.modalContent = {
+							header: 'Cadastro realizado com sucesso',
+							message: response.message ?? '',
+							isError: false,
+						};
+
+						this.editSuccess = true;
+
+						const formData = new FormData();
+
+						formData.append('files', values.invoiceFile);
+
+						this.anexoService.registerFile(
+							response.data?.guidReferencia,
+							formData,
+							'outrosdocs'
+						).subscribe(result => JSON.stringify(result));
+					} else {
+						this.modalContent = {
+							header: 'Cadastro não realizado',
+							message: response.message ?? '',
+							isError: true,
+						};
+					}
 				},
 				error: (err) => {
 					console.error(err);
+					this.modalContent = {
+						header: 'Cadastro não realizado',
+						message: err ?? '',
+						isError: true,
+					};
 				},
+				complete: () => {
+					this.openModal();
+				}
 			});
-
-		const formData = new FormData();
-
-		formData.append('files', values.invoiceFile);
-
-		this.anexoService.registerFile(
-			this.serviceSelected.guidReferencia,
-			formData,
-			'outrosdocs'
-		);
 	};
 
 	async downloadFile(
@@ -292,4 +351,18 @@ export class ConstructionViewComponent {
 	navigateTo = (route: string): void => {
 		this.router.navigate([route]);
 	};
+
+	openModal() {
+		this.displayModal = true;
+	}
+
+	closeModal() {
+		this.displayModal = false;
+
+		if (this.editSuccess) {
+			this.editSuccess = false;
+			location.reload();
+		}
+	}
+
 }

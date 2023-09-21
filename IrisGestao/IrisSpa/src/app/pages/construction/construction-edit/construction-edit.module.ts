@@ -14,6 +14,7 @@ import { ButtonModule } from 'primeng/button';
 import { AccordionModule } from 'primeng/accordion';
 import { CalendarModule } from 'primeng/calendar';
 import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
+import { UnitSelectComponent } from 'src/app/shared/components/unit-select/unit-select.component';
 
 @NgModule({
 	declarations: [ConstructionEditComponent],
@@ -32,6 +33,7 @@ import { UploadListComponent } from 'src/app/shared/components/upload-list/uploa
 		AccordionModule,
 		CalendarModule,
 		UploadListComponent,
+		UnitSelectComponent
 	],
 })
 export class ConstructionEditModule {}

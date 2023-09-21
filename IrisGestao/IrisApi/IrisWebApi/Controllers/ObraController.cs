@@ -30,7 +30,8 @@ public class ObraController : Controller
         Ok(await obraService.GetByReferenceGuid(guid));
     
     [HttpPost]
-    public async Task<IActionResult> Insert([FromBody] CriarObraCommand cmd) =>
+    public async Task<IActionResult> Insert(
+        [FromBody] CriarObraCommand cmd) =>
         Ok(await obraService.Insert(cmd));
 
     [HttpPut("{guid}")]
@@ -38,20 +39,16 @@ public class ObraController : Controller
         [FromRoute] Guid guid,
         [FromBody] CriarObraCommand cmd) =>
         Ok(await obraService.Update(guid, cmd));
-    
-    [HttpPost("{guid}/notafiscal")]
-    public async Task<IActionResult> Insert(
+
+    [HttpPost("servico/{guid}")]
+    public async Task<IActionResult> InsertServico(
         [FromRoute] Guid guid,
-        [FromBody] CriarObraNotaFiscalCommand cmd) =>
-        Ok(await obraService.InsertNotaFiscal(guid, cmd));
-    
-    [HttpGet("notafiscal/{guid}")]
-    public async Task<IActionResult> GetNotaFiscalByGuid([FromRoute] Guid guid) =>
-        Ok(await obraService.GetNotaFiscalByGuid(guid));
-    
-    [HttpPut("notafiscal/{guid}")]
-    public async Task<IActionResult> UpdateNotaFiscal(
+        [FromBody] CriarObraServicoCommand cmd) =>
+        Ok(await obraService.InsertServico(guid, cmd));
+
+    [HttpPut("servico/{guid}")]
+    public async Task<IActionResult> UpdateServico(
         [FromRoute] Guid guid,
-        [FromBody] CriarObraNotaFiscalCommand cmd) =>
-        Ok(await obraService.UpdateNotaFiscal(guid, cmd));
+        [FromBody] CriarObraServicoCommand cmd) =>
+        Ok(await obraService.UpdateServico(guid, cmd));
 }

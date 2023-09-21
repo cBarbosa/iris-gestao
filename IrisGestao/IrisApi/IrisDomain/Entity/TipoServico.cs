@@ -14,10 +14,4 @@ public partial class TipoServico: BaseEntity<TipoServico>
 
     [InverseProperty("IdTipoServicoNavigation")]
     public virtual ICollection<ContratoFornecedor> ContratoFornecedor { get; } = new List<ContratoFornecedor>();
-
-    [InverseProperty("IdTipoServicoNavigation")]
-    public virtual ICollection<NotaFiscal> NotaFiscal { get; } = new List<NotaFiscal>();
-
-    [InverseProperty("IdTipoServicoNavigation")]
-    public virtual ICollection<Orcamento> Orcamento { get; } = new List<Orcamento>();
 }

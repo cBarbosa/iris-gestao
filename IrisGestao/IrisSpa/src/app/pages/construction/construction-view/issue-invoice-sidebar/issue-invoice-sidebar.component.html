@@ -4,24 +4,25 @@
 	(ngSubmit)="onSubmit($event)"
 >
 	<div class="field">
-		<label for="descricao" class="block">Descrição dos serviços</label>
-		<p-dropdown
+		<label for="descricao" class="block">Descrição</label>
+		<input
 			id="descricao"
-			[options]="opcoesDescricao"
+			type="text"
 			formControlName="descricao"
 			aria-describedby="descricao-help"
-		></p-dropdown>
+			pInputText
+		/>
 		<ng-container *ngIf="checkHasError(f['descricao'])">
 			<small
 				id="descricao-help"
 				*ngIf="f['descricao'].hasError('required'); else error2"
 				class="p-error block"
 			>
-				Informe a descrição
+				Informe a descrição do serviço
 			</small>
 			<ng-template #error2>
-				<small id="descricao-help" class="p-error block">
-					Descrição dos serviços inválida
+				<small id="numeroNota-help" class="p-error block">
+					Descrição do serviço inválido
 				</small>
 			</ng-template>
 		</ng-container>
@@ -79,7 +80,7 @@
 		</ng-container>
 	</div>
 
-	<div class="field">
+	<!-- <div class="field">
 		<label for="valorServico" class="block">Valor do serviço</label>
 		<input
 			id="valorServico"
@@ -103,34 +104,34 @@
 				</small>
 			</ng-template>
 		</ng-container>
-	</div>
+	</div> -->
 
-	<div class="field">
-		<label for="dataEmissao" class="block">Data de emissão</label>
+	<!-- <div class="field">
+		<label for="dataVencimentoFatura" class="block">Data de vencimento</label>
 		<p-calendar
-			id="dataEmissao"
-			formControlName="dataEmissao"
+			id="dataVencimentoFatura"
+			formControlName="dataVencimentoFatura"
 			dateFormat="dd/mm/yy"
 			(onInput)="onInputDate($event)"
 			(onBlur)="onBlurDate()"
 			placeholder="dd/mm/aaaa"
-			aria-describedby="dataEmissao-help"
+			aria-describedby="dataVencimentoFatura-help"
 		></p-calendar>
-		<ng-container *ngIf="checkHasError(f['dataEmissao'])">
+		<ng-container *ngIf="checkHasError(f['dataVencimentoFatura'])">
 			<small
-				id="dataEmissao-help"
-				*ngIf="f['dataEmissao'].hasError('required'); else error2"
+				id="dataVencimentoFatura-help"
+				*ngIf="f['dataVencimentoFatura'].hasError('required'); else error2"
 				class="p-error block"
 			>
-				Informe a data de emissão
+				Informe a data de vencimento
 			</small>
 			<ng-template #error2>
-				<small id="dataEmissao-help" class="p-error block">
-					Data de emissão inválida
+				<small id="dataVencimentoFatura-help" class="p-error block">
+					Data de vencimento inválida
 				</small>
 			</ng-template>
 		</ng-container>
-	</div>
+	</div> -->
 
 	<div class="field">
 		<label for="numeroNota" class="block">Número da nota</label>
@@ -158,7 +159,7 @@
 	</div>
 
 	<div class="field">
-		<label for="dataEmissao" class="block">Data de Vencimento da Fatura</label>
+		<label for="dataEmissao" class="block">Data de emissão da Nota Fiscal</label>
 		<p-calendar
 			id="dataEmissao"
 			formControlName="dataEmissao"
@@ -174,17 +175,17 @@
 				*ngIf="f['dataEmissao'].hasError('required'); else error2"
 				class="p-error block"
 			>
-				Informe a data de vencimento
+				Informe a data de emissão da nota fiscal
 			</small>
 			<ng-template #error2>
 				<small id="dataEmissao-help" class="p-error block">
-					Data de vencimento inválida
+					Data de emissão inválida
 				</small>
 			</ng-template>
 		</ng-container>
 	</div>
 
-	<div class="field">
+	<div class="field" *ngIf="guidInvoice">
 		<label for="porcentagemAdm" class="block">% de administração de obra</label>
 
 		<input
@@ -196,6 +197,7 @@
 			suffix="%"
 			[dropSpecialCharacters]="false"
 			pInputText
+			readonly="true"
 		/>
 		<ng-container *ngIf="checkHasError(f['porcentagemAdm'])">
 			<small

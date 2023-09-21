@@ -202,8 +202,8 @@ public class ImovelService: IImovelService
         foreach (var group in resultUnidades)
         {
             ImoveisDisponiveis imovel = new ImoveisDisponiveis();
-            ImoveisDisponiveis imovelLocalizado = resultado.FirstOrDefault(x=> x.GuidImovel.ToString().Equals(group.GuidImovel.ToString()));
-            
+            ImoveisDisponiveis imovelLocalizado = resultado.FirstOrDefault(x => x.GuidImovel.ToString().Equals(group.GuidImovel.ToString()));
+
             UnidadesDisponiveis unidade = new UnidadesDisponiveis();
             List<UnidadesDisponiveis> unidadesDisponiveis = new List<UnidadesDisponiveis>();
 
@@ -224,7 +224,7 @@ public class ImovelService: IImovelService
                 resultado.Add(imovel);
             }
         }
-        
+
         return new CommandResult(true, SuccessResponseEnums.Success_1001, resultado);
     }
 

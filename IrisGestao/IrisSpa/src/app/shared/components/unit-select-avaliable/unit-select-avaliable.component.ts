@@ -10,7 +10,7 @@ import {
 	FormsModule,
 	ReactiveFormsModule,
 } from '@angular/forms';
-import { ImovelService } from '../../services';
+import { UnidadeService } from 'src/app/shared/services/unidade.service';
 import { first } from 'rxjs';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
@@ -22,7 +22,7 @@ type DropdownItem = {
 };
 
 @Component({
-	selector: 'app-unit-select',
+	selector: 'app-unit-select-avaliable',
 	standalone: true,
 	imports: [
 		CommonModule,
@@ -32,17 +32,22 @@ type DropdownItem = {
 		DropdownModule,
 		ButtonModule,
 	],
-	templateUrl: './unit-select.component.html',
-	styleUrls: ['./unit-select.component.scss'],
+	templateUrl: './unit-select-avaliable.component.html',
+	styleUrls: ['./unit-select-avaliable.component.scss'],
 })
-export class UnitSelectComponent {
+export class UnitSelectAvaliableComponent {
 	@Input()
 	propertyGuid: string;
+
+	@Input()
+	rentContractGuid: string;
 
 	@Input()
 	currentUnits: string[];
 
 	@Output() selectedEvent = new EventEmitter<string[]>();
+
+	unidades: any;
 
 	form: FormGroup;
 
@@ -65,22 +70,25 @@ export class UnitSelectComponent {
 
 	isAdding = false;
 
-	constructor(private fb: FormBuilder, private imovelService: ImovelService) {
+	constructor(private fb: FormBuilder, 
+		private unidadeService: UnidadeService) {
 		this.form = this.fb.group({
 			units: new FormArray([]),
 		});
 
 		this.setCheckboxes();
 	}
-
+	
 	ngOnInit() {
-		this.imovelService
-			.getProperty(this.propertyGuid)
+		this.unidades = this.currentUnits.length >= 1 ? this.currentUnits.toString() : null;
+		console.log('unidades Locadas >> ' + this.unidades);
+		this.unidadeService
+			.getAvailableUnitByProperty(this.propertyGuid, this.unidades)
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
-					if (event.unidade) {
-						const units = event.unidade;
+					if (event.data) {
+						const units = event.data;
 
 						this.units = units.map((unit: any) => {
 							return {

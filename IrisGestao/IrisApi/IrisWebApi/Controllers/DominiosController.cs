@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IrisWebApi.Controllers;
 
 [Route("api/[controller]")]
+[Produces("application/json")]
 [ApiController]
 public class DominiosController : Controller
 {
@@ -41,69 +42,47 @@ public class DominiosController : Controller
         this.tipoCreditoAluguelService = tipoCreditoAluguelService;
     }
 
-    // GET
-    [HttpGet("/api/[controller]/categoria-imovel")]
-    [Produces("application/json")]
+    [HttpGet("categoria-imovel")]
     public async Task<IActionResult> GetCategoriaImoveis() =>
         Ok(await categoriaImovelService.GetAll());
 
-    // GET
-    [HttpGet("/api/[controller]/indice-reajuste")]
-    [Produces("application/json")]
+    [HttpGet("indice-reajuste")]
     public async Task<IActionResult> GetIndiceReajuste() =>
         Ok(await indiceReajusteService.GetAll());
 
-    // GET
-    [HttpGet("/api/[controller]/forma-pagamento")]
-    [Produces("application/json")]
+    [HttpGet("forma-pagamento")]
     public async Task<IActionResult> GetFormaPagamento() =>
         Ok(await formaPagamentoService.GetAll());
 
-    // GET
-    [HttpGet("/api/[controller]/tipo-unidade")]
-    [Produces("application/json")]
+    [HttpGet("tipo-unidade")]
     public async Task<IActionResult> GetTipoUnidade() =>
         Ok(await tipoUnidadeService.GetAll());
 
-    // GET
-    [HttpGet("/api/[controller]/tipo-contrato")]
-    [Produces("application/json")]
+    [HttpGet("tipo-contrato")]
     public async Task<IActionResult> GetTipoContrato() =>
         Ok(await tipoContratoService.GetAll());
 
-    // GET
-    [HttpGet("/api/[controller]/tipo-titulo")]
-    [Produces("application/json")]
+    [HttpGet("tipo-titulo")]
     public async Task<IActionResult> GetTipoTitulo() =>
         Ok(await tipoTituloService.GetAll());
 
-    // GET
-    [HttpGet("/api/[controller]/tipo-despesa")]
-    [Produces("application/json")]
+    [HttpGet("tipo-despesa")]
     public async Task<IActionResult> GetTipoDespesa() =>
         Ok(await tipoDespesaService.GetAll());
 
-    // GET
-    [HttpGet("/api/[controller]/tipo-evento")]
-    [Produces("application/json")]
+    [HttpGet("tipo-evento")]
     public async Task<IActionResult> GetTipoEvento() =>
         Ok(await tipoEventoService.GetAll());
 
-    // GET
-    [HttpGet("/api/[controller]/tipo-cliente")]
-    [Produces("application/json")]
+    [HttpGet("tipo-cliente")]
     public async Task<IActionResult> GetTipoCliente() =>
         Ok(await tipoClienteService.GetAll());
 
-    // GET
-    [HttpGet("/api/[controller]/tipo-credito-aluguel")]
-    [Produces("application/json")]
+    [HttpGet("tipo-credito-aluguel")]
     public async Task<IActionResult> GetTipoCreditoAluguel() =>
         Ok(await tipoCreditoAluguelService.GetAll());
     
-    // GET
     [HttpGet("bancos")]
-    [Produces("application/json")]
     public async Task<IActionResult> GetBancos() =>
         Ok(await formaPagamentoService.GetBancos());
 }
