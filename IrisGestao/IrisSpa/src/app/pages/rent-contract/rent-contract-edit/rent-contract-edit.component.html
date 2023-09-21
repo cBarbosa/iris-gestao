@@ -28,7 +28,7 @@
 						<input
 							id="name"
 							type="text"
-							[value]="imovel?.unidades?.[0].idTipoUnidadeNavigation.nome ?? 'Não informado'"
+							[value]="tipoUnidade"
 							aria-describedby="name-help"
 							maxlength="100"
 							pInputText
@@ -76,7 +76,7 @@
 
 					<br />
 					<span
-						>{{imovel?.unidades?.[0].idTipoUnidadeNavigation.nome ?? 'Não informado'}}</span
+						>{{tipoUnidade}}</span
 					>
 
 					<h5 class="mt-3">Unidade</h5>

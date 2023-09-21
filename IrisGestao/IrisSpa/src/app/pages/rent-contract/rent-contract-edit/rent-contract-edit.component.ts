@@ -30,6 +30,8 @@ export class RentContractEditComponent {
 	invalidGuid = false;
 
 	imovel: any;
+	unidade: any;
+	tipoUnidade: any;
 	imoveisCadastrados: any;
 
 	data: any;
@@ -176,6 +178,10 @@ export class RentContractEditComponent {
 					this.data = event.data;
 
 					this.imovel = this.data.imovelAlugado[0];
+					this.unidade = this. imovel.unidades;
+					this.tipoUnidade = this.unidade.length >=1 ?
+										this.unidade?.[0].idTipoUnidadeNavigation?.nome : 'Não informado';
+					
 					this.imoveisCadastrados = this.data.lstImoveisVinculados;
 					
 					this.editForm.controls['contractInfo'].patchValue({

@@ -47,6 +47,8 @@ export class UnitSelectAvaliableComponent {
 
 	@Output() selectedEvent = new EventEmitter<string[]>();
 
+	unidades: any;
+
 	form: FormGroup;
 
 	options: DropdownItem[] = [
@@ -78,10 +80,10 @@ export class UnitSelectAvaliableComponent {
 	}
 	
 	ngOnInit() {
-		let unidades = this.currentUnits.toString();
-		console.log('unidades Locadas >> ' + unidades);
+		this.unidades = this.currentUnits.length >= 1 ? this.currentUnits.toString() : null;
+		console.log('unidades Locadas >> ' + this.unidades);
 		this.unidadeService
-			.getAvailableUnitByProperty(this.propertyGuid, unidades)
+			.getAvailableUnitByProperty(this.propertyGuid, this.unidades)
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
