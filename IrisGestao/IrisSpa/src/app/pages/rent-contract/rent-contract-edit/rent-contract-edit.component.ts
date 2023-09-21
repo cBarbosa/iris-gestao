@@ -140,12 +140,12 @@ export class RentContractEditComponent {
 				endDate: [null, [Validators.required]],
 				dueDate: [null, [Validators.required]],
 				dataOcupacao: [null, [Validators.required]],
-				rentValue: ['', [Validators.required]],
 			}),
 			renterInfo: this.fb.group({
 				locatario: [null, Validators.required],
 			}),
 			valueInfo: this.fb.group({
+				rentValue: ['', [Validators.required]],
 				taxRetention: ['', [Validators.required]],
 				discount: ['', [Validators.required]],
 				readjust: [null, [Validators.required]],
@@ -191,7 +191,6 @@ export class RentContractEditComponent {
 						endDate: new Date(this.data.dataFimContrato),
 						dueDate: this.data.dataVencimentoPrimeraParcela ? new Date(this.data.dataVencimentoPrimeraParcela) : '',
 						dataOcupacao: new Date(this.data.dataOcupacao),
-						rentValue: this.data.valorAluguel,
 					});
 
 					const cliente = this.data.cliente;
@@ -203,6 +202,7 @@ export class RentContractEditComponent {
 					this.isCpf = cliente.cpfCnpj.length <= 11;
 
 					this.editForm.controls['valueInfo'].patchValue({
+						rentValue: this.data.valorAluguel,
 						name : this.data.numeroContrato,
 						netValue: this.data.valorAluguelLiquido,
 						taxRetention: this.data.percentualRetencaoImpostos,
@@ -343,12 +343,12 @@ export class RentContractEditComponent {
 				endDate: string;
 				dueDate: string;
 				dataOcupacao: string;
-				rentValue: number;
 			};
 			renterInfo: {
 				locatario: string; // x
 			};
 			valueInfo: {
+				rentValue: number;
 				taxRetention: string;
 				discount: string;
 				prazoDesconto: number;
@@ -367,7 +367,7 @@ export class RentContractEditComponent {
 			idIndiceReajuste: formData.valueInfo.readjust,
 			idTipoContrato: formData.contractInfo.contractType,
 			numeroContrato: formData.contractInfo.name,
-			valorAluguel: formData.contractInfo.rentValue,
+			valorAluguel: formData.valueInfo.rentValue,
 			percentualRetencaoImpostos: +formData.valueInfo.taxRetention,
 			percentualDescontoAluguel: +formData.valueInfo.discount,
 			prazoDesconto: +formData.valueInfo.prazoDesconto,

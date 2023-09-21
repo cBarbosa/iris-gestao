@@ -134,7 +134,7 @@
 						collapseIcon="pi pi-fw pi-chevron-up"
 					>
 						<p-accordionTab
-							header="Detalhes do Imóvel"
+							header="Detalhes do Contrato"
 							[selected]="true"
 							styleClass="teste_nome"
 						>
@@ -335,37 +335,6 @@
 											</ng-template>
 										</ng-container>
 									</div>
-								</div>								
-
-								<div class="field">
-									<label for="rent-value" class="block">Valor do aluguel</label>
-									<input
-										id="rent-value"
-										type="text"
-										formControlName="rentValue"
-										aria-describedby="rent-value-help"
-										currencyMask
-										pInputText
-									/>
-									<ng-container
-										*ngIf="checkHasError(contractInfo['rentValue'])"
-									>
-										<small
-											id="rent-value-help"
-											*ngIf="
-												contractInfo['rentValue'].hasError('required');
-												else error2
-											"
-											class="p-error block"
-										>
-											Informe o valor do aluguel
-										</small>
-										<ng-template #error2>
-											<small id="rent-value-help" class="p-error block">
-												Valor do aluguel inválido
-											</small>
-										</ng-template>
-									</ng-container>
 								</div>
 							</section>
 						</p-accordionTab>
@@ -406,8 +375,36 @@
 
 						<p-accordionTab header="Taxas e valores">
 							<section formGroupName="valueInfo">
-								
-
+								<div class="field">
+									<label for="rent-value" class="block">Valor do aluguel</label>
+									<input
+										id="rent-value"
+										type="text"
+										formControlName="rentValue"
+										aria-describedby="rent-value-help"
+										currencyMask
+										pInputText
+									/>
+									<ng-container
+										*ngIf="checkHasError(contractInfo['rentValue'])"
+									>
+										<small
+											id="rent-value-help"
+											*ngIf="
+												contractInfo['rentValue'].hasError('required');
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe o valor do aluguel
+										</small>
+										<ng-template #error2>
+											<small id="rent-value-help" class="p-error block">
+												Valor do aluguel inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
 								<div class="field">
 									<label for="tax-retention" class="block">
 										% de retenção de impostos
