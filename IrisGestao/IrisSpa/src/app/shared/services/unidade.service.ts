@@ -49,6 +49,18 @@ export class UnidadeService {
 			);
 	}
 
+	getAvailableUnitByProperty(guid: string, lstUnidadesLocadas: string) {
+		return this.http
+			.get<ApiResponse>(`${env.config.apiUrl}Unidade/${guid}/${lstUnidadesLocadas}/BuscarUnidadesDisponiveis`)
+			.pipe(
+				map((response) => {
+					if (!response.success)
+						console.error(`getAvailableUnitByProperty: ${response.message}`);
+					return response;
+				})
+			);
+	}
+	
 	deleteUnit(codigo: string) {
 		return this.http.delete<ApiResponse>(
 			`${env.config.apiUrl}Contato/${codigo}/deletar`

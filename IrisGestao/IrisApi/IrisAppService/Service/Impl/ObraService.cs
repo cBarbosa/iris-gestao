@@ -193,13 +193,13 @@ public class ObraService: IObraService
         ref ObraServico obraServico)
     {
         obraServico.NumeroNota = cmd.NumeroNota;
-        obraServico.PercentualAdministracaoObra = cmd.Percentual.HasValue
-            ? cmd.Percentual.Value
-            : 0;
+        // obraServico.PercentualAdministracaoObra = cmd.Percentual.HasValue
+        //     ? cmd.Percentual.Value
+        //     : 0;
         obraServico.ValorOrcado = cmd.ValorOrcado;
         obraServico.ValorContratado = cmd.ValorContratado;
         obraServico.DataEmissao = cmd.DataEmissao;
-        obraServico.DataVencimento = cmd.DataVencimento;
+        // obraServico.DataVencimento = cmd.DataVencimento;
         obraServico.Descricao = cmd.Descricao;
     }
 

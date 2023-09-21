@@ -375,10 +375,10 @@ export class ConstructionEditComponent {
 			.getConstructionByGuid(this.constructionGuid)
 			.subscribe((event: any) => {
 				if (event) {
-					const data = event.data[0];
+					const data = event.data;
 
 					this.editForm.controls['constructionInfo'].patchValue({
-						nome: data.nome,
+						nome: data.nome ?? '',
 						dataInicio: new Date(data.dataInicio),
 						dataFim: new Date(data.dataPrevistaTermino),
 						valorOrcamento: data.valorOrcamento,

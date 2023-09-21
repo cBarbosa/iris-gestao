@@ -606,7 +606,7 @@ export class RentContractRegisterComponent {
 				name: string;
 			}[];
 		} = this.propertyAddForm.getRawValue();
-		console.log('Unidade selecionada >> ' + formData.unidade)
+		console.log('Unidade selecionada >> ' + JSON.stringify(formData.unidade));
 		if(formData.unidade === null){
 			return;
 		}
@@ -625,6 +625,7 @@ export class RentContractRegisterComponent {
 					unidades: formData.unidade,
 				});
 			}
+			console.log('aki 1');
 		} else {
 			const index = this.linkedProperties.findIndex(
 				(p) => p.guid === this.editingLinkedProperty
@@ -638,6 +639,7 @@ export class RentContractRegisterComponent {
 			});
 			
 			this.linkedProperties = [...this.linkedProperties];
+			console.log('aki 2');
 		}
 
 		if (this.linkedProperties.length !== 0 || formData.unidade == null) {
@@ -731,7 +733,7 @@ export class RentContractRegisterComponent {
 
 	onChangeBuilding(event: any) {
 		const building = this.buildings.find((b) => b.value?.guid === event?.guid);
-
+		console.log('onChangeBuilding >> ' + event?.guid);
 		if (building?.value !== null)
 			this.propertyAddForm.controls['unidade'].enable();
 		else this.propertyAddForm.controls['unidade'].disable();
@@ -775,13 +777,12 @@ export class RentContractRegisterComponent {
 		const building = this.buildings.find(
 			(b) => b.value?.guid === property.guid
 		);
-
+		this.onChangeBuilding(property.guid);
 		this.propertyAddForm.controls['unidade'].enable();
 
 		this.propertyAddForm.controls['unidade'].setValue([]);
 
 		this.units = [];
-
 		building?.['units']?.forEach((item: any) => {
 			const value = {
 				guid: item.guidReferencia,
@@ -792,8 +793,9 @@ export class RentContractRegisterComponent {
 				label: item.tipo,
 				value: value,
 			});
-
+			console.log('building >> ' + JSON.stringify(value));
 			if (property.unidades.some((u: any) => u.guid === item.guidReferencia)) {
+				
 				this.propertyAddForm.controls['unidade'].setValue([
 					...this.propertyAddForm.controls['unidade'].value,
 					value,

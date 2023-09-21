@@ -1,4 +1,5 @@
-﻿using IrisGestao.ApplicationService.Services.Interface;
+﻿using IrisGestao.ApplicationService.Service.Impl;
+using IrisGestao.ApplicationService.Services.Interface;
 using IrisGestao.Domain.Command.Request;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +28,12 @@ public class UnidadeController : ControllerBase
     [HttpGet("{guid}/idImovel")]
     public async Task<IActionResult> BuscarUnidadePorImovel([FromRoute] Guid guid) =>
         Ok(await unidadeService.BuscarUnidadePorImovel(guid));
+
+    [HttpGet("{imovelGuid}/{lstUnidadesLocadas}/BuscarUnidadesDisponiveis")]
+    public async Task<IActionResult> GetUnidadesDisponiveisPorGuidImovel(
+        [FromRoute] Guid imovelGuid, 
+        [FromRoute] string lstUnidadesLocadas)
+        => Ok(await unidadeService.GetUnidadesDisponiveisPorGuidImovel(imovelGuid, lstUnidadesLocadas));
 
     [HttpPost("{guid}/criar")]
     public async Task<IActionResult> Insert(Guid guid, [FromBody] CriarUnidadeCommand cmd) =>

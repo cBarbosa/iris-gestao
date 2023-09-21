@@ -10,4 +10,5 @@ public interface IUnidadeRepository : IRepository<Unidade>, IDisposable
     IEnumerable<Unidade> GetAll();
     Task<object?> GetByUid(Guid guid);
     Task<Unidade?> GetByReferenceGuid(Guid uid);
+    Task<object> GetUnidadesLivresByImoveis(Guid uid, List<string> unidades);
 }

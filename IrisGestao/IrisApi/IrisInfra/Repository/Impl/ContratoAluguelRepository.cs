@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Linq;
 using IrisGestao.ApplicationService.Repository.Interfaces;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
@@ -288,6 +289,36 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                     DescricaoBaixaFatura = string.IsNullOrEmpty(x.DescricaoBaixaFatura) ? "" : x.DescricaoBaixaFatura,
                 }),
             })
+        };
+
+        return contratoData;
+    }
+
+    public async Task<object?> GetUnidadesLocadasByContratoAluguelGuid(Guid guid)
+    {
+        var contratoDb = await DbSet
+            .Include(x => x.ContratoAluguelImovel)
+                .ThenInclude(x => x.ContratoAluguelUnidade)
+            .Where(x => x.GuidReferencia.Equals(guid) 
+                    && x.Status)
+            .SingleOrDefaultAsync();
+
+        var contratoData = new
+        {
+            contratoDb.NumeroContrato,
+            contratoDb.GuidReferencia,
+            ImovelAlugado = contratoDb.ContratoAluguelImovel.Select(imovelAlugado => new
+            {
+                GuidReferencia = imovelAlugado.IdImovelNavigation.GuidReferencia,
+                nome = imovelAlugado.IdImovelNavigation.Nome,
+                Unidades = imovelAlugado.ContratoAluguelUnidade.Select(unidadeAlugada => new
+                {
+                    GuidReferenciaUnidade = unidadeAlugada.IdUnidadeNavigation.GuidReferencia,
+                    Ativo = unidadeAlugada.IdUnidadeNavigation.Status,
+                    UnidadeLocada = unidadeAlugada.IdUnidadeNavigation.UnidadeLocada,
+                    IdUnidade = unidadeAlugada.Id
+                }).Where(unidadeAlugada => unidadeAlugada.Ativo)
+            }),
         };
 
         return contratoData;
