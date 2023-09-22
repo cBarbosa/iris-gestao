@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
 import { Imovel } from 'src/app/shared/models';
 import { TelefonePipe } from 'src/app/shared/pipes/telefone.pipe';
+import { LoginService } from 'src/app/shared/services';
 import {
 	AnexoService,
 	Attachment,
@@ -35,12 +36,15 @@ export class SupplierContractViewComponent {
 		outros?: Attachment;
 	} = {};
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
 		private contractService: SupplierContractService,
 		private anexoService: AnexoService,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.guid = paramMap.get('guid') ?? '';
@@ -62,6 +66,8 @@ export class SupplierContractViewComponent {
 				timezone: '',
 			}),
 		};
+
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	getAttachs(): void {
