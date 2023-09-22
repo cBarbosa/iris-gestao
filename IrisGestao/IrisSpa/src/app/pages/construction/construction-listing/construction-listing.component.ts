@@ -1,7 +1,7 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonService } from 'src/app/shared/services';
+import { CommonService, LoginService } from 'src/app/shared/services';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { first } from 'rxjs';
 import { Utils } from 'src/app/shared/utils';
@@ -55,12 +55,15 @@ export class ConstructionListingComponent {
 	filterPropertyType: number;
 	filterStatus: number;
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private constructionService: ConstructionService,
 		private commonService: CommonService,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
 	) {}
 
 	ngOnInit(): void {
@@ -106,6 +109,8 @@ export class ConstructionListingComponent {
 					console.error(err);
 				},
 			});
+
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	loadConstructionsPage(event: LazyLoadEvent) {
