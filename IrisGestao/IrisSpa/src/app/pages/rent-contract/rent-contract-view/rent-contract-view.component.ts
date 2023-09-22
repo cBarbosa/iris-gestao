@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
 import { ApiResponse } from 'src/app/shared/models';
 import { ContratoAluguel } from 'src/app/shared/models/contrato-aluguel.model';
+import { LoginService } from 'src/app/shared/services';
 import {
 	Attachment,
 	AnexoService,
@@ -54,11 +55,14 @@ export class RentContractViewComponent {
 		outros?: Attachment;
 	} = {};
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
 		private rentContractService: RentContractService,
-		private anexoService: AnexoService
+		private anexoService: AnexoService,
+		private loginService: LoginService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.guid = paramMap.get('guid') ?? '';
@@ -68,6 +72,8 @@ export class RentContractViewComponent {
 	ngOnInit() {
 		this.getData();
 		this.getAtachs();
+
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	getData(): void {
@@ -77,7 +83,6 @@ export class RentContractViewComponent {
 			.getContractByGuid(this.guid)
 			?.pipe(first())
 			.subscribe((response: ApiResponse) => {
-				console.log('data>>', response.data);
 				this.contract = response.data;
 
 				this.taxRetention = this.contract.percentualRetencaoImpostos;
@@ -94,7 +99,6 @@ export class RentContractViewComponent {
 					}
 				);
 
-				console.log(this.contract);
 				// this.property = imovel;
 				// this.units = imovel.unidade!;
 				// this.imageList = imovel.imagens!;
