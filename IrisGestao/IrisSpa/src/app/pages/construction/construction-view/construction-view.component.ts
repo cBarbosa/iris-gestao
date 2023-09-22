@@ -3,7 +3,7 @@ import { Component, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
 import { ImageData } from 'src/app/shared/models';
-import { DominiosService } from 'src/app/shared/services';
+import { DominiosService, LoginService } from 'src/app/shared/services';
 import {
 	AnexoService,
 	Attachment,
@@ -54,13 +54,16 @@ export class ConstructionViewComponent {
 		  }
 		| undefined;
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
 		private constructionService: ConstructionService,
 		private dominiosService: DominiosService,
 		private anexoService: AnexoService,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.guid = paramMap.get('guid') ?? '';
@@ -84,6 +87,8 @@ export class ConstructionViewComponent {
 			currency: new CurrencyPipe('pt-BR', 'R$'),
 			percent: new PercentPipe('pt-BR'),
 		};
+
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	getAttachs(): void {
@@ -169,6 +174,7 @@ export class ConstructionViewComponent {
 	};
 
 	showIssueInvoice = (): void => {
+		if(!this.isFormEditable)	return;
 		this.serviceDetailsVisible = false;
 		this.registerInvoiceVisible = false;
 		this.issueInvoiceVisible = true;

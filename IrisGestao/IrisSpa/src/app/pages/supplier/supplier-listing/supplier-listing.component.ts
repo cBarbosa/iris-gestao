@@ -4,7 +4,7 @@ import { LazyLoadEvent } from 'primeng/api';
 import { first } from 'rxjs';
 import { CpfCnpjPipe } from 'src/app/shared/pipes/cpf-cnpj.pipe';
 import { TelefonePipe } from 'src/app/shared/pipes/telefone.pipe';
-import { FornecedorService } from 'src/app/shared/services';
+import { FornecedorService, LoginService } from 'src/app/shared/services';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -41,11 +41,14 @@ export class SupplierListingComponent {
 	filterText: string;
 	filterType: number;
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private supplierService: FornecedorService,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
 	) {}
 
 	ngOnInit(): void {
@@ -63,6 +66,8 @@ export class SupplierListingComponent {
 			cpfcnpj: new CpfCnpjPipe(),
 			telefone: new TelefonePipe(),
 		};
+
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	loadSuppliersPage(event: LazyLoadEvent): void {

@@ -28,6 +28,7 @@
 					type="button"
 					class="p-button-outlined h-9 addButton"
 					(click)="navigateTo('supplier-contract/register')"
+					*ngIf="isFormEditable"
 				>
 					<i class="pi pi-plus"></i>
 					Adicionar Contrato

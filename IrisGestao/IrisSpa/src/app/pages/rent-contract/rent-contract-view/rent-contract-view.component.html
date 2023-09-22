@@ -57,7 +57,10 @@
 						</div>
 						<div class="data-divider">&nbsp;</div>
 						<div class="data">
-							<div class="flex gap-3 flex-wrap">
+							<div
+								class="flex gap-3 flex-wrap"
+								*ngIf="isFormEditable"
+							>
 								<button
 									pButton
 									type="button"
@@ -77,14 +80,14 @@
 									Reajustar contrato
 								</button>
 								
-							<button
-							pButton
-							type="button"
-							(click)="confirmInativar()"
+								<button
+								pButton
+								type="button"
+								(click)="confirmInativar()"
 									class="p-button-outlined h-8"
-						>
-							Inativar
-						</button>
+								>
+									Inativar
+								</button>
 							</div>
 						</div>
 					</div>
