@@ -3,6 +3,7 @@ import { Component, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
 import { Imovel } from 'src/app/shared/models';
+import { LoginService } from 'src/app/shared/services';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { RevenueService } from 'src/app/shared/services/revenue.service';
 import { Utils } from 'src/app/shared/utils';
@@ -30,11 +31,14 @@ export class RevenueViewComponent {
 	baixaTituloVisible = false;
 	addFaturaVisible = false;
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
 		private revenueService: RevenueService,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.guid = paramMap.get('guid') ?? '';
@@ -57,6 +61,8 @@ export class RevenueViewComponent {
 			currency: new CurrencyPipe('pt-BR', 'R$'),
 			percent: new PercentPipe('pt-BR'),
 		};
+
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	getByIdRevenue() {
@@ -117,6 +123,7 @@ export class RevenueViewComponent {
 	};
 
 	showEditarBaixaVisible = (): void => {
+		if(!this.isFormEditable)	return;
 		this.detalheBaixaVisible = false;
 		this.baixaTituloVisible = false;
 		this.addFaturaVisible = false;
@@ -131,6 +138,7 @@ export class RevenueViewComponent {
 	};
 
 	showBaixaTitulo = (): void => {
+		if(!this.isFormEditable)	return;
 		this.detalheBaixaVisible = false;
 		this.baixaTituloVisible = true;
 		this.editarBaixaVisible = false;
