@@ -280,14 +280,15 @@
 								<td>{{ Eventos.nome }}</td>
 								<td>{{ Eventos.descricao }}</td>
 								<td>
-									<ng-template pTemplate="bodyUnidade" *ngFor="let unidade of Eventos.unidadesVisitadas">
-										{{ unidade.tipo }}
-										<p-tag
-											value="Unidade disponivel"
-											[rounded]="true"
-											severity="success"
-										></p-tag>
-									</ng-template>
+									<div *ngIf="Eventos.unidadesVisitadas.length > 0" class="basis-0">
+										Unidade(s):
+										<ng-container
+											*ngFor="let unit of Eventos.unidadesVisitadas; index as i"
+										>
+											<ng-container *ngIf="i !== 0">, </ng-container>
+											{{ unit.tipo }}
+										</ng-container>
+									</div>
 								</td>
 								<td>
 									<div class="document-list">
