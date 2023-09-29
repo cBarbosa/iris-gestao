@@ -544,10 +544,10 @@ export class RentContractRegisterComponent {
 					lstUnidades: p.unidades.map((u) => u.guid),
 				};
 			}),
-			lstImoveisVinculados: []
+			lstImoveisVinculados: [],
 		};
 
-		console.debug('contractObj', contractObj);
+		// console.debug('contractObj', contractObj);
 
 		this.rentContractService
 			.registerContract(contractObj)
@@ -606,8 +606,8 @@ export class RentContractRegisterComponent {
 				name: string;
 			}[];
 		} = this.propertyAddForm.getRawValue();
-		console.log('Unidade selecionada >> ' + JSON.stringify(formData.unidade));
-		if(formData.unidade === null){
+		// console.log('Unidade selecionada >> ' + JSON.stringify(formData.unidade));
+		if (formData.unidade === null) {
 			return;
 		}
 		if (this.editingLinkedProperty === null) {
@@ -625,7 +625,7 @@ export class RentContractRegisterComponent {
 					unidades: formData.unidade,
 				});
 			}
-			console.log('aki 1');
+			// console.log('aki 1');
 		} else {
 			const index = this.linkedProperties.findIndex(
 				(p) => p.guid === this.editingLinkedProperty
@@ -637,9 +637,9 @@ export class RentContractRegisterComponent {
 				tipo: 'Edifício Coorporativo',
 				unidades: formData.unidade,
 			});
-			
+
 			this.linkedProperties = [...this.linkedProperties];
-			console.log('aki 2');
+			// console.log('aki 2');
 		}
 
 		if (this.linkedProperties.length !== 0 || formData.unidade == null) {
@@ -658,7 +658,7 @@ export class RentContractRegisterComponent {
 		}
 
 		const renterFormData = this.registerRenterForm.getRawValue();
-		console.log(renterFormData);
+		// console.log(renterFormData);
 
 		const renterObj = {
 			nome: renterFormData.name,
@@ -695,7 +695,7 @@ export class RentContractRegisterComponent {
 
 						this.getListaProprietarios();
 
-						console.log('resp', response.data);
+						// console.log('resp', response.data);
 
 						this.setNewRenter = () => {
 							this.contractInfoForm.controls['locatario'].setValue(
@@ -733,7 +733,7 @@ export class RentContractRegisterComponent {
 
 	onChangeBuilding(event: any) {
 		const building = this.buildings.find((b) => b.value?.guid === event?.guid);
-		console.log('onChangeBuilding >> ' + event?.guid);
+		// console.debug('buildings >> ', building);
 		if (building?.value !== null)
 			this.propertyAddForm.controls['unidade'].enable();
 		else this.propertyAddForm.controls['unidade'].disable();
@@ -785,17 +785,16 @@ export class RentContractRegisterComponent {
 		this.units = [];
 		building?.['units']?.forEach((item: any) => {
 			const value = {
-				guid: item.guidReferencia,
-				name: item.tipo,
+				guid: item.guidUnidade,
+				name: item.nomeUnidade,
 			};
 
 			this.units.push({
-				label: item.tipo,
+				label: item.nomeUnidade,
 				value: value,
 			});
-			console.log('building >> ' + JSON.stringify(value));
+			// console.debug('building >> ', value);
 			if (property.unidades.some((u: any) => u.guid === item.guidReferencia)) {
-				
 				this.propertyAddForm.controls['unidade'].setValue([
 					...this.propertyAddForm.controls['unidade'].value,
 					value,
@@ -842,7 +841,7 @@ export class RentContractRegisterComponent {
 	};
 
 	onFileSelect(e: any) {
-		console.log('e', e);
+		// console.log('e', e);
 		this.attachments = e;
 	}
 }

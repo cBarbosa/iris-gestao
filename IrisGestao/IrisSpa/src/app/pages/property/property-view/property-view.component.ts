@@ -55,7 +55,7 @@ export class PropertyViewComponent implements OnInit {
 	displayConfirmationCloneUnit = false;
 	displayModal = false;
 
-	displayAddEvent = false;
+	displayAddEvent = true;
 
 	modalContent: {
 		isError?: boolean;
@@ -65,7 +65,7 @@ export class PropertyViewComponent implements OnInit {
 		message: '',
 	};
 
-	isFormEditable:boolean = true;
+	isFormEditable: boolean = true;
 
 	constructor(
 		private router: Router,
@@ -81,33 +81,33 @@ export class PropertyViewComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+		this.isFormEditable =
+			this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 
-		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
-		
 		this.tableMenu = [
 			{
 				label: 'Detalhes',
 				icon: 'ph-eye',
-				command: () => this.showDetails()
+				command: () => this.showDetails(),
 			},
 			{
 				label: 'Editar',
 				icon: 'ph-note-pencil',
 				command: () =>
 					this.navigateTo('property/edit/unit/' + this.unit!.guidReferencia),
-				visible: this.isFormEditable
+				visible: this.isFormEditable,
 			},
 			{
 				label: 'Duplicar',
 				icon: 'ph-copy-simple',
 				command: () => this.confirmClone(),
-				visible: this.isFormEditable
+				visible: this.isFormEditable,
 			},
 			{
 				label: 'Inativar',
 				icon: 'ph-trash',
 				command: () => this.confirmInativar(),
-				visible: this.isFormEditable
+				visible: this.isFormEditable,
 			},
 		];
 
@@ -203,7 +203,7 @@ export class PropertyViewComponent implements OnInit {
 				this.isLoadingView = false;
 				this.isCorporativeBuilding =
 					this.units[0]?.idTipoUnidadeNavigation?.id == 1;
-				//console.log('Eventos >> ' + JSON.stringify(this.eventos)); 
+				//console.log('Eventos >> ' + JSON.stringify(this.eventos));
 				this.anexoService
 					.getFiles(imovel.guidReferencia)
 					.pipe(first())
