@@ -13,6 +13,7 @@ export type ContratoAluguel = {
 	prazoCarencia: number;
 	prazoDesconto: number;
 	dataInicioContrato: string;
+	dataVencimentoContrato?: string;
 	prazoTotalContrato: number;
 	dataOcupacao: string;
 	//diaVencimentoAluguel: number;

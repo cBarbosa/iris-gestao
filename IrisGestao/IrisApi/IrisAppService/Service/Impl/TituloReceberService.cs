@@ -6,6 +6,7 @@ using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 
@@ -324,11 +325,11 @@ public class TituloReceberService: ITituloReceberService
         tituloReceber.IdCliente = contratoAluguel?.IdCliente;
         tituloReceber.IdIndiceReajuste = contratoAluguel?.IdIndiceReajuste;
         tituloReceber.IdTipoCreditoAluguel = contratoAluguel?.IdTipoCreditoAluguel;
-        tituloReceber.ValorTitulo = contratoAluguel.ValorAluguel as decimal?;
-        tituloReceber.ValorTotalTitulo = contratoAluguel.ValorAluguelLiquido as decimal?;
+        tituloReceber.ValorTitulo = Convert.ToDecimal(contratoAluguel.ValorAluguel);
+        tituloReceber.ValorTotalTitulo = Convert.ToDecimal(contratoAluguel.ValorAluguelLiquido);
         tituloReceber.Parcelas = prazo;
         tituloReceber.DataVencimentoPrimeraParcela = contratoAluguel.DataVencimentoPrimeraParcela;
-        tituloReceber.PorcentagemTaxaAdministracao = contratoAluguel.PercentualRetencaoImpostos as decimal?;
+        tituloReceber.PorcentagemTaxaAdministracao = Convert.ToDecimal(contratoAluguel.PercentualRetencaoImpostos);
 
         BindFaturaTituloByContratoAluguelData(contratoAluguel, tituloReceber, lstFaturaTitulo);
     }
@@ -336,6 +337,7 @@ public class TituloReceberService: ITituloReceberService
     private static List<FaturaTitulo> BindFaturaTituloByContratoAluguelData(ContratoAluguel contratoAluguel, TituloReceber tituloReceber, List<FaturaTitulo> lstFaturaTitulo)
     {
         int contaDesconto = 1;
+        decimal valorFatura;
         for (int i = 0; i < contratoAluguel.PrazoTotalContrato; i++)
         {
             if (i > 11)
@@ -361,7 +363,7 @@ public class TituloReceberService: ITituloReceberService
 
             DateTime dataVencimento = tituloReceber.DataVencimentoPrimeraParcela.Value.AddMonths(i);
             int diaVencimento = tituloReceber.DataVencimentoPrimeraParcela.Value.Day > 28 ? 28 : dataVencimento.Day;
-
+            //Decimal.TryParse(ValorAPagar, out valorFatura);
             FaturaTitulo faturaTitulo           = new FaturaTitulo();
             faturaTitulo.StatusFatura           = FaturaTituloEnum.A_VENCER;
             faturaTitulo.NumeroParcela          = i+1;
@@ -370,7 +372,7 @@ public class TituloReceberService: ITituloReceberService
             faturaTitulo.DataUltimaModificacao  = DateTime.Now;
             faturaTitulo.GuidReferencia         = Guid.NewGuid();
             faturaTitulo.NumeroFatura           = tituloReceber.NumeroTitulo + "/" + (i+1).ToString("D2");
-            faturaTitulo.Valor                  = ValorAPagar as decimal?;
+            faturaTitulo.Valor                  = Convert.ToDecimal(ValorAPagar);
             faturaTitulo.DataVencimento         = new DateTime(dataVencimento.Year, dataVencimento.Month, diaVencimento);
 
             lstFaturaTitulo.Add(faturaTitulo);
@@ -407,10 +409,10 @@ public class TituloReceberService: ITituloReceberService
         tituloReceber.IdIndiceReajuste                  = cmd.IdIndiceReajuste;
         tituloReceber.IdTipoCreditoAluguel              = cmd.IdTipoCreditoAluguel;
         tituloReceber.IdFormaPagamento                  = cmd.IdFormaPagamento;
-        tituloReceber.ValorTitulo                       = valorLiquido as decimal?;
-        tituloReceber.ValorTotalTitulo                  = (valorLiquido * cmd.Parcelas) as decimal?;
+        tituloReceber.ValorTitulo                       = Convert.ToDecimal(valorLiquido);
+        tituloReceber.ValorTotalTitulo                  = Convert.ToDecimal(valorLiquido * cmd.Parcelas);
         tituloReceber.Parcelas                          = cmd.Parcelas;
-        tituloReceber.PorcentagemTaxaAdministracao      = cmd.PorcentagemImpostoRetido as decimal?;
+        tituloReceber.PorcentagemTaxaAdministracao      = Convert.ToDecimal(cmd.PorcentagemImpostoRetido);
 
         if(criacao)
             BindFaturaTituloData(tituloReceber, lstFaturaTitulo);

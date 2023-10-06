@@ -374,9 +374,9 @@ export class RentContractEditComponent {
 			carenciaAluguel: formData.valueInfo.rentGrace,
 			prazoCarencia: +formData.valueInfo.gracePeriod,
 			dataInicioContrato: formData.contractInfo.startDate,
+			dataVencimentoContrato: formData.contractInfo.endDate,
 			prazoTotalContrato: this.data.prazoTotalContrato,
-			dataOcupacao: this.data.dataOcupacao,
-			//diaVencimentoAluguel: null,//+formData.contractInfo.dueDate,
+			dataOcupacao: formData.contractInfo.dataOcupacao,
 			dataVencimentoPrimeraParcela: formData.contractInfo.dueDate,
 			periodicidadeReajuste: this.data.periodicidadeReajuste,
 			lstImoveis: [
