@@ -760,6 +760,7 @@
 						defaultLabel="Selecione a(s) unidade(s)"
 						[showToggleAll]="false"
 						[showClear]="false"
+						(ngModelChange)="onChangeUnit($event)"
 					></p-multiSelect>
 
 					<ng-container
@@ -798,6 +799,7 @@
 				<button
 					pButton
 					pRipple
+					[disabled]="isUnidadeSelecionada"
 					type="button"
 					label="Continuar"
 					class="h-9 w-full"

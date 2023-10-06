@@ -204,13 +204,24 @@
 						<li *ngFor="let unit of units.slice(0, unitListAmount)">
 							<div class="unitCard">
 								<div class="tags">
-									<p-tag
-										value="Unidade disponível"
-										[rounded]="true"
-										severity="success"
-										styleClass="w-36"
-									></p-tag>
+									<ng-container *ngIf="unit.unidadeLocada; else disponivel">
+										<p-tag
+											value="Unidade locada"
+											[rounded]="true"
+											severity="danger"
+											styleClass="w-36"
+										></p-tag>
+									</ng-container>
+									<ng-template #disponivel>
+										<p-tag
+											value="Unidade disponível"
+											[rounded]="true"
+											severity="success"
+											styleClass="w-36"
+										></p-tag>
+									</ng-template>
 								</div>
+								
 								<header>
 									<h4>{{ unit.tipo }}</h4>
 
