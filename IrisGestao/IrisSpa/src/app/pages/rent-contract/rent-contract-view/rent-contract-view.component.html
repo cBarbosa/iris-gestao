@@ -393,7 +393,7 @@
 									<ng-template pTemplate="body" let-reajuste>
 										<tr class="even:bg-gray-50">
 											<td>{{ reajuste.dataCriacao | date : "short" }}</td>
-											<td>{{ reajuste.percentualReajusteAntigo }}%</td>
+											<td>{{ reajuste.percentualReajusteAntigo ?? 0 }}%</td>
 											<td>{{ reajuste.percentualReajusteNovo }}%</td>
 											<td>{{ reajuste.valorAluguelAnterior  | currency }}</td>
 											<td>{{ reajuste.valorAluguelNovo | currency }}</td>

@@ -57,16 +57,16 @@
 					<span>
 						<ng-container
 							*ngIf="
-								imovel.imovelEndereco && imovel.imovelEndereco[0];
+								imovel?.imovelEndereco && imovel?.imovelEndereco[0];
 								else naoInformado
 							"
 						>
 							{{
-								imovel.imovelEndereco[0].rua +
+								imovel?.imovelEndereco[0]?.rua +
 									", " +
-									imovel.imovelEndereco[0].cidade +
+									imovel?.imovelEndereco[0]?.cidade +
 									" - " +
-									imovel.imovelEndereco[0].uf
+									imovel?.imovelEndereco[0]?.uf
 							}}
 						</ng-container>
 						<ng-template #naoInformado>
@@ -507,7 +507,7 @@
 								</div>
 
 								<div class="field">
-									<label for="discount" class="block">
+									<label for="readjust" class="block">
 										Índice de reajuste
 									</label>
 									<p-dropdown
