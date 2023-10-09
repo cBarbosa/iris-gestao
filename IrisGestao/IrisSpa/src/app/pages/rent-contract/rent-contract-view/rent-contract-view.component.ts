@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
 import { ApiResponse } from 'src/app/shared/models';
-import { ContratoAluguel } from 'src/app/shared/models/contrato-aluguel.model';
 import { LoginService } from 'src/app/shared/services';
 import {
 	Attachment,
@@ -126,7 +125,6 @@ export class RentContractViewComponent {
 			.subscribe({
 				next: (event) => {
 					this.isAdjusting = false;
-					console.log('event:', event);
 					if (event.success) {
 						this.modalContent = {
 							isError: false,
@@ -172,7 +170,6 @@ export class RentContractViewComponent {
 			.pipe(first())
 			.subscribe({
 				next: (event) => {
-					console.log('event:', event);
 					if (event.success) {
 						this.closeConfirmationInativarModal();
 						this.modalContent = {
