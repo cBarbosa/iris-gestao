@@ -27,7 +27,7 @@
 					<input
 						id="name"
 						type="text"
-						[value]="imovel.tipo"
+						[value]='imovelTitulo.idCategoriaImovelNavigation?.nome'
 						aria-describedby="name-help"
 						maxlength="100"
 						pInputText
@@ -40,7 +40,7 @@
 					<input
 						id="name"
 						type="text"
-						[value]="imovel.nome"
+						[value]='imovelTitulo?.nome'
 						aria-describedby="name-help"
 						maxlength="100"
 						pInputText
@@ -49,12 +49,21 @@
 				</div>
 
 				<div class="photo-input">
-					<img src="../../../../assets/images/imovel.png" alt="edit-photo" />
+					<img
+						[src]="
+							croppedCover
+								? croppedCover
+								: defaultCoverImage ??
+								  '../../../../assets/images/imovel-placeholder.png'
+						"
+						alt="cover-photo"
+						class="coverPhoto"
+					/>
+
 				</div>
 
-				<h5 class="mt-4">Ed. José Maria Lopes</h5>
-				<p>{{ imovel.endereco }}</p>
-				<p><span class="icon file mr-2">&nbsp;</span>Edifício corporativo</p>
+				<p>{{ imovelTitulo.imovelEndereco?.[0]?.rua ?? '' }} -
+					{{ imovelTitulo.imovelEndereco?.[0]?.uf }}</p>
 			</section>
 			<form class="edit-form" [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
 				<section class="aditional-data">
