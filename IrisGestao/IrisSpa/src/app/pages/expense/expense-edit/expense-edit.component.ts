@@ -8,8 +8,9 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
+
+import { ClienteService, DominiosService } from 'src/app/shared/services';
 import { DropdownItem } from 'src/app/shared/models/types';
-import { DominiosService } from 'src/app/shared/services';
 import { ExpenseService } from 'src/app/shared/services/expense.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -20,10 +21,12 @@ import { Utils } from 'src/app/shared/utils';
 })
 export class ExpenseEditComponent {
 	editForm: FormGroup;
-
+	tituloPagar: any;
 	expenseGuid: string;
 	isLoading = false;
 	invalidGuid = false;
+	
+	isSubmitting = false;
 
 	displayModal = false;
 	modalContent: {
@@ -36,6 +39,14 @@ export class ExpenseEditComponent {
 
 	onInputDate: Function;
 	onBlurDate: Function;
+
+	opcoesLocatario: DropdownItem[] = [
+		{
+			label: 'Selecione',
+			value: null,
+			disabled: true,
+		},
+	];
 
 	opcoesPlanoContas: DropdownItem[] = [
 		{
@@ -75,13 +86,21 @@ export class ExpenseEditComponent {
 		tipo: 'Edifício corporativo',
 		endereco: '',
 	};
+	
+	lstImoveis: [
+		{
+			guidImovel: string;
+			lstUnidades: string[];
+		}
+	];
 	constructor(
 		private fb: FormBuilder,
 		private location: Location,
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private expenseService: ExpenseService,
-		private dominiosService: DominiosService
+		private dominiosService: DominiosService,
+		private clienteService: ClienteService
 	) {}
 
 	ngOnInit() {
@@ -100,11 +119,12 @@ export class ExpenseEditComponent {
 			numeroTitulo: ['', [Validators.required]],
 			planoContas: [null, [Validators.required]],
 			creditarPara: [null, [Validators.required]],
-			nomeLocador: [null, Validators.required],
+			locatario: [null, Validators.required],
 			formaPagamento: [null, Validators.required],
 			dataVencimento: [null, Validators.required],
 			valorTitulo: [null, Validators.required],
 			valorPagar: [null, Validators.required],
+			impostos: [null, Validators.required],
 		});
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
@@ -112,13 +132,13 @@ export class ExpenseEditComponent {
 		this.onBlurDate = onBlurDate;
 
 		let data: any;
-
 		this.expenseService
 			.getExpenseByGuid(this.expenseGuid)
 			.pipe(first())
 			.subscribe((event: any) => {
 				if (event) {
 					data = event.data[0];
+					this.tituloPagar = data;
 					console.log(data);
 
 					this.imovel.nome = data.imoveis[0].nome;
@@ -127,23 +147,22 @@ export class ExpenseEditComponent {
 
 					this.editForm.patchValue({
 						nomeConta: data.nomeTitulo,
-						numeroTitulo: data.numeroTitulo,
 						planoContas: +data.tipoTituloPagar?.id ?? null,
 						creditarPara: +data.creditoAluguel?.id ?? null,
-						nomeLocador: data.cliente?.nome ?? null,
+						locatario: data.cliente?.guidReferencia ?? null,
 						formaPagamento: +data.formaPagamento?.id ?? null,
 						dataVencimento: data.dataVencimentoPrimeraParcela
 							? new Date(data.dataVencimentoPrimeraParcela)
 							: null,
 						valorTitulo: data.valorTitulo,
-						valorPagar: data.valorTitulo,
+						impostos: data.porcentagemTaxaAdministracao  +''
 					});
 
 					setTimeout(() => {
 						this.editForm.patchValue({
 							planoContas: +data.tipoTituloPagar?.id ?? null,
 							creditarPara: +data.creditoAluguel?.id ?? null,
-							nomeLocador: data.cliente?.nome ?? null,
+							locatario: data.cliente?.guidReferencia ?? null,
 							formaPagamento: +data.formaPagamento?.id ?? null,
 						});
 					}, 40);
@@ -151,6 +170,29 @@ export class ExpenseEditComponent {
 					this.invalidGuid = true;
 				}
 				this.isLoading = false;
+			});
+
+			
+		this.clienteService
+			.getListaProprietarios()
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					this.opcoesLocatario.push({
+						label: '--',
+						value: '--',
+					});
+					response?.data.forEach((forma: any) => {
+						this.opcoesLocatario.push({
+							label: forma.nome,
+							value: forma.guidReferencia,
+						});
+					});
+					this.f['locatario'].setValue(+data.cliente?.guidReferencia ?? null);
+				},
+				error: (err) => {
+					console.error(err);
+				},
 			});
 
 		this.dominiosService
@@ -220,7 +262,85 @@ export class ExpenseEditComponent {
 		return Utils.checkHasError(c);
 	}
 
-	onSubmit(e: Event) {}
+	onSubmit(e: any) {
+		let formData: {
+			nomeConta: string;
+			planoContas: number;
+			idTipoCreditoAluguel: number;
+			idContratoAluguel: null;
+			locatario: string;
+			idIndiceReajuste: number | null;
+			formaPagamento: number;
+			dataVencimento: Date;
+			valorTitulo: number;
+			impostos: number;
+			parcelas: number;
+		} = this.editForm.getRawValue();
+
+		const expenseObj: {
+			NomeTitulo: string;
+			idTipoTitulo: number;
+			idTipoCreditoAluguel:  number | null;
+			idContratoAluguel: null;
+			guidCliente: string | null;
+			idIndiceReajuste: number | null;
+			idFormaPagamento: number;
+			DataVencimentoPrimeraParcela: string;
+			valorTitulo: number;
+			PorcentagemImpostoRetido: number;
+			lstImoveis: [
+				{
+					guidImovel: string;
+					lstUnidades: string[];
+				}
+			];
+		} = {
+			NomeTitulo: formData.nomeConta,
+			idTipoTitulo: formData.planoContas,
+			idTipoCreditoAluguel: null,
+			guidCliente: formData.locatario === '--' ? null : formData.locatario,
+			idContratoAluguel: null,
+			idIndiceReajuste: null,
+			idFormaPagamento: formData.formaPagamento,
+			DataVencimentoPrimeraParcela: formData.dataVencimento.toISOString(),
+			valorTitulo: formData.valorTitulo,
+			PorcentagemImpostoRetido: formData.impostos,
+			lstImoveis: this.lstImoveis
+		};
+		console.log('objSubmit >> ' + JSON.stringify(expenseObj));
+		this.expenseService
+			.updateExpense(this.expenseGuid, expenseObj)
+			.pipe(first())
+			.subscribe({
+				next: (response: any) => {
+					if (response.success) {
+						this.modalContent = {
+							header: 'Edição realizada com sucesso',
+							message: response.message,
+						};
+					} else {
+						this.modalContent = {
+							header: 'Edição não realizada',
+							message: response.message,
+							isError: true,
+						};
+					}
+
+					this.openModal();
+				},
+				error: (error: any) => {
+					console.error(error);
+					this.modalContent = {
+						header: 'Edição não realizada',
+						message: 'Erro no envio de dados',
+						isError: true,
+					};
+
+					this.openModal();
+				},
+			});
+	}
+
 
 	openModal() {
 		this.displayModal = true;

@@ -56,8 +56,7 @@
 				<p>{{ imovel.endereco }}</p>
 				<p><span class="icon file mr-2">&nbsp;</span>Edifício corporativo</p>
 			</section>
-
-			<form [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
+			<form class="edit-form" [formGroup]="editForm" (ngSubmit)="onSubmit($event)">
 				<section class="aditional-data">
 					<div class="field">
 						<label for="nomeConta" class="block">Nome da conta</label>
@@ -80,32 +79,6 @@
 							<ng-template #error2>
 								<small id="nomeConta-help" class="p-error block">
 									Nome inválido
-								</small>
-							</ng-template>
-						</ng-container>
-					</div>
-
-					<div class="field">
-						<label for="numeroTitulo" class="block">Número do título</label>
-						<input
-							id="numeroTitulo"
-							type="text"
-							formControlName="numeroTitulo"
-							aria-describedby="numeroTitulo-help"
-							maxlength="100"
-							pInputText
-						/>
-						<ng-container *ngIf="checkHasError(f['numeroTitulo'])">
-							<small
-								id="numeroTitulo-help"
-								*ngIf="f['numeroTitulo'].hasError('required'); else error2"
-								class="p-error block"
-							>
-								Informe o número do título
-							</small>
-							<ng-template #error2>
-								<small id="numeroTitulo-help" class="p-error block">
-									Número do título inválido
 								</small>
 							</ng-template>
 						</ng-container>
@@ -136,7 +109,7 @@
 						</ng-container>
 					</div>
 
-					<div class="field">
+					<!--div class="field">
 						<label for="creditarPara" class="block">Creditar para</label>
 						<p-dropdown
 							id="creditarPara"
@@ -159,28 +132,28 @@
 								</small>
 							</ng-template>
 						</ng-container>
-					</div>
+					</div-->
 
 					<div class="field">
-						<label for="nomeLocador" class="block">Nome do Locatário</label>
+						<label for="locatario" class="block">Locatário</label>
 						<p-dropdown
-							id="nomeLocador"
-							[options]="opcoesNomeLocador"
+							id="locatario"
+							[options]="opcoesLocatario"
 							filterBy="label"
-							formControlName="nomeLocador"
-							aria-describedby="nomeLocador-help"
+							formControlName="locatario"
+							aria-describedby="locatario-help"
 						></p-dropdown>
-						<ng-container *ngIf="checkHasError(f['nomeLocador'])">
+						<ng-container *ngIf="checkHasError(f['locatario'])">
 							<small
-								id="nomeLocador-help"
-								*ngIf="f['nomeLocador'].hasError('required'); else error2"
+								id="locatario-help"
+								*ngIf="f['locatario'].hasError('required'); else error2"
 								class="p-error block"
 							>
-								Informe o nome do Locador
+								Informe o Locatário
 							</small>
 							<ng-template #error2>
-								<small id="nomeLocador-help" class="p-error block">
-									Nome do Locador inválido
+								<small id="locatario-help" class="p-error block">
+									Locatário inválido
 								</small>
 							</ng-template>
 						</ng-container>
@@ -214,7 +187,7 @@
 					</div>
 
 					<div class="field">
-						<label for="dataVencimento" class="block">Vencimento</label>
+						<label for="dataVencimento" class="block">Vencimento Primeira Parcela</label>
 						<p-calendar
 							id="dataVencimento"
 							formControlName="dataVencimento"
@@ -268,52 +241,59 @@
 					</div>
 
 					<div class="field">
-						<label for="valorPagar" class="block">Valor a pagar</label>
+						<label for="impostos" class="block">Impostos</label>
 						<input
-							id="valorPagar"
+							id="impostos"
 							type="text"
-							formControlName="valorPagar"
-							aria-describedby="valorPagar-help"
-							currencyMask
+							formControlName="impostos"
+							aria-describedby="impostos-help"
+							mask="percent"
+							suffix="%"
+							[dropSpecialCharacters]="false"
 							pInputText
 						/>
-						<ng-container *ngIf="checkHasError(f['valorPagar'])">
+						<ng-container *ngIf="checkHasError(f['impostos'])">
 							<small
-								id="valorPagar-help"
-								*ngIf="f['valorPagar'].hasError('required'); else error2"
+								id="impostos-help"
+								*ngIf="f['impostos'].hasError('required'); else error2"
 								class="p-error block"
 							>
-								Informe o valor a pagar
+								Informe os impostos
 							</small>
 							<ng-template #error2>
-								<small id="valorPagar-help" class="p-error block">
-									Valor a pagar inválido
+								<small id="impostos-help" class="p-error block">
+									Impostos inválidos
 								</small>
 							</ng-template>
 						</ng-container>
 					</div>
 				</section>
+				<div class="form-actions">
+					<button
+						pButton
+						type="button"
+						label="Voltar"
+						class="p-button-text h-11"
+						(click)="goBack()"
+					></button>
+		
+					<button
+						pButton
+						pRipple
+						type="button"
+						label="Cancelar"
+						class="p-button-outlined h-11"
+						(click)="navigateTo('expense/details/' + expenseGuid)"
+					></button>
+		
+					<button
+						pButton
+						type="submit"
+						label="Continuar"
+						class="h-11"
+					></button>
+				</div>
 			</form>
-		</div>
-		<div class="form-actions">
-			<button
-				pButton
-				type="button"
-				label="Voltar"
-				class="p-button-text h-11"
-				(click)="goBack()"
-			></button>
-
-			<button
-				pButton
-				pRipple
-				type="button"
-				label="Cancelar"
-				class="p-button-outlined h-11"
-				(click)="navigateTo('expense/details/' + expenseGuid)"
-			></button>
-
-			<button pButton type="submit" label="Continuar" class="h-11"></button>
 		</div>
 	</div>
 </ng-template>

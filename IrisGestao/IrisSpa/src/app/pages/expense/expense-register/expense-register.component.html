@@ -5,7 +5,7 @@
 >
 	<div class="input-wrapper">
 		<section class="form-details">
-			<h4>Adicionar novo contrato</h4>
+			<h4>Adicionar nova Despesa</h4>
 			<app-form-steps
 				[list]="stepList"
 				[callback]="changeStepCb"
@@ -114,7 +114,7 @@
 			</div>
 
 			<div class="field" *ngIf="!f['nomeTitulo'].disabled">
-				<label for="nomeTitulo" class="block">Classificação da Receita</label>
+				<label for="nomeTitulo" class="block">Classificação da Despesa</label>
 				<input
 					id="nomeTitulo"
 					type="text"
@@ -159,7 +159,7 @@
 					<ng-template #error2>
 						<small id="creditarPara-help" class="p-error block">
 							Crédito inválido
-						</small>
+						</small> 
 					</ng-template>
 				</ng-container>
 			</div>
