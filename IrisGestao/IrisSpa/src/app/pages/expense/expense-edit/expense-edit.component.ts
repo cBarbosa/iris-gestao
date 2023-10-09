@@ -9,10 +9,18 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
 
-import { ClienteService, DominiosService } from 'src/app/shared/services';
+import { ClienteService, DominiosService, AnexoService, Attachment} from 'src/app/shared/services';
 import { DropdownItem } from 'src/app/shared/models/types';
 import { ExpenseService } from 'src/app/shared/services/expense.service';
 import { Utils } from 'src/app/shared/utils';
+
+type Base64Metadata = {
+	name: string;
+	data: File | string | ArrayBuffer | null;
+	mimetype: string;
+	isNew?: boolean;
+	id?: number | string;
+};
 
 @Component({
 	selector: 'app-expense-edit',
@@ -39,6 +47,26 @@ export class ExpenseEditComponent {
 
 	onInputDate: Function;
 	onBlurDate: Function;
+
+	// CAPA
+	displayCropModal = false;
+	defaultCoverImage: string | null = null;
+	imageChangedEvent: any = '';
+	croppedCover: any = null;
+	auxCroppedCover: any = null;
+	attachmentsObj:
+		| Partial<{
+				capa: Attachment;
+				foto: Attachment[];
+				habitese: Attachment;
+				projeto: Attachment;
+				matricula: Attachment;
+				outrosdocs: Attachment[];
+		  }>
+		| undefined;
+
+
+	expensePhotos: Base64Metadata[] = [];
 
 	opcoesLocatario: DropdownItem[] = [
 		{
@@ -85,8 +113,10 @@ export class ExpenseEditComponent {
 		nome: '',
 		tipo: 'Edifício corporativo',
 		endereco: '',
+		guidImovel: '',
 	};
 	
+	imovelTitulo: any;
 	lstImoveis: [
 		{
 			guidImovel: string;
@@ -100,7 +130,8 @@ export class ExpenseEditComponent {
 		private activatedRoute: ActivatedRoute,
 		private expenseService: ExpenseService,
 		private dominiosService: DominiosService,
-		private clienteService: ClienteService
+		private clienteService: ClienteService,
+		private anexoService: AnexoService,
 	) {}
 
 	ngOnInit() {
@@ -132,6 +163,7 @@ export class ExpenseEditComponent {
 		this.onBlurDate = onBlurDate;
 
 		let data: any;
+		
 		this.expenseService
 			.getExpenseByGuid(this.expenseGuid)
 			.pipe(first())
@@ -140,8 +172,10 @@ export class ExpenseEditComponent {
 					data = event.data[0];
 					this.tituloPagar = data;
 					console.log(data);
-
+					
+					this.imovelTitulo = data.imoveis[0];
 					this.imovel.nome = data.imoveis[0].nome;
+					this.imovel.guidImovel = data.imoveis[0].guidReferencia;
 					const { rua, bairro, cidade, uf } = data.imoveis[0].imovelEndereco[0];
 					this.imovel.endereco = `${rua}, ${bairro}, ${cidade} - ${uf}`;
 
@@ -164,7 +198,10 @@ export class ExpenseEditComponent {
 							creditarPara: +data.creditoAluguel?.id ?? null,
 							locatario: data.cliente?.guidReferencia ?? null,
 							formaPagamento: +data.formaPagamento?.id ?? null,
+
 						});
+						this.getAnexos();
+						//this.getDadosProprietario();
 					}, 40);
 				} else {
 					this.invalidGuid = true;
@@ -250,6 +287,47 @@ export class ExpenseEditComponent {
 				},
 				error: (err) => {
 					console.error(err);
+				},
+			});
+
+	}
+
+	getAnexos()
+	{
+		console.log('GUID IMOVEL > ' + this.imovelTitulo.guidReferencia);
+		this.anexoService
+			.getFiles(this.imovelTitulo.guidReferencia) 
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					this.attachmentsObj = {
+						capa: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'capa'
+						),
+						foto: event?.filter(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'foto'
+						),
+					};
+
+					console.debug('attachmentsObj', this.attachmentsObj);
+
+					if (this.attachmentsObj?.capa)
+						this.defaultCoverImage = this.attachmentsObj.capa.local;
+
+					if (this.attachmentsObj?.foto?.length)
+						this.expensePhotos = this.attachmentsObj.foto.map((foto) => {
+							return {
+								name: foto.nome,
+								mimetype: foto.mimeType,
+								data: foto.local,
+								id: foto.id,
+							};
+						});
+				},
+				error: (error) => {
+					console.error('Erro: ', error);
 				},
 			});
 	}
