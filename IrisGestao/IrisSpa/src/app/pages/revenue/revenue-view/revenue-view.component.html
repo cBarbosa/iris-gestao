@@ -189,6 +189,14 @@
 										styleClass="w-20"
 									></p-tag>
 								</ng-container>
+								<ng-container *ngIf="fatura.statusFatura === 'Inativo'">
+									<p-tag
+										[value]="fatura.statusFatura"
+										[rounded]="true"
+										severity="neutral"
+										styleClass="w-20"
+									></p-tag>
+								</ng-container>
 							</td>
 							<td class="action w-[13rem] flex gap-2">
 								<ng-container
@@ -204,6 +212,14 @@
 										(click)="setCurrentFatura(fatura); showBaixaTitulo()"
 									>
 										Dar baixa
+									</button>
+									<button
+										pButton
+										type="button"
+										class="p-button-outlined h-9 justify-center text-sm"
+										(click)="setCurrentFatura(fatura); showEditarBaixaVisible()"
+									>
+										Editar
 									</button>
 								</ng-container>
 
@@ -221,15 +237,15 @@
 									>
 										Detalhes
 									</button>
+									<button
+										pButton
+										type="button"
+										class="p-button-outlined h-9 justify-center text-sm"
+										(click)="setCurrentFatura(fatura); showEditarBaixaVisible()"
+									>
+										Editar
+									</button>
 								</ng-container>
-								<button
-									pButton
-									type="button"
-									class="p-button-outlined h-9 justify-center text-sm"
-									(click)="setCurrentFatura(fatura); showEditarBaixaVisible()"
-								>
-									Editar
-								</button>
 							</td>
 						</tr>
 					</ng-template>
