@@ -183,6 +183,14 @@
 										styleClass="w-20"
 									></p-tag>
 								</ng-container>
+								<ng-container *ngIf="fatura.statusFatura === 'Inativo'">
+									<p-tag
+										[value]="fatura.statusFatura"
+										[rounded]="true"
+										severity="info"
+										styleClass="w-20"
+									></p-tag>
+								</ng-container>
 							</td>
 							<td class="action w-[13rem] flex gap-2">
 								<ng-container

@@ -199,7 +199,8 @@ public class TituloPagarRepository : Repository<TituloPagar>, ITituloPagarReposi
                             .ThenInclude(x => x.IdTipoContratoNavigation)
                         .Include(x => x.TituloImovel)
                             .ThenInclude(x => x.TituloUnidade)
-                        .Where(x =>  (idTipoTitulo.HasValue
+                        .Where(x => x.Status && 
+                                    (idTipoTitulo.HasValue
                                         ? x.IdTipoTituloNavigation.Id == idTipoTitulo.Value
                                         : true)
                                     && (!string.IsNullOrEmpty(numeroTitulo)

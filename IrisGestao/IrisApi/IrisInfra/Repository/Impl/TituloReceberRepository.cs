@@ -193,7 +193,8 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
             var contratos = await DbSet
                         .Include(x => x.IdContratoAluguelNavigation)
                             .ThenInclude(x => x.IdTipoContratoNavigation)
-                        .Where(x =>  (idTipoTitulo.HasValue
+                        .Where(x => x.Status.Value &&
+                                    (idTipoTitulo.HasValue
                                         ? x.IdTipoTituloNavigation.Id == idTipoTitulo.Value
                                         : true)
                                     && (!string.IsNullOrEmpty(numeroTitulo)
