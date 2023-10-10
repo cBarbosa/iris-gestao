@@ -98,6 +98,7 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                                 DataCriacao = x.DataCriacao,
                                 DataAtualização = x.DataUltimaModificacao,
                                 GuidReferencia = x.GuidReferencia,
+                                Ativo = x.Status,
                                 IndiceReajuste = x.IdIndiceReajusteNavigation == null ? null : new
                                 {
                                     Id = x.IdIndiceReajusteNavigation.Id,
@@ -105,7 +106,7 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                                     Percentual = x.IdIndiceReajusteNavigation.Percentual,
                                     DataAtualizacao = x.IdIndiceReajusteNavigation.DataAtualizacao
                                 },
-                            }),
+                            }).Where(y => y.Ativo),
                         })
                         .FirstOrDefaultAsync();
     }
@@ -154,8 +155,8 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
                         cidade = x.Cidade,
                         estado = x.Estado,
                         Status = x.Status,
-                        TotalImoveis = x.Imovel.Count(),
-                        TotalContratosAluguel = x.ContratoAluguel.Count(),
+                        TotalImoveis = x.Imovel.Where(x=> x.Status).Count(),
+                        TotalContratosAluguel = x.ContratoAluguel.Where(x => x.Status).Count(),
                     })
                 .OrderBy(x => x.Nome)
                 .ToListAsync();

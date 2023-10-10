@@ -228,11 +228,16 @@ public class TituloReceberService: ITituloReceberService
             tituloReceber.Status = false;
             foreach (var fatura in lstFaturasTitulo)
             {
-                fatura.DataUltimaModificacao = DateTime.Now;
-                fatura.Status = false;
-                fatura.StatusFatura = FaturaTituloEnum.INATIVO;
-                fatura.DescricaoBaixaFatura = "Fatura cancelada devido cancelamento do contrato de aluguel";
-                faturaTituloRepository.Update(fatura);
+                if(String.IsNullOrWhiteSpace(fatura.StatusFatura) 
+                    || fatura.StatusFatura.Equals(FaturaTituloEnum.VENCIDO)
+                    || fatura.StatusFatura.Equals(FaturaTituloEnum.A_VENCER))
+                { 
+                    fatura.DataUltimaModificacao = DateTime.Now;
+                    fatura.Status = false;
+                    fatura.StatusFatura = FaturaTituloEnum.INATIVO;
+                    fatura.DescricaoBaixaFatura = "Fatura cancelada devido cancelamento do contrato de aluguel";
+                    faturaTituloRepository.Update(fatura);
+                }
             }
             tituloReceberRepository.Update(tituloReceber);
             return new CommandResult(true, SuccessResponseEnums.Success_1001, tituloReceber);
@@ -436,7 +441,7 @@ public class TituloReceberService: ITituloReceberService
             faturaTitulo.DataUltimaModificacao          = DateTime.Now;
             faturaTitulo.GuidReferencia                 = Guid.NewGuid();
             faturaTitulo.NumeroFatura                   = tituloReceber.NumeroTitulo + "/" + (i + 1).ToString("D2");
-            faturaTitulo.Valor                          = tituloReceber.ValorTitulo as decimal?;
+            faturaTitulo.Valor                          = Convert.ToDecimal(tituloReceber.ValorTitulo);
             faturaTitulo.DataVencimento                 = new DateTime(dataVencimento.Year, dataVencimento.Month, diaVencimento);
 
             lstFaturaTitulo.Add(faturaTitulo);
@@ -450,10 +455,10 @@ public class TituloReceberService: ITituloReceberService
         tituloReceber.DataUltimaModificacao = DateTime.Now;
         tituloReceber.DataFimTitulo = tituloReceber.DataFimTitulo.Value >= dataVencimento ? tituloReceber.DataFimTitulo : dataVencimento;
         
-        tituloReceber.ValorTitulo = contratoAluguel.ValorAluguelLiquido as decimal?;
+        tituloReceber.ValorTitulo = Convert.ToDecimal(contratoAluguel.ValorAluguelLiquido);
         tituloReceber.ValorTotalTitulo = (tituloReceber.ValorTotalTitulo + (decimal?)(contratoAluguel.ValorAluguelLiquido * 12));
         tituloReceber.Parcelas = tituloReceber.Parcelas + 12;
-        tituloReceber.PorcentagemTaxaAdministracao = contratoAluguel.PercentualRetencaoImpostos as decimal?;
+        tituloReceber.PorcentagemTaxaAdministracao = Convert.ToDecimal(contratoAluguel.PercentualRetencaoImpostos);
 
         BindFaturaTituloReajusteData(tituloReceber, lstFaturaTitulo);
     }
@@ -474,7 +479,7 @@ public class TituloReceberService: ITituloReceberService
             faturaTitulo.DataUltimaModificacao = DateTime.Now;
             faturaTitulo.GuidReferencia = Guid.NewGuid();
             faturaTitulo.NumeroFatura = tituloReceber.NumeroTitulo + "/" + (i + 1).ToString("D2");
-            faturaTitulo.Valor = tituloReceber.ValorTitulo as decimal?;
+            faturaTitulo.Valor = Convert.ToDecimal(tituloReceber.ValorTitulo);
             faturaTitulo.DataVencimento = new DateTime(dataVencimento.Year, dataVencimento.Month, dataVencimento.Day);
 
             lstFaturaTitulo.Add(faturaTitulo);

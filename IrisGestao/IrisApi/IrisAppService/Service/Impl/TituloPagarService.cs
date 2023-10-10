@@ -260,11 +260,16 @@ public class TituloPagarService: ITituloPagarService
             TituloPagar.Status = false;
             foreach (var fatura in lstFaturasTitulo)
             {
-                fatura.DataUltimaModificacao = DateTime.Now;
-                fatura.Status = false;
-                fatura.StatusFatura = FaturaTituloEnum.INATIVO;
-                fatura.DescricaoBaixaFatura = "Fatura cancelada devido cancelamento do contrato de aluguel";
-                faturaTituloPagarRepository.Update(fatura);
+                if (String.IsNullOrWhiteSpace(fatura.StatusFatura)
+                    || fatura.StatusFatura.Equals(FaturaTituloEnum.VENCIDO)
+                    || fatura.StatusFatura.Equals(FaturaTituloEnum.A_VENCER))
+                {
+                    fatura.DataUltimaModificacao = DateTime.Now;
+                    fatura.Status = false;
+                    fatura.StatusFatura = FaturaTituloEnum.INATIVO;
+                    fatura.DescricaoBaixaFatura = "Fatura cancelada devido cancelamento do contrato de aluguel";
+                    faturaTituloPagarRepository.Update(fatura);
+                }
             }
             tituloPagarRepository.Update(TituloPagar);
 
