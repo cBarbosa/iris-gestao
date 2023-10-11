@@ -397,20 +397,20 @@ public class TituloReceberService: ITituloReceberService
                 tituloReceber.DataCriacao = DateTime.Now;
                 tituloReceber.DataUltimaModificacao = DateTime.Now;
                 criacao = true;
+                tituloReceber.NumeroTitulo = tituloReceber.Sequencial + "/" + DateTime.Now.Year;
+                tituloReceber.DataFimTitulo = cmd.DataVencimentoPrimeraParcela.AddMonths(cmd.Parcelas);
+                tituloReceber.DataVencimentoPrimeraParcela = cmd.DataVencimentoPrimeraParcela;
                 break;
             default:
                 tituloReceber.GuidReferencia = tituloReceber.GuidReferencia;
                 tituloReceber.DataUltimaModificacao = DateTime.Now;
+                tituloReceber.DataFimTitulo = cmd.dataFimTitulo;
                 break;
         }
-
-        tituloReceber.NumeroTitulo                      = tituloReceber.Sequencial +"/"+ DateTime.Now.Year;
+        
         tituloReceber.NomeTitulo                        = string.IsNullOrEmpty(cmd.NomeTitulo) ? tituloReceber.NomeTitulo : cmd.NomeTitulo;
         tituloReceber.IdTipoTitulo                      = cmd.IdTipoTitulo;
         tituloReceber.Status                            = true;
-        tituloReceber.DataFimTitulo                     = cmd.DataVencimentoPrimeraParcela.AddMonths(cmd.Parcelas);
-        tituloReceber.DataVencimentoPrimeraParcela      = cmd.DataVencimentoPrimeraParcela;
-        tituloReceber.IdContratoAluguel                 = null;
         tituloReceber.IdIndiceReajuste                  = cmd.IdIndiceReajuste;
         tituloReceber.IdTipoCreditoAluguel              = cmd.IdTipoCreditoAluguel;
         tituloReceber.IdFormaPagamento                  = cmd.IdFormaPagamento;
