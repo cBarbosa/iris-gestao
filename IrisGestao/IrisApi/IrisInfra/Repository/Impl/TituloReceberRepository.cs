@@ -62,6 +62,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                         DataCriacao = x.DataCriacao,
                         DataAtualização = x.DataUltimaModificacao,
                         DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,
+                        DataVencimentoTitulo = x.DataFimTitulo,
                         PorcentagemTaxaAdministracao = x.PorcentagemTaxaAdministracao,
                         TipoTituloReceber = x.IdTipoTituloNavigation == null ? null : new
                         {
