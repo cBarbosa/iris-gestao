@@ -250,14 +250,56 @@
 											"
 											class="p-error block"
 										>
-											Informe o orçamento
+											Informe o percentual de conclusão da obra
 										</small>
 										<ng-template #error2>
 											<small
 												id="porcentagemConclusao-help"
 												class="p-error block"
 											>
-												Orçamento inválido
+												Percentual de conclusão da obra inválido
+											</small>
+										</ng-template>
+									</ng-container>
+								</div>
+
+								<div class="field">
+									<label for="porcentagemAdministracao" class="block"
+										>% de administração da obra</label
+									>
+									<input
+										id="porcentagemAdministracao"
+										type="text"
+										formControlName="porcentagemAdministracao"
+										aria-describedby="porcentagemAdministracao-help"
+										mask="percent"
+										suffix="%"
+										[dropSpecialCharacters]="false"
+										pInputText
+									/>
+									<ng-container
+										*ngIf="
+											checkHasError(constructionInfo['porcentagemAdministracao'])
+										"
+									>
+										<small
+											id="porcentagemAdministracao-help"
+											*ngIf="
+												constructionInfo['porcentagemAdministracao'].hasError(
+													'required'
+												);
+												else error2
+											"
+											class="p-error block"
+										>
+											Informe a taxa de administração da obra
+										</small>
+										<ng-template #error2>
+											<small
+												id="porcentagemConclusao-help"
+												class="p-error block"
+											>
+												Taxa de administração da obra inválida
 											</small>
 										</ng-template>
 									</ng-container>

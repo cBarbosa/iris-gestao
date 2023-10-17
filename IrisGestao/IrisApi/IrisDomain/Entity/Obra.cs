@@ -27,6 +27,9 @@ public partial class Obra: BaseEntity<Obra>
     [Column(TypeName = "decimal(5, 2)")]
     public decimal? Percentual { get; set; }
 
+    [Column(TypeName = "decimal(5, 2)")]
+    public decimal? PercentualAdministracao { get; set; }
+
     [Column(TypeName = "datetime")]
     public DateTime? DataUltimaModificacao { get; set; }
 

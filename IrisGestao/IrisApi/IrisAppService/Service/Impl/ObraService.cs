@@ -183,6 +183,7 @@ public class ObraService: IObraService
 
         obra.Nome = cmd.Nome;
         obra.Percentual = cmd.Percentual;
+        obra.PercentualAdministracao = cmd.PercentualAdministracao;
         obra.ValorOrcamento = cmd.ValorOrcamento;
         obra.DataInicio = cmd.DataInicio;
         obra.DataPrevistaTermino = cmd.DataPrevistaTermino;

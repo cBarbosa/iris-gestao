@@ -34,6 +34,7 @@ public class ObraRepository : Repository<Obra>, IObraRepository
                         x.DataInicio,
                         x.DataPrevistaTermino,
                         x.Percentual,
+                        x.PercentualAdministracao,
                         x.ValorOrcamento,
                         Imovel = new
                         {
@@ -84,6 +85,7 @@ public class ObraRepository : Repository<Obra>, IObraRepository
                 x.DataInicio,
                 x.DataPrevistaTermino,
                 x.Percentual,
+                x.PercentualAdministracao,
                 x.ValorOrcamento,
                 Imovel = new
                 {
