@@ -180,7 +180,7 @@ export class EdicaoTituloSidebarComponent {
 		console.log('patching values', this.data);
 
 		this.faturaPaga = this.data?.statusFatura
-			? this.data.statusFatura === 'Pago'
+			? this.data.statusFatura === 'Pago' || this.data.statusFatura === 'Parcial'
 			: false;
 
 		if (this.faturaPaga) {

@@ -21,14 +21,14 @@
 
 			<div class="input-wrapper">
 				<section class="revenue-data">
-					<h4>Edifício do contrato</h4>
+					<h4>Edifício do Receita</h4>
 
 					<div class="field">
 						<label for="name" class="block">Tipo do imóvel</label>
 						<input
 							id="name"
 							type="text"
-							[value]="imovel.tipo"
+							[value]='imovelTitulo.idCategoriaImovelNavigation?.nome'
 							aria-describedby="name-help"
 							maxlength="100"
 							pInputText
@@ -41,7 +41,7 @@
 						<input
 							id="name"
 							type="text"
-							[value]="imovel.nome"
+							[value]='imovelTitulo?.nome'
 							aria-describedby="name-help"
 							maxlength="100"
 							pInputText
@@ -50,12 +50,21 @@
 					</div>
 
 					<div class="photo-input">
-						<img src="../../../../assets/images/imovel.png" alt="edit-photo" />
+						<img
+							[src]="
+								croppedCover
+									? croppedCover
+									: defaultCoverImage ??
+									  '../../../../assets/images/imovel-placeholder.png'
+							"
+							alt="cover-photo"
+							class="coverPhoto"
+						/>
+	
 					</div>
-
-					<h5 class="mt-4">Ed. José Maria Lopes</h5>
-					<p>{{ imovel.endereco }}</p>
-					<p><span class="icon file mr-2">&nbsp;</span>Edifício corporativo</p>
+	
+					<p>{{ imovelTitulo.imovelEndereco?.[0]?.rua ?? '' }} -
+						{{ imovelTitulo.imovelEndereco?.[0]?.uf }}</p>
 				</section>
 
 				<section class="aditional-data">
@@ -80,32 +89,6 @@
 							<ng-template #error2>
 								<small id="nomeConta-help" class="p-error block">
 									Nome inválido
-								</small>
-							</ng-template>
-						</ng-container>
-					</div>
-
-					<div class="field">
-						<label for="numeroTitulo" class="block">Número do título</label>
-						<input
-							id="numeroTitulo"
-							type="text"
-							formControlName="numeroTitulo"
-							aria-describedby="numeroTitulo-help"
-							maxlength="100"
-							pInputText
-						/>
-						<ng-container *ngIf="checkHasError(f['numeroTitulo'])">
-							<small
-								id="numeroTitulo-help"
-								*ngIf="f['numeroTitulo'].hasError('required'); else error2"
-								class="p-error block"
-							>
-								Informe o número do título
-							</small>
-							<ng-template #error2>
-								<small id="numeroTitulo-help" class="p-error block">
-									Número do título inválido
 								</small>
 							</ng-template>
 						</ng-container>
@@ -267,31 +250,6 @@
 						</ng-container>
 					</div>
 
-					<div class="field">
-						<label for="valorPagar" class="block">Valor a pagar</label>
-						<input
-							id="valorPagar"
-							type="text"
-							formControlName="valorPagar"
-							aria-describedby="valorPagar-help"
-							currencyMask
-							pInputText
-						/>
-						<ng-container *ngIf="checkHasError(f['valorPagar'])">
-							<small
-								id="valorPagar-help"
-								*ngIf="f['valorPagar'].hasError('required'); else error2"
-								class="p-error block"
-							>
-								Informe o valor a pagar
-							</small>
-							<ng-template #error2>
-								<small id="valorPagar-help" class="p-error block">
-									Valor a pagar inválido
-								</small>
-							</ng-template>
-						</ng-container>
-					</div>
 				</section>
 			</div>
 			<div class="form-actions">

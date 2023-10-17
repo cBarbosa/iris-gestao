@@ -29,6 +29,7 @@
 								(click)="
 									navigateTo('supplier/register/' + supplier.guidReferencia)
 								"
+								*ngIf="isFormEditable"
 							>
 								Editar prestador
 							</button>
@@ -137,7 +138,7 @@
 
 			<ng-container *ngIf="isCnpj">
 				<section class="contacts" *ngIf="contacts.length > 0; else addContact">
-					<header class="flex justify-between items-start">
+					<header class="flex justify-between items-start" >
 						<h2>Contatos</h2>
 						<button
 							pButton
@@ -146,6 +147,7 @@
 							iconPos="left"
 							class="p-button-outlined icon-left h-9"
 							(click)="showContactRegister()"
+							*ngIf="isFormEditable"
 						>
 							Novo contato
 						</button>
@@ -249,6 +251,7 @@
 								iconPos="left"
 								class="p-button-outlined icon-left h-9"
 								(click)="showContactRegister()"
+								*ngIf="isFormEditable"
 							>
 								Novo contato
 							</button>

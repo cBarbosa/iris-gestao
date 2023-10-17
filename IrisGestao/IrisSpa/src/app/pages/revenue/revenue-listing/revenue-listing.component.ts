@@ -3,7 +3,7 @@ import { Component, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api';
 import { first } from 'rxjs';
-import { CommonService, DominiosService } from 'src/app/shared/services';
+import { CommonService, DominiosService, LoginService } from 'src/app/shared/services';
 import { RevenueService } from 'src/app/shared/services/revenue.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
@@ -46,13 +46,16 @@ export class RevenueListingComponent {
 	filterTitulo: string = '';
 	filterTipo: number;
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private commonService: CommonService,
 		private dominiosService: DominiosService,
 		private revenueService: RevenueService,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
 	) {}
 
 	ngOnInit(): void {
@@ -119,6 +122,8 @@ export class RevenueListingComponent {
 					console.error(err);
 				},
 			});
+
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	loadRevenuesPage(event: LazyLoadEvent) {

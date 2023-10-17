@@ -57,7 +57,10 @@
 						</div>
 						<div class="data-divider">&nbsp;</div>
 						<div class="data">
-							<div class="flex gap-3 flex-wrap">
+							<div
+								class="flex gap-3 flex-wrap"
+								*ngIf="isFormEditable"
+							>
 								<button
 									pButton
 									type="button"
@@ -77,14 +80,14 @@
 									Reajustar contrato
 								</button>
 								
-							<button
-							pButton
-							type="button"
-							(click)="confirmInativar()"
+								<button
+								pButton
+								type="button"
+								(click)="confirmInativar()"
 									class="p-button-outlined h-8"
-						>
-							Inativar
-						</button>
+								>
+									Inativar
+								</button>
 							</div>
 						</div>
 					</div>
@@ -390,7 +393,7 @@
 									<ng-template pTemplate="body" let-reajuste>
 										<tr class="even:bg-gray-50">
 											<td>{{ reajuste.dataCriacao | date : "short" }}</td>
-											<td>{{ reajuste.percentualReajusteAntigo }}%</td>
+											<td>{{ reajuste.percentualReajusteAntigo ?? 0 }}%</td>
 											<td>{{ reajuste.percentualReajusteNovo }}%</td>
 											<td>{{ reajuste.valorAluguelAnterior  | currency }}</td>
 											<td>{{ reajuste.valorAluguelNovo | currency }}</td>

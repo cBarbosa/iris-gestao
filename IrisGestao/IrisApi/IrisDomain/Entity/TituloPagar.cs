@@ -23,8 +23,7 @@ public partial class TituloPagar : BaseEntity<TituloPagar>
     public int IdTipoTitulo { get; set; }
 
     public int? IdContratoAluguel { get; set; } = null!;
-
-    public int? IdCliente { get; set; }
+    public int? IdCliente { get; set; } = null!;
 
     public int? IdTipoCreditoAluguel { get; set; }
 
@@ -73,7 +72,7 @@ public partial class TituloPagar : BaseEntity<TituloPagar>
 
     [ForeignKey("IdCliente")]
     [InverseProperty("TituloPagar")]
-    public virtual Cliente IdClienteNavigation { get; set; } = null!;
+    public virtual Cliente? IdClienteNavigation { get; set; } = null!;
 
     [ForeignKey("IdIndiceReajuste")]
     [InverseProperty("TituloPagar")]

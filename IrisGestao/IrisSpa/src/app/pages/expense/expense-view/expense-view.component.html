@@ -22,6 +22,7 @@
 								type="button"
 								class="p-element h-10 p-button p-component p-button-outlined"
 								(click)="navigateTo('expense/edit/' + expense.guidReferencia)"
+								*ngIf="isFormEditable"
 							>
 								Editar Título
 							</button>
@@ -70,7 +71,7 @@
 							<div class="expense-data">
 								<div class="data-label">Locatário</div>
 								<div class="data-value">
-									{{ expense?.['cliente'].nome }}
+									{{ expense?.['cliente']?.nome }}
 								</div>
 							</div>
 							<div class="expense-data">
@@ -112,6 +113,7 @@
 						iconPos="left"
 						class="p-button-outlined icon-left h-9"
 						(click)="showAddFatura()"
+						*ngIf="isFormEditable"
 					>
 						Nova fatura
 					</button>
@@ -178,6 +180,14 @@
 										[value]="fatura.statusFatura"
 										[rounded]="true"
 										severity="warning"
+										styleClass="w-20"
+									></p-tag>
+								</ng-container>
+								<ng-container *ngIf="fatura.statusFatura === 'Inativo'">
+									<p-tag
+										[value]="fatura.statusFatura"
+										[rounded]="true"
+										severity="info"
 										styleClass="w-20"
 									></p-tag>
 								</ng-container>

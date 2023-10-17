@@ -13,8 +13,8 @@ namespace IrisGestao.Domain.Command.Request
         //public string NumeroTitulo { get; set; }
         public string NomeTitulo { get; set; }
         public int IdTipoTitulo { get; set; }
-        public int IdTipoCreditoAluguel { get; set; }
-        public Guid GuidCliente { get; set; }
+        public int? IdTipoCreditoAluguel { get; set; }
+        public string? GuidCliente { get; set; }
         public Guid? IdContratoAluguel { get; set; }
         public int? IdIndiceReajuste { get; set; }
         public int? IdFormaPagamento { get; set; }
@@ -22,9 +22,9 @@ namespace IrisGestao.Domain.Command.Request
         public DateTime dataFimTitulo { get; set; }
         public double ValorTitulo { get; set; }
         public double PorcentagemImpostoRetido { get; set; }
-        public int Parcelas { get; set; }
+        public int? Parcelas { get; set; }
         public Guid GuidReferencia { get; set; }
-        public List<TituloPagarImovelCommand> lstImoveis { get; set; }
+        public List<TituloPagarImovelCommand>? lstImoveis { get; set; }
     }
 
     public class TituloPagarImovelCommand
