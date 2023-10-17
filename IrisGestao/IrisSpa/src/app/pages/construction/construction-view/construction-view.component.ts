@@ -60,7 +60,6 @@ export class ConstructionViewComponent {
 		private router: Router,
 		private route: ActivatedRoute,
 		private constructionService: ConstructionService,
-		private dominiosService: DominiosService,
 		private anexoService: AnexoService,
 		private responsiveService: ResponsiveService,
 		private loginService: LoginService
@@ -163,7 +162,7 @@ export class ConstructionViewComponent {
 	}
 
 	setCurrentService = (item: any): void => {
-		item.percentualAdministracaoObra = this.construction?.percentual ?? 0.0;
+		item.percentualAdministracaoObra = this.construction?.percentualAdministracao ?? 0.0;
 		this.serviceSelected = item;
 	};
 
