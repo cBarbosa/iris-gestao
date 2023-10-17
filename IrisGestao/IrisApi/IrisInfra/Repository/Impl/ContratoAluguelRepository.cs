@@ -28,270 +28,260 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
 
     public async Task<object?> GetByContratoAluguelGuid(Guid guid)
     {
-        var contratoDb = await DbSet
-            .Include(y => y.IdClienteNavigation)
-                .ThenInclude(y => y.IdTipoClienteNavigation)
-            .Include(z=> z.IdTipoContratoNavigation)
-            .Include(x => x.ContratoAluguelImovel)
-                .ThenInclude(x => x.ContratoAluguelUnidade)
-
-            .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.ContratoAluguelUnidade).ThenInclude(x => x.IdUnidadeNavigation)
-            .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.ContratoAluguelUnidade).ThenInclude(x => x.IdUnidadeNavigation).ThenInclude(x => x.IdTipoUnidadeNavigation)
-
-            .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.IdImovelNavigation).ThenInclude(x => x.Unidade)
-            .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.IdImovelNavigation).ThenInclude(x => x.IdCategoriaImovelNavigation)
-            .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.IdImovelNavigation).ThenInclude(x => x.IdClienteProprietarioNavigation)
-            .Include(x => x.ContratoAluguelImovel).ThenInclude(x => x.IdImovelNavigation).ThenInclude(x => x.IdClienteProprietarioNavigation).ThenInclude(x => x.IdTipoClienteNavigation)
-            
-            .Include(x => x.IdIndiceReajusteNavigation)
-            .Include(x => x.IdTipoCreditoAluguelNavigation)
-            .Include(x => x.ContratoAluguelHistoricoReajuste)
-            .Include(x => x.TituloReceber).ThenInclude(x => x.IdIndiceReajusteNavigation)
-            .Include(x => x.TituloReceber).ThenInclude(x => x.IdTipoCreditoAluguelNavigation)
-            .Include(x => x.TituloReceber).ThenInclude(x => x.IdClienteNavigation)
-            .Include(x => x.TituloReceber).ThenInclude(x => x.IdFormaPagamentoNavigation)
-            .Include(x => x.TituloReceber).ThenInclude(x => x.IdTipoTituloNavigation)
-            .Include(x => x.TituloReceber).ThenInclude(x => x.FaturaTitulo)
-
-            .Where(x => x.GuidReferencia.Equals(guid) && x.Status)
+        return await DbSet
+                .Where(x => x.GuidReferencia.Equals(guid) && x.Status)
+             .Select( contratoDb=> new
+             {
+                 contratoDb.NumeroContrato,
+                 contratoDb.ValorAluguel,
+                 contratoDb.ValorAluguelLiquido,
+                 contratoDb.ValorComDesconto,
+                 contratoDb.ValorComImpostos,
+                 contratoDb.PercentualRetencaoImpostos,
+                 contratoDb.PercentualDescontoAluguel,
+                 contratoDb.PrazoDesconto,
+                 contratoDb.CarenciaAluguel,
+                 contratoDb.PrazoCarencia,
+                 contratoDb.DataInicioContrato,
+                 contratoDb.PrazoTotalContrato,
+                 contratoDb.DataFimContrato,
+                 contratoDb.DataOcupacao,
+                 contratoDb.DiaVencimentoAluguel,
+                 contratoDb.PeriodicidadeReajuste,
+                 contratoDb.DataCriacao,
+                 contratoDb.DataUltimaModificacao,
+                 contratoDb.DataVencimentoPrimeraParcela,
+                 contratoDb.GuidReferencia,
+                 ExibirAlertaVencimento = (contratoDb.DataFimContrato - DateTime.Now).Days <= 90,
+                 TipoContrato = contratoDb.IdTipoContratoNavigation == null ? null : new
+                 {
+                     contratoDb.IdTipoContratoNavigation.Id,
+                     contratoDb.IdTipoContratoNavigation.Nome,
+                 },
+                 IndiceReajuste = contratoDb.IdIndiceReajusteNavigation == null ? null : new
+                 {
+                     contratoDb.IdIndiceReajusteNavigation.Id,
+                     contratoDb.IdIndiceReajusteNavigation.Nome,
+                     contratoDb.IdIndiceReajusteNavigation.Percentual,
+                     contratoDb.IdIndiceReajusteNavigation.DataAtualizacao,
+                 },
+                 CreditoAluguel = contratoDb.IdTipoCreditoAluguelNavigation == null ? null : new
+                 {
+                     contratoDb.IdTipoCreditoAluguelNavigation.Id,
+                     contratoDb.IdTipoCreditoAluguelNavigation.Nome
+                 },
+                 Cliente = contratoDb.IdClienteNavigation == null ? null : new
+                 {
+                     contratoDb.IdClienteNavigation.CpfCnpj,
+                     contratoDb.IdClienteNavigation.GuidReferencia,
+                     contratoDb.IdClienteNavigation.Nome,
+                     contratoDb.IdClienteNavigation.RazaoSocial,
+                     contratoDb.IdClienteNavigation.Email,
+                     contratoDb.IdClienteNavigation.Telefone,
+                     contratoDb.IdClienteNavigation.DataNascimento,
+                     contratoDb.IdClienteNavigation.IdTipoCliente,
+                     contratoDb.IdClienteNavigation.DataUltimaModificacao,
+                     contratoDb.IdClienteNavigation.Cep,
+                     contratoDb.IdClienteNavigation.Endereco,
+                     contratoDb.IdClienteNavigation.Bairro,
+                     contratoDb.IdClienteNavigation.Cidade,
+                     contratoDb.IdClienteNavigation.Estado,
+                     IdTipoClienteNavigation = contratoDb.IdClienteNavigation.IdTipoClienteNavigation == null ? null : new
+                     {
+                         contratoDb.IdClienteNavigation.IdTipoClienteNavigation.Id,
+                         contratoDb.IdClienteNavigation.IdTipoClienteNavigation.Nome,
+                     },
+                     Contato = contratoDb.IdClienteNavigation.Contato.Select(c => new
+                     {
+                         c.Nome,
+                         c.Cargo,
+                         c.Email,
+                         c.Telefone,
+                         c.DataNascimento,
+                         c.DataCriacao,
+                         c.DataUltimaModificacao,
+                         c.GuidReferencia,
+                     })
+                 },
+                 lstImoveisVinculados = contratoDb.ContratoAluguelImovel.Select(imovelAlugado => new
+                 {
+                     idContratoImovel = imovelAlugado.Id,
+                     guidImovel = imovelAlugado.IdImovelNavigation.GuidReferencia,
+                     lstUnidades = imovelAlugado.ContratoAluguelUnidade.Select(unidadeAlugada => new
+                     {
+                         guidUnidade = unidadeAlugada.IdUnidadeNavigation.GuidReferencia,
+                         Ativo = unidadeAlugada.IdUnidadeNavigation.Status,
+                         IdContratoUnidade = unidadeAlugada.Id,
+                         unidadeAlugada.IdUnidadeNavigation.AreaUtil,
+                         unidadeAlugada.IdUnidadeNavigation.AreaTotal,
+                         unidadeAlugada.IdUnidadeNavigation.AreaHabitese,
+                         unidadeAlugada.IdUnidadeNavigation.InscricaoIPTU,
+                         unidadeAlugada.IdUnidadeNavigation.Matricula,
+                         unidadeAlugada.IdUnidadeNavigation.MatriculaEnergia,
+                         unidadeAlugada.IdUnidadeNavigation.MatriculaAgua,
+                         unidadeAlugada.IdUnidadeNavigation.TaxaAdministracao,
+                         unidadeAlugada.IdUnidadeNavigation.Tipo,
+                         unidadeAlugada.IdUnidadeNavigation.ValorPotencial,
+                         unidadeAlugada.IdUnidadeNavigation.DataCriacao,
+                         unidadeAlugada.IdUnidadeNavigation.DataUltimaModificacao,
+                         IdTipoUnidadeNavigation = new
+                         {
+                             unidadeAlugada.IdUnidadeNavigation.IdTipoUnidadeNavigation.Id,
+                             unidadeAlugada.IdUnidadeNavigation.IdTipoUnidadeNavigation.Nome
+                         }
+                     }).Where(unidadeAlugada => unidadeAlugada.Ativo)
+                 }),
+                 ImovelAlugado = contratoDb.ContratoAluguelImovel.Select(imovel => new
+                 {
+                     imovel.IdImovelNavigation.GuidReferencia,
+                     imovel.IdImovelNavigation.Nome,
+                     imovel.IdImovelNavigation.NumCentroCusto,
+                     ImovelEndereco = imovel.IdImovelNavigation.ImovelEndereco.Select(endereco => new
+                     {
+                         endereco.Id,
+                         endereco.IdImovel,
+                         endereco.Bairro,
+                         endereco.DataCriacao,
+                         endereco.Cep,
+                         endereco.Cidade,
+                         endereco.Complemento,
+                         endereco.Rua,
+                         endereco.UF,
+                         endereco.DataUltimaModificacao
+                     }),
+                     imovel.IdImovelNavigation.Status,
+                     AreaTotal = imovel.IdImovelNavigation.Unidade.Where(u => u.Status).Sum(u => u.AreaTotal),
+                     AreaUtil = imovel.IdImovelNavigation.Unidade.Where(u => u.Status).Sum(u => u.AreaUtil),
+                     AreaHabitese = imovel.IdImovelNavigation.Unidade.Where(u => u.Status).Sum(u => u.AreaHabitese),
+                     NroUnidadesTotal = imovel.IdImovelNavigation.Unidade.Where(u => u.Status).Count(),
+                     NroUnidadesContrato = imovel.ContratoAluguelUnidade.Where(u => u.IdUnidadeNavigation.Status).Count(),
+                     IdCategoriaImovelNavigation = imovel.IdImovelNavigation.IdCategoriaImovelNavigation == null ? null : new
+                     {
+                         imovel.IdImovelNavigation.IdCategoriaImovelNavigation.Id,
+                         imovel.IdImovelNavigation.IdCategoriaImovelNavigation.Nome
+                     },
+                     // IdClienteProprietarioNavigation = imovel.IdImovelNavigation.IdClienteProprietarioNavigation == null ? null : new
+                     // {
+                     //     imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Id,
+                     //     imovel.IdImovelNavigation.IdClienteProprietarioNavigation.GuidReferencia,
+                     //     imovel.IdImovelNavigation.IdClienteProprietarioNavigation.CpfCnpj,
+                     //     imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
+                     //     imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Telefone,
+                     //     imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Email,
+                     //     imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Cep,
+                     //     imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Endereco,
+                     //     imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Bairro,
+                     //     imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Cidade,
+                     //     imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Estado,
+                     //     IdTipoClienteNavigation = imovel.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation == null ? null : new
+                     //     {
+                     //         imovel.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Id,
+                     //         imovel.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Nome,
+                     //     }
+                     // },
+                     // Unidades = imovel.ContratoAluguelUnidade.Select(unidade => new
+                     // {
+                     //     unidade.IdUnidadeNavigation.Id,
+                     //     unidade.IdUnidadeNavigation.GuidReferencia,
+                     //     unidade.IdUnidadeNavigation.IdImovel,
+                     //     unidade.IdUnidadeNavigation.AreaUtil,
+                     //     unidade.IdUnidadeNavigation.AreaTotal,
+                     //     unidade.IdUnidadeNavigation.AreaHabitese,
+                     //     unidade.IdUnidadeNavigation.InscricaoIPTU,
+                     //     unidade.IdUnidadeNavigation.Matricula,
+                     //     unidade.IdUnidadeNavigation.MatriculaEnergia,
+                     //     unidade.IdUnidadeNavigation.MatriculaAgua,
+                     //     unidade.IdUnidadeNavigation.TaxaAdministracao,
+                     //     unidade.IdUnidadeNavigation.Tipo,
+                     //     unidade.IdUnidadeNavigation.ValorPotencial,
+                     //     unidade.IdUnidadeNavigation.DataCriacao,
+                     //     unidade.IdUnidadeNavigation.DataUltimaModificacao,
+                     //     Ativo = unidade.IdUnidadeNavigation.Status,
+                     //     IdTipoUnidadeNavigation = new
+                     //     {
+                     //         unidade.IdUnidadeNavigation.IdTipoUnidadeNavigation.Id,
+                     //         unidade.IdUnidadeNavigation.IdTipoUnidadeNavigation.Nome
+                     //     }
+                     // }).Where(u => u.Ativo)
+                 }),
+                 HistoricoReajuste = contratoDb.ContratoAluguelHistoricoReajuste.Select(h => new
+                 {
+                     h.Id,
+                     h.GuidReferencia,
+                     h.DataCriacao,
+                     h.PercentualReajusteAnterior,
+                     h.PercentualReajusteNovo,
+                     h.ValorAluguelAnterior,
+                     h.ValorAluguelNovo,
+                 }),
+                 TituloReceber = contratoDb.TituloReceber.Select(t => new
+                 {
+                     t.NumeroTitulo,
+                     t.NomeTitulo,
+                     t.GuidReferencia,
+                     t.Status,
+                     t.Parcelas,
+                     t.ValorTitulo,
+                     t.ValorTotalTitulo,
+                     t.DataCriacao,
+                     t.DataUltimaModificacao,
+                     t.DataVencimentoPrimeraParcela,
+                     t.PorcentagemTaxaAdministracao,
+                     TipoTituloReceber = t.IdTipoTituloNavigation == null ? null : new
+                     {
+                         t.IdTipoTituloNavigation.Id,
+                         t.IdTipoTituloNavigation.Nome
+                     },
+                     IndiceReajuste = t.IdIndiceReajusteNavigation == null ? null : new
+                     {
+                         t.IdIndiceReajusteNavigation.Id,
+                         t.IdIndiceReajusteNavigation.Nome,
+                         t.IdIndiceReajusteNavigation.Percentual,
+                         t.IdIndiceReajusteNavigation.DataAtualizacao,
+                     },
+                     CreditoAluguel = t.IdTipoCreditoAluguelNavigation == null ? null : new
+                     {
+                         t.IdTipoCreditoAluguelNavigation.Id,
+                         t.IdTipoCreditoAluguelNavigation.Nome
+                     },
+                     Cliente = t.IdClienteNavigation == null ? null : new
+                     {
+                         t.IdClienteNavigation.CpfCnpj,
+                         t.IdClienteNavigation.GuidReferencia,
+                         t.IdClienteNavigation.Nome,
+                         t.IdClienteNavigation.RazaoSocial,
+                     },
+                     FormaPagamento = t.IdFormaPagamentoNavigation == null ? null : new
+                     {
+                         t.IdFormaPagamentoNavigation.Id,
+                         t.IdFormaPagamentoNavigation.Nome
+                     },
+                     Faturas = t.FaturaTitulo.Select(x => new
+                     {
+                         x.GuidReferencia,
+                         x.NumeroFatura,
+                         x.NumeroParcela,
+                         ValorFatura = x.Valor,
+                         x.DataEnvio,
+                         x.DataPagamento,
+                         x.DataVencimento,
+                         x.DiasAtraso,
+                         x.DataCriacao,
+                         x.DataUltimaModificacao,
+                         x.DataEmissaoNotaFiscal,
+                         x.Status,
+                         StatusFatura = ((x.Status && x.DataPagamento == null && x.DataVencimento > DateTime.Now) ? FaturaTituloEnum.A_VENCER :
+                             (x.Status && x.DataPagamento == null && x.DataVencimento < DateTime.Now) ? FaturaTituloEnum.VENCIDO :
+                             (x.Status && x.DataPagamento != null) ? FaturaTituloEnum.PAGO : FaturaTituloEnum.INATIVO),
+                         x.NumeroNotaFiscal,
+                         x.PorcentagemImpostoRetido,
+                         x.ValorLiquidoTaxaAdministracao,
+                         x.ValorRealPago,
+                         DescricaoBaixaFatura = string.IsNullOrEmpty(x.DescricaoBaixaFatura) ? "" : x.DescricaoBaixaFatura,
+                     })
+                 })
+             })
             .SingleOrDefaultAsync();
-        
-        var contratoData = new
-        {
-            contratoDb.NumeroContrato,
-            contratoDb.ValorAluguel,
-            contratoDb.ValorAluguelLiquido,
-            contratoDb.ValorComDesconto,
-            contratoDb.ValorComImpostos,
-            contratoDb.PercentualRetencaoImpostos,
-            contratoDb.PercentualDescontoAluguel,
-            contratoDb.PrazoDesconto,
-            contratoDb.CarenciaAluguel,
-            contratoDb.PrazoCarencia,
-            contratoDb.DataInicioContrato,
-            contratoDb.PrazoTotalContrato,
-            contratoDb.DataFimContrato,
-            contratoDb.DataOcupacao,
-            contratoDb.DiaVencimentoAluguel,
-            contratoDb.PeriodicidadeReajuste,
-            contratoDb.DataCriacao,
-            contratoDb.DataUltimaModificacao,
-            contratoDb.DataVencimentoPrimeraParcela,
-            contratoDb.GuidReferencia,
-            ExibirAlertaVencimento = (contratoDb.DataFimContrato - DateTime.Now).Days <= 90,
-            TipoContrato = contratoDb.IdTipoContratoNavigation == null ? null : new
-            {
-                contratoDb.IdTipoContratoNavigation.Id,
-                contratoDb.IdTipoContratoNavigation.Nome,
-            },
-            IndiceReajuste = contratoDb.IdIndiceReajusteNavigation == null ? null : new
-            {
-                contratoDb.IdIndiceReajusteNavigation.Id,
-                contratoDb.IdIndiceReajusteNavigation.Nome,
-                contratoDb.IdIndiceReajusteNavigation.Percentual,
-                contratoDb.IdIndiceReajusteNavigation.DataAtualizacao,
-            },
-            CreditoAluguel = contratoDb.IdTipoCreditoAluguelNavigation == null ? null : new
-            {
-                contratoDb.IdTipoCreditoAluguelNavigation.Id,
-                contratoDb.IdTipoCreditoAluguelNavigation.Nome
-            },
-            Cliente = contratoDb.IdClienteNavigation == null ? null : new
-            {
-                contratoDb.IdClienteNavigation.CpfCnpj,
-                contratoDb.IdClienteNavigation.GuidReferencia,
-                contratoDb.IdClienteNavigation.Nome,
-                contratoDb.IdClienteNavigation.RazaoSocial,
-                contratoDb.IdClienteNavigation.Email,
-                contratoDb.IdClienteNavigation.Telefone,
-                contratoDb.IdClienteNavigation.DataNascimento,
-                contratoDb.IdClienteNavigation.IdTipoCliente,
-                contratoDb.IdClienteNavigation.DataUltimaModificacao,
-                contratoDb.IdClienteNavigation.Cep,
-                contratoDb.IdClienteNavigation.Endereco,
-                contratoDb.IdClienteNavigation.Bairro,
-                contratoDb.IdClienteNavigation.Cidade,
-                contratoDb.IdClienteNavigation.Estado,
-                IdTipoClienteNavigation = contratoDb.IdClienteNavigation.IdTipoClienteNavigation == null ? null : new
-                {
-                    contratoDb.IdClienteNavigation.IdTipoClienteNavigation.Id,
-                    contratoDb.IdClienteNavigation.IdTipoClienteNavigation.Nome,
-                },
-                Contato = contratoDb.IdClienteNavigation.Contato.Select(c => new
-                {
-                    c.Nome,
-                    c.Cargo,
-                    c.Email,
-                    c.Telefone,
-                    c.DataNascimento,
-                    c.DataCriacao,
-                    c.DataUltimaModificacao,
-                    c.GuidReferencia,
-                })
-            },
-            lstImoveisVinculados = contratoDb.ContratoAluguelImovel.Select(imovelAlugado => new
-            {
-                idContratoImovel = imovelAlugado.Id,
-                guidImovel = imovelAlugado.IdImovelNavigation.GuidReferencia,
-                lstUnidades = imovelAlugado.ContratoAluguelUnidade.Select(unidadeAlugada => new
-                {
-                    guidUnidade = unidadeAlugada.IdUnidadeNavigation.GuidReferencia,
-                    Ativo = unidadeAlugada.IdUnidadeNavigation.Status,
-                    IdContratoUnidade = unidadeAlugada.Id
-                }).Where(unidadeAlugada => unidadeAlugada.Ativo)
-            }),
-            ImovelAlugado = contratoDb.ContratoAluguelImovel.Select(imovel => new
-            {
-                imovel.IdImovelNavigation.GuidReferencia,
-                imovel.IdImovelNavigation.Nome,
-                imovel.IdImovelNavigation.NumCentroCusto,
-                ImovelEndereco = imovel.IdImovelNavigation.ImovelEndereco.Select(endereco => new
-                {
-                    endereco.Id,
-                    endereco.IdImovel,
-                    endereco.Bairro,
-                    endereco.DataCriacao,
-                    endereco.Cep,
-                    endereco.Cidade,
-                    endereco.Complemento,
-                    endereco.Rua,
-                    endereco.UF,
-                    endereco.DataUltimaModificacao
-                }),
-                imovel.IdImovelNavigation.Status,
-                AreaTotal = imovel.IdImovelNavigation.Unidade.Where(u => u.Status).Sum(u => u.AreaTotal),
-                AreaUtil = imovel.IdImovelNavigation.Unidade.Where(u => u.Status).Sum(u => u.AreaUtil),
-                AreaHabitese = imovel.IdImovelNavigation.Unidade.Where(u => u.Status).Sum(u => u.AreaHabitese),
-                NroUnidadesTotal = imovel.IdImovelNavigation.Unidade.Where(u => u.Status).Count(),
-                NroUnidadesContrato = imovel.ContratoAluguelUnidade.Where(u => u.IdUnidadeNavigation.Status).Count(),
-                IdCategoriaImovelNavigation = imovel.IdImovelNavigation.IdCategoriaImovelNavigation == null ? null : new
-                {
-                    imovel.IdImovelNavigation.IdCategoriaImovelNavigation.Id,
-                    imovel.IdImovelNavigation.IdCategoriaImovelNavigation.Nome
-                },
-                IdClienteProprietarioNavigation = imovel.IdImovelNavigation.IdClienteProprietarioNavigation == null ? null : new
-                {
-                    imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Id,
-                    imovel.IdImovelNavigation.IdClienteProprietarioNavigation.GuidReferencia,
-                    imovel.IdImovelNavigation.IdClienteProprietarioNavigation.CpfCnpj,
-                    imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Nome,
-                    imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Telefone,
-                    imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Email,
-                    imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Cep,
-                    imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Endereco,
-                    imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Bairro,
-                    imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Cidade,
-                    imovel.IdImovelNavigation.IdClienteProprietarioNavigation.Estado,
-                    IdTipoClienteNavigation = imovel.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation == null ? null : new
-                    {
-                        imovel.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Id,
-                        imovel.IdImovelNavigation.IdClienteProprietarioNavigation.IdTipoClienteNavigation.Nome,
-                    }
-                },
-                Unidades = imovel.ContratoAluguelUnidade.Select(unidade => new
-                {
-                    unidade.IdUnidadeNavigation.Id,
-                    unidade.IdUnidadeNavigation.GuidReferencia,
-                    unidade.IdUnidadeNavigation.IdImovel,
-                    unidade.IdUnidadeNavigation.AreaUtil,
-                    unidade.IdUnidadeNavigation.AreaTotal,
-                    unidade.IdUnidadeNavigation.AreaHabitese,
-                    unidade.IdUnidadeNavigation.InscricaoIPTU,
-                    unidade.IdUnidadeNavigation.Matricula,
-                    unidade.IdUnidadeNavigation.MatriculaEnergia,
-                    unidade.IdUnidadeNavigation.MatriculaAgua,
-                    unidade.IdUnidadeNavigation.TaxaAdministracao,
-                    unidade.IdUnidadeNavigation.Tipo,
-                    unidade.IdUnidadeNavigation.ValorPotencial,
-                    unidade.IdUnidadeNavigation.DataCriacao,
-                    unidade.IdUnidadeNavigation.DataUltimaModificacao,
-                    Ativo = unidade.IdUnidadeNavigation.Status,
-                    IdTipoUnidadeNavigation = new
-                    {
-                        unidade.IdUnidadeNavigation.IdTipoUnidadeNavigation.Id,
-                        unidade.IdUnidadeNavigation.IdTipoUnidadeNavigation.Nome
-                    }
-                }).Where(u => u.Ativo)
-            }),
-            HistoricoReajuste = contratoDb.ContratoAluguelHistoricoReajuste.Select(h => new
-            {
-                h.Id,
-                h.GuidReferencia,
-                h.DataCriacao,
-                h.PercentualReajusteAnterior,
-                h.PercentualReajusteNovo,
-                h.ValorAluguelAnterior,
-                h.ValorAluguelNovo,
-            }),
-            TituloReceber = contratoDb.TituloReceber.Select(t => new
-            {
-                t.NumeroTitulo,
-                t.NomeTitulo,
-                t.GuidReferencia,
-                t.Status,
-                t.Parcelas,
-                t.ValorTitulo,
-                t.ValorTotalTitulo,
-                t.DataCriacao,
-                t.DataUltimaModificacao,
-                t.DataVencimentoPrimeraParcela,
-                t.PorcentagemTaxaAdministracao,
-                TipoTituloReceber = t.IdTipoTituloNavigation == null ? null : new
-                {
-                    t.IdTipoTituloNavigation.Id,
-                    t.IdTipoTituloNavigation.Nome
-                },
-                IndiceReajuste = t.IdIndiceReajusteNavigation == null ? null : new
-                {
-                    t.IdIndiceReajusteNavigation.Id,
-                    t.IdIndiceReajusteNavigation.Nome,
-                    t.IdIndiceReajusteNavigation.Percentual,
-                    t.IdIndiceReajusteNavigation.DataAtualizacao,
-                },
-                CreditoAluguel = t.IdTipoCreditoAluguelNavigation == null ? null : new
-                {
-                    t.IdTipoCreditoAluguelNavigation.Id,
-                    t.IdTipoCreditoAluguelNavigation.Nome
-                },
-                Cliente = t.IdClienteNavigation == null ? null : new
-                {
-                    t.IdClienteNavigation.CpfCnpj,
-                    t.IdClienteNavigation.GuidReferencia,
-                    t.IdClienteNavigation.Nome,
-                    t.IdClienteNavigation.RazaoSocial,
-                },
-                FormaPagamento = t.IdFormaPagamentoNavigation == null ? null : new
-                {
-                    t.IdFormaPagamentoNavigation.Id,
-                    t.IdFormaPagamentoNavigation.Nome
-                },
-                Faturas = t.FaturaTitulo.Select(x => new
-                {
-                    x.GuidReferencia,
-                    x.NumeroFatura,
-                    x.NumeroParcela,
-                    ValorFatura = x.Valor,
-                    x.DataEnvio,
-                    x.DataPagamento,
-                    x.DataVencimento,
-                    x.DiasAtraso,
-                    x.DataCriacao,
-                    x.DataUltimaModificacao,
-                    x.DataEmissaoNotaFiscal,
-                    x.Status,
-                    StatusFatura = ((x.Status && x.DataPagamento == null && x.DataVencimento > DateTime.Now) ? FaturaTituloEnum.A_VENCER :
-                        (x.Status && x.DataPagamento == null && x.DataVencimento < DateTime.Now) ? FaturaTituloEnum.VENCIDO :
-                        (x.Status && x.DataPagamento != null) ? FaturaTituloEnum.PAGO : FaturaTituloEnum.INATIVO),
-                    x.NumeroNotaFiscal,
-                    x.PorcentagemImpostoRetido,
-                    x.ValorLiquidoTaxaAdministracao,
-                    x.ValorRealPago,
-                    DescricaoBaixaFatura = string.IsNullOrEmpty(x.DescricaoBaixaFatura) ? "" : x.DescricaoBaixaFatura,
-                }),
-            })
-        };
-
-        return contratoData;
     }
 
     public async Task<object?> GetUnidadesLocadasByContratoAluguelGuid(Guid guid)

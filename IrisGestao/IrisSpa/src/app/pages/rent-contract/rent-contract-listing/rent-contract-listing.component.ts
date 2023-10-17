@@ -3,7 +3,7 @@ import { Component, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { first } from 'rxjs';
-import { CommonService } from 'src/app/shared/services';
+import { CommonService, LoginService } from 'src/app/shared/services';
 import { RentContractService } from 'src/app/shared/services/rent-contract.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
@@ -45,33 +45,6 @@ export class RentContractListingComponent {
 		},
 	];
 
-	// vencimentos = [
-	// 	{
-	// 		label: 'Vencimento',
-	// 		value: null,
-	// 	},
-	// 	{
-	// 		label: 'Hoje',
-	// 		value: null,
-	// 	},
-	// 	{
-	// 		label: 'Esta semana',
-	// 		value: null,
-	// 	},
-	// 	{
-	// 		label: 'Este mês',
-	// 		value: null,
-	// 	},
-	// 	{
-	// 		label: 'Este ano',
-	// 		value: null,
-	// 	},
-	// 	{
-	// 		label: 'Próximo ano',
-	// 		value: null,
-	// 	},
-	// ];
-
 	filterText: string = '';
 	filterBase: number;
 	filterType: number;
@@ -79,13 +52,16 @@ export class RentContractListingComponent {
 	filterEnd: string | null = null;	
 	filterPeriodo: Date[];
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private contractService: RentContractService,
 		private commonService: CommonService,
-		private responsiveService: ResponsiveService
-	) {}
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
+	) {};
 
 	ngOnInit(): void {
 		const routePageIndex =
@@ -154,6 +130,8 @@ export class RentContractListingComponent {
 					console.error(err);
 				},
 			});
+
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	loadContractsPage(event: LazyLoadEvent) {

@@ -6,6 +6,7 @@ import {
 	FormGroup,
 	Validators,
 } from '@angular/forms';
+import {formatDate} from '@angular/common';
 import { Router } from '@angular/router';
 import { first, fromEventPattern } from 'rxjs';
 import { RentContractService } from 'src/app/shared/services/rent-contract.service';
@@ -53,6 +54,7 @@ export class RentContractRegisterComponent {
 	registerRenterForm: FormGroup;
 
 	isRegistering = false;
+	isUnidadeSelecionada = true;
 
 	registerRenterVisible = false;
 
@@ -178,7 +180,7 @@ export class RentContractRegisterComponent {
 
 	ngOnInit() {
 		this.currentStep = 1;
-
+		
 		this.stepList = [
 			{
 				label: 'Informações do Contrato',
@@ -519,6 +521,7 @@ export class RentContractRegisterComponent {
 			};
 		} = this.registerForm.getRawValue();
 
+		let dataFim = formatDate(new Date(), 'yyyy-MM-ddThh:MM:ss', 'en');
 		const contractObj: ContratoAluguel = {
 			guidCliente: formData.contractInfo.locatario,
 			idTipoCreditoAluguel: formData.valuesInfo.creditarPara,
@@ -532,6 +535,7 @@ export class RentContractRegisterComponent {
 			carenciaAluguel: formData.valuesInfo.carencia,
 			prazoCarencia: +formData.valuesInfo.carenciaPrazo,
 			dataInicioContrato: formData.contractInfo.dataInicio,
+			dataVencimentoContrato: dataFim,
 			prazoTotalContrato: +formData.contractInfo.prazoTotalContrato, //???
 			dataOcupacao: formData.contractInfo.dataOcupacao,
 			//diaVencimentoAluguel: formData.contractInfo.dataVencimento,
@@ -751,6 +755,18 @@ export class RentContractRegisterComponent {
 				},
 			});
 		});
+	}
+
+	onChangeUnit(event: any) {
+		let unidades = [];
+		unidades = event;
+		const unitSelected = event?.guid;
+		console.log('onChangeUnit >> ' + unidades);
+		console.log('building2 >> ' + event?.value);
+		if(unidades && (Object.keys(unidades).length === 0))
+			this.isUnidadeSelecionada = true;
+		else
+			this.isUnidadeSelecionada = false;
 	}
 
 	updateLinkedPropertiesValidity() {

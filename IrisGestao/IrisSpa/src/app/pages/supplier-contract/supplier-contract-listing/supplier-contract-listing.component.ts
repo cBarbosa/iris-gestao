@@ -3,7 +3,7 @@ import { Component, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { first } from 'rxjs';
-import { CommonService } from 'src/app/shared/services';
+import { CommonService, LoginService } from 'src/app/shared/services';
 import {
 	AnexoService,
 	ArquivoClassificacoes,
@@ -43,12 +43,15 @@ export class SupplierContractListingComponent {
 	filterText: string = '';
 	filterType: number;
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private contractService: SupplierContractService,
 		private commonService: CommonService,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
 	) {}
 
 	ngOnInit(): void {
@@ -69,6 +72,8 @@ export class SupplierContractListingComponent {
 			}),
 			currency: new CurrencyPipe('pt-BR', 'R$'),
 		};
+
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	loadContractsPage(event: LazyLoadEvent) {

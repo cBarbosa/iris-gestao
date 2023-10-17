@@ -143,7 +143,7 @@ public class TituloPagarService: ITituloPagarService
             return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
         }
 
-        var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidCliente);
+        var cliente = await clienteRepository.GetByReferenceGuid(new Guid(cmd.GuidCliente));
         if (cliente == null)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
@@ -175,18 +175,17 @@ public class TituloPagarService: ITituloPagarService
     public async Task<CommandResult> Update(Guid uuid, CriarTituloPagarCommand cmd)
     {
         List<FaturaTituloPagar> lstFaturaTituloPagar = new List<FaturaTituloPagar>();
-        if (cmd == null || uuid.Equals(Guid.Empty) || cmd.GuidCliente.Equals(Guid.Empty))
+        if (cmd == null || uuid.Equals(Guid.Empty))
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
 
-        var cliente = await clienteRepository.GetByReferenceGuid(cmd.GuidCliente);
-
-        if (cliente == null)
+        Cliente cliente = null;
+        if(!String.IsNullOrWhiteSpace(cmd.GuidCliente))
         {
-            return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
+            cliente = await clienteRepository.GetByReferenceGuid(new Guid(cmd.GuidCliente));
         }
-
+        
         var TituloPagar = await tituloPagarRepository.GetByReferenceGuid(uuid);
 
         if (TituloPagar == null)
@@ -195,6 +194,7 @@ public class TituloPagarService: ITituloPagarService
         }
 
         cmd.GuidReferencia = uuid;
+        TituloPagar.IdCliente = cliente == null ? null : cliente.Id;
         BindTituloPagarData(cmd, TituloPagar, lstFaturaTituloPagar);
 
         try
@@ -260,11 +260,16 @@ public class TituloPagarService: ITituloPagarService
             TituloPagar.Status = false;
             foreach (var fatura in lstFaturasTitulo)
             {
-                fatura.DataUltimaModificacao = DateTime.Now;
-                fatura.Status = false;
-                fatura.StatusFatura = FaturaTituloEnum.INATIVO;
-                fatura.DescricaoBaixaFatura = "Fatura cancelada devido cancelamento do contrato de aluguel";
-                faturaTituloPagarRepository.Update(fatura);
+                if (String.IsNullOrWhiteSpace(fatura.StatusFatura)
+                    || fatura.StatusFatura.Equals(FaturaTituloEnum.VENCIDO)
+                    || fatura.StatusFatura.Equals(FaturaTituloEnum.A_VENCER))
+                {
+                    fatura.DataUltimaModificacao = DateTime.Now;
+                    fatura.Status = false;
+                    fatura.StatusFatura = FaturaTituloEnum.INATIVO;
+                    fatura.DescricaoBaixaFatura = "Fatura cancelada devido cancelamento do contrato de aluguel";
+                    faturaTituloPagarRepository.Update(fatura);
+                }
             }
             tituloPagarRepository.Update(TituloPagar);
 
@@ -475,28 +480,31 @@ public class TituloPagarService: ITituloPagarService
                 TituloPagar.DataCriacao = DateTime.Now;
                 TituloPagar.DataUltimaModificacao = DateTime.Now;
                 TituloPagar.NumeroTitulo = TituloPagar.Sequencial + "/" + DateTime.Now.Year;
+                TituloPagar.ValorTotalTitulo = valorLiquido * cmd.Parcelas;
+                TituloPagar.DataFimTitulo = cmd.DataVencimentoPrimeraParcela.AddMonths(cmd.Parcelas.Value);
                 TituloPagar.Status = true;
                 criacao = true;
                 break;
             default:
                 TituloPagar.GuidReferencia = TituloPagar.GuidReferencia;
                 TituloPagar.DataUltimaModificacao = DateTime.Now;
+                TituloPagar.ValorTotalTitulo = valorLiquido * TituloPagar.Parcelas;
+                TituloPagar.DataFimTitulo = cmd.DataVencimentoPrimeraParcela;
                 break;
         }
 
         TituloPagar.NomeTitulo                        = String.IsNullOrEmpty(cmd.NomeTitulo) ? TituloPagar.NomeTitulo : cmd.NomeTitulo;
         TituloPagar.IdTipoTitulo                      = cmd.IdTipoTitulo;
-        TituloPagar.DataFimTitulo                     = cmd.DataVencimentoPrimeraParcela.AddMonths(cmd.Parcelas);
         TituloPagar.DataVencimentoPrimeraParcela      = cmd.DataVencimentoPrimeraParcela;
         TituloPagar.IdContratoAluguel                 = null;
-        TituloPagar.IdIndiceReajuste                  = cmd.IdIndiceReajuste;
-        TituloPagar.IdTipoCreditoAluguel              = cmd.IdTipoCreditoAluguel;
+        TituloPagar.IdIndiceReajuste                  = cmd.IdIndiceReajuste.HasValue ? cmd.IdIndiceReajuste : TituloPagar.IdIndiceReajuste;
+        TituloPagar.IdTipoCreditoAluguel              = cmd.IdTipoCreditoAluguel.HasValue ? cmd.IdTipoCreditoAluguel : TituloPagar.IdTipoCreditoAluguel;
         TituloPagar.IdFormaPagamento                  = cmd.IdFormaPagamento;
         TituloPagar.ValorTitulo                       = valorLiquido;
-        TituloPagar.ValorTotalTitulo                  = valorLiquido * cmd.Parcelas;
         //TituloPagar.DiaPagamento                      = cmd.DataPagamento.Day;
-        TituloPagar.Parcelas                          = cmd.Parcelas;
+        TituloPagar.Parcelas                          = cmd.Parcelas.HasValue ? cmd.Parcelas.Value : TituloPagar.Parcelas;
         TituloPagar.PorcentagemTaxaAdministracao      = cmd.PorcentagemImpostoRetido;
+
 
         if (criacao)
             BindFaturaTituloData(TituloPagar, lstFaturaTituloPagar);

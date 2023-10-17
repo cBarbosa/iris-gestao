@@ -8,10 +8,19 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
+
+import { ClienteService, DominiosService, AnexoService, Attachment} from 'src/app/shared/services';
 import { DropdownItem } from 'src/app/shared/models/types';
-import { DominiosService } from 'src/app/shared/services';
 import { ExpenseService } from 'src/app/shared/services/expense.service';
 import { Utils } from 'src/app/shared/utils';
+
+type Base64Metadata = {
+	name: string;
+	data: File | string | ArrayBuffer | null;
+	mimetype: string;
+	isNew?: boolean;
+	id?: number | string;
+};
 
 @Component({
 	selector: 'app-expense-edit',
@@ -20,10 +29,12 @@ import { Utils } from 'src/app/shared/utils';
 })
 export class ExpenseEditComponent {
 	editForm: FormGroup;
-
+	tituloPagar: any;
 	expenseGuid: string;
 	isLoading = false;
 	invalidGuid = false;
+	
+	isSubmitting = false;
 
 	displayModal = false;
 	modalContent: {
@@ -36,6 +47,34 @@ export class ExpenseEditComponent {
 
 	onInputDate: Function;
 	onBlurDate: Function;
+
+	// CAPA
+	displayCropModal = false;
+	defaultCoverImage: string | null = null;
+	imageChangedEvent: any = '';
+	croppedCover: any = null;
+	auxCroppedCover: any = null;
+	attachmentsObj:
+		| Partial<{
+				capa: Attachment;
+				foto: Attachment[];
+				habitese: Attachment;
+				projeto: Attachment;
+				matricula: Attachment;
+				outrosdocs: Attachment[];
+		  }>
+		| undefined;
+
+
+	expensePhotos: Base64Metadata[] = [];
+
+	opcoesLocatario: DropdownItem[] = [
+		{
+			label: 'Selecione',
+			value: null,
+			disabled: true,
+		},
+	];
 
 	opcoesPlanoContas: DropdownItem[] = [
 		{
@@ -74,14 +113,25 @@ export class ExpenseEditComponent {
 		nome: '',
 		tipo: 'Edifício corporativo',
 		endereco: '',
+		guidImovel: '',
 	};
+	
+	imovelTitulo: any;
+	lstImoveis: [
+		{
+			guidImovel: string;
+			lstUnidades: string[];
+		}
+	];
 	constructor(
 		private fb: FormBuilder,
 		private location: Location,
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private expenseService: ExpenseService,
-		private dominiosService: DominiosService
+		private dominiosService: DominiosService,
+		private clienteService: ClienteService,
+		private anexoService: AnexoService,
 	) {}
 
 	ngOnInit() {
@@ -100,11 +150,12 @@ export class ExpenseEditComponent {
 			numeroTitulo: ['', [Validators.required]],
 			planoContas: [null, [Validators.required]],
 			creditarPara: [null, [Validators.required]],
-			nomeLocador: [null, Validators.required],
+			locatario: [null, Validators.required],
 			formaPagamento: [null, Validators.required],
 			dataVencimento: [null, Validators.required],
 			valorTitulo: [null, Validators.required],
 			valorPagar: [null, Validators.required],
+			impostos: [null, Validators.required],
 		});
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
@@ -112,45 +163,73 @@ export class ExpenseEditComponent {
 		this.onBlurDate = onBlurDate;
 
 		let data: any;
-
+		
 		this.expenseService
 			.getExpenseByGuid(this.expenseGuid)
 			.pipe(first())
 			.subscribe((event: any) => {
 				if (event) {
 					data = event.data[0];
+					this.tituloPagar = data;
 					console.log(data);
-
+					
+					this.imovelTitulo = data.imoveis[0];
 					this.imovel.nome = data.imoveis[0].nome;
+					this.imovel.guidImovel = data.imoveis[0].guidReferencia;
 					const { rua, bairro, cidade, uf } = data.imoveis[0].imovelEndereco[0];
 					this.imovel.endereco = `${rua}, ${bairro}, ${cidade} - ${uf}`;
 
 					this.editForm.patchValue({
 						nomeConta: data.nomeTitulo,
-						numeroTitulo: data.numeroTitulo,
 						planoContas: +data.tipoTituloPagar?.id ?? null,
 						creditarPara: +data.creditoAluguel?.id ?? null,
-						nomeLocador: data.cliente?.nome ?? null,
+						locatario: data.cliente?.guidReferencia ?? null,
 						formaPagamento: +data.formaPagamento?.id ?? null,
 						dataVencimento: data.dataVencimentoPrimeraParcela
 							? new Date(data.dataVencimentoPrimeraParcela)
 							: null,
 						valorTitulo: data.valorTitulo,
-						valorPagar: data.valorTitulo,
+						impostos: data.porcentagemTaxaAdministracao  +''
 					});
 
 					setTimeout(() => {
 						this.editForm.patchValue({
 							planoContas: +data.tipoTituloPagar?.id ?? null,
 							creditarPara: +data.creditoAluguel?.id ?? null,
-							nomeLocador: data.cliente?.nome ?? null,
+							locatario: data.cliente?.guidReferencia ?? null,
 							formaPagamento: +data.formaPagamento?.id ?? null,
+
 						});
+						this.getAnexos();
+						//this.getDadosProprietario();
 					}, 40);
 				} else {
 					this.invalidGuid = true;
 				}
 				this.isLoading = false;
+			});
+
+			
+		this.clienteService
+			.getListaProprietarios()
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+					this.opcoesLocatario.push({
+						label: '--',
+						value: '--',
+					});
+					response?.data.forEach((forma: any) => {
+						this.opcoesLocatario.push({
+							label: forma.nome,
+							value: forma.guidReferencia,
+						});
+					});
+					this.f['locatario'].setValue(+data.cliente?.guidReferencia ?? null);
+				},
+				error: (err) => {
+					console.error(err);
+				},
 			});
 
 		this.dominiosService
@@ -210,6 +289,47 @@ export class ExpenseEditComponent {
 					console.error(err);
 				},
 			});
+
+	}
+
+	getAnexos()
+	{
+		console.log('GUID IMOVEL > ' + this.imovelTitulo.guidReferencia);
+		this.anexoService
+			.getFiles(this.imovelTitulo.guidReferencia) 
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					this.attachmentsObj = {
+						capa: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'capa'
+						),
+						foto: event?.filter(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'foto'
+						),
+					};
+
+					console.debug('attachmentsObj', this.attachmentsObj);
+
+					if (this.attachmentsObj?.capa)
+						this.defaultCoverImage = this.attachmentsObj.capa.local;
+
+					if (this.attachmentsObj?.foto?.length)
+						this.expensePhotos = this.attachmentsObj.foto.map((foto) => {
+							return {
+								name: foto.nome,
+								mimetype: foto.mimeType,
+								data: foto.local,
+								id: foto.id,
+							};
+						});
+				},
+				error: (error) => {
+					console.error('Erro: ', error);
+				},
+			});
 	}
 
 	get f(): { [key: string]: AbstractControl<any, any> } {
@@ -220,7 +340,85 @@ export class ExpenseEditComponent {
 		return Utils.checkHasError(c);
 	}
 
-	onSubmit(e: Event) {}
+	onSubmit(e: any) {
+		let formData: {
+			nomeConta: string;
+			planoContas: number;
+			idTipoCreditoAluguel: number;
+			idContratoAluguel: null;
+			locatario: string;
+			idIndiceReajuste: number | null;
+			formaPagamento: number;
+			dataVencimento: Date;
+			valorTitulo: number;
+			impostos: number;
+			parcelas: number;
+		} = this.editForm.getRawValue();
+
+		const expenseObj: {
+			NomeTitulo: string;
+			idTipoTitulo: number;
+			idTipoCreditoAluguel:  number | null;
+			idContratoAluguel: null;
+			guidCliente: string | null;
+			idIndiceReajuste: number | null;
+			idFormaPagamento: number;
+			DataVencimentoPrimeraParcela: string;
+			valorTitulo: number;
+			PorcentagemImpostoRetido: number;
+			lstImoveis: [
+				{
+					guidImovel: string;
+					lstUnidades: string[];
+				}
+			];
+		} = {
+			NomeTitulo: formData.nomeConta,
+			idTipoTitulo: formData.planoContas,
+			idTipoCreditoAluguel: null,
+			guidCliente: formData.locatario === '--' ? null : formData.locatario,
+			idContratoAluguel: null,
+			idIndiceReajuste: null,
+			idFormaPagamento: formData.formaPagamento,
+			DataVencimentoPrimeraParcela: formData.dataVencimento.toISOString(),
+			valorTitulo: formData.valorTitulo,
+			PorcentagemImpostoRetido: formData.impostos,
+			lstImoveis: this.lstImoveis
+		};
+		console.log('objSubmit >> ' + JSON.stringify(expenseObj));
+		this.expenseService
+			.updateExpense(this.expenseGuid, expenseObj)
+			.pipe(first())
+			.subscribe({
+				next: (response: any) => {
+					if (response.success) {
+						this.modalContent = {
+							header: 'Edição realizada com sucesso',
+							message: response.message,
+						};
+					} else {
+						this.modalContent = {
+							header: 'Edição não realizada',
+							message: response.message,
+							isError: true,
+						};
+					}
+
+					this.openModal();
+				},
+				error: (error: any) => {
+					console.error(error);
+					this.modalContent = {
+						header: 'Edição não realizada',
+						message: 'Erro no envio de dados',
+						isError: true,
+					};
+
+					this.openModal();
+				},
+			});
+	}
+
 
 	openModal() {
 		this.displayModal = true;

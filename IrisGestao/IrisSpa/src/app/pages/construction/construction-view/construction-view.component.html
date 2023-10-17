@@ -31,6 +31,7 @@
 								(click)="
 									navigateTo('construction/edit/' + construction.guidReferencia)
 								"
+								*ngIf="isFormEditable"
 							>
 								Editar obra
 							</button>
@@ -126,6 +127,7 @@
 						iconPos="left"
 						class="p-button-outlined icon-left h-9"
 						(click)="showRegisterInvoice()"
+						*ngIf="isFormEditable"
 					>
 						Novo serviço
 					</button>

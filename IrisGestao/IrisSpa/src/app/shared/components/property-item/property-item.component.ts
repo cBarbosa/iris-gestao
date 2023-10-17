@@ -41,10 +41,12 @@ export class PropertyItemComponent {
 	) {}
 
 	ngOnInit() {
-		console.log(this.propertyData);
+		const param = this.propertyData?.guidReferencia !== ''
+			? this.propertyData?.guidReferencia
+			: this.guid;
 
 		this.anexoService
-			.getFiles(this.propertyData?.guidReferencia ?? this.guid)
+			.getFiles(param)
 			.subscribe({
 				next: (response) => {
 					if (this.propertyData)
@@ -65,7 +67,6 @@ export class PropertyItemComponent {
 					console.error(err);
 				},
 			});
-		console.log('fetching', this.guid);
 
 		if (this.guid)
 			this.imovelService.getProperty(this.guid).subscribe({

@@ -516,10 +516,12 @@ public class ContratoAluguelService: IContratoAluguelService
                 ContratoAluguel.GuidReferencia = Guid.NewGuid();
                 ContratoAluguel.DataCriacao = DateTime.Now;
                 ContratoAluguel.DataUltimaModificacao = DateTime.Now;
+                ContratoAluguel.DataFimContrato = cmd.DataInicioContrato.AddMonths(cmd.PrazoTotalContrato);
                 break;
             default:
                 ContratoAluguel.GuidReferencia = ContratoAluguel.GuidReferencia;
                 ContratoAluguel.DataUltimaModificacao = DateTime.Now;
+                ContratoAluguel.DataFimContrato = cmd.DataVencimentoContrato.HasValue ? cmd.DataVencimentoContrato.Value : ContratoAluguel.DataFimContrato;
                 break;
         }
         ContratoAluguel.IdCliente                       = ContratoAluguel.Id;
@@ -538,7 +540,6 @@ public class ContratoAluguelService: IContratoAluguelService
         ContratoAluguel.PrazoCarencia                   = cmd.PrazoCarencia;
         ContratoAluguel.DataInicioContrato              = cmd.DataInicioContrato;
         ContratoAluguel.PrazoTotalContrato              = cmd.PrazoTotalContrato;
-        ContratoAluguel.DataFimContrato                 = cmd.DataInicioContrato.AddMonths(cmd.PrazoTotalContrato);
         ContratoAluguel.DataOcupacao                    = cmd.DataOcupacao;
         ContratoAluguel.DiaVencimentoAluguel            = cmd.DataVencimentoPrimeraParcela.HasValue ? cmd.DataVencimentoPrimeraParcela.Value.Day : 1;
         ContratoAluguel.PeriodicidadeReajuste           = cmd.PeriodicidadeReajuste;

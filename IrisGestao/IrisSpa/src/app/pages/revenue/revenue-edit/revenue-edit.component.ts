@@ -1,4 +1,5 @@
 import { Location } from '@angular/common';
+import { preserveWhitespacesDefault } from '@angular/compiler';
 import { Component } from '@angular/core';
 import {
 	AbstractControl,
@@ -8,7 +9,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
-import { ClienteService, DominiosService } from 'src/app/shared/services';
+import { ClienteService, DominiosService, AnexoService, Attachment} from 'src/app/shared/services';
 import { RevenueService } from 'src/app/shared/services/revenue.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -16,6 +17,15 @@ type DropdownItem = {
 	label: string;
 	value: any;
 	disabled?: boolean;
+};
+
+
+type Base64Metadata = {
+	name: string;
+	data: File | string | ArrayBuffer | null;
+	mimetype: string;
+	isNew?: boolean;
+	id?: number | string;
 };
 
 @Component({
@@ -30,6 +40,29 @@ export class RevenueEditComponent {
 	revenue: any;
 	isLoading = false;
 	invalidGuid = false;
+
+	// CAPA
+	displayCropModal = false;
+	defaultCoverImage: string | null = null;
+	imageChangedEvent: any = '';
+	croppedCover: any = null;
+	auxCroppedCover: any = null;
+	attachmentsObj:
+		| Partial<{
+				capa: Attachment;
+				foto: Attachment[];
+				habitese: Attachment;
+				projeto: Attachment;
+				matricula: Attachment;
+				outrosdocs: Attachment[];
+		  }>
+		| undefined;
+
+
+	expensePhotos: Base64Metadata[] = [];
+
+	
+	imovelTitulo: any;
 
 	displayModal = false;
 	modalContent: {
@@ -88,7 +121,8 @@ export class RevenueEditComponent {
 		private activatedRoute: ActivatedRoute,
 		private revenueService: RevenueService,
 		private dominiosService: DominiosService,
-		private clienteService: ClienteService
+		private clienteService: ClienteService,
+		private anexoService: AnexoService
 	) {}
 
 	ngOnInit() {
@@ -123,10 +157,11 @@ export class RevenueEditComponent {
 			.subscribe((event: any) => {
 				if (event) {
 					const data = event.data[0];
-					console.log(data);
+					console.log('Titulo Recebere >> ' + JSON.stringify(data));
 
 					this.revenue = data;
 
+					this.imovelTitulo = data.imoveis[0];
 					this.imovel.nome = data.imoveis[0].nome;
 
 					if (data.imoveis[0]?.imovelEndereco[0]) {
@@ -144,47 +179,16 @@ export class RevenueEditComponent {
 						creditarPara: +data.creditoAluguel?.id ?? null,
 						nomeLocador: data.cliente.guidReferencia ?? null,
 						formaPagamento: +data.formaPagamento?.id ?? null,
-						dataVencimento: data.dataVencimentoPrimeraParcela
-							? new Date(data.dataVencimentoPrimeraParcela)
+						dataVencimento: data.dataVencimentoTitulo
+							? new Date(data.dataVencimentoTitulo)
 							: null,
 						valorTitulo: data.valorTitulo,
 						valorPagar: data.valorTitulo,
 					});
 
-					// this.editForm = this.fb.group({
-					// 	nomeConta: [data.nomeTitulo, Validators.required],
-					// 	numeroTitulo: [data.numeroTitulo, [Validators.required]],
-					// 	planoContas: [
-					// 		+data.tipoTituloReceber.id ?? null,
-					// 		[Validators.required],
-					// 	],
-					// 	creditarPara: [
-					// 		+data.creditoAluguel.id ?? null,
-					// 		[Validators.required],
-					// 	],
-					// 	nomeLocador: [data.cliente.nome ?? null, Validators.required],
-					// 	formaPagamento: [
-					// 		+data.formaPagamento.id ?? null,
-					// 		Validators.required,
-					// 	],
-					// 	dataVencimento: [
-					// 		data.dataVencimentoPrimeraParcela
-					// 			? new Date(data.dataVencimentoPrimeraParcela)
-					// 			: null,
-					// 		Validators.required,
-					// 	],
-					// 	valorTitulo: [data.valorTitulo, Validators.required],
-					// 	valorPagar: [data.valorTitulo, Validators.required],
-					// });
-
-					// setTimeout(() => {
-					// 	this.editForm.patchValue({
-					// 		planoContas: +data.tipoTituloReceber?.id ?? null,
-					// 		creditarPara: +data.creditoAluguel?.id ?? null,
-					// 		nomeLocador: data.cliente?.nome ?? null,
-					// 		formaPagamento: +data.formaPagamento?.id ?? null,
-					// 	});
-					// }, 40);
+					setTimeout(() => {
+						this.getAnexos();
+					}, 40);
 				} else {
 					this.invalidGuid = true;
 				}
@@ -275,6 +279,46 @@ export class RevenueEditComponent {
 			});
 	}
 
+	getAnexos()
+	{
+		console.log('GUID IMOVEL > ' + this.imovelTitulo.guidReferencia);
+		this.anexoService
+			.getFiles(this.imovelTitulo.guidReferencia) 
+			.pipe(first())
+			.subscribe({
+				next: (event) => {
+					this.attachmentsObj = {
+						capa: event?.find(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'capa'
+						),
+						foto: event?.filter(
+							({ classificacao }: { classificacao: string }) =>
+								classificacao === 'foto'
+						),
+					};
+
+					console.debug('attachmentsObj', this.attachmentsObj);
+
+					if (this.attachmentsObj?.capa)
+						this.defaultCoverImage = this.attachmentsObj.capa.local;
+
+					if (this.attachmentsObj?.foto?.length)
+						this.expensePhotos = this.attachmentsObj.foto.map((foto) => {
+							return {
+								name: foto.nome,
+								mimetype: foto.mimeType,
+								data: foto.local,
+								id: foto.id,
+							};
+						});
+				},
+				error: (error) => {
+					console.error('Erro: ', error);
+				},
+			});
+	}
+
 	get f(): { [key: string]: AbstractControl<any, any> } {
 		return this.editForm.controls;
 	}
@@ -322,7 +366,6 @@ export class RevenueEditComponent {
 			formaPagamento: number;
 			dataVencimento: Date;
 			valorTitulo: number;
-			valorPagar: number;
 		} = this.editForm.getRawValue();
 
 		const revenueObj: {
@@ -334,6 +377,7 @@ export class RevenueEditComponent {
 			idIndiceReajuste: number;
 			idFormaPagamento: number;
 			dataVencimentoPrimeiraParcela: string;
+			dataFimTitulo: string;
 			valorTitulo: number;
 			porcentagemTaxaAdministracao: number;
 			parcelas: number;
@@ -344,14 +388,15 @@ export class RevenueEditComponent {
 				}
 			];
 		} = {
-			numeroTitulo: formData.numeroTitulo,
+			numeroTitulo: this.revenue.numeroTitulo,
 			NomeTitulo: formData.nomeConta,
 			idTipoTitulo: formData.planoContas,
 			idTipoCreditoAluguel: formData.creditarPara,
 			guidCliente: formData.nomeLocador,
 			idIndiceReajuste: this.revenue.indiceReajuste.id,
 			idFormaPagamento: formData.formaPagamento,
-			dataVencimentoPrimeiraParcela: formData.dataVencimento.toISOString(),
+			dataVencimentoPrimeiraParcela: this.revenue.dataVencimentoPrimeraParcela,
+			dataFimTitulo: formData.dataVencimento.toISOString(),
 			valorTitulo: formData.valorTitulo,
 			porcentagemTaxaAdministracao: this.revenue.porcentagemTaxaAdministracao,
 			parcelas: this.revenue.parcelas,
@@ -365,7 +410,7 @@ export class RevenueEditComponent {
 			}),
 		};
 
-		console.log('revenueObj', revenueObj);
+		console.log('revenueObj Submite >> '+ JSON.stringify(revenueObj));
 
 		this.revenueService
 			.updateRevenue(this.revenueGuid, revenueObj)

@@ -3,6 +3,7 @@ import { Component, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
 import { Imovel } from 'src/app/shared/models';
+import { LoginService } from 'src/app/shared/services';
 import { ExpenseService } from 'src/app/shared/services/expense.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
@@ -31,11 +32,14 @@ export class ExpenseViewComponent {
 	edicaoTituloVisible = false;
 	addFaturaVisible = false;
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
 		private expenseService: ExpenseService,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.guid = paramMap.get('guid') ?? '';
@@ -58,6 +62,8 @@ export class ExpenseViewComponent {
 			currency: new CurrencyPipe('pt-BR', 'R$'),
 			percent: new PercentPipe('pt-BR'),
 		};
+
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	getByIdExpense() {
@@ -67,7 +73,6 @@ export class ExpenseViewComponent {
 			.pipe(first())
 			.subscribe({
 				next: (event: any) => {
-					console.log('event', event);
 					if (event.success) {
 						this.expense = event.data[0];
 						this.imageList ||= event.imagens ?? [];
@@ -120,6 +125,7 @@ export class ExpenseViewComponent {
 	};
 
 	showBaixaTitulo = (): void => {
+		if(!this.isFormEditable)	return;
 		this.detalheBaixaVisible = false;
 		this.baixaTituloVisible = true;
 		this.edicaoTituloVisible = false;
@@ -134,6 +140,7 @@ export class ExpenseViewComponent {
 	};
 
 	showEdicaoTitulo = (): void => {
+		if(!this.isFormEditable)	return;
 		this.detalheBaixaVisible = false;
 		this.baixaTituloVisible = false;
 		this.edicaoTituloVisible = true;

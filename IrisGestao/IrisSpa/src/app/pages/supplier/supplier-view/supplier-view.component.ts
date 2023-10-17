@@ -5,7 +5,7 @@ import { MenuItem } from 'primeng/api/menuitem';
 import { first } from 'rxjs';
 import { Contato } from 'src/app/shared/models';
 import { TelefonePipe } from 'src/app/shared/pipes/telefone.pipe';
-import { ContatoService, FornecedorService } from 'src/app/shared/services';
+import { ContatoService, FornecedorService, LoginService } from 'src/app/shared/services';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 
 @Component({
@@ -42,12 +42,15 @@ export class SupplierViewComponent implements OnInit {
 
 	properties = [];
 
+	isFormEditable:boolean = true;
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
 		private supplierService: FornecedorService,
 		private contatoService: ContatoService,
-		private responsiveService: ResponsiveService
+		private responsiveService: ResponsiveService,
+		private loginService: LoginService
 	) {
 		this.route.paramMap.subscribe((paramMap) => {
 			this.uid = paramMap.get('uid') ?? '';
@@ -86,6 +89,8 @@ export class SupplierViewComponent implements OnInit {
 		];
 
 		this.getByUuid();
+
+		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	getByUuid = (): void => {
