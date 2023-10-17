@@ -9,6 +9,7 @@ public class CriarObraCommand
     public DateTime? DataInicio { get; set; }
     public DateTime? DataPrevistaTermino { get; set; }
     public decimal? Percentual { get; set; }
+    public decimal? PercentualAdministracao { get; set; }
     public decimal? ValorOrcamento { get; set; }
     public IEnumerable<Guid> UnidadeGuidReferences { get; set; }
 }

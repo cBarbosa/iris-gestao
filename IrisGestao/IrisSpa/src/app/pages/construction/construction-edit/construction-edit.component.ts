@@ -16,7 +16,6 @@ import {
 import { Utils } from 'src/app/shared/utils';
 import { first } from 'rxjs';
 import { IImovel } from 'src/app/shared/models';
-import { ImovelService } from 'src/app/shared/services';
 
 type DropdownItem = {
 	label: string;
@@ -104,7 +103,6 @@ export class ConstructionEditComponent {
 		private location: Location,
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
-		private imovelService: ImovelService,
 		private constructionService: ConstructionService,
 		private anexoService: AnexoService
 	) {}
@@ -126,7 +124,8 @@ export class ConstructionEditComponent {
 				dataInicio: [null, [Validators.required]],
 				dataFim: [null, [Validators.required]],
 				valorOrcamento: [null, [Validators.required]],
-				porcentagemConclusao: [null, Validators.required]
+				porcentagemConclusao: [null, Validators.required],
+				porcentagemAdministracao: [null, Validators.required]
 			}),
 			// attachments: this.fb.group({
 			// 	projeto: [null, [Validators.required]],
@@ -281,6 +280,7 @@ export class ConstructionEditComponent {
 			DataInicio: string;
 			DataPrevistaTermino: string;
 			Percentual: number;
+			percentualAdministracao: number;
 			ValorOrcamento: number;
 			UnidadeGuidReferences: Array<string>;
 		} = {
@@ -292,6 +292,7 @@ export class ConstructionEditComponent {
 				? editFormData.dataFim.toISOString()
 				: '',
 			Percentual: +editFormData.porcentagemConclusao,
+			percentualAdministracao: editFormData.porcentagemAdministracao,
 			ValorOrcamento: editFormData.valorOrcamento,
 			UnidadeGuidReferences: this.selectedUnits
 		};
@@ -382,7 +383,8 @@ export class ConstructionEditComponent {
 						dataInicio: new Date(data.dataInicio),
 						dataFim: new Date(data.dataPrevistaTermino),
 						valorOrcamento: data.valorOrcamento,
-						porcentagemConclusao: data.percentual
+						porcentagemConclusao: data.percentual,
+						porcentagemAdministracao: data.percentualAdministracao
 					});
 
 					this.constructionProperty = data.imovel;
