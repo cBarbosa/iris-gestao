@@ -291,7 +291,10 @@
 								<td>{{ Eventos.nome }}</td>
 								<td>{{ Eventos.descricao }}</td>
 								<td>
-									<div *ngIf="Eventos.unidadesVisitadas.length > 0" class="basis-0">
+									<div
+										*ngIf="Eventos.unidadesVisitadas.length > 0"
+										class="basis-0"
+									>
 										Unidade(s):
 										<ng-container
 											*ngFor="let unit of Eventos.unidadesVisitadas; index as i"
@@ -312,7 +315,7 @@
 							</tr>
 						</ng-template>
 					</p-table>
-				</div>	
+				</div>
 			</section>
 			<section class="attachments" *ngIf="hasAttachmentDocs">
 				<h3>Anexos</h3>
@@ -326,7 +329,6 @@
 					<app-photo-gallery [imageList]="imageList"></app-photo-gallery>
 				</section>
 			</ng-container>
-		
 		</div>
 	</div>
 </ng-template>
