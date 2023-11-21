@@ -278,7 +278,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                          x.ValorLiquidoTaxaAdministracao,
                          x.ValorRealPago,
                          DescricaoBaixaFatura = string.IsNullOrEmpty(x.DescricaoBaixaFatura) ? "" : x.DescricaoBaixaFatura,
-                     })
+                     }).OrderByDescending(x=> x.DataVencimento).ToList()
                  })
              })
             .SingleOrDefaultAsync();
@@ -419,7 +419,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 DataAtualização = x.DataUltimaModificacao,
                                 DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,
                                 PorcentagemTaxaAdministracao = x.PorcentagemTaxaAdministracao,
-                                DataUltimaFatura = x.FaturaTitulo.FirstOrDefault().DataVencimento.Value
+                                DataUltimaFatura = x.FaturaTitulo.FirstOrDefault().DataVencimento
                             }),
                         }).OrderBy(x=> x.DataFimContrato).ToListAsync();
 

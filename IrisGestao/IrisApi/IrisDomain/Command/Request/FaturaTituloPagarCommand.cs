@@ -10,6 +10,8 @@ namespace IrisGestao.Domain.Command.Request
 {
     public class FaturaTituloPagarCommand
     {
+        public int? numeroFatura { get; set; }
+        public int? NumeroTitulo { get; set; }
         public double? Valor { get; set; }
         public double? ValorRealPago { get; set; }
         public DateTime? DataPagamento { get; set; }

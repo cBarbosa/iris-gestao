@@ -136,9 +136,8 @@ export class EdicaoTituloSidebarComponent {
 			numeroNotaFiscal: [
 				{ value: this.data?.numeroFatura ?? null, disabled: true },
 			],
-			numeroParcela: [
-				{ value: this.data?.numeroParcela ?? null, disabled: true },
-			],
+			numeroParcela: [this.data?.numeroParcela ?? null, Validators.required ],
+			
 			valor: [this.data?.valorFatura ?? null, Validators.required],
 			valorPago: [
 				{ value: this.data?.valorRealPago ?? '', disabled: !this.faturaPaga },
@@ -218,6 +217,7 @@ export class EdicaoTituloSidebarComponent {
 		const editFormData = this.form.getRawValue();
 
 		const edicaoObj = {
+			numeroFatura: +editFormData.numeroParcela,
 			valor: +editFormData.valor,
 			valorRealPago: +editFormData.valorPago,
 			dataPagamento: editFormData.dataPagamento === "" ? null : editFormData.dataPagamento,

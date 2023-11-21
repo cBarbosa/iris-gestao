@@ -117,7 +117,7 @@ public class TituloPagarRepository : Repository<TituloPagar>, ITituloPagarReposi
                             ValorLiquidoTaxaAdministracao = x.ValorLiquidoTaxaAdministracao,
                             ValorRealPago = x.ValorRealPago,
                             DescricaoBaixaFatura = String.IsNullOrEmpty(x.DescricaoBaixaFatura) ? "" : x.DescricaoBaixaFatura,
-                        }),
+                        }).OrderBy(x=> x.DataVencimento).ToList(),
                         ContratoAluguel = x.IdContratoAluguelNavigation == null ? null : new
                         {
                             GuidReferencia = x.IdContratoAluguelNavigation.GuidReferencia,
