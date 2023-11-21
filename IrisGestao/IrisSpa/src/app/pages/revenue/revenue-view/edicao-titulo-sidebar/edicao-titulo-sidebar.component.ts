@@ -128,12 +128,11 @@ export class EdicaoTituloSidebarComponent {
 			: false;
 
 		this.form = this.fb.group({
+			numeroFatura: [this.data?.numeroFatura ?? null, Validators.required],
 			numeroNotaFiscal: [
 				{ value: this.data?.numeroFatura ?? null, disabled: true },
 			],
-			numeroParcela: [
-				{ value: this.data?.numeroParcela ?? null, disabled: true },
-			],
+			numeroParcela: [this.data?.numeroParcela ?? null],
 			valor: [this.data?.valorFatura ?? null, Validators.required],
 			valorPago: [
 				{ value: this.data?.valorRealPago ?? '', disabled: !this.faturaPaga },
@@ -178,16 +177,19 @@ export class EdicaoTituloSidebarComponent {
 			: false;
 
 		if (this.faturaPaga) {
+			this.form.controls['numeroFatura'].enable();
 			this.form.controls['valorPago'].enable();
 			this.form.controls['dataPagamento'].enable();
 			this.form.controls['observacoes'].enable();
 		} else {
+			this.form.controls['numeroFatura'].disable();
 			this.form.controls['valorPago'].disable();
 			this.form.controls['dataPagamento'].disable();
 			this.form.controls['observacoes'].disable();
 		}
 
 		this.form.setValue({
+			numeroFatura: this.data?.numeroFatura ?? '',
 			valor: this.data?.valorFatura ?? '',
 			valorPago: this.data?.valorRealPago ?? '',
 			numeroNotaFiscal: this.data?.numeroFatura ?? '',
@@ -210,6 +212,7 @@ export class EdicaoTituloSidebarComponent {
 
 		const editFormData = this.form.getRawValue();
 		const edicaoObj = {
+			numeroFatura: +editFormData.numeroParcela,
 			valor: +editFormData.valor,
 			valorRealPago: +editFormData.valorPago,
 			dataPagamento: editFormData.dataPagamento === "" ? null : editFormData.dataPagamento,

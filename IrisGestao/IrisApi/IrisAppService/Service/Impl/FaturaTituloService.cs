@@ -169,9 +169,12 @@ public class FaturaTituloService : IFaturaTituloService
                 faturaTitulo.GuidReferencia = faturaTitulo.GuidReferencia;
                 break;
         }
-        
+        if (cmd.numeroFatura.HasValue)
+        {
+            faturaTitulo.NumeroParcela = cmd.numeroFatura.Value;
+        }
         faturaTitulo.DataUltimaModificacao = DateTime.Now;
-        faturaTitulo.DataVencimento = cmd.DataVencimento;
+        faturaTitulo.DataVencimento = cmd.DataVencimento.Value;
         faturaTitulo.Valor = cmd.Valor;
         faturaTitulo.DataPagamento = cmd.DataPagamento;
         faturaTitulo.ValorRealPago = cmd.ValorRealPago;

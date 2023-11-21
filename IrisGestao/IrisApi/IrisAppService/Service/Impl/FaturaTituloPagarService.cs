@@ -149,6 +149,10 @@ public class FaturaTituloPagarService : IFaturaTituloPagarService
                 FaturaTituloPagar.DataUltimaModificacao = DateTime.Now;
                 break;
         }
+        if (cmd.numeroFatura.HasValue)
+        {
+            FaturaTituloPagar.NumeroParcela = cmd.numeroFatura.Value;
+        }
         if (cmd.DataPagamento.HasValue)
         {
             FaturaTituloPagar.DiasAtraso = calculaDiasAtraso(cmd.DataVencimento.Value, cmd.DataPagamento.Value);

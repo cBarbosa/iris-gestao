@@ -5,6 +5,7 @@ using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Xml.Linq;
 
 namespace IrisGestao.Infraestructure.Repository.Impl;
 
@@ -135,7 +136,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                             ValorLiquidoTaxaAdministracao = x.ValorLiquidoTaxaAdministracao,
                             ValorRealPago = x.ValorRealPago,
                             DescricaoBaixaFatura = String.IsNullOrEmpty(x.DescricaoBaixaFatura) ? "" : x.DescricaoBaixaFatura,
-                        }),
+                        }).OrderBy(x=> x.DataVencimento).ToList(),
                         Imoveis = x.TituloImovel.Select(y => new
                         {
                             Nome = y.IdImovelNavigation.Nome,
@@ -213,7 +214,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                             DataCriacao = x.DataCriacao,
                             DataFimTitulo = x.DataFimTitulo,
                             DataAtualização = x.DataUltimaModificacao,
-                            DataUltimaParcela = x.FaturaTitulo.OrderByDescending(x=> x.DataVencimento.Value).FirstOrDefault().DataVencimento.Value,
+                            DataUltimaParcela = x.FaturaTitulo.OrderByDescending(x=> x.DataVencimento).FirstOrDefault().DataVencimento,
                             TipoTituloReceber = x.IdTipoTituloNavigation == null ? null : new
                             {
                                 Id = x.IdTipoTituloNavigation.Id,
