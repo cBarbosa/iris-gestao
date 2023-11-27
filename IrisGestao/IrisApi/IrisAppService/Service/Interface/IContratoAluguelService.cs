@@ -10,7 +10,7 @@ public interface IContratoAluguelService
     Task<CommandResult> Update(Guid uuid, CriarContratoAluguelCommand cmd);
     Task<CommandResult> AlterarStatus(Guid uuid, bool status);
     Task<CommandResult> ReajusteContrato(Guid uuid, double novoPercentualReajuste);
-    Task<CommandResult> GetAllPaging(int? idTipoImovel, int? idBaseReajuste, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? numeroContrato, int limit, int page);
+    Task<CommandResult> GetAllPaging(int? idTipoImovel, int? idImovel, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? nomeLocatario, int limit, int page);
     Task<CommandResult> GetDashbaordFinancialVacancy(DateTime DateRefInit, DateTime DateRefEnd, int? IdLocador, int? IdArea);
     Task<CommandResult> GetDashbaordPhysicalVacancy(DateTime DateRefInit, DateTime DateRefEnd, int? IdLocador);
     Task<CommandResult> GetDashbaordReceivingPerformance(DateTime dateRefInit, DateTime dateRefEnd, int? idLocador);

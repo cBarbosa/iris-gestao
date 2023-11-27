@@ -46,7 +46,7 @@
 					[(ngModel)]="filterText"
 					(ngModelChange)="filterContractsDebounce($event)"
 					type="text"
-					placeholder="Buscar contrato"
+					placeholder="Buscar locatário"
 				/>
 			</span>
 
@@ -55,7 +55,7 @@
 				[styleClass]="
 					'w-full md:w-[11.2rem]' + (isMobile ? '' : ' white-theme')
 				"
-				placeholder="Base de reajuste"
+				placeholder="Imóveis"
 				[options]="basesReajuste"
 				[(ngModel)]="filterBase"
 				(ngModelChange)="filterContractsDebounce($event)"
