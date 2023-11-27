@@ -15,6 +15,7 @@ import {
 	ClienteService,
 	CommonService,
 	LoginService,
+	RentContractService,
 } from 'src/app/shared/services';
 import { AnexoService } from 'src/app/shared/services/anexo.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
@@ -61,13 +62,12 @@ export class PropertyListingComponent implements OnInit {
 
 	constructor(
 		private imovelService: ImovelService,
-		private clienteService: ClienteService,
 		private commonService: CommonService,
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
-		private anexoService: AnexoService,
 		private responsiveService: ResponsiveService,
-		private loginService: LoginService
+		private loginService: LoginService,
+		private rentContract: RentContractService
 	) {}
 
 	ngOnInit(): void {
@@ -109,8 +109,8 @@ export class PropertyListingComponent implements OnInit {
 			}
 		});
 
-		this.clienteService
-			.getListaProprietarios()
+		this.rentContract
+			.getActiveOwners()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {

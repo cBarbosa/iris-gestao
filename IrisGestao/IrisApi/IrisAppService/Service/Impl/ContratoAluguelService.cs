@@ -49,9 +49,9 @@ public class ContratoAluguelService: IContratoAluguelService
         this.logger = logger;
     }
 
-    public async Task<CommandResult> GetAllPaging(int? idTipoImovel, int? idBaseReajuste, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? numeroContrato, int limit, int page)
+    public async Task<CommandResult> GetAllPaging(int? idTipoImovel, int? idImovel, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? nomeLocatario, int limit, int page)
     {        
-        var result = await contratoAluguelRepository.GetAllPaging(idTipoImovel, idBaseReajuste, dthInicioVigencia, dthFimVigencia, numeroContrato, limit, page);
+        var result = await contratoAluguelRepository.GetAllPaging(idTipoImovel, idImovel, dthInicioVigencia, dthFimVigencia, nomeLocatario, limit, page);
 
         return result == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)

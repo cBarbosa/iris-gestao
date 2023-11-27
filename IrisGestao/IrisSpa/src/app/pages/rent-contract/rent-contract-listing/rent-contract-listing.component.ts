@@ -34,7 +34,7 @@ export class RentContractListingComponent {
 
 	basesReajuste = [
 		{
-			label: 'Índice de reajuste',
+			label: 'Todos imóveis',
 			value: null,
 		},
 	];
@@ -60,7 +60,7 @@ export class RentContractListingComponent {
 		private contractService: RentContractService,
 		private commonService: CommonService,
 		private responsiveService: ResponsiveService,
-		private loginService: LoginService
+		private loginService: LoginService,
 	) {};
 
 	ngOnInit(): void {
@@ -110,8 +110,8 @@ export class RentContractListingComponent {
 				},
 			});
 
-		this.commonService
-			.getReadjustment()
+		this.contractService
+			.getActiveProperties()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {

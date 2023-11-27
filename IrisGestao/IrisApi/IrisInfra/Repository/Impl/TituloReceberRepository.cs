@@ -186,7 +186,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                     }).ToListAsync(); 
     }
 
-    public async Task<CommandPagingResult?> GetAllPaging(string? numeroTitulo, int? idTipoTitulo, int limit, int page)
+    public async Task<CommandPagingResult?> GetAllPaging(string? nomeProprietario, int? idTipoTitulo, int limit, int page)
     {
         var skip = (page - 1) * limit;
 
@@ -195,13 +195,21 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
             var contratos = await DbSet
                         .Include(x => x.IdContratoAluguelNavigation)
                             .ThenInclude(x => x.IdTipoContratoNavigation)
+                        
+                        .Include(x => x.TituloImovel)
+                            .ThenInclude(x => x.IdImovelNavigation)
+                                .ThenInclude(x => x.IdClienteProprietarioNavigation)
+                        
                         .Where(x => x.Status.Value &&
                                     (idTipoTitulo.HasValue
-                                        ? x.IdTipoTituloNavigation.Id == idTipoTitulo.Value
+                                        ? x.IdTipoTitulo == idTipoTitulo.Value
                                         : true)
-                                    && (!string.IsNullOrEmpty(numeroTitulo)
-                                        ? x.NumeroTitulo.Contains(numeroTitulo!)
+                                    && (!string.IsNullOrEmpty(nomeProprietario)
+                                        ? (x.TituloImovel.First().IdImovelNavigation.IdClienteProprietarioNavigation.Nome.Contains(nomeProprietario)
+                                            || x.IdClienteNavigation.Nome.Contains(nomeProprietario)
+                                        )
                                         : true))
+
                         .Select(x => new
                         {
                             NumeroTitulo = x.NumeroTitulo,

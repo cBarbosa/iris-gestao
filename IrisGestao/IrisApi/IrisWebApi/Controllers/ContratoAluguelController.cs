@@ -28,17 +28,17 @@ public class ContratoAluguelController : Controller
     [HttpGet]
     public async Task<IActionResult> GetAll(
        [FromQuery] int? idTipoImovel
-       , [FromQuery] int? idBaseReajuste
+       , [FromQuery] int? idImovel
        , [FromQuery] DateTime? dthInicioVigencia
        , [FromQuery] DateTime? dthFimVigencia
-       , [FromQuery] string? numeroContrato
+       , [FromQuery] string? nomeLocatario
        , [FromQuery] int? limit = 10
        , [FromQuery] int? page = 1) =>
         Ok(await contratoAluguelService.GetAllPaging(idTipoImovel,
-            idBaseReajuste,
+            idImovel,
             dthInicioVigencia,
             dthFimVigencia,
-            numeroContrato,
+            nomeLocatario,
             limit ?? 10,
             page ?? 1));
 

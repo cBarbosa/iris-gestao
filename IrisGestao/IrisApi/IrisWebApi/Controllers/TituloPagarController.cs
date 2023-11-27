@@ -19,10 +19,10 @@ public class TituloPagarController : Controller
     [HttpGet]
     public async Task<IActionResult> GetAll(
        [FromQuery] int? idTipoTitulo
-       , [FromQuery] string? numeroTitulo
+       , [FromQuery] string? nomeProprietario
        , [FromQuery] int? limit = 10
        , [FromQuery] int? page = 1) =>
-        Ok(await TituloPagarService.GetAllPaging(numeroTitulo, idTipoTitulo, limit ?? 10, page ?? 1));
+        Ok(await TituloPagarService.GetAllPaging(nomeProprietario, idTipoTitulo, limit ?? 10, page ?? 1));
 
     // GET
     [HttpGet("{guid}/guid")]
