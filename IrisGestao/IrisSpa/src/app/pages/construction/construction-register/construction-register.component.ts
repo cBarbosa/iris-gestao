@@ -143,6 +143,8 @@ export class ConstructionRegisterComponent {
 				dataInicio: [null, Validators.required],
 				dataFim: [null, Validators.required],
 				valorOrcamento: ['', Validators.required],
+				porcentagemConclusao: [null, Validators.required],
+				porcentagemAdministracao: [null, Validators.required]
 			}),
 			anexos: this.fb.group({}),
 		});
@@ -283,6 +285,8 @@ export class ConstructionRegisterComponent {
 				dataInicio: string;
 				dataFim: string;
 				valorOrcamento: number;
+				porcentagemConclusao: number,
+				porcentagemAdministracao: number
 			};
 		} = this.registerForm.getRawValue();
 
@@ -299,13 +303,17 @@ export class ConstructionRegisterComponent {
 			DataPrevistaTermino: string;
 			ValorOrcamento: number;
 			UnidadeGuidReferences: Array<string>;
+			Percentual: number;
+			PercentualAdministracao: number;
 		} = {
 			ImovelGuidReference: linkedProperty.guid,
 			Nome: formData.dadosObra.nome,
 			DataInicio: formData.dadosObra.dataInicio,
 			DataPrevistaTermino: formData.dadosObra.dataFim,
 			ValorOrcamento: formData.dadosObra.valorOrcamento,
-			UnidadeGuidReferences: unitGuidReferences
+			UnidadeGuidReferences: unitGuidReferences,
+			Percentual: formData.dadosObra.porcentagemConclusao,
+			PercentualAdministracao: formData.dadosObra.porcentagemAdministracao
 		};
 
 		const registerAttachments = (guid: string) => {
