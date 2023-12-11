@@ -30,6 +30,7 @@ export class PropertyViewComponent implements OnInit {
 	eventos: any[] = [];
 
 	hasAttachmentDocs: boolean = false;
+	eventSelected: any;
 
 	attachmentList: { fileName: string; fileLocation: string }[] = [];
 
@@ -55,7 +56,8 @@ export class PropertyViewComponent implements OnInit {
 	displayConfirmationCloneUnit = false;
 	displayModal = false;
 
-	displayAddEvent = true;
+	displayAddEvent = false;
+	displayEditEvent = false;
 
 	modalContent: {
 		isError?: boolean;
@@ -134,6 +136,15 @@ export class PropertyViewComponent implements OnInit {
 			this.isMobile = screenWidth < 768;
 		});
 	}
+
+	setCurrentEvent = (item: any): void => {
+		this.eventSelected = item;
+		console.log('evento >> ' + JSON.stringify(item));
+	};
+
+	showEditarEventVisible = (): void => {
+		this.displayEditEvent = true
+	};
 
 	onUpdateUnitList = (modalContent: {
 		isError?: boolean;
@@ -255,7 +266,6 @@ export class PropertyViewComponent implements OnInit {
 
 	setCurrentUnit(item: ImovelUnidade): void {
 		this.unit = item;
-
 		item.guidReferencia && this.getUnitFiles(item.guidReferencia);
 	}
 

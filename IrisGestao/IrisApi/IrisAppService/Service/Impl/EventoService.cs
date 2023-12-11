@@ -57,6 +57,15 @@ public class EventoService: IEventoService
             : new CommandResult(true, SuccessResponseEnums.Success_1005, Evento);
     }
 
+    public async Task<CommandResult> GetByGuid(Guid uuid)
+    {
+        var Evento = await Task.FromResult(eventoRepository.GetByGuid(uuid));
+
+        return Evento == null
+            ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)
+            : new CommandResult(true, SuccessResponseEnums.Success_1005, Evento);
+    }
+
     public async Task<CommandResult> BuscarEventoPorIdImovel(int codigo)
     {
         var Eventos = await Task.FromResult(eventoRepository.BuscarEventoPorIdImovel(codigo));

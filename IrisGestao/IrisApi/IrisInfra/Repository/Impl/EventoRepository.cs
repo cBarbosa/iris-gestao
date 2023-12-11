@@ -30,6 +30,33 @@ public class EventoRepository: Repository<Evento>, IEventoRepository
             .FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
     }
 
+    public async Task<object?> GetByGuid(Guid guid)
+    {
+        return await DbSet
+                        .Include(x => x.IdClienteNavigation)
+                        .Where(x => x.GuidReferencia.Equals(guid))
+                        .Select(x => new
+                        {
+                            GuidReferenciaEvento = x.GuidReferencia,
+                            DataRealizacao = x.DthRealizacao.HasValue ? x.DthRealizacao.Value.ToString("dd/MM/yyyy") : "",
+                            Nome = x.Nome,
+                            Descricao = x.descricao,
+                            TipoEvento = x.TipoEvento,
+                            ClienteVisitante = x.IdClienteNavigation == null
+                                ? null
+                                : new
+                                {
+                                    GuidReferenciaVisitante = x.IdClienteNavigation.GuidReferencia,
+                                    Nome = x.IdClienteNavigation.Nome
+                                },
+                            UnidadesVisitadas = x.EventoUnidade.Select(y => new
+                            {
+                                GuidReferenciaUnidadeVisitada = y.IdUnidadeNavigation.GuidReferencia,
+                                Tipo = y.IdUnidadeNavigation.Tipo
+                            })
+                        }).FirstOrDefaultAsync();
+    }
+
 
     public IEnumerable<Evento> BuscarEventoPorIdImovel(int codigo)
     {
