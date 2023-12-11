@@ -1,9 +1,9 @@
-name: Build and deploy - iris-gestao-apidev (develop)
+name: Build and deploy - iris-gestao-apidev (develop-disabled)
 
 on:
   push:
     branches:
-      - develop
+      - develop-disabled
     paths:
       - IrisGestao/IrisApi/**
   workflow_dispatch:
