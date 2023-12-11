@@ -1,6 +1,6 @@
 
 const baseUrl = 'https://irisgestao-devapi.azurewebsites.net/'
-
+ 
 export const environment = {
     production: true,
     config: {
