@@ -27,6 +27,11 @@ public class EventoController : Controller
     public async Task<IActionResult> BuscarEvento([FromRoute] int codigo) =>
         Ok(await eventoService.GetById(codigo));
 
+
+    [HttpGet("{codigo}/guid/")]
+    public async Task<IActionResult> BuscarEvento([FromRoute] Guid codigo) =>
+        Ok(await eventoService.GetByGuid(codigo));
+
     [HttpGet("{codigo}/idImovel/")]
     public async Task<IActionResult> BuscarEventoPorIdImovel([FromRoute] int codigo) =>
         Ok(await eventoService.BuscarEventoPorIdImovel(codigo));
