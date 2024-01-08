@@ -87,9 +87,11 @@ export class EditEventSidebarComponent {
 		dataRealizacao: string;
 		nome: string;
 		descricao: string;
-		clienteVisitante: string;
+		clienteVisitante: {
+			guidReferenciaVisitante: string;
+		},
+		unidadesVisitadas: Array<string> | null
 	} | null;
-
 
 	modalContent: {
 		isError?: boolean;
@@ -135,49 +137,40 @@ export class EditEventSidebarComponent {
 	) {}
 
 	ngOnInit() {
-		console.log('guid: >> guidProperty >> ' + this.guidProperty);
-		console.log('guid: >> data >> ' +JSON.stringify(this.data));
 
 		if (!this.guidProperty)
 			throw new Error(
-				"edicao-titulo-sidebar: O Guid de receita deve ser informado caso o parâmetro 'registerOnSubmit' seja verdadeiro."
+				"edit-event-sidebar: O Guid do imóvel deve ser informado."
 			);
+
+		this.getData();
+	}
+
+	init():void {
+
+		if (!this.guidProperty && !this.data)
+		throw new Error(
+			"edit-event-sidebar: O Guid do imóvel e a propriedade data devem ser informados."
+		);
 
 		this.form = this.fb.group({
 			//tipoEvento: ['', Validators.required],
-			proprietary: [null, Validators.required],
-			unidade: [null, Validators.required],
-			nomeEvento: ['', Validators.required],
-			descricao: ['', Validators.required],
-			dataEvento: ['', Validators.required],
+			proprietary: [this.data?.clienteVisitante.guidReferenciaVisitante, Validators.required],
+			unidade: [this.data?.unidadesVisitadas, Validators.required],
+			nomeEvento: [this.data?.nome, Validators.required],
+			descricao: [this.data?.descricao, Validators.required],
+			dataEvento: [this.data?.dataRealizacao, Validators.required]
 		});
 
 		const { onInputDate, onBlurDate } = Utils.calendarMaskHandlers();
 		this.onInputDate = onInputDate;
 		this.onBlurDate = onBlurDate;
+	};
 
+	getData(): void {
 		this.getListaProprietarios();
-
-		this.unidadeService
-			.getUnitByPropertyId(this.guidProperty)
-			.pipe(first())
-			.subscribe({
-				next: (response) => {
-					if (response.success) {
-						const data = response.data;
-						this.opcoesUnidade = this.opcoesUnidade.concat(
-							data.map((item: any) => {
-								return {
-									label: item.tipo,
-									value: item.guidReferencia,
-								};
-							})
-						);
-					}
-				},
-				error: (err) => {},
-			});
-	}
+		this.getListaUnidades(this.guidProperty);
+	};
 
 	get f(): { [key: string]: AbstractControl<any, any> } {
 		return this.form.controls;
@@ -192,7 +185,7 @@ export class EditEventSidebarComponent {
 			.getListaProprietarios()
 			.pipe(first())
 			.subscribe((event) => {
-				console.log('props: ', event);
+
 				if (event.success) {
 					this.proprietaries = [
 						{
@@ -212,6 +205,29 @@ export class EditEventSidebarComponent {
 			});
 	};
 
+	getListaUnidades = (guidProperty: string) => {
+		this.unidadeService
+			.getUnitByPropertyId(guidProperty)
+			.pipe(first())
+			.subscribe({
+				next: (response) => {
+
+					if (response.success) {
+						const data = response.data;
+						this.opcoesUnidade = this.opcoesUnidade.concat(
+							data.map((item: any) => {
+								return {
+									label: item.tipo,
+									value: item.guidReferencia,
+								};
+							})
+						);
+					}
+			},
+			error: (err) => {},
+		});
+	};
+
 	onSidebarHide = () => {
 		this.isVisibleChange.emit(false);
 	};
@@ -219,11 +235,11 @@ export class EditEventSidebarComponent {
 	onSidebarShow() {}
 
 	onSubmit(e: any) {
-		console.log('submitting');
+
 		if (this.form.invalid) {
 			this.form.markAllAsTouched();
 			return;
-		}
+		};
 
 		const editFormData = this.form.getRawValue();
 
@@ -233,24 +249,25 @@ export class EditEventSidebarComponent {
 			nome: editFormData.nomeEvento,
 			descricao: editFormData.descricao,
 			dthRealizacao: editFormData.dataEvento
-				? editFormData.dataEvento.toISOString()
+				? this.getISODateFromString(editFormData.dataEvento)
 				: '',
-			lstUnidades: editFormData.unidade,
+			lstUnidades: editFormData.unidade
 		};
 
 		console.log('on register', edicaoObj);
+		return;
 
 		// if (this.onSubmitForm) this.onSubmitForm(contactObj);
 
-		this.registerEvent(edicaoObj)
-			.then(() => {
-				this.openModal();
-				this.onSubmitForm?.(edicaoObj);
-			})
-			.catch((err) => {
-				this.openModal();
-				console.error(err);
-			});
+		// this.registerEvent(edicaoObj)
+		// 	.then(() => {
+		// 		this.openModal();
+		// 		this.onSubmitForm?.(edicaoObj);
+		// 	})
+		// 	.catch((err) => {
+		// 		this.openModal();
+		// 		console.error(err);
+		// 	});
 	}
 
 	registerEvent(formObj: CreateEventObj): Promise<unknown> {
@@ -333,4 +350,16 @@ export class EditEventSidebarComponent {
 		this.isVisibleChange.emit(false);
 		this.onCancel?.();
 	};
+
+	getISODateFromString = (data:string): string => {
+		var dia  = data.split("/")[0];
+		var mes  = data.split("/")[1];
+		var ano  = data.split("/")[2];
+
+		return new Date(Number(ano), Number(mes), Number(dia)).toISOString();
+	  
+		// return ano + '-' + ("0"+mes).slice(-2) + '-' + ("0"+dia).slice(-2);
+		// Utilizo o .slice(-2) para garantir o formato com 2 digitos.
+	};
+
 }

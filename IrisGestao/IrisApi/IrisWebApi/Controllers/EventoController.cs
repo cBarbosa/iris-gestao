@@ -41,15 +41,18 @@ public class EventoController : Controller
         Ok(await eventoService.BuscarEventoPorIdCliente(codigo));
 
     [HttpPost("criar")]
-    public async Task<IActionResult> Cadatrar([FromBody] CriarEventoCommand cmd)
+    public async Task<IActionResult> Cadatrar(
+        [FromBody] CriarEventoCommand cmd)
     {
         var result = await eventoService.Insert(cmd);
 
         return Ok(result);
     }
 
-    [HttpPut("{codigo}/atualizar/")]
-    public async Task<IActionResult> Atualizar(Guid uuid, [FromBody] CriarEventoCommand cmd)
+    [HttpPut("{uuid}/atualizar/")]
+    public async Task<IActionResult> Atualizar(
+        [FromRoute] Guid uuid,
+        [FromBody] CriarEventoCommand cmd)
     {
         var result = await eventoService.Update(uuid, cmd);
 

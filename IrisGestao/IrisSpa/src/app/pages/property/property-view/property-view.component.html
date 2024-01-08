@@ -318,7 +318,7 @@
 									pButton
 									type="button"
 									class="p-element h-11 p-button-outlined p-component"
-									(click)="setCurrentEvent(Eventos.guidReferenciaEvento); showEditarEventVisible()"
+									(click)="setCurrentEvent(Eventos);"
 								>
 									Editar Evento
 								</button>
@@ -753,5 +753,5 @@
 	[data]="eventSelected"
 	[guidProperty]="uid"
 	[(isVisible)]="displayEditEvent"
+	#editEvent
 ></app-edit-event-sidebar>
-
