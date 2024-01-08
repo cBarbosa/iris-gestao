@@ -144,8 +144,6 @@ export class PropertyViewComponent implements OnInit {
 
 		const unidadesArray = item.unidadesVisitadas.map((obj:any) => obj.guidReferenciaUnidadeVisitada);
 
-		console.log(unidadesArray);
-
 		const objeto = {
 			guidReferenciaEvento: item.guidReferenciaEvento,
 			dataRealizacao: item.dataRealizacao,
@@ -443,4 +441,10 @@ export class PropertyViewComponent implements OnInit {
 
 		Utils.saveAs(file, filename);
 	}
+
+	editEventSubmit(e:any) {
+
+		console.log(e);
+
+	};
 }

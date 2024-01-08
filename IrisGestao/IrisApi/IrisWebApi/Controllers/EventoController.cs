@@ -49,7 +49,7 @@ public class EventoController : Controller
         return Ok(result);
     }
 
-    [HttpPut("{uuid}/atualizar/")]
+    [HttpPut("{uuid:Guid}/atualizar")]
     public async Task<IActionResult> Atualizar(
         [FromRoute] Guid uuid,
         [FromBody] CriarEventoCommand cmd)

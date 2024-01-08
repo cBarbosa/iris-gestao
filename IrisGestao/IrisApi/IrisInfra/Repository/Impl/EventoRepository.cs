@@ -14,6 +14,7 @@ public class EventoRepository: Repository<Evento>, IEventoRepository
     {
         
     }
+    
     public IEnumerable<Evento> GetById(int codigo)
     {
         var lstImovel = DbSet.Include(x => x.IdClienteNavigation)
@@ -27,20 +28,24 @@ public class EventoRepository: Repository<Evento>, IEventoRepository
     public async Task<Evento?> GetByReferenceGuid(Guid guid)
     {
         return await DbSet
-            .FirstOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
+            .Include(x => x.EventoUnidade)
+                .ThenInclude(x => x.IdUnidadeNavigation)
+            .SingleOrDefaultAsync(x => x.GuidReferencia.Equals(guid));
     }
 
     public async Task<object?> GetByGuid(Guid guid)
     {
         return await DbSet
                         .Include(x => x.IdClienteNavigation)
+                        .Include(x => x.EventoUnidade)
+                            .ThenInclude(x => x.IdUnidadeNavigation)
                         .Where(x => x.GuidReferencia.Equals(guid))
                         .Select(x => new
                         {
                             GuidReferenciaEvento = x.GuidReferencia,
                             DataRealizacao = x.DthRealizacao.HasValue ? x.DthRealizacao.Value.ToString("dd/MM/yyyy") : "",
                             Nome = x.Nome,
-                            Descricao = x.descricao,
+                            Descricao = x.Descricao,
                             TipoEvento = x.TipoEvento,
                             ClienteVisitante = x.IdClienteNavigation == null
                                 ? null
@@ -91,7 +96,7 @@ public class EventoRepository: Repository<Evento>, IEventoRepository
                             Nome = x.Nome,
                             DataRealizacao = x.DthRealizacao,
                             DataCriacao = x.DataCriacao,
-                            Descricao = x.descricao,
+                            Descricao = x.Descricao,
                             TipoEvento = x.IdTipoEventoNavigation == null ? null : new
                             {
                                 Id = x.IdTipoEventoNavigation.Id,

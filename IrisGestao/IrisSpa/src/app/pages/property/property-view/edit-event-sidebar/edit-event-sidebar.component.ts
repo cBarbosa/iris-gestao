@@ -32,6 +32,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ProprietaryRegisterSidebarComponent } from 'src/app/shared/components/proprietary-register-sidebar/proprietary-register-sidebar.component';
 import { UnidadeService } from 'src/app/shared/services/unidade.service';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
 
 @Component({
 	selector: 'app-edit-event-sidebar',
@@ -47,6 +48,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 		InputTextareaModule,
 		CalendarModule,
 		FileUploadComponent,
+		UploadListComponent,
 		DropdownModule,
 		MultiSelectModule,
 		NgxCurrencyModule,
@@ -245,6 +247,7 @@ export class EditEventSidebarComponent {
 
 		const edicaoObj: CreateEventObj = {
 			guidImovel: this.guidProperty,
+			guidReferencia: this.data?.guidReferenciaEvento ?? '',
 			guidCliente: editFormData.proprietary,
 			nome: editFormData.nomeEvento,
 			descricao: editFormData.descricao,
@@ -255,31 +258,31 @@ export class EditEventSidebarComponent {
 		};
 
 		console.log('on register', edicaoObj);
-		return;
 
-		// if (this.onSubmitForm) this.onSubmitForm(contactObj);
+		// if (this.onSubmitForm) this.onSubmitForm(edicaoObj);
 
-		// this.registerEvent(edicaoObj)
-		// 	.then(() => {
-		// 		this.openModal();
-		// 		this.onSubmitForm?.(edicaoObj);
-		// 	})
-		// 	.catch((err) => {
-		// 		this.openModal();
-		// 		console.error(err);
-		// 	});
+		this.updateEvent(edicaoObj)
+			.then(() => {
+				this.openModal();
+				this.onSubmitForm?.(edicaoObj);
+			})
+			.catch((err) => {
+				this.openModal();
+				console.error(err);
+			});
 	}
 
-	registerEvent(formObj: CreateEventObj): Promise<unknown> {
+	updateEvent(formObj: CreateEventObj): Promise<unknown> {
 		return new Promise((res, rej) => {
 			this.eventoService
-				.createEvent(formObj)
+				.updateEvent(this.data?.guidReferenciaEvento ?? '', formObj)
 				.pipe(first())
 				.subscribe({
 					next: (response) => {
+
 						if (response.success) {
 							this.modalContent = {
-								header: 'Cadastro realizado com sucesso',
+								header: 'Evento atualizado com sucesso',
 								message: response.message ?? '',
 								isError: false,
 							};
@@ -288,21 +291,21 @@ export class EditEventSidebarComponent {
 
 							res(response);
 
-							const formData = new FormData();
+							// const formData = new FormData();
 
-							formData.append('files', this.selectedFile);
+							// formData.append('files', this.selectedFile);
 
-							this.anexoService
-								.registerFile(
-									response.data.guidReferencia,
-									formData,
-									'outrosdocs'
-								)
-								.pipe(first())
-								.subscribe();
+							// this.anexoService
+							// 	.registerFile(
+							// 		response.data.guidReferencia,
+							// 		formData,
+							// 		'outrosdocs'
+							// 	)
+							// 	.pipe(first())
+							// 	.subscribe();
 						} else {
 							this.modalContent = {
-								header: 'Cadastro não realizado',
+								header: 'Atualização não realizada',
 								message: response.message ?? '',
 								isError: true,
 							};

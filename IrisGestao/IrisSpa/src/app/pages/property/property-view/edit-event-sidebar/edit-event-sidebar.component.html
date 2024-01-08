@@ -152,13 +152,17 @@
 			<!-- -->
 			<div class="field">
 				<label for="anexoNf" class="block">Anexo</label>
-				<app-file-upload
+				<!-- <app-file-upload
 					name="uploadDoc"
 					id="anexoNf"
 					[fileLimit]="1"
 					(selectEvent)="onFileSelect($event)"
 					accept=".xls, .doc, .pdf, .xlsx, .docx, image/*"
-				></app-file-upload>
+				></app-file-upload> -->
+
+				<app-upload-list
+					[guid]="data?.guidReferenciaEvento ?? ''"
+				></app-upload-list>
 			</div>
 		</ng-template>
 

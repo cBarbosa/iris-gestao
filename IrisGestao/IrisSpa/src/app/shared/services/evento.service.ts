@@ -7,6 +7,7 @@ import { environment as env } from '../../../environments/environment';
 export type CreateEventObj = {
 	guidImovel: string;
 	guidCliente: string;
+	guidReferencia: string | null;
 	nome: string;
 	descricao: string;
 	dthRealizacao: string;
@@ -72,14 +73,7 @@ export class EventoService {
 
 	updateEvent(
 		id: string,
-		form: {
-			idImovel: number;
-			idTipoEvento: number;
-			idCliente: number;
-			nome: string;
-			dthRealizacao: string;
-			guidReferencia: string;
-		}
+		form: CreateEventObj
 	) {
 		return this.http
 			.put<ApiResponse>(
@@ -95,7 +89,7 @@ export class EventoService {
 					return response;
 				})
 			);
-	}
+	};
 
 	getActiveRenters() {
 		return this.http
