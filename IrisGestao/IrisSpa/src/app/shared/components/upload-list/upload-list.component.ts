@@ -71,7 +71,6 @@ export class UploadListComponent {
 										code: id,
 									};
 								}) ?? [];
-						console.debug('attachmentList', this.attachments);
 					},
 					error: (error) => {
 						console.error('Erro: ', error);
@@ -84,8 +83,6 @@ export class UploadListComponent {
 		const fileList = (event?.target as HTMLInputElement)
 			?.files as ArrayLike<File>;
 
-		console.log('adding', fileList);
-
 		if (!fileList || fileList.length < 1) return;
 
 		for (let i = 0; i < fileList.length; i++) {
@@ -94,7 +91,6 @@ export class UploadListComponent {
 				file: fileList[i],
 			});
 		}
-		console.log(this.newAttachments);
 	}
 
 	saveAttachments = () => {
@@ -114,7 +110,6 @@ export class UploadListComponent {
 					next: (response) => {
 						if (response.success) {
 							res(response);
-							console.log(response);
 							this.newAttachments = [];
 							this.errorMessage = '';
 						} else {

@@ -86,8 +86,7 @@ public class EventoService: IEventoService
 
     public async Task<CommandResult> Insert(CriarEventoCommand cmd)
     {
-        Evento Evento = new Evento();
-        List<EventoUnidade> lstEventoUnidade = new List<EventoUnidade>();
+        // List<EventoUnidade> lstEventoUnidade = new List<EventoUnidade>();
         
         if (cmd == null)
         {
@@ -105,37 +104,38 @@ public class EventoService: IEventoService
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
         }
-
-        Evento.IdImovel  = imovel.Id;
-        Evento.IdCliente = cliente.Id;
-        BindEventoData(cmd, Evento);
+        var evento = new Evento
+        {
+            GuidReferencia = Guid.Empty,
+            IdImovel = imovel.Id,
+            IdCliente = cliente.Id
+        };
+        BindEventoData(cmd, ref evento);
 
         try
         {
-            eventoRepository.Insert(Evento);
+            eventoRepository.Insert(evento);
             foreach (var guidUnidade in cmd.lstUnidades)
             {
-                EventoUnidade eventoUnidade = new EventoUnidade();
+                var eventoUnidade = new EventoUnidade();
                 var unidade = await unidadeRepository.GetByReferenceGuid(guidUnidade);
-                eventoUnidade.IdEvento = Evento.Id;
+                eventoUnidade.IdEvento = evento.Id;
                 eventoUnidade.IdUnidade = unidade.Id;
 
                 eventoUnidadeRepository.Insert(eventoUnidade);
-            }           
-            
-            return new CommandResult(true, SuccessResponseEnums.Success_1000, Evento);
+            }
+
+            return new CommandResult(true, SuccessResponseEnums.Success_1000, evento);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return new CommandResult(false, ErrorResponseEnums.Error_1000, null!);
-            throw;
+            return new CommandResult(false, ErrorResponseEnums.Error_1000, ex);
         }
     }
 
     public async Task<CommandResult> Update(Guid uuid, CriarEventoCommand cmd)
     {
-        Evento evento = new Evento();
-        if (cmd == null || uuid == Guid.Empty)
+        if (cmd is null || uuid.Equals(Guid.Empty))
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006, null!);
         }
@@ -151,7 +151,8 @@ public class EventoService: IEventoService
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Cliente", null!);
         }
-        evento = await eventoRepository.GetByReferenceGuid(uuid);
+
+        var evento = await eventoRepository.GetByReferenceGuid(uuid);
         if (evento == null)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1006 + " do Evento", null!);
@@ -159,17 +160,48 @@ public class EventoService: IEventoService
 
         evento.IdImovel = imovel.Id;
         evento.IdCliente = cliente.Id;
-        BindEventoData(cmd, evento);
+        BindEventoData(cmd, ref evento);
 
         try
         {
             eventoRepository.Update(evento);
+            
+            var listaEventosGuid = evento.EventoUnidade
+                .Select(x => Guid.Parse(x.IdUnidadeNavigation.GuidReferencia));
+
+            foreach (var eventUnit in listaEventosGuid)
+            {
+                if (!cmd.lstUnidades.Contains(eventUnit))
+                {
+                    var unidade = await unidadeRepository.GetByReferenceGuid(eventUnit);
+                    
+                    var eventoUnidade = evento.EventoUnidade
+                        .SingleOrDefault(x => x.IdEvento.Equals(evento.Id)
+                                              && x.IdUnidade.Equals(unidade.Id));
+                    
+                    eventoUnidadeRepository.Delete(eventoUnidade.Id);
+                }
+                else
+                {
+                    cmd.lstUnidades.Remove(eventUnit);
+                }
+            }
+
+            foreach (var eventUnit in cmd.lstUnidades)
+            {
+                var unidade = await unidadeRepository.GetByReferenceGuid(eventUnit);
+                var eventoUnidade = new EventoUnidade();
+                eventoUnidade.IdEvento = evento.Id;
+                eventoUnidade.IdUnidade = unidade.Id;
+                
+                eventoUnidadeRepository.Insert(eventoUnidade);
+            }
+            
             return new CommandResult(true, SuccessResponseEnums.Success_1001, evento);
         }
         catch (Exception)
         {
             return new CommandResult(false, ErrorResponseEnums.Error_1001, null!);
-            throw;
         }
     }
 
@@ -219,25 +251,25 @@ public class EventoService: IEventoService
             : new CommandResult(true, SuccessResponseEnums.Success_1005, result);
     }
 
-    private static void BindEventoData(CriarEventoCommand cmd, Evento Evento)
+    private static void BindEventoData(CriarEventoCommand cmd, ref Evento evento)
     {
-        switch (Evento.GuidReferencia)
+        if (evento.GuidReferencia.Equals(Guid.Empty))
         {
-            case null:
-                Evento.GuidReferencia           = Guid.NewGuid();
-                Evento.DataCriacao              = DateTime.Now;
-                Evento.DataUltimaModificacao    = DateTime.Now;
-                break;
-            default:
-                Evento.GuidReferencia           = Evento.GuidReferencia;
-                Evento.DataUltimaModificacao    = DateTime.Now;
-                break;
+            evento.GuidReferencia           = Guid.NewGuid();
+            evento.DataCriacao              = DateTime.Now;
+            evento.DataUltimaModificacao    = DateTime.Now;
+        }
+        else
+        {
+            evento.DataUltimaModificacao    = DateTime.Now;
         }
 
-        Evento.Nome                         = cmd.Nome;
-        Evento.IdTipoEvento                 = cmd.IdTipoEvento.HasValue ? cmd.IdTipoEvento.Value : null;
-        Evento.TipoEvento                   = cmd.TipoEvento;
-        Evento.DthRealizacao                = cmd.DthRealizacao;
-        Evento.descricao                    = cmd.Descricao;
+        evento.Nome                         = cmd.Nome;
+        evento.IdTipoEvento                 = cmd.IdTipoEvento.HasValue
+                                                ? cmd.IdTipoEvento.Value
+                                                : null;
+        evento.TipoEvento                   = cmd.TipoEvento;
+        evento.Descricao                    = cmd.Descricao;
+        evento.DthRealizacao                = cmd.DthRealizacao;
     }
 }

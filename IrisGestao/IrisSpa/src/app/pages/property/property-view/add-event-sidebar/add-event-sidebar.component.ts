@@ -219,6 +219,7 @@ export class AddEventSidebarComponent {
 		const edicaoObj: CreateEventObj = {
 			guidImovel: this.guidProperty,
 			guidCliente: editFormData.proprietary,
+			guidReferencia: null,
 			nome: editFormData.nomeEvento,
 			descricao: editFormData.descricao,
 			dthRealizacao: editFormData.dataEvento

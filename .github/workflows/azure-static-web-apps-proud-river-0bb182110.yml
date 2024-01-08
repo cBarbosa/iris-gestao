@@ -9,7 +9,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
-      - develop
+      - develop-desabled
     paths:
       - IrisGestao/IrisSpa/**
 

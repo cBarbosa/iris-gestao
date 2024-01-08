@@ -215,7 +215,7 @@ public class ImovelRepository : Repository<Imovel>, IImovelRepository
                                 GuidReferenciaEvento = y.GuidReferencia,
                                 DataRealizacao = y.DthRealizacao.HasValue ? y.DthRealizacao.Value.ToString("dd/MM/yyyy") : "",
                                 Nome           = y.Nome,
-                                Descricao = y.descricao,
+                                Descricao = y.Descricao,
                                 TipoEvento = y.TipoEvento,
                                 ClienteVisitante = y.IdClienteNavigation == null
                                     ? null

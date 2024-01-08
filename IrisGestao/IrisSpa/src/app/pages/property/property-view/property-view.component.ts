@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { first } from 'rxjs/internal/operators/first';
@@ -14,6 +14,7 @@ import {
 } from 'src/app/shared/services/anexo.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
+import { EditEventSidebarComponent } from './edit-event-sidebar/edit-event-sidebar.component';
 
 @Component({
 	selector: 'app-property-view',
@@ -21,6 +22,8 @@ import { Utils } from 'src/app/shared/utils';
 	styleUrls: ['./property-view.component.scss'],
 })
 export class PropertyViewComponent implements OnInit {
+	@ViewChild('editEvent') editEventSitebar: EditEventSidebarComponent;
+	
 	tableMenu: MenuItem[];
 	uid: string;
 	property: Imovel;
@@ -138,12 +141,22 @@ export class PropertyViewComponent implements OnInit {
 	}
 
 	setCurrentEvent = (item: any): void => {
-		this.eventSelected = item;
-		console.log('evento >> ' + JSON.stringify(item));
-	};
 
-	showEditarEventVisible = (): void => {
-		this.displayEditEvent = true
+		const unidadesArray = item.unidadesVisitadas.map((obj:any) => obj.guidReferenciaUnidadeVisitada);
+
+		const objeto = {
+			guidReferenciaEvento: item.guidReferenciaEvento,
+			dataRealizacao: item.dataRealizacao,
+			nome: item.nome,
+			descricao: item.descricao,
+			clienteVisitante: item.clienteVisitante,
+			unidadesVisitadas: unidadesArray
+		};
+
+		this.eventSelected = objeto;
+		this.editEventSitebar.data = objeto;
+		this.eventSelected && this.editEventSitebar.init();
+		this.displayEditEvent = true;
 	};
 
 	onUpdateUnitList = (modalContent: {
@@ -345,7 +358,6 @@ export class PropertyViewComponent implements OnInit {
 			.inactiveUnit(this.unit!.guidReferencia!, false)
 			.subscribe({
 				next: (response) => {
-					console.log('inativarUnit >> retorno ' + JSON.stringify(response));
 					if (response.success) {
 						this.closeConfirmationInativarModal();
 						//this.isInativar = true;
@@ -376,7 +388,6 @@ export class PropertyViewComponent implements OnInit {
 		this.closeConfirmationInativarImovelModal();
 		this.imovelService.inactiveImovel(this.uid, false).subscribe({
 			next: (response) => {
-				console.log('inactiveImovel >> retorno ' + JSON.stringify(response));
 				if (response.success) {
 					this.closeConfirmationInativarImovelModal();
 					this.isInativarImovel = true;
@@ -430,4 +441,10 @@ export class PropertyViewComponent implements OnInit {
 
 		Utils.saveAs(file, filename);
 	}
+
+	editEventSubmit(e:any) {
+
+		console.log(e);
+
+	};
 }

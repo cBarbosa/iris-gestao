@@ -77,7 +77,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<CategoriaImovel>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC07980F07FC");
+            entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC07D1F49463");
         });
 
         modelBuilder.Entity<Cliente>(entity =>
@@ -91,7 +91,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<Contato>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Contato__3214EC075FC95E7B");
+            entity.HasKey(e => e.Id).HasName("PK__Contato__3214EC075C95B1F1");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
@@ -102,7 +102,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<ContratoAluguel>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC07A0145D0B");
+            entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC0780CC6A73");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.Status).HasDefaultValueSql("((1))");
@@ -126,7 +126,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<ContratoAluguelHistoricoReajuste>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC07A1EA56D2");
+            entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC074B7B8A28");
 
             entity.HasOne(d => d.IdContratoAluguelNavigation).WithMany(p => p.ContratoAluguelHistoricoReajuste)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -135,7 +135,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<ContratoAluguelImovel>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC071E103FF9");
+            entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC07F18D5A89");
 
             entity.HasOne(d => d.IdContratoAluguelNavigation).WithMany(p => p.ContratoAluguelImovel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -148,7 +148,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<ContratoAluguelUnidade>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC07C8AD6C60");
+            entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC07AA4F5A32");
 
             entity.HasOne(d => d.IdContratoAluguelImovelNavigation).WithMany(p => p.ContratoAluguelUnidade)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -161,7 +161,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<ContratoFornecedor>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC0705E0D2A7");
+            entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC076167B736");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
@@ -197,7 +197,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<DespesaLocatario>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__DespesaL__3214EC07E7605EA9");
+            entity.HasKey(e => e.Id).HasName("PK__DespesaL__3214EC0781138B23");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
@@ -214,7 +214,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<DespesaProprietario>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__DespesaP__3214EC071FE0AF7B");
+            entity.HasKey(e => e.Id).HasName("PK__DespesaP__3214EC07144E350F");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
@@ -231,7 +231,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<Evento>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Evento__3214EC07454993EE");
+            entity.HasKey(e => e.Id).HasName("PK__Evento__3214EC072772F811");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
@@ -248,7 +248,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<EventoUnidade>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__EventoUn__3214EC07CB415BF7");
+            entity.HasKey(e => e.Id).HasName("PK__EventoUn__3214EC07B8715638");
 
             entity.HasOne(d => d.IdEventoNavigation).WithMany(p => p.EventoUnidade)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -261,7 +261,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<FaturaTitulo>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__FaturaTi__3214EC07D65B2553");
+            entity.HasKey(e => e.Id).HasName("PK__FaturaTi__3214EC0788C85F1E");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
@@ -272,7 +272,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<FaturaTituloPagar>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__FaturaTi__3214EC07E50CE184");
+            entity.HasKey(e => e.Id).HasName("PK__FaturaTi__3214EC075474774E");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
@@ -283,14 +283,14 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<FormaPagamento>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__FormaPag__3214EC07339B3487");
+            entity.HasKey(e => e.Id).HasName("PK__FormaPag__3214EC07215A19F0");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
         });
 
         modelBuilder.Entity<Fornecedor>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Forneced__3214EC0745F417AA");
+            entity.HasKey(e => e.Id).HasName("PK__Forneced__3214EC075FEF6842");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.Status).HasDefaultValueSql("((1))");
@@ -316,7 +316,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<ImovelEndereco>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ImovelEn__3214EC07CBE1BD40");
+            entity.HasKey(e => e.Id).HasName("PK__ImovelEn__3214EC071374D299");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
@@ -327,7 +327,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<IndiceReajuste>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__IndiceRe__3214EC07E8989E25");
+            entity.HasKey(e => e.Id).HasName("PK__IndiceRe__3214EC071AB2F649");
         });
 
         modelBuilder.Entity<Obra>(entity =>
@@ -366,47 +366,47 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<TipoCliente>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TipoClie__3214EC078042100E");
+            entity.HasKey(e => e.Id).HasName("PK__TipoClie__3214EC07050398E1");
         });
 
         modelBuilder.Entity<TipoContrato>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TipoCont__3214EC0705BF0ECA");
+            entity.HasKey(e => e.Id).HasName("PK__TipoCont__3214EC0702C3BC07");
         });
 
         modelBuilder.Entity<TipoCreditoAluguel>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TipoCred__3214EC07DD18346D");
+            entity.HasKey(e => e.Id).HasName("PK__TipoCred__3214EC077E51072D");
         });
 
         modelBuilder.Entity<TipoDespesa>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TipoDesp__3214EC072E166AF5");
+            entity.HasKey(e => e.Id).HasName("PK__TipoDesp__3214EC07C49112F9");
         });
 
         modelBuilder.Entity<TipoEvento>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TipoEven__3214EC07DC5B9792");
+            entity.HasKey(e => e.Id).HasName("PK__TipoEven__3214EC0768AA466C");
         });
 
         modelBuilder.Entity<TipoServico>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TipoServ__3214EC076F299EAA");
+            entity.HasKey(e => e.Id).HasName("PK__TipoServ__3214EC07FF4795B4");
         });
 
         modelBuilder.Entity<TipoTitulo>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TipoTitu__3214EC07087C10A5");
+            entity.HasKey(e => e.Id).HasName("PK__TipoTitu__3214EC0750F205A8");
         });
 
         modelBuilder.Entity<TipoUnidade>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TipoUnid__3214EC077870DCC7");
+            entity.HasKey(e => e.Id).HasName("PK__TipoUnid__3214EC074849F14B");
         });
 
         modelBuilder.Entity<TituloImovel>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TituloIm__3214EC077036E332");
+            entity.HasKey(e => e.Id).HasName("PK__TituloIm__3214EC078A5A4EA8");
 
             entity.HasOne(d => d.IdImovelNavigation).WithMany(p => p.TituloImovel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -419,7 +419,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<TituloPagar>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TituloPa__3214EC07FDDECD4D");
+            entity.HasKey(e => e.Id).HasName("PK__TituloPa__3214EC07B65BCCDF");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
@@ -440,7 +440,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<TituloReceber>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Titulo__3214EC078550CE76");
+            entity.HasKey(e => e.Id).HasName("PK__TituloRe__3214EC07150EA9CE");
 
             entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())");
 
@@ -461,7 +461,7 @@ public partial class IrisContext : DbContext
 
         modelBuilder.Entity<TituloUnidade>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TituloUn__3214EC07750BA28A");
+            entity.HasKey(e => e.Id).HasName("PK__TituloUn__3214EC07F7415533");
 
             entity.HasOne(d => d.IdTituloImovelNavigation).WithMany(p => p.TituloUnidade)
                 .OnDelete(DeleteBehavior.ClientSetNull)
