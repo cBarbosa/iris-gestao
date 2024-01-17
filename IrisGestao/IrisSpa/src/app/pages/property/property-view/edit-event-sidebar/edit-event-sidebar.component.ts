@@ -251,9 +251,9 @@ export class EditEventSidebarComponent {
 			guidCliente: editFormData.proprietary,
 			nome: editFormData.nomeEvento,
 			descricao: editFormData.descricao,
-			dthRealizacao: editFormData.dataEvento
-				? this.getISODateFromString(editFormData.dataEvento)
-				: '',
+			dthRealizacao: editFormData.dataEvento != ''
+				? (editFormData.dataEvento as Date)?.toISOString?.()
+				: null,
 			lstUnidades: editFormData.unidade
 		};
 
