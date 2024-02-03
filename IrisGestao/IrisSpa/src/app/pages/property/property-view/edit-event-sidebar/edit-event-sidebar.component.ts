@@ -251,12 +251,11 @@ export class EditEventSidebarComponent {
 			guidCliente: editFormData.proprietary,
 			nome: editFormData.nomeEvento,
 			descricao: editFormData.descricao,
-			dthRealizacao: editFormData.dataEvento != ''
-				? (editFormData.dataEvento as Date)?.toISOString?.()
-				: null,
+			dthRealizacao: new Date(editFormData.dataEvento),
 			lstUnidades: editFormData.unidade
 		};
 
+		console.log('editFormData.dataEvento ', editFormData.dataEvento );
 		console.log('on register', edicaoObj);
 
 		// if (this.onSubmitForm) this.onSubmitForm(edicaoObj);
