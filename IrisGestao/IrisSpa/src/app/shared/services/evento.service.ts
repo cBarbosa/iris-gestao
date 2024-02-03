@@ -10,7 +10,7 @@ export type CreateEventObj = {
 	guidReferencia: string | null;
 	nome: string;
 	descricao: string;
-	dthRealizacao: string | null;
+	dthRealizacao: Date;
 	lstUnidades: string[];
 };
 
