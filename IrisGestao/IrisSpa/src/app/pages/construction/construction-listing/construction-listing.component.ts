@@ -55,7 +55,7 @@ export class ConstructionListingComponent {
 	filterPropertyType: number;
 	filterStatus: number;
 
-	isFormEditable:boolean = true;
+	isFormEditable:boolean = this.loginService.checkAllowedRoleItem(['administrativo', 'coordenação', 'diretoria']);
 
 	constructor(
 		private router: Router,
@@ -109,8 +109,6 @@ export class ConstructionListingComponent {
 					console.error(err);
 				},
 			});
-
-		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	loadConstructionsPage(event: LazyLoadEvent) {

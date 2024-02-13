@@ -54,7 +54,7 @@ export class ConstructionViewComponent {
 		  }
 		| undefined;
 
-	isFormEditable:boolean = true;
+	isFormEditable:boolean = this.loginService.checkAllowedRoleItem(['administrativo', 'coordenação', 'diretoria']);
 
 	constructor(
 		private router: Router,
@@ -86,8 +86,6 @@ export class ConstructionViewComponent {
 			currency: new CurrencyPipe('pt-BR', 'R$'),
 			percent: new PercentPipe('pt-BR'),
 		};
-
-		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	getAttachs(): void {

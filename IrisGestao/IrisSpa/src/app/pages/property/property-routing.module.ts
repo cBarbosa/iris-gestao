@@ -75,7 +75,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'COORDENAÇÃO, DIRETORIA',
+					role: 'COMERCIAL, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -86,7 +86,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'COORDENAÇÃO, DIRETORIA',
+					role: 'COMERCIAL, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -97,7 +97,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'COORDENAÇÃO, DIRETORIA',
+					role: 'COMERCIAL, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -108,7 +108,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'COORDENAÇÃO, DIRETORIA',
+					role: 'COMERCIAL, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 		],

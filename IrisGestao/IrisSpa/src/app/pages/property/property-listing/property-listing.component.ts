@@ -90,6 +90,12 @@ export class PropertyListingComponent implements OnInit {
 		this.propertyType =
 			this.activatedRoute.snapshot.parent!.routeConfig!.path!.split('/')[0];
 
+		console.log('isFormEditable antes', this.isFormEditable);
+
+		this.isFormEditable = !this.isFormEditable && this.propertyType === 'mercado' && this.loggedUserRole === 'comercial';
+
+		console.log('isFormEditable depois', this.isFormEditable);
+
 		this.getPagingData(this.pageIndex);
 
 		this.router.events.subscribe((event: Event) => {

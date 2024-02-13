@@ -9,7 +9,7 @@ const routes: Routes = [
 				(m) => m.ReportLeasedAreaModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -19,7 +19,7 @@ const routes: Routes = [
 				(m) => m.ReportRentValueModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -29,7 +29,7 @@ const routes: Routes = [
 				(m) => m.ReportSupplyContractsModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -39,7 +39,7 @@ const routes: Routes = [
 				(m) => m.ReportCostsModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -49,7 +49,7 @@ const routes: Routes = [
 				(m) => m.ReportReceiptsModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -59,7 +59,7 @@ const routes: Routes = [
 				(m) => m.ReportDimobModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -69,7 +69,7 @@ const routes: Routes = [
 				(m) => m.CommercialModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COORDENAÇÃO, DIRETORIA',
 		},
 	},
 ];

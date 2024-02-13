@@ -80,12 +80,13 @@
 							<div class="value">{{ property.areaTotal ?? 0 | area }}</div>
 						</span>
 					</div>
-					<span class="property-options" *ngIf="isFormEditable">
+					<span class="property-options">
 						<button
 							pButton
 							type="button"
 							class="p-element h-11 p-button-outlined p-component"
 							(click)="displayAddEvent = true"
+							*ngIf="isNewEventAvailable"
 						>
 							Adicionar Evento
 						</button>
@@ -95,6 +96,7 @@
 							type="button"
 							class="p-element h-11 p-button-outlined p-component"
 							(click)="navigateTo('property/edit/' + uid)"
+							*ngIf="isFormEditable"
 						>
 							Editar imóvel
 						</button>
@@ -104,6 +106,7 @@
 							type="button"
 							(click)="confirmImovelInativar()"
 							class="p-element p-button-outlined h-11 p-button p-component"
+							*ngIf="isFormEditable"
 						>
 							Inativar
 						</button>

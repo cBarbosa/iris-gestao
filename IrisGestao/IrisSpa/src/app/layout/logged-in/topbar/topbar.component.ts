@@ -148,7 +148,7 @@ export class TopbarComponent {
 			// },
 			{
 				label: 'Análises',
-				visible: this.isUserAdmin(),
+				visible: this.isAllowedRoleItem(['coordenação', 'diretoria']),
 				items: [
 					{
 						label: 'Vacância',
@@ -174,7 +174,7 @@ export class TopbarComponent {
 			},
 			{
 				label: 'Relatórios',
-				visible: this.isUserAdmin(),
+				visible: this.isAllowedRoleItem(['coordenação', 'diretoria']),
 				items: [
 					{
 						label: 'Área locada             ',

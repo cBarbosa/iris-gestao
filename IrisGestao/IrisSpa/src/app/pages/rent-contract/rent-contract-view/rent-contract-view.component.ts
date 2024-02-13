@@ -54,7 +54,7 @@ export class RentContractViewComponent {
 		outros?: Attachment;
 	} = {};
 
-	isFormEditable:boolean = true;
+	isFormEditable:boolean = this.loginService.checkAllowedRoleItem(['coordenação', 'diretoria']);
 
 	constructor(
 		private router: Router,
@@ -71,8 +71,6 @@ export class RentContractViewComponent {
 	ngOnInit() {
 		this.getData();
 		this.getAtachs();
-
-		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	getData(): void {
