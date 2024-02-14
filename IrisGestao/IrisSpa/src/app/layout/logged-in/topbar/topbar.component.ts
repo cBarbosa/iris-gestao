@@ -89,7 +89,6 @@ export class TopbarComponent {
 			},
 			{
 				label: 'Obras',
-				visible: this.isUserAdmin(),
 				id: route.startsWith('/construction/') ? 'current' : '',
 				command: () => this.navigateTo('construction/listing'),
 				visible: this.isUserAdmin(),
