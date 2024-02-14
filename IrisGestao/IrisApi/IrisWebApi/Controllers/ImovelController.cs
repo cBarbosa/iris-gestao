@@ -26,10 +26,7 @@ public class ImovelController : ControllerBase
        , [FromQuery] int? limit = 10
        , [FromQuery] int? page = 1)
     {
-        if (!idTipoImovel.HasValue)
-        {
-            idTipoImovel = TipoImovelEnum.IMOVEL_CARTEIRA;
-        }
+        idTipoImovel ??= TipoImovelEnum.IMOVEL_CARTEIRA;
         var result = await imovelService.GetAllPaging(idCategoria, idTipoImovel, idProprietario, nome, limit ?? 10, page ?? 1);
 
         return Ok(result);

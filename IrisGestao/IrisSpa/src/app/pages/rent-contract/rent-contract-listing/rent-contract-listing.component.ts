@@ -52,7 +52,7 @@ export class RentContractListingComponent {
 	filterEnd: string | null = null;	
 	filterPeriodo: Date[];
 
-	isFormEditable:boolean = true;
+	isFormEditable:boolean = this.loginService.checkAllowedRoleItem(['coordenação', 'diretoria']);
 
 	constructor(
 		private router: Router,
@@ -130,8 +130,6 @@ export class RentContractListingComponent {
 					console.error(err);
 				},
 			});
-
-		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	loadContractsPage(event: LazyLoadEvent) {

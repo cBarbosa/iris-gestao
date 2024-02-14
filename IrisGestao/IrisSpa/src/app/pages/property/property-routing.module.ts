@@ -14,7 +14,7 @@ const routes: Routes = [
 						(m) => m.PropertyListingModule
 					),
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA, CLIENTE',
 				},
 			},
 			{
@@ -24,7 +24,7 @@ const routes: Routes = [
 						(m) => m.PropertyListingModule
 					),
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -35,7 +35,7 @@ const routes: Routes = [
 						(m) => m.PropertyListingModule
 					),
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA, CLIENTE',
 				},
 			},
 			{
@@ -45,7 +45,7 @@ const routes: Routes = [
 						(m) => m.PropertyListingModule
 					),
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -55,7 +55,7 @@ const routes: Routes = [
 						(m) => m.PropertyViewModule
 					),
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA, CLIENTE',
 				},
 			},
 			{
@@ -64,7 +64,7 @@ const routes: Routes = [
 					import('./unit-edit/unit-edit.module').then((m) => m.UnitEditModule),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA, CLIENTE',
 				},
 			},
 			{
@@ -75,7 +75,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR',
+					role: 'COMERCIAL, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -86,7 +86,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR',
+					role: 'COMERCIAL, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -97,7 +97,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR',
+					role: 'COMERCIAL, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -108,7 +108,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR',
+					role: 'COMERCIAL, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 		],

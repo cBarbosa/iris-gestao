@@ -42,7 +42,7 @@ export class SupplierViewComponent implements OnInit {
 
 	properties = [];
 
-	isFormEditable:boolean = true;
+	isFormEditable:boolean = this.loginService.checkAllowedRoleItem(['administrativo', 'coordenação', 'diretoria']);
 
 	constructor(
 		private router: Router,
@@ -89,8 +89,6 @@ export class SupplierViewComponent implements OnInit {
 		];
 
 		this.getByUuid();
-
-		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	getByUuid = (): void => {

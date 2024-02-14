@@ -1,6 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { LazyLoadEvent, MenuItem } from 'primeng/api';
+import {
+	Component,
+	OnInit,
+	ViewChild
+} from '@angular/core';
+import {
+	ActivatedRoute,
+	Router
+} from '@angular/router';
+import {
+	MenuItem
+} from 'primeng/api';
 import { first } from 'rxjs/internal/operators/first';
 import {
 	Imovel,
@@ -70,7 +79,11 @@ export class PropertyViewComponent implements OnInit {
 		message: '',
 	};
 
-	isFormEditable: boolean = true;
+	// logged user control
+	isFormEditable:boolean = this.loginService.checkAllowedRoleItem(['coordenação', 'diretoria']);
+	isNewEventAvailable:boolean = this.loginService.checkAllowedRoleItem(['comercial', 'coordenação', 'diretoria']);
+	loggedUserId:number = this.loginService.usuarioLogado.id;
+	loggedUserRole:string = this.loginService.usuarioLogado.perfil?.toLowerCase() ?? '';
 
 	constructor(
 		private router: Router,
@@ -86,14 +99,13 @@ export class PropertyViewComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.isFormEditable =
-			this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 
 		this.tableMenu = [
 			{
 				label: 'Detalhes',
 				icon: 'ph-eye',
 				command: () => this.showDetails(),
+				visible: this.isFormEditable
 			},
 			{
 				label: 'Editar',
@@ -225,9 +237,10 @@ export class PropertyViewComponent implements OnInit {
 				this.imageList = imovel.imagens!;
 				this.eventos = imovel.eventos!;
 				this.isLoadingView = false;
-				this.isCorporativeBuilding =
-					this.units[0]?.idTipoUnidadeNavigation?.id == 1;
-				//console.log('Eventos >> ' + JSON.stringify(this.eventos));
+				this.isCorporativeBuilding = imovel.idCategoriaImovelNavigation?.id === 2;
+
+				this.isFormEditable = !this.isFormEditable && this.isCorporativeBuilding && this.loggedUserRole === 'comercial';
+
 				this.anexoService
 					.getFiles(imovel.guidReferencia)
 					.pipe(first())

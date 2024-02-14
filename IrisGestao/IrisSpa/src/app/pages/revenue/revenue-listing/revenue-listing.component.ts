@@ -46,7 +46,7 @@ export class RevenueListingComponent {
 	filterTitulo: string = '';
 	filterTipo: number;
 
-	isFormEditable:boolean = true;
+	isFormEditable:boolean = this.loginService.checkAllowedRoleItem(['administrativo', 'coordenação', 'diretoria']);
 
 	constructor(
 		private router: Router,
@@ -122,8 +122,6 @@ export class RevenueListingComponent {
 					console.error(err);
 				},
 			});
-
-		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	loadRevenuesPage(event: LazyLoadEvent) {
