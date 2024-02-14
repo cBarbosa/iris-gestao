@@ -182,7 +182,7 @@ export class Utils {
 
 	static saveReportAsPdf(element: HTMLElement, filename?: string, title?: string) {
 
-		const imgLogo = new Image().src = 'assets/images/topbar-logo.png';
+		const imgLogo = new Image().src = 'assets/images/novo-logo-transparente_113x39.png';
 
 		import('jspdf').then(({ jsPDF }) => {
 			var doc = new jsPDF('l', 'px', 'a4');
@@ -228,7 +228,7 @@ export class Utils {
 
 	static saveChartsAsPdf(chart: Chart, chart2: Chart, filename?: string, title?: string) {
 
-		const imgLogo = new Image().src = 'assets/images/topbar-logo.png';
+		const imgLogo = new Image().src = 'assets/images/novo-logo-transparente_113x39.png';
 
 		import('jspdf').then(({ jsPDF }) => {
 			const doc = new jsPDF('p', 'px', 'a4');

@@ -24,7 +24,7 @@ public partial class FaturaTitulo : BaseEntity<FaturaTitulo>
     public DateTime? DataPagamento { get; set; }
 
     [Column(TypeName = "date")]
-    public DateTime? DataVencimento { get; set; }
+    public DateTime DataVencimento { get; set; }
 
     public int? DiasAtraso { get; set; }
 

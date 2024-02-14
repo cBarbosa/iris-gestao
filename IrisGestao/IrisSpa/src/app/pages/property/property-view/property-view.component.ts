@@ -1,6 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { LazyLoadEvent, MenuItem } from 'primeng/api';
+import {
+	Component,
+	OnInit,
+	ViewChild
+} from '@angular/core';
+import {
+	ActivatedRoute,
+	Router
+} from '@angular/router';
+import {
+	MenuItem
+} from 'primeng/api';
 import { first } from 'rxjs/internal/operators/first';
 import {
 	Imovel,
@@ -14,6 +23,7 @@ import {
 } from 'src/app/shared/services/anexo.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
+import { EditEventSidebarComponent } from './edit-event-sidebar/edit-event-sidebar.component';
 
 @Component({
 	selector: 'app-property-view',
@@ -21,6 +31,8 @@ import { Utils } from 'src/app/shared/utils';
 	styleUrls: ['./property-view.component.scss'],
 })
 export class PropertyViewComponent implements OnInit {
+	@ViewChild('editEvent') editEventSitebar: EditEventSidebarComponent;
+	
 	tableMenu: MenuItem[];
 	uid: string;
 	property: Imovel;
@@ -30,6 +42,7 @@ export class PropertyViewComponent implements OnInit {
 	eventos: any[] = [];
 
 	hasAttachmentDocs: boolean = false;
+	eventSelected: any;
 
 	attachmentList: { fileName: string; fileLocation: string }[] = [];
 
@@ -56,6 +69,7 @@ export class PropertyViewComponent implements OnInit {
 	displayModal = false;
 
 	displayAddEvent = false;
+	displayEditEvent = false;
 
 	modalContent: {
 		isError?: boolean;
@@ -65,7 +79,11 @@ export class PropertyViewComponent implements OnInit {
 		message: '',
 	};
 
-	isFormEditable:boolean = true;
+	// logged user control
+	isFormEditable:boolean = this.loginService.checkAllowedRoleItem(['coordenação', 'diretoria']);
+	isNewEventAvailable:boolean = this.loginService.checkAllowedRoleItem(['comercial', 'coordenação', 'diretoria']);
+	loggedUserId:number = this.loginService.usuarioLogado.id;
+	loggedUserRole:string = this.loginService.usuarioLogado.perfil?.toLowerCase() ?? '';
 
 	constructor(
 		private router: Router,
@@ -82,32 +100,31 @@ export class PropertyViewComponent implements OnInit {
 
 	ngOnInit(): void {
 
-		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
-		
 		this.tableMenu = [
 			{
 				label: 'Detalhes',
 				icon: 'ph-eye',
-				command: () => this.showDetails()
+				command: () => this.showDetails(),
+				visible: this.isFormEditable
 			},
 			{
 				label: 'Editar',
 				icon: 'ph-note-pencil',
 				command: () =>
 					this.navigateTo('property/edit/unit/' + this.unit!.guidReferencia),
-				visible: this.isFormEditable
+				visible: this.isFormEditable,
 			},
 			{
 				label: 'Duplicar',
 				icon: 'ph-copy-simple',
 				command: () => this.confirmClone(),
-				visible: this.isFormEditable
+				visible: this.isFormEditable,
 			},
 			{
 				label: 'Inativar',
 				icon: 'ph-trash',
 				command: () => this.confirmInativar(),
-				visible: this.isFormEditable
+				visible: this.isFormEditable,
 			},
 		];
 
@@ -134,6 +151,25 @@ export class PropertyViewComponent implements OnInit {
 			this.isMobile = screenWidth < 768;
 		});
 	}
+
+	setCurrentEvent = (item: any): void => {
+
+		const unidadesArray = item.unidadesVisitadas.map((obj:any) => obj.guidReferenciaUnidadeVisitada);
+
+		const objeto = {
+			guidReferenciaEvento: item.guidReferenciaEvento,
+			dataRealizacao: item.dataRealizacao,
+			nome: item.nome,
+			descricao: item.descricao,
+			clienteVisitante: item.clienteVisitante,
+			unidadesVisitadas: unidadesArray
+		};
+
+		this.eventSelected = objeto;
+		this.editEventSitebar.data = objeto;
+		this.eventSelected && this.editEventSitebar.init();
+		this.displayEditEvent = true;
+	};
 
 	onUpdateUnitList = (modalContent: {
 		isError?: boolean;
@@ -201,9 +237,10 @@ export class PropertyViewComponent implements OnInit {
 				this.imageList = imovel.imagens!;
 				this.eventos = imovel.eventos!;
 				this.isLoadingView = false;
-				this.isCorporativeBuilding =
-					this.units[0]?.idTipoUnidadeNavigation?.id == 1;
-				//console.log('Eventos >> ' + JSON.stringify(this.eventos)); 
+				this.isCorporativeBuilding = imovel.idCategoriaImovelNavigation?.id === 2;
+
+				this.isFormEditable = !this.isFormEditable && this.isCorporativeBuilding && this.loggedUserRole === 'comercial';
+
 				this.anexoService
 					.getFiles(imovel.guidReferencia)
 					.pipe(first())
@@ -255,7 +292,6 @@ export class PropertyViewComponent implements OnInit {
 
 	setCurrentUnit(item: ImovelUnidade): void {
 		this.unit = item;
-
 		item.guidReferencia && this.getUnitFiles(item.guidReferencia);
 	}
 
@@ -335,7 +371,6 @@ export class PropertyViewComponent implements OnInit {
 			.inactiveUnit(this.unit!.guidReferencia!, false)
 			.subscribe({
 				next: (response) => {
-					console.log('inativarUnit >> retorno ' + JSON.stringify(response));
 					if (response.success) {
 						this.closeConfirmationInativarModal();
 						//this.isInativar = true;
@@ -366,7 +401,6 @@ export class PropertyViewComponent implements OnInit {
 		this.closeConfirmationInativarImovelModal();
 		this.imovelService.inactiveImovel(this.uid, false).subscribe({
 			next: (response) => {
-				console.log('inactiveImovel >> retorno ' + JSON.stringify(response));
 				if (response.success) {
 					this.closeConfirmationInativarImovelModal();
 					this.isInativarImovel = true;
@@ -420,4 +454,10 @@ export class PropertyViewComponent implements OnInit {
 
 		Utils.saveAs(file, filename);
 	}
+
+	editEventSubmit(e:any) {
+
+		console.log(e);
+
+	};
 }

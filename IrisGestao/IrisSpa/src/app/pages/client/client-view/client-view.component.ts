@@ -62,7 +62,9 @@ export class ClientViewComponent implements OnInit {
 
 	contractidSelected: string;
 
-	isFormEditable:boolean = true;
+	// logged user control
+	isContactDelete:boolean = this.loginService.checkAllowedRoleItem(['diretoria']);
+	isContactEdit:boolean = this.loginService.checkAllowedRoleItem(['comercial', 'coordenação', 'diretoria']);
 
 	constructor(
 		private router: Router,
@@ -90,8 +92,6 @@ export class ClientViewComponent implements OnInit {
 			}),
 		};
 
-		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
-
 		this.tableMenu = [
 			{
 				label: 'Detalhes',
@@ -102,13 +102,13 @@ export class ClientViewComponent implements OnInit {
 				label: 'Editar',
 				icon: 'ph-note-pencil',
 				command: () => this.showContactEdit(),
-				visible: this.isFormEditable
+				visible: this.isContactEdit
 			},
 			{
 				label: 'Excluir',
 				icon: 'ph-trash',
 				command: () => this.confirmDelete(),
-				visible: this.isFormEditable
+				visible: this.isContactDelete
 			},
 		];
 

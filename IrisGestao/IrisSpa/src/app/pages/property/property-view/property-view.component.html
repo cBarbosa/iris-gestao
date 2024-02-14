@@ -80,12 +80,13 @@
 							<div class="value">{{ property.areaTotal ?? 0 | area }}</div>
 						</span>
 					</div>
-					<span class="property-options" *ngIf="isFormEditable">
+					<span class="property-options">
 						<button
 							pButton
 							type="button"
 							class="p-element h-11 p-button-outlined p-component"
 							(click)="displayAddEvent = true"
+							*ngIf="isNewEventAvailable"
 						>
 							Adicionar Evento
 						</button>
@@ -95,6 +96,7 @@
 							type="button"
 							class="p-element h-11 p-button-outlined p-component"
 							(click)="navigateTo('property/edit/' + uid)"
+							*ngIf="isFormEditable"
 						>
 							Editar imóvel
 						</button>
@@ -104,6 +106,7 @@
 							type="button"
 							(click)="confirmImovelInativar()"
 							class="p-element p-button-outlined h-11 p-button p-component"
+							*ngIf="isFormEditable"
 						>
 							Inativar
 						</button>
@@ -282,6 +285,7 @@
 								<th>Descrição</th>
 								<th>Unidades Visitadas</th>
 								<th>Anexos</th>
+								<th>Editar</th>
 							</tr>
 						</ng-template>
 						<ng-template pTemplate="body" let-Eventos>
@@ -291,7 +295,10 @@
 								<td>{{ Eventos.nome }}</td>
 								<td>{{ Eventos.descricao }}</td>
 								<td>
-									<div *ngIf="Eventos.unidadesVisitadas.length > 0" class="basis-0">
+									<div
+										*ngIf="Eventos.unidadesVisitadas.length > 0"
+										class="basis-0"
+									>
 										Unidade(s):
 										<ng-container
 											*ngFor="let unit of Eventos.unidadesVisitadas; index as i"
@@ -309,10 +316,21 @@
 										></app-upload-list>
 									</div>
 								</td>
+								<td>
+									<button
+									pButton
+									type="button"
+									class="p-element h-11 p-button-outlined p-component"
+									(click)="setCurrentEvent(Eventos);"
+									*ngIf="isFormEditable"
+								>
+									Editar Evento
+								</button>
+								</td>
 							</tr>
 						</ng-template>
 					</p-table>
-				</div>	
+				</div>
 			</section>
 			<section class="attachments" *ngIf="hasAttachmentDocs">
 				<h3>Anexos</h3>
@@ -326,7 +344,6 @@
 					<app-photo-gallery [imageList]="imageList"></app-photo-gallery>
 				</section>
 			</ng-container>
-		
 		</div>
 	</div>
 </ng-template>
@@ -735,3 +752,11 @@
 	[guidProperty]="uid"
 	[(isVisible)]="displayAddEvent"
 ></app-add-event-sidebar>
+
+<app-edit-event-sidebar
+	[data]="eventSelected"
+	[guidProperty]="uid"
+	[(isVisible)]="displayEditEvent"
+	[onSubmitForm]="editEventSubmit"
+	#editEvent
+></app-edit-event-sidebar>

@@ -5,7 +5,7 @@
 >
 	<div class="input-wrapper">
 		<section class="form-details">
-			<h4>Adicionar novo contrato</h4>
+			<h4>Adicionar nova Obra</h4>
 			<app-form-steps
 				[list]="stepList"
 				[callback]="changeStepCb"
@@ -55,7 +55,7 @@
 					*ngIf="linkedProperties.length === 0; else properties"
 				>
 					<span>
-						Você precisa atribuir pelo menos um imóvel ao seu contrato
+						Você precisa atribuir pelo menos um imóvel à Obra
 					</span>
 					<button
 						type="button"
@@ -239,6 +239,91 @@
 						</ng-template>
 					</ng-container>
 				</div>
+
+				<div class="field">
+					<label for="porcentagemConclusao" class="block"
+						>% de conclusão da obra</label
+					>
+					<input
+						id="porcentagemConclusao"
+						type="text"
+						formControlName="porcentagemConclusao"
+						aria-describedby="porcentagemConclusao-help"
+						mask="percent"
+						suffix="%"
+						[dropSpecialCharacters]="false"
+						pInputText
+					/>
+					<ng-container
+						*ngIf="
+							checkHasError(f['porcentagemConclusao'])
+						"
+					>
+						<small
+							id="porcentagemConclusao-help"
+							*ngIf="
+								f['porcentagemConclusao'].hasError(
+									'required'
+								);
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe o percentual de conclusão da obra
+						</small>
+						<ng-template #error2>
+							<small
+								id="porcentagemConclusao-help"
+								class="p-error block"
+							>
+								Percentual de conclusão da obra inválido
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
+				<div class="field">
+					<label for="porcentagemAdministracao" class="block"
+						>% de administração da obra</label
+					>
+					<input
+						id="porcentagemAdministracao"
+						type="text"
+						formControlName="porcentagemAdministracao"
+						aria-describedby="porcentagemAdministracao-help"
+						mask="percent"
+						suffix="%"
+						[dropSpecialCharacters]="false"
+						pInputText
+					/>
+					<ng-container
+						*ngIf="
+							checkHasError(f['porcentagemAdministracao'])
+						"
+					>
+						<small
+							id="porcentagemAdministracao-help"
+							*ngIf="
+								f['porcentagemAdministracao'].hasError(
+									'required'
+								);
+								else error2
+							"
+							class="p-error block"
+						>
+							Informe a taxa de administração da obra
+						</small>
+						<ng-template #error2>
+							<small
+								id="porcentagemConclusao-help"
+								class="p-error block"
+							>
+								Taxa de administração da obra inválida
+							</small>
+						</ng-template>
+					</ng-container>
+				</div>
+
 			</div>
 		</section>
 
@@ -326,7 +411,7 @@
 			pRipple
 			type="button"
 			label="Cancelar"
-			(click)="navigateTo('supplier-contract/listing')"
+			(click)="navigateTo('construction/listing')"
 			class="p-button-outlined h-11"
 		></button>
 

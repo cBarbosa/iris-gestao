@@ -1,7 +1,7 @@
 export class ImovelCategoria {
 
     constructor(
-        public id: string,
+        public id: number,
         public nome: string,
     ) { }
 }

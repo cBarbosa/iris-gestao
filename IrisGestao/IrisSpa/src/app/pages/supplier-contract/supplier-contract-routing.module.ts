@@ -9,7 +9,7 @@ const routes: Routes = [
 				'./supplier-contract-listing/supplier-contract-listing.module'
 			).then((m) => m.SupplierContractListingModule),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -19,7 +19,7 @@ const routes: Routes = [
 				(m) => m.SupplierContractViewModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -29,7 +29,7 @@ const routes: Routes = [
 				'./supplier-contract-register/supplier-contract-register.module'
 			).then((m) => m.SupplierContractRegisterModule),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -39,7 +39,7 @@ const routes: Routes = [
 				(m) => m.SupplierContractEditModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 		},
 	},
 ];

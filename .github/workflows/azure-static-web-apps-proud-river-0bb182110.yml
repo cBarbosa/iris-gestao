@@ -1,15 +1,15 @@
-name: Azure Static Web Apps CI/CD (develop)
+name: Azure Static Web Apps CI/CD (develop-disabled)
 
 on:
   push:
     branches:
-      - develop
+      - develop-disabled
     paths:
       - IrisGestao/IrisSpa/**
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
-      - develop
+      - develop-desabled
     paths:
       - IrisGestao/IrisSpa/**
 

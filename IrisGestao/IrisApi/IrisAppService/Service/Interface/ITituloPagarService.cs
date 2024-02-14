@@ -6,7 +6,7 @@ namespace IrisGestao.ApplicationService.Services.Interface;
 
 public interface ITituloPagarService
 {
-    Task<CommandResult> GetAllPaging(string? numeroTitulo, int? idTipoTitulo, int limit, int page);
+    Task<CommandResult> GetAllPaging(string? nomeProprietario, int? idTipoTitulo, int limit, int page);
     Task<CommandResult> GetByGuid(Guid guid);
     Task<CommandResult> InsertByContratoAluguel(ContratoAluguel contratoAluguel, List<ContratoAluguelImovelCommand> lstContratoImovel);
     Task<CommandResult> InsertByContratoFornecedor(ContratoFornecedor contratoFornecedor);

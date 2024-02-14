@@ -41,7 +41,7 @@ export class SupplierListingComponent {
 	filterText: string;
 	filterType: number;
 
-	isFormEditable:boolean = true;
+	isFormEditable:boolean = this.loginService.checkAllowedRoleItem(['administrativo', 'coordenação', 'diretoria']);
 
 	constructor(
 		private router: Router,
@@ -66,8 +66,6 @@ export class SupplierListingComponent {
 			cpfcnpj: new CpfCnpjPipe(),
 			telefone: new TelefonePipe(),
 		};
-
-		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	loadSuppliersPage(event: LazyLoadEvent): void {

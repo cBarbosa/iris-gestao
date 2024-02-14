@@ -5,7 +5,7 @@
 <h3>{{ loggedUser.perfil }}</h3> -->
 <div class="wrapper py-10 flex justify-center">
 	<div class="container">
-		<div class="card-grid">
+		<div class="card-grid" *ngIf="isFormEditable">
 			<div class="card">
 				<h4>Vacância</h4>
 				<hr />

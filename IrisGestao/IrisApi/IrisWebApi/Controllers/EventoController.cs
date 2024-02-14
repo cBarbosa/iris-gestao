@@ -27,6 +27,11 @@ public class EventoController : Controller
     public async Task<IActionResult> BuscarEvento([FromRoute] int codigo) =>
         Ok(await eventoService.GetById(codigo));
 
+
+    [HttpGet("{codigo}/guid/")]
+    public async Task<IActionResult> BuscarEvento([FromRoute] Guid codigo) =>
+        Ok(await eventoService.GetByGuid(codigo));
+
     [HttpGet("{codigo}/idImovel/")]
     public async Task<IActionResult> BuscarEventoPorIdImovel([FromRoute] int codigo) =>
         Ok(await eventoService.BuscarEventoPorIdImovel(codigo));
@@ -36,15 +41,18 @@ public class EventoController : Controller
         Ok(await eventoService.BuscarEventoPorIdCliente(codigo));
 
     [HttpPost("criar")]
-    public async Task<IActionResult> Cadatrar([FromBody] CriarEventoCommand cmd)
+    public async Task<IActionResult> Cadatrar(
+        [FromBody] CriarEventoCommand cmd)
     {
         var result = await eventoService.Insert(cmd);
 
         return Ok(result);
     }
 
-    [HttpPut("{codigo}/atualizar/")]
-    public async Task<IActionResult> Atualizar(Guid uuid, [FromBody] CriarEventoCommand cmd)
+    [HttpPut("{uuid:Guid}/atualizar")]
+    public async Task<IActionResult> Atualizar(
+        [FromRoute] Guid uuid,
+        [FromBody] CriarEventoCommand cmd)
     {
         var result = await eventoService.Update(uuid, cmd);
 

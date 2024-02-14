@@ -9,7 +9,7 @@ const routes: Routes = [
 				(m) => m.FinancialVacancyModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -19,7 +19,7 @@ const routes: Routes = [
 				(m) => m.ReceivingPerformanceModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -27,7 +27,7 @@ const routes: Routes = [
 		loadChildren: () =>
 			import('./area-price/area-price.module').then((m) => m.AreaPriceModule),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -37,7 +37,7 @@ const routes: Routes = [
 				(m) => m.ManagedAreaModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COORDENAÇÃO, DIRETORIA',
 		},
 	},
 ];
