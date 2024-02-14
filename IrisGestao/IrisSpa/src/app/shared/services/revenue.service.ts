@@ -20,13 +20,13 @@ export class RevenueService {
 	getRevenues(
 		limit: number = 50,
 		page: number = 1,
-		numeroTitulo?: string,
+		nomeProprietario?: string,
 		idTipoTitulo?: number
 	) {
 		return this.http
 			.get<ApiResponse>(
 				`${env.config.apiUrl}TituloReceber?limit=${limit}&page=${page}${
-					numeroTitulo ? `&numeroTitulo=${numeroTitulo}` : ''
+					nomeProprietario ? `&nomeProprietario=${nomeProprietario}` : ''
 				}${idTipoTitulo ? `&idTipoTitulo=${idTipoTitulo}` : ''}`
 			)
 			.pipe(

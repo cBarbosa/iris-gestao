@@ -12,24 +12,14 @@ public partial class Evento: BaseEntity<Evento>
 
     public int? IdTipoEvento { get; set; }
 
-
     [StringLength(200)]
     [Unicode(false)]
     public string Nome { get; set; } = null!;
 
-    [StringLength(200)]
-    [Unicode(false)]
-    public string TipoEvento { get; set; } = null!;
-
     [Column(TypeName = "datetime")]
     public DateTime? DthRealizacao { get; set; }
 
-    [Unicode(false)]
-    public Guid? GuidReferencia { get; set; }
-
-    [StringLength(350)]
-    [Unicode(false)]
-    public string descricao { get; set; } = null!;
+    public Guid GuidReferencia { get; set; }
 
     public int IdCliente { get; set; }
 
@@ -38,6 +28,17 @@ public partial class Evento: BaseEntity<Evento>
 
     [Column(TypeName = "datetime")]
     public DateTime? DataUltimaModificacao { get; set; }
+
+    [StringLength(1000)]
+    [Unicode(false)]
+    public string? Descricao { get; set; }
+
+    [StringLength(200)]
+    [Unicode(false)]
+    public string? TipoEvento { get; set; }
+
+    [InverseProperty("IdEventoNavigation")]
+    public virtual ICollection<EventoUnidade> EventoUnidade { get; } = new List<EventoUnidade>();
 
     [ForeignKey("IdCliente")]
     [InverseProperty("Evento")]
@@ -49,9 +50,5 @@ public partial class Evento: BaseEntity<Evento>
 
     [ForeignKey("IdTipoEvento")]
     [InverseProperty("Evento")]
-    public virtual TipoEvento IdTipoEventoNavigation { get; set; } = null!;
-
-    [InverseProperty("IdEventoNavigation")]
-    public virtual ICollection<EventoUnidade> EventoUnidade { get; } = new List<EventoUnidade>();
-
+    public virtual TipoEvento? IdTipoEventoNavigation { get; set; }
 }

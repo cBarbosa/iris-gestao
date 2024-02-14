@@ -6,6 +6,7 @@ namespace IrisGestao.ApplicationService.Repository.Interfaces;
 public interface IEventoRepository : IRepository<Evento>, IDisposable
 {
     IEnumerable<Evento> GetById(int codigo);
+    Task<object?> GetByGuid(Guid guid);
     Task<Evento?> GetByReferenceGuid(Guid guid);
     IEnumerable<Evento> GetAll();
     IEnumerable<Evento> BuscarEventoPorIdImovel(int codigo);

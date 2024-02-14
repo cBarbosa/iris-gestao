@@ -4,11 +4,7 @@ using IrisGestao.Domain.Command.Request;
 using IrisGestao.Domain.Command.Result;
 using IrisGestao.Domain.Emuns;
 using IrisGestao.Domain.Entity;
-using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
-using System.Net.NetworkInformation;
-using System.Security.Cryptography;
 
 namespace IrisGestao.ApplicationService.Service.Impl;
 
@@ -48,9 +44,9 @@ public class TituloReceberService: ITituloReceberService
         this.logger = logger;
     }
 
-    public async Task<CommandResult> GetAllPaging(string? numeroTitulo, int? idTipoTitulo, int limit, int page)
+    public async Task<CommandResult> GetAllPaging(string? nomeProprietario, int? idTipoTitulo, int limit, int page)
     {
-        var result = await tituloReceberRepository.GetAllPaging(numeroTitulo, idTipoTitulo, limit, page);
+        var result = await tituloReceberRepository.GetAllPaging(nomeProprietario, idTipoTitulo, limit, page);
         
         return result == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)

@@ -49,17 +49,19 @@ export class TopbarComponent {
 				label: 'Imóveis',
 				// id: route.startsWith('/property/') ? 'current' : '',
 				// command: () => this.navigateTo('property/listing'),
-				visible: this.isUserAdmin(),
+				// visible: this.isUserAdmin(),
 				items: [
 					{
 						label: 'Imóvel de carteira',
 						id: route.startsWith('property/carteira/') ? 'current' : '',
 						command: () => this.navigateTo('property/carteira/listing'),
+						visible: this.isAllowedRoleItem(['comercial', 'administrativo', 'coordenação', 'diretoria', 'cliente'])
 					},
 					{
 						label: 'Imóvel de mercado',
 						id: route.startsWith('property/mercado/') ? 'current' : '',
 						command: () => this.navigateTo('property/mercado/listing'),
+						visible: this.isAllowedRoleItem(['comercial', 'administrativo', 'coordenação', 'diretoria'])
 					}
 				],
 			},
@@ -90,6 +92,7 @@ export class TopbarComponent {
 				visible: this.isUserAdmin(),
 				id: route.startsWith('/construction/') ? 'current' : '',
 				command: () => this.navigateTo('construction/listing'),
+				visible: this.isUserAdmin(),
 			},
 			{
 				label: 'Fornecedores',
@@ -146,6 +149,7 @@ export class TopbarComponent {
 			// },
 			{
 				label: 'Análises',
+				visible: this.isAllowedRoleItem(['coordenação', 'diretoria']),
 				items: [
 					{
 						label: 'Vacância',
@@ -171,7 +175,7 @@ export class TopbarComponent {
 			},
 			{
 				label: 'Relatórios',
-				visible: this.isUserAdmin(),
+				visible: this.isAllowedRoleItem(['coordenação', 'diretoria']),
 				items: [
 					{
 						label: 'Área locada             ',
@@ -227,5 +231,9 @@ export class TopbarComponent {
 
 	isUserAdmin():boolean {
 		return this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'cliente';
+	};
+
+	isAllowedRoleItem = (allowedRoles:Array<string>): boolean => {
+		return this.loginService.checkAllowedRoleItem(allowedRoles);
 	};
 }

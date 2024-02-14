@@ -9,6 +9,7 @@ namespace IrisGestao.Domain.Command.Request
     public class CriarEventoCommand
     {
         public Guid GuidImovel { get; set; }
+        public Guid? GuidReferencia { get; set; }
         public int? IdTipoEvento { get; set; }
         public Guid GuidCliente { get; set; }
         public string? TipoEvento { get; set; }

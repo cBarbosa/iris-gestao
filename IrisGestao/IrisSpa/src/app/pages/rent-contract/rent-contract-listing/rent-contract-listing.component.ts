@@ -34,7 +34,7 @@ export class RentContractListingComponent {
 
 	basesReajuste = [
 		{
-			label: 'Índice de reajuste',
+			label: 'Todos imóveis',
 			value: null,
 		},
 	];
@@ -52,7 +52,7 @@ export class RentContractListingComponent {
 	filterEnd: string | null = null;	
 	filterPeriodo: Date[];
 
-	isFormEditable:boolean = true;
+	isFormEditable:boolean = this.loginService.checkAllowedRoleItem(['coordenação', 'diretoria']);
 
 	constructor(
 		private router: Router,
@@ -60,7 +60,7 @@ export class RentContractListingComponent {
 		private contractService: RentContractService,
 		private commonService: CommonService,
 		private responsiveService: ResponsiveService,
-		private loginService: LoginService
+		private loginService: LoginService,
 	) {};
 
 	ngOnInit(): void {
@@ -110,8 +110,8 @@ export class RentContractListingComponent {
 				},
 			});
 
-		this.commonService
-			.getReadjustment()
+		this.contractService
+			.getActiveProperties()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {
@@ -130,8 +130,6 @@ export class RentContractListingComponent {
 					console.error(err);
 				},
 			});
-
-		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	loadContractsPage(event: LazyLoadEvent) {

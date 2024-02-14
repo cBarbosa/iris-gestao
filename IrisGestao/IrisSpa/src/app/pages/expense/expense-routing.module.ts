@@ -9,7 +9,7 @@ const routes: Routes = [
 				(m) => m.ExpenseListingModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -19,7 +19,7 @@ const routes: Routes = [
 				(m) => m.ExpenseViewModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -29,7 +29,7 @@ const routes: Routes = [
 				(m) => m.ExpenseEditModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -39,7 +39,7 @@ const routes: Routes = [
 				(m) => m.ExpenseRegisterModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 		},
 	},
 ];

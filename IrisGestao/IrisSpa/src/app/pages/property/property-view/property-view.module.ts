@@ -17,6 +17,7 @@ import { SpinnerComponent } from 'src/app/shared/components/custom-ui/spinner/sp
 import { AttachmentListComponent } from 'src/app/shared/components/attachment-list/attachment-list.component';
 import { UploadListComponent } from 'src/app/shared/components/upload-list/upload-list.component';
 import { AddEventSidebarComponent } from './add-event-sidebar/add-event-sidebar.component';
+import { EditEventSidebarComponent } from './edit-event-sidebar/edit-event-sidebar.component';
 
 @NgModule({
 	declarations: [PropertyViewComponent],
@@ -38,6 +39,7 @@ import { AddEventSidebarComponent } from './add-event-sidebar/add-event-sidebar.
 		AttachmentListComponent,
 		UploadListComponent,
 		AddEventSidebarComponent,
+		EditEventSidebarComponent,
 	],
 })
 export class PropertyViewModule {}

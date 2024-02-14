@@ -122,7 +122,7 @@ export class ExpenseRegisterComponent {
 			infoFatura: this.fb.group({
 				classificacaoReceita: [null, Validators.required],
 				nomeTitulo: [{ value: '', disabled: true }, Validators.required],
-				creditarPara: [null, Validators.required],
+				//creditarPara: [null, Validators.required],
 				// formaPagamento: [null, Validators.required],
 				parcelas: [null, Validators.required],
 				valor: [null, Validators.required],
@@ -336,7 +336,7 @@ export class ExpenseRegisterComponent {
 			infoFatura: {
 				classificacaoReceita: number;
 				nomeTitulo: string;
-				creditarPara: number;
+				creditarPara: number | null;
 				parcelas: number;
 				valor: number;
 				dataVencimento: Date;
@@ -348,7 +348,7 @@ export class ExpenseRegisterComponent {
 		const expenseObj: {
 			NomeTitulo: string;
 			idTipoTitulo: number;
-			idTipoCreditoAluguel: number;
+			idTipoCreditoAluguel: number | null;
 			idContratoAluguel: null;
 			guidCliente: string;
 			idIndiceReajuste: number | null;
@@ -366,7 +366,7 @@ export class ExpenseRegisterComponent {
 		} = {
 			NomeTitulo: formData.infoFatura.nomeTitulo,
 			idTipoTitulo: formData.infoFatura.classificacaoReceita,
-			idTipoCreditoAluguel: formData.infoFatura.creditarPara,
+			idTipoCreditoAluguel: null,//formData.infoFatura.creditarPara,
 			guidCliente: formData.infoCliente.proprietario,
 			idContratoAluguel: null,
 			idIndiceReajuste: null,

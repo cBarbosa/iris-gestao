@@ -43,7 +43,7 @@ export class SupplierContractListingComponent {
 	filterText: string = '';
 	filterType: number;
 
-	isFormEditable:boolean = true;
+	isFormEditable:boolean = this.loginService.checkAllowedRoleItem(['coordenação', 'diretoria']);
 
 	constructor(
 		private router: Router,
@@ -72,8 +72,6 @@ export class SupplierContractListingComponent {
 			}),
 			currency: new CurrencyPipe('pt-BR', 'R$'),
 		};
-
-		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	loadContractsPage(event: LazyLoadEvent) {

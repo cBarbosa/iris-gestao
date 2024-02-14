@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {
+	Component,
+	OnInit
+} from '@angular/core';
 import {
 	ActivatedRoute,
 	Event,
@@ -9,14 +12,15 @@ import {
 } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 import { first } from 'rxjs';
-import { IImovel, Imovel } from 'src/app/shared/models';
+import {
+	IImovel
+} from 'src/app/shared/models';
 import {
 	ImovelService,
-	ClienteService,
 	CommonService,
 	LoginService,
+	RentContractService,
 } from 'src/app/shared/services';
-import { AnexoService } from 'src/app/shared/services/anexo.service';
 import { ResponsiveService } from 'src/app/shared/services/responsive-service.service';
 import { Utils } from 'src/app/shared/utils';
 
@@ -57,17 +61,19 @@ export class PropertyListingComponent implements OnInit {
 		value: string | null;
 	}[] = [{ label: 'Todos os tipos de imóveis', value: null }];
 
-	isFormEditable:boolean = true;
+	// logged user control
+	isFormEditable:boolean = this.loginService.checkAllowedRoleItem(['coordenação', 'diretoria']);
+	loggedUserId:number = this.loginService.usuarioLogado.id;
+	loggedUserRole:string = this.loginService.usuarioLogado.perfil?.toLowerCase() ?? '';
 
 	constructor(
 		private imovelService: ImovelService,
-		private clienteService: ClienteService,
 		private commonService: CommonService,
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
-		private anexoService: AnexoService,
 		private responsiveService: ResponsiveService,
-		private loginService: LoginService
+		private loginService: LoginService,
+		private rentContract: RentContractService
 	) {}
 
 	ngOnInit(): void {
@@ -83,6 +89,12 @@ export class PropertyListingComponent implements OnInit {
 
 		this.propertyType =
 			this.activatedRoute.snapshot.parent!.routeConfig!.path!.split('/')[0];
+
+		console.log('isFormEditable antes', this.isFormEditable);
+
+		this.isFormEditable = !this.isFormEditable && this.propertyType === 'mercado' && this.loggedUserRole === 'comercial';
+
+		console.log('isFormEditable depois', this.isFormEditable);
 
 		this.getPagingData(this.pageIndex);
 
@@ -109,8 +121,8 @@ export class PropertyListingComponent implements OnInit {
 			}
 		});
 
-		this.clienteService
-			.getListaProprietarios()
+		this.rentContract
+			.getActiveOwners()
 			.pipe(first())
 			.subscribe({
 				next: (e: any) => {
@@ -154,8 +166,6 @@ export class PropertyListingComponent implements OnInit {
 		this.responsiveService.screenWidth$.subscribe((screenWidth) => {
 			this.isMobile = screenWidth < 768;
 		});
-
-		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	loadClientsPage(event: LazyLoadEvent) {
@@ -179,8 +189,8 @@ export class PropertyListingComponent implements OnInit {
 				page,
 				filter,
 				categoryId,
-				proprietaryId,
-				this.propertyType === 'mercado' ? 2 : 1
+				this.loggedUserRole === 'cliente' ? this.loggedUserId : proprietaryId,
+				this.loggedUserRole === 'cliente' ? 1 : this.propertyType === 'mercado' ? 2 : 1
 			)
 			?.pipe(first())
 			.subscribe((event: any) => {

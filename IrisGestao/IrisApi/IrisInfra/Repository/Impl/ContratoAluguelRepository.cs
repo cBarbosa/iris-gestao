@@ -278,7 +278,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                          x.ValorLiquidoTaxaAdministracao,
                          x.ValorRealPago,
                          DescricaoBaixaFatura = string.IsNullOrEmpty(x.DescricaoBaixaFatura) ? "" : x.DescricaoBaixaFatura,
-                     })
+                     }).OrderByDescending(x=> x.DataVencimento).ToList()
                  })
              })
             .SingleOrDefaultAsync();
@@ -314,7 +314,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
         return contratoData;
     }
 
-    public async Task<CommandPagingResult?> GetAllPaging(int? idTipoImovel, int? idBaseReajuste, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? numeroContrato, int limit, int page)
+    public async Task<CommandPagingResult?> GetAllPaging(int? idTipoImovel, int? idImovel, DateTime? dthInicioVigencia, DateTime? dthFimVigencia, string? nomeLocatario, int limit, int page)
     {
         var skip = (page - 1) * limit;
 
@@ -327,11 +327,11 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                             .ThenInclude(x => x.ContratoAluguelUnidade)
                         .Include(x => x.IdIndiceReajusteNavigation)
                         .Where(x =>  x.Status
-                                    && (idBaseReajuste.HasValue
-                                        ? x.IdIndiceReajuste.Equals(idBaseReajuste.Value)
+                                    && (idImovel.HasValue
+                                        ? x.ContratoAluguelImovel.First().IdImovel == idImovel.Value
                                         : true)
-                                    && (!string.IsNullOrEmpty(numeroContrato)
-                                        ? x.NumeroContrato.Contains(numeroContrato!)
+                                    && (!string.IsNullOrEmpty(nomeLocatario)
+                                        ? x.IdClienteNavigation.Nome.Contains(nomeLocatario)
                                         : true)
                                    && ((dthInicioVigencia.HasValue && dthFimVigencia.HasValue)
                                         ? (x.DataInicioContrato >= dthInicioVigencia.Value && x.DataFimContrato <= dthFimVigencia.Value) : true)
@@ -419,7 +419,7 @@ public class ContratoAluguelRepository: Repository<ContratoAluguel>, IContratoAl
                                 DataAtualização = x.DataUltimaModificacao,
                                 DataVencimentoPrimeraParcela = x.DataVencimentoPrimeraParcela,
                                 PorcentagemTaxaAdministracao = x.PorcentagemTaxaAdministracao,
-                                DataUltimaFatura = x.FaturaTitulo.FirstOrDefault().DataVencimento.Value
+                                DataUltimaFatura = x.FaturaTitulo.FirstOrDefault().DataVencimento
                             }),
                         }).OrderBy(x=> x.DataFimContrato).ToListAsync();
 

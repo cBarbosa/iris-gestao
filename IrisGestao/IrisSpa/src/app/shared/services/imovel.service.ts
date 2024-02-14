@@ -58,10 +58,8 @@ export class ImovelService {
 			categoryId ? `&idCategoria=${categoryId}` : ''
 		}${proprietaryId ? `&idProprietario=${proprietaryId}` : ''}`;
 
-		console.log('requestPath', requestPath);
 		return this.http.get<ApiResponse>(requestPath).pipe(
 			map((response) => {
-				console.log('response', response);
 				if (!response.success)
 					console.error(`getProperties: ${response.message}`);
 				return response;
@@ -74,7 +72,6 @@ export class ImovelService {
 			.get<ApiResponse>(`${env.config.apiUrl}Imovel/BuscarImoveisDisponiveis`)
 			.pipe(
 				map((response) => {
-					console.log('response', response);
 					if (!response.success)
 						console.error(`getProperty: ${response.message}`);
 					return response.data;
@@ -107,7 +104,6 @@ export class ImovelService {
 			.get<ApiResponse>(`${env.config.apiUrl}Imovel/${uid}/guid`)
 			.pipe(
 				map((response) => {
-					console.log('response', response);
 					if (!response.success)
 						console.error(`getProperty: ${response.message}`);
 					return response.data;
@@ -120,7 +116,6 @@ export class ImovelService {
 			.put<ApiResponse>(`${env.config.apiUrl}Imovel/${uid}/atualizar`, property)
 			.pipe(
 				map((response) => {
-					console.log('response', response);
 					if (!response.success)
 						console.error(`updateProperty: ${response.message}`);
 					return response;
@@ -133,7 +128,6 @@ export class ImovelService {
 			.get<ApiResponse>(`${env.config.apiUrl}Unidade/${uid}/guid`)
 			.pipe(
 				map((response) => {
-					console.log('response', response);
 					if (response.success) return response.data;
 					else return console.error(`getUnit: ${response.message}`);
 				})
@@ -145,7 +139,6 @@ export class ImovelService {
 			.put<ApiResponse>(`${env.config.apiUrl}Unidade/${uid}/atualizar`, unit)
 			.pipe(
 				map((response) => {
-					console.log('response', response);
 					if (!response.success) console.error(`getUnit: ${response.message}`);
 					return response;
 				})
@@ -157,7 +150,6 @@ export class ImovelService {
 			.post<ApiResponse>(`${env.config.apiUrl}Unidade/${uid}/criar`, unit)
 			.pipe(
 				map((response) => {
-					console.log('response', response);
 					if (!response.success)
 						console.error(`createUnit: ${response.message}`);
 					return response;
@@ -170,7 +162,6 @@ export class ImovelService {
 			.put<ApiResponse>(`${env.config.apiUrl}Unidade/${uid}/duplicar`, null)
 			.pipe(
 				map((response) => {
-					console.log('response', response);
 					if (!response.success)
 						console.error(`cloneUnit: ${response.message}`);
 					return response;

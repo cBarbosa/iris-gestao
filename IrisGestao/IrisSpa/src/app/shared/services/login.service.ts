@@ -32,15 +32,34 @@ export class LoginService {
 		localStorage[CHAVE_TOKEN] = JSON.stringify(accessToken);
 	}
 
-	logout() {
-		delete localStorage[CHAVE_USER];
-		delete localStorage[CHAVE_TOKEN];
+	public checkAllowedRoleItem(allowedRoles: Array<string>):boolean {
+
+		let incorrectRoleItem = undefined;
+
+		allowedRoles.forEach(roleIn => {
+			if(!['comercial', 'administrativo', 'coordenação', 'diretoria', 'cliente'].includes(roleIn))
+			incorrectRoleItem = roleIn;
+		});
+
+		if(incorrectRoleItem)	{
+			console.error(`Role ${incorrectRoleItem} não existe`);
+			return false;
+		}
+
+		const loggedRole = this.usuarioLogado.perfil?.toLowerCase() ?? '';
+
+		return allowedRoles.includes(loggedRole);
 	}
 
 	login(login: Login): Observable<Usuario | null> {
 		let user = new Usuario(1, 'email@spam.com', 'Charles', 'Tester');
 
 		return of(user);
+	}
+
+	logout() {
+		delete localStorage[CHAVE_USER];
+		delete localStorage[CHAVE_TOKEN];
 	}
 
 	postValidate(): Observable<ApiResponse> {

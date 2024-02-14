@@ -14,6 +14,9 @@ export class HomeComponent {
 
 	filesSelected: File[];
 
+	// logged user control
+	isFormEditable:boolean = this.loginService.checkAllowedRoleItem(['coordenação', 'diretoria']);
+
 	constructor(private loginService: LoginService, private router: Router) {}
 
 	sair(): void {

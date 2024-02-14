@@ -62,6 +62,7 @@
 			[options]="proprietaryOptions"
 			[(ngModel)]="filterProprietary"
 			(ngModelChange)="filterProperties($event)"
+			*ngIf="loggedUserRole!=='cliente'"
 		></p-dropdown>
 	</ng-template>
 

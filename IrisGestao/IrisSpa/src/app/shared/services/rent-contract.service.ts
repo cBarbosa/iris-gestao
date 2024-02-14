@@ -22,19 +22,19 @@ export class RentContractService {
 		limit: number = 50,
 		page: number = 1,
 		idTipoImovel?: number,
-		idBaseReajuste?: number,
+		idImovel?: number,
 		dthInicioVigencia?: string,
 		dthFimVigencia?: string,
-		numeroContrato?: string
+		nomeLocatario?: string
 	) {
 		return this.http
 			.get<ApiResponse>(
 				`${env.config.apiUrl}ContratoAluguel?limit=${limit}&page=${page}${
 					idTipoImovel ? `&idTipoImovel=${idTipoImovel}` : ''
-				}${idBaseReajuste ? `&idBaseReajuste=${idBaseReajuste}` : ''}${
+				}${idImovel ? `&idImovel=${idImovel}` : ''}${
 					dthInicioVigencia ? `&dthInicioVigencia=${dthInicioVigencia}` : ''
 				}${dthFimVigencia ? `&dthFimVigencia=${dthFimVigencia}` : ''}${
-					numeroContrato ? `&numeroContrato=${numeroContrato}` : ''
+					nomeLocatario ? `&nomeLocatario=${nomeLocatario}` : ''
 				}`
 			)
 			.pipe(

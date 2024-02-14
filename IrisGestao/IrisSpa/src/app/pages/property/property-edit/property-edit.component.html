@@ -350,7 +350,7 @@
 							</label>
 							<ng-container *ngFor="let photo of propertyPhotos; index as i">
 								<div class="photo">
-									<img [src]="photo.data" [alt]="photo.name" />
+									<img [src]="photo.data" [alt]="photo.name" title="photo.name" />
 									<button pButton type="button" (click)="removePhoto(i)">
 										<i class="ph-trash"></i>
 									</button>
@@ -360,7 +360,7 @@
 								*ngFor="let photo of addedPropertyPhotos; index as i"
 							>
 								<div class="photo">
-									<img [src]="photo.data" [alt]="photo.name" />
+									<img [src]="photo.data" [alt]="photo.name" title="photo.name" />
 									<button pButton type="button" (click)="removePhoto(i, true)">
 										<i class="ph-trash"></i>
 									</button>

@@ -45,9 +45,9 @@ public class TituloPagarService: ITituloPagarService
         this.logger = logger;
     }
 
-    public async Task<CommandResult> GetAllPaging(string? numeroTitulo, int? idTipoTitulo, int limit, int page)
+    public async Task<CommandResult> GetAllPaging(string? nomeProprietario, int? idTipoTitulo, int limit, int page)
     {
-        var result = await tituloPagarRepository.GetAllPaging(numeroTitulo, idTipoTitulo, limit, page);
+        var result = await tituloPagarRepository.GetAllPaging(nomeProprietario, idTipoTitulo, limit, page);
         
         return result == null
             ? new CommandResult(false, ErrorResponseEnums.Error_1005, null!)

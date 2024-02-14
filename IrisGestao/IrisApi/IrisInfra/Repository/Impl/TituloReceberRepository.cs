@@ -5,6 +5,7 @@ using IrisGestao.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Xml.Linq;
 
 namespace IrisGestao.Infraestructure.Repository.Impl;
 
@@ -135,7 +136,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                             ValorLiquidoTaxaAdministracao = x.ValorLiquidoTaxaAdministracao,
                             ValorRealPago = x.ValorRealPago,
                             DescricaoBaixaFatura = String.IsNullOrEmpty(x.DescricaoBaixaFatura) ? "" : x.DescricaoBaixaFatura,
-                        }),
+                        }).OrderBy(x=> x.DataVencimento).ToList(),
                         Imoveis = x.TituloImovel.Select(y => new
                         {
                             Nome = y.IdImovelNavigation.Nome,
@@ -185,7 +186,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                     }).ToListAsync(); 
     }
 
-    public async Task<CommandPagingResult?> GetAllPaging(string? numeroTitulo, int? idTipoTitulo, int limit, int page)
+    public async Task<CommandPagingResult?> GetAllPaging(string? nomeProprietario, int? idTipoTitulo, int limit, int page)
     {
         var skip = (page - 1) * limit;
 
@@ -194,13 +195,21 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
             var contratos = await DbSet
                         .Include(x => x.IdContratoAluguelNavigation)
                             .ThenInclude(x => x.IdTipoContratoNavigation)
+                        
+                        .Include(x => x.TituloImovel)
+                            .ThenInclude(x => x.IdImovelNavigation)
+                                .ThenInclude(x => x.IdClienteProprietarioNavigation)
+                        
                         .Where(x => x.Status.Value &&
                                     (idTipoTitulo.HasValue
-                                        ? x.IdTipoTituloNavigation.Id == idTipoTitulo.Value
+                                        ? x.IdTipoTitulo == idTipoTitulo.Value
                                         : true)
-                                    && (!string.IsNullOrEmpty(numeroTitulo)
-                                        ? x.NumeroTitulo.Contains(numeroTitulo!)
+                                    && (!string.IsNullOrEmpty(nomeProprietario)
+                                        ? (x.TituloImovel.First().IdImovelNavigation.IdClienteProprietarioNavigation.Nome.Contains(nomeProprietario)
+                                            || x.IdClienteNavigation.Nome.Contains(nomeProprietario)
+                                        )
                                         : true))
+
                         .Select(x => new
                         {
                             NumeroTitulo = x.NumeroTitulo,
@@ -213,7 +222,7 @@ public class TituloReceberRepository : Repository<TituloReceber>, ITituloReceber
                             DataCriacao = x.DataCriacao,
                             DataFimTitulo = x.DataFimTitulo,
                             DataAtualização = x.DataUltimaModificacao,
-                            DataUltimaParcela = x.FaturaTitulo.OrderByDescending(x=> x.DataVencimento.Value).FirstOrDefault().DataVencimento.Value,
+                            DataUltimaParcela = x.FaturaTitulo.OrderByDescending(x=> x.DataVencimento).FirstOrDefault().DataVencimento,
                             TipoTituloReceber = x.IdTipoTituloNavigation == null ? null : new
                             {
                                 Id = x.IdTipoTituloNavigation.Id,

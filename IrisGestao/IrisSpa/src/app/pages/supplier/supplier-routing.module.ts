@@ -13,7 +13,7 @@ const routes: Routes = [
 				(m) => m.SupplierListingModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -24,7 +24,7 @@ const routes: Routes = [
 				(m) => m.SupplierViewModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -35,7 +35,7 @@ const routes: Routes = [
 				(m) => m.SupplierRegisterModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 		},
 	}
 ];

@@ -11,7 +11,7 @@ const routes: Routes = [
 				(m) => m.ClientListingModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -22,7 +22,7 @@ const routes: Routes = [
 				(m) => m.ClientViewModule
 			),
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+			role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -34,7 +34,7 @@ const routes: Routes = [
 			),
 		canActivate: [AuthGuard],
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR',
+			role: 'COMERCIAL, COORDENAÇÃO, DIRETORIA',
 		},
 	},
 	{
@@ -46,7 +46,7 @@ const routes: Routes = [
 			),
 		canActivate: [AuthGuard],
 		data: {
-			role: 'SUPERINTENDENTE,GERENTE,COORDENADOR',
+			role: 'COMERCIAL, COORDENAÇÃO, DIRETORIA',
 		},
 	},
 ];

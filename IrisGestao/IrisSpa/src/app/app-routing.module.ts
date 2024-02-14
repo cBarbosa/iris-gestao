@@ -19,7 +19,7 @@ const routes: Routes = [
 					import('./pages/home/home.module').then((m) => m.HomeModule),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA,CLIENTE',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA, CLIENTE',
 				},
 			},
 			{
@@ -31,7 +31,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA, CLIENTE',
 				},
 			},
 			{
@@ -40,7 +40,7 @@ const routes: Routes = [
 					import('./pages/client/client.module').then((m) => m.ClientModule),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -51,7 +51,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -62,7 +62,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -73,7 +73,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -82,7 +82,7 @@ const routes: Routes = [
 					import('./pages/revenue/revenue.module').then((m) => m.RevenueModule),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -91,7 +91,7 @@ const routes: Routes = [
 					import('./pages/expense/expense.module').then((m) => m.ExpenseModule),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -102,7 +102,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'COMERCIAL, ADMINISTRATIVO, COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -113,7 +113,7 @@ const routes: Routes = [
 					),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA,CLIENTE',
+					role: 'COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{
@@ -122,7 +122,7 @@ const routes: Routes = [
 					import('./pages/report/report.module').then((m) => m.ReportModule),
 				canActivate: [AuthGuard],
 				data: {
-					role: 'SUPERINTENDENTE,GERENTE,COORDENADOR,ANALISTA',
+					role: 'COORDENAÇÃO, DIRETORIA',
 				},
 			},
 			{

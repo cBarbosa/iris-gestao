@@ -36,7 +36,7 @@ export class SupplierContractViewComponent {
 		outros?: Attachment;
 	} = {};
 
-	isFormEditable:boolean = true;
+	isFormEditable:boolean = this.loginService.checkAllowedRoleItem(['coordenação', 'diretoria']);
 
 	constructor(
 		private router: Router,
@@ -66,8 +66,6 @@ export class SupplierContractViewComponent {
 				timezone: '',
 			}),
 		};
-
-		this.isFormEditable = this.loginService.usuarioLogado.perfil?.toLowerCase() !== 'analista';
 	}
 
 	getAttachs(): void {
